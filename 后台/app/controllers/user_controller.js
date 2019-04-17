@@ -1,51 +1,28 @@
 /*
- * @Author: kuangxj 
- * @Email: frankxjkuang@gmail.com 
- * @Date: 2018-08-14 16:01:01 
+ * @Author: yinxl 
+ * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-02 17:59:41
- * @Description: user api 
+ * @Last Modified time: 2019-04-18 07:38:05
  */
 
 const config = require('./../../config');
 const passport = require('./../utils/passport');
 const User_col = require('./../models/user');
+const Department_col = require('./../models/department');
+const System_col = require('./../models/system');
 const Passport_col = require('./../models/password');
-const UserSystem_col = require('./../models/userSystem');
 const uuidv1 = require('uuid/v1');
-const jwt = require('jsonwebtoken'); // 用于签发、解析`token`
+const jsonwebtoken = require('jsonwebtoken')
 
-const get = async (ctx, next) => {
-  ctx.status = 200;
-  ctx.body = {
-    msg: 'get request!!',
-    data: {
-      data: ctx.request.query
-    }
-  }
-}
-
-const post = async (ctx, next) => {
-  ctx.status = 200;
-  ctx.body = {
-    msg: 'post request!!',
-    data: {
-      data: ctx.request.body
-    }
-  }
-}
 /* jwt密钥 */
-const secret = 'secret';
-/* 获取一个期限为4小时的token */
-function getToken(payload = {}) {
-  return jwt.sign(payload, secret, { expiresIn: '4h' });
-}
+//秘钥
+const jwtSecret = 'jwtSecret'
 // 登录
 const login = async (ctx, next) => {
   const req = ctx.request.body;
   // 获取用户的 userId
   const user = await User_col.findOne({
-    account: req.account
+    userName: req.userName
   }, {
     __v: 0,
     _id: 0
@@ -54,11 +31,18 @@ const login = async (ctx, next) => {
     ctx.status = 200;
     ctx.body = {
       code: 0,
-      msg: 'account or password error!'
+      msg: '用户不存在!'
     }
     return;
   }
-
+  if (user.status===-1) {
+    ctx.status = 200;
+    ctx.body = {
+      code: 0,
+      msg: '账号已被禁用,请联系管理员!'
+    }
+    return;
+  }
   const userId = user.userId;
 
   // 获取数据库中的 hash
@@ -67,33 +51,35 @@ const login = async (ctx, next) => {
   }, {
     hash: 1,
   });
-
   const match = await passport.validate(req.password, pass.hash);
   ctx.status = 200;
   if (match) {
     //这是加密的 key（密钥）
     ctx.body = {
       code: 1,
-      token: getToken({ user: req.account, password: req.password }),
-      msg: 'login success',
-      data: user
+      msg: '登录成功',
+      data: user,
+      token: jsonwebtoken.sign({
+          data: user,
+          // 设置 token 过期时间
+          exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24), // 60 seconds * 60 minutes = 1 hour
+        }, jwtSecret)
     }
     return;
   }
 
   ctx.body = {
     code: 0,
-    msg: 'account or password error!'
+    msg: '用户名或密码错误'
   }
 }
 
 // 注册
 const register = async (ctx, next) => {
   const req = ctx.request.body;
-
   // 获取用户的 userId
   const user = await User_col.findOne({
-    account: req.account
+    userName: req.userName
   });
 
   ctx.status = 200;
@@ -109,9 +95,7 @@ const register = async (ctx, next) => {
   const userId = uuidv1();
   const newUser = await User_col.create({
     userId,
-    account: req.account,
-    userName: req.userName,
-    email: req.email
+    ...req
   });
 
   if (newUser) {
@@ -121,15 +105,13 @@ const register = async (ctx, next) => {
       userId: userId,
       hash
     })
-
     if (result) {
       ctx.body = {
         code: 1,
         msg: '注册成功！',
-        token: getToken({ user: req.account, password: req.password }),
         data: {
           userId: newUser.userId,
-          account: newUser.account
+          userName: newUser.userName
         }
       };
     }
@@ -140,36 +122,78 @@ const register = async (ctx, next) => {
     };
   }
 }
-
+const getUserInfo = async (ctx, next) => {
+  const token = ctx.request.headers.accesstoken;
+  //解密
+  jsonwebtoken.verify(token, jwtSecret, function (err, decoded) {
+    if (!err) {
+      const user = decoded.data;
+      ctx.status = 200;
+      ctx.body = {
+        code: 1,
+        data: user,
+        msg: '用户信息获取成功'
+      }
+    }
+  })
+}
 // 更新个人信息
 const updateUserInfo = async (ctx, next) => {
   const req = ctx.request.body;
   // 获取用户的 userId
+  req.systems = req.systems.split(',');
   const result = await User_col.updateOne({
     userId: req.userId
   }, req);
-  for (let i = 0;i<req.systems.length;i++) {
-    await UserSystem_col.create({
-      id: uuidv1(),
-      userId: req.userId,
-      systemId: req.systems[i],
-    });
-  }
   ctx.status = 200;
   if (result.nModified == 1) {
     ctx.body = {
       code: 1,
-      msg: 'save successed!'
+      data: result,
+      msg: '信息已更新'
     }
   } else {
     ctx.body = {
       code: 0,
-      msg: 'save failed!'
+      msg: '保存失败'
     }
   }
 }
+//解锁
+const unLock = async (ctx,next) => {
+  const req = ctx.request.body;
+  const token = ctx.request.headers.accesstoken;
+  //解密
+  jsonwebtoken.verify(token, jwtSecret, function (err, decoded) {
+    if (!err) {
+      const userId = decoded.data.userId;
+      // 获取数据库中的 hash
+      const pass = Passport_col.findOne({
+        userId
+      }, {
+        hash: 1,
+      });
+
+      const match = passport.validate(req.password, pass.hash);
+      ctx.status = 200;
+      if (match) {
+        //这是加密的 key（密钥）
+        ctx.body = {
+          code: 1,
+          msg: '登录成功'
+        }
+        return;
+      }
+
+      ctx.body = {
+        code: 0,
+        msg: '密码错误'
+      }
+    }
+  })
+}
 // 获取用户列表
-const getUserList = async (ctx, next) => {
+const getAllUser = async (ctx, next) => {
   const req = ctx.request.body;
   // 获取用户的 userId
   const result = await User_col.find();
@@ -181,11 +205,164 @@ const getUserList = async (ctx, next) => {
     data: result
   }
 }
+const getByCondition = async (ctx, next) => {
+  ctx.status = 200;
+  const req = ctx.query;
+  const AllByPage = await User_col.find({
+    $or: [
+      { userName: { $regex: req.userName }},
+      { departmentId: { $regex: req.departmentId }},
+      { email: { $regex: req.email }}
+    ]
+  })
+  .limit(parseInt(req.pageSize)).skip((parseInt(req.pageNumber) - 1), parseInt(req.pageSize));
+  const allPage = await User_col.find({});
+  const totalElements = Math.ceil(allPage.length / parseInt(req.pageSize)); //计算页数
+  ctx.body = {
+    code: 1,
+    msg: '获取用户列表成功',
+    data: {
+      content: AllByPage,
+      totalElements: totalElements
+    }
+  }
+}
+const adminEdit = async (ctx, next) => {
+  const req = ctx.request.body;
+  ctx.status = 200;
+  // 获取用户的 userId
+  if(req.departmentId!='') {
+    const department = await Department_col.findOne({
+      id: req.departmentId
+    });
+    req.departmentTitle = department.title;
+  }
+  await User_col.updateOne({
+    userId: req.userId
+  }, req);
+  ctx.body = {
+    code: 1,
+    msg: '请求成功'
+  }
+}
+const userDisable = async (ctx, next) => {
+  ctx.status = 200;
+  const userid = ctx.params.id;
+  await User_col.updateOne({
+    userId: userid
+  }, {
+    status: -1
+  });
+  ctx.body = {
+    code: 1,
+    msg: '请求成功'
+  }
+}
+const userEnable = async (ctx, next) => {
+  ctx.status = 200;
+  const userid = ctx.params.id;
+  await User_col.updateOne({
+    userId: userid
+  }, {
+    status: 0
+  });
+  ctx.body = {
+    code: 1,
+    msg: '请求成功'
+  }
+}
+const delUser = async (ctx, next) => {
+  ctx.status = 200;
+  const userid = ctx.params.id;
+  await User_col.remove({
+    userId: userid
+  });
+  ctx.body = {
+    code: 1,
+    msg: '删除成功'
+  }
+}
+const getByDepartment = async (ctx, next) => {
+  ctx.status = 200;
+  const departmentId = ctx.params.id;
+  const result = await User_col.find({
+    departmentId
+  });
+  ctx.body = {
+    code: 1,
+    data: result,
+    msg: '获取部门人员成功'
+  }
+}
+const resetPassword = async (ctx,next) => {
+  const req = ctx.request.body;
+  const token = ctx.request.headers.accesstoken;
+  //解密
+  const userId = jsonwebtoken.verify(token, jwtSecret).data.userId;
+  // 获取数据库中的 hash
+  const pass = await Passport_col.findOne({ //验证密码
+    userId
+  }, {
+    hash: 1,
+  });
+  const match = await passport.validate(req.password, pass.hash);
+  ctx.status = 200;
+  if (match) {
+    // 加密
+    await Passport_col.deleteMany({
+      userId: userId
+    });
+    const hash = await passport.encrypt(req.newPass, config.saltTimes);
+    await Passport_col.create({
+      userId: userId
+    }, hash);
+    await User_col.updateOne({
+      userId: userId
+    }, {
+      passStrength: req.passStrength
+    })
+    if (result) {
+      ctx.body = {
+        code: 1,
+        msg: '密码修改成功'
+      }
+    }
+    return;
+  } else {
+    ctx.body = {
+      code: 0,
+      msg: '原密码不正确'
+    }
+  }
+}
+const userSystem = async (ctx, next) => { //首页统计功能
+  ctx.status = 200;
+  const req = ctx.query;
+  const user = await User_col.findOne({userId: req.userId});
+  const systemsCount = await System_col.find({
+    id: {
+      $in: user.systems
+    }
+  }).ne('parentId', '0').count();
+  ctx.body = {
+    code: 1,
+    data: systemsCount,
+    msg: '请求成功'
+  }
+}
 module.exports = {
-  get,
-  post,
   login,
   register,
   updateUserInfo,
-  getUserList
+  getUserInfo,
+  getAllUser,
+  unLock,
+  getByCondition,
+  adminEdit,
+  userDisable,
+  userEnable,
+  delUser,
+  getByDepartment,
+  userSystem,
+  resetPassword
 }

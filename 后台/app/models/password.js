@@ -1,10 +1,8 @@
 /*
- * @Author: kuangxj 
- * @Email: frankxjkuang@gmail.com 
- * @Date: 2018-08-14 16:01:38 
- * @Last Modified by: kaungxj
- * @Last Modified time: 2018-08-15 10:36:40
- * @Description: password collection
+ * @Author: yinxl 
+ * @Date: 2019-04-10 13:40:39 
+ * @Last Modified by:   yinxl 
+ * @Last Modified time: 2019-04-10 13:40:39 
  */
 
 const mongoose = require('mongoose');

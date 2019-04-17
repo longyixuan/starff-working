@@ -1,22 +1,62 @@
 /*
  * @Author: yinxl 
- * @Date: 2019-03-12 18:08:34 
+ * @Date: 2019-04-08 11:04:00 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-03-28 11:33:35
+ * @Last Modified time: 2019-04-12 18:16:43
  */
+
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
-const systemSchema = new Schema({
+const SystemSchema = new Schema({
   id: {
     type: String,
     unique: true,
     require: true
   },
-  name: {
+  mainHeader: [],
+  viceHeader: [],
+  createBy: {
     type: String,
-    require: true
+    default: null
+  },
+  updateBy: {
+    type: String,
+    default: null
+  },
+  delFlag: {
+    type: Number,
+    default: 0
+  },
+  isParent: {
+    type: Boolean,
+    default: false
+  },
+  parentId: {
+    type: String,
+    default: '',
+    ref: 'system'
+  },
+  parentTitle: {
+    type: String,
+    default: ''
+  },
+  sortOrder: {
+    type: Number,
+    default: 0
+  },
+  status: {
+    type: Number,
+    default: 0
+  },
+  title: {
+    type: String,
+    default: ''
   }
-},{ collection: 'system', versionKey: false });
+}, {
+  collection: 'system',
+  versionKey: false,
+  timestamps: true
+});
 
-module.exports = mongoose.model('system', systemSchema);
+module.exports = mongoose.model('system', SystemSchema);

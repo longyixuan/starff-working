@@ -1,15 +1,19 @@
 /*
  * @Author: yinxl 
- * @Date: 2019-03-12 18:40:07 
+ * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-03-28 14:04:20
+ * @Last Modified time: 2019-04-13 11:08:11
  */
 
 const Router = require('koa-router');
 const router = new Router();
 const system_controller = require('./../../app/controllers/system_controller');
 
-router.post('/system', system_controller.searchSystemByName);
-router.post('/systemList', system_controller.getSystemList);
+router.post('/system/add', system_controller.addSystem);
+router.get('/system/getByParentId/:id', system_controller.getSystemList);
+router.post('/system/update', system_controller.updateSystem);
+router.post('/system/edit', system_controller.editSystem);
+router.delete('/system/delByIds/:id', system_controller.delSystem);
+router.get('/system/getAllList', system_controller.getAllList);
 
 module.exports = router;

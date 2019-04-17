@@ -1,40 +1,41 @@
 /*
  * @Author: yinxl 
- * @Date: 2019-03-12 18:24:18 
+ * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-03-28 14:05:48
+ * @Last Modified time: 2019-04-13 19:43:20
  */
-const uuidv1 = require('uuid/v1');
+
 const System_col = require('./../models/system');
-const searchSystemByName = async (ctx, next) => {
-  const req = ctx.request.body;
-  const system = await System_col.findOne({
-    name: req.name
-  });
+const uuidv1 = require('uuid/v1');
+
+const addSystem = async (ctx, next) => {
   ctx.status = 200;
-  if (system) {
-    ctx.body = {
-      code: 0,
-      msg: '系统名称重复！'
-    }
-    return;
+  const req = ctx.request.body;
+  req.id = uuidv1();
+  // 新增
+  if (req.parentId == '0') {
+    req.parentTitle = '一级系统'
+  } else {
+    let parent = await System_col.findOne({
+      id: req.parentId
+    })
+    req.parentTitle = parent.title;
   }
-  // 新增系统
-  const id = uuidv1();
-  
-  const newSystem = await System_col.create({
-    id,
-    name: req.name
+  await System_col.create(req);
+  await System_col.updateMany({
+    id: req.parentId
+  }, {
+    isParent: true
+  });
+  let newSystem = await System_col.find({
+    parentId: ''
   });
   if (newSystem) {
     ctx.body = {
       code: 1,
-      msg: '添加成功！',
-      data: {
-        id: newSystem.id,
-        name: newSystem.name
-      }
-    };
+      msg: '请求成功',
+      data: newSystem
+    }
   } else {
     ctx.body = {
       code: 0,
@@ -42,15 +43,71 @@ const searchSystemByName = async (ctx, next) => {
     };
   }
 }
-const getSystemList = async (ctx, next) => { //查询
-  const systemList = await System_col.find({});
+const getSystemList = async (ctx, next) => {
+  const parentId = ctx.params.id;
+  const system = await System_col.find({
+    parentId
+  }).sort({
+    'sortOrder': 1
+  });
+  ctx.status = 200;
   ctx.body = {
     code: 1,
-    msg: '查询成功',
-    data: systemList
-  };
+    msg: '请求成功',
+    data: system
+  }
+}
+const delSystem = async (ctx, next) => {
+  const id = ctx.params.id;
+  ctx.status = 200;
+  await System_col.remove({
+    id
+  });
+  ctx.body = {
+    code: 1,
+    msg: '删除成功'
+  }
+}
+const updateSystem = async (ctx, next) => {
+  const req = ctx.request.body;
+  ctx.status = 200;
+  ctx.body = {
+    code: 1,
+    msg: '请求成功',
+    data: {
+
+    }
+  }
+}
+const editSystem = async (ctx, next) => {
+  const req = ctx.request.body;
+  ctx.status = 200;
+  await System_col.updateOne({
+    id: req.id
+  }, req);
+  const system = await System_col.findOne({
+    id: req.id
+  });
+  ctx.body = {
+    code: 1,
+    msg: '请求成功',
+    data: system
+  }
+}
+const getAllList = async (ctx,next) => { //获取系统树
+  ctx.status = 200;
+  const system = await System_col.find().ne('parentId', '0');
+  ctx.body = {
+    code: 1,
+    data: system,
+    msg: '请求成功'
+  }
 }
 module.exports = {
-  searchSystemByName,
-  getSystemList
+  addSystem,
+  getSystemList,
+  delSystem,
+  updateSystem,
+  editSystem,
+  getAllList
 }

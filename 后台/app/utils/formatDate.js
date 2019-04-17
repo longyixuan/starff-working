@@ -1,10 +1,8 @@
 /*
- * @Author: kuangxj 
- * @Email: frankxjkuang@gmail.com 
- * @Date: 2018-08-22 11:20:39 
- * @Last Modified by:   kaungxj 
- * @Last Modified time: 2018-08-22 11:20:39 
- * @Description: formatDate 
+ * @Author: yinxl 
+ * @Date: 2019-04-10 09:56:54 
+ * @Last Modified by:   yinxl 
+ * @Last Modified time: 2019-04-10 09:56:54 
  */
 
 const formatDate = date => {

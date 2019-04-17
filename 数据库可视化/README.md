@@ -1,296 +1,125 @@
-# adminMongo
+# xboot-front
 
-![npm downloads badge](https://img.shields.io/npm/dm/admin-mongo.svg "npm download badge")
-![npm version badge](https://img.shields.io/npm/v/admin-mongo.svg "npm version badge")
-[![Build Status](https://travis-ci.org/mrvautin/adminMongo.svg?branch=master)](https://travis-ci.org/mrvautin/adminMongo)
-[![Github stars](https://img.shields.io/github/stars/mrvautin/adminMongo.svg?style=social&label=Star)](https://github.com/mrvautin/adminMongo)
+> 作者大四作品 且为后台开发 能力经验有限 如有错误欢迎指正 期待您的捐赠支持！
 
-adminMongo is a cross platform user interface (GUI) to handle all your MongoDB connections/databases needs. adminMongo is fully responsive and should work on a range of devices.
+### 宣传视频
+- [作者亲自制作XBoot文字快闪宣传视频](http://www.bilibili.com/av30284667)
+- [作者亲自制作其他项目宣传视频](https://www.bilibili.com/video/av23121122/)
 
-> adminMongo connection information (including username/password) is stored unencrypted in a config file, it is not recommended to run this application on a production or public facing server without proper security considerations.
+### [在线Demo](http://xboot.exrick.cn)
+http://xboot.exrick.cn
+### 后台项目地址：[X-Boot](https://github.com/Exrick/x-boot)
+> 涉及技术：Spring Boot 2.x/Spring Security/JWT/Spring Data JPA+Mybatis-Plus/Redis/Elasticsearch 分布式限流/同步锁/验证码/SnowFlake雪花算法ID生成 动态权限管理 数据权限 代码生成 日志记录 定时任务 第三方账号、短信登录
+### 项目简介
+- 项目基于 Vue-Cli 3.0正式版创建
+- 主要Main组件框架基于iView-admin 1.0版本 修复其BUG
+- 组件库升级iView3.0
+- 后台加载动态权限菜单 多方式轻松权限控制至按钮显示
+- 提供Vue空白模版，只需修改后台请求和对应实体字段即可完成页面开发
+- 多语言切换、消息管理、第三方社交账号或短信登录
+- iView使用图标库 [ionicons](http://ionicons.com/) 额外图标库 [vue-awesome](https://github.com/Justineo/vue-awesome)
 
-## Support
+### 截图预览
 
-If my work helps you, please consider [![buying me a coffee](https://cdn-images-1.medium.com/max/738/1*G95uyokAH4JC5Ppvx4LmoQ@2x.png)](https://www.buymeacoffee.com/mrvautin)
+![QQ截图20180826163917.png](https://i.loli.net/2018/08/26/5b826868e2359.png)
 
-## Installation
+![QQ截图20180826163956.png](https://i.loli.net/2018/08/26/5b8268c57d1e3.png)
 
-1. Navigate to folder & install adminMongo: `git clone https://github.com/mrvautin/adminMongo.git && cd adminMongo`
-2. Install dependencies: `npm install`
-3. Start application: `npm start` or `node app`
-4. Visit [http://127.0.0.1:1234](http://127.0.0.1:1234) in your browser
+![QQ截图20180826164058.png](https://i.loli.net/2018/08/26/5b8268d63d156.png)
 
-> Note: Node.js version 4.x or above is required
+![QQ截图20180826164129.png](https://i.loli.net/2018/08/26/5b8268dec28ee.png)
 
-## Electron App
+![QQ截图20180826164144.png](https://i.loli.net/2018/08/26/5b8268e6a091f.png)
 
-adminMongo can also be used as a cross platform Electron application. Due to the size of Electron it will need to be built manually.
+![QQ截图20180826164226.png](https://i.loli.net/2018/08/26/5b8268efab94a.png)
 
-To build for Mac:
+### [完整版截图细节展示](https://github.com/Exrick/x-boot/wiki/%E5%AE%8C%E6%95%B4%E7%89%88%E6%88%AA%E5%9B%BE%E7%BB%86%E8%8A%82%E5%B1%95%E7%A4%BA)
 
-`$ npm run-script packageOsx`
 
-To build for Windows:
+### 主要所用技术
+- [Vue 2.5.x](https://cn.vuejs.org/)
+- [Vue Cli 3.x](https://github.com/vuejs/vue-cli)：[官方中文文档](https://github.com/vuejs/vue-cli/tree/dev/docs/zh/config)
+- Vue Router
+- [Vuex](https://vuex.vuejs.org/zh-cn/)
+- [vue-i18n](https://github.com/kazupon/vue-i18n)：国际化多语言插件 使用5.0.x版本
+- [iView](https://www.iviewui.com/)
+- [iview-admin](https://github.com/iview/iview-admin)
+- [iview-area](https://github.com/iview/iview-area)：城市级联组件
+- [wangeditor](https://github.com/wangfupeng1988/wangEditor)：轻量富文本编辑器
+- [gitalk](https://github.com/gitalk/gitalk)：基于github issue评论插件
+- [vue-stomp](https://github.com/FlySkyBear/vue-stomp)
+- [vue-json-pretty](https://github.com/leezng/vue-json-pretty)：Json美化
+- [Print.js](http://printjs.crabbly.com/)：打印
+- ES6
+- webpack
+- axios
+- echarts
+- cookie
+- 第三方插件或服务
+    - [hotjar](https://github.com/Exrick/xmall/blob/master/study/hotjar.md)：一体化分析和反馈
+    - [Vaptcha人机验证码](https://www.vaptcha.com/)
 
-`$ npm run-script packageWin32`
+### 本地开发构建运行
 
-To build for Linux:
+- 启动后端 [x-boot](https://github.com/Exrick/x-boot) 项目后，在 `vue.config.js` 中修改你的后端接口地址代理配置
+- 在项目根文件夹下先后执行命令 `npm install` (若有报错请使用[cnpm](https://npm.taobao.org/))、 `npm run dev`
+- 前台端口默认9999 http://localhost:9999
 
-`$ npm run-script packageLinux`
-
-Once built, the executable will be in the `/releases` folder.
-
-### Prebuilt binaries
-
-Prebuilt binaries can be downloaded here:
-
-[Mac 64bit](https://github.com/mrvautin/adminMongo/releases/download/1.0.0/adminMongo_Mac.zip)
-
-[Windows 32bit](https://github.com/mrvautin/adminMongo/releases/download/1.0.0/adminMongo_Win32.zip)
-
-[Windows 64bit](https://github.com/mrvautin/adminMongo/releases/download/1.0.0/adminMongo_Win64.zip)
-
-> The Electron builds have been tested on Mac and Windows 10. Linux has not been tested. Please report any issues.
-
-## Deploy on Heroku
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/mrvautin/adminMongo)
-
-## Demo (read only)
-
-A read only demo can be seen [here](http://demo.adminmongo.markmoffat.com)
-
-## Features
-
-* Manage from a connection level for easy access to multiple databases
-* Create/Delete databases
-* Backup/Restore databases
-* Create/Delete/Edit collection
-* Create/Delete/Edit documents
-* Create/Delete indexes
-* Query documents
-* Collection statistics
-* Export collections in JSON format
-* Server monitoring
-
-### Current limitations
-
-* Documents need to have an "_id" value which is a string, integer, or MongoDB ObjectId. Documents using Composite ID indexing is currently not supported.
-* Connection strings with multiple hosts for replica sets are currently not supported.
-
-## Configuration
-
-adminMongo will listen on host: `localhost` and  port: `1234` by default. This can be overwritten by adding a config file in `/config/app.json`. For example:
-
+### 部署
+- 执行过命令 `npm install` 后，执行 `npm run build` 将打包生成的 `dist` 静态文件放置Nginx服务器中，并配置反向代理。当然还可放置Spring Web等其他项目resources静态资源文件夹下可避免跨域(不推荐)。
+- Nginx配置提醒 由于路由默认已使用history模式 需加入以下配置 完整配置参考见下方开发指南
 ```
-{
-    "app": {
-        "host": "10.0.0.1",
-        "port": 4321,
-        "password": "secureadminpassword",
-        "locale": "de",
-        "context": "dbApp",
-        "monitoring": false
+location / {
+	if (!-e $request_filename) {
+        rewrite ^(.*)$ /index.html?s=$1 last;
+        break;
     }
+    ...
 }
 ```
+### 开发指南及技术栈说明
+- [XBoot前端开发配置及部署说明【必读】](https://github.com/Exrick/xboot-front/wiki/XBoot%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E9%85%8D%E7%BD%AE%E5%8F%8A%E9%83%A8%E7%BD%B2%E8%AF%B4%E6%98%8E%E3%80%90%E5%BF%85%E8%AF%BB%E3%80%91)
+- [如何使用XBoot前端Vue模板快速开发增删改页面](https://github.com/Exrick/xboot-front/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8XBoot%E5%89%8D%E7%AB%AFVue%E6%A8%A1%E6%9D%BF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E5%A2%9E%E5%88%A0%E6%94%B9%E9%A1%B5%E9%9D%A2)
+- 现已提供简单封装的带后台真实接口数据的组件，见XBoot业务组件菜单
 
-> Note: Any changes to the config file requires a restart of the application
+### 学习记录（更新中）
 
-All above parameters are usable through the environment which makes it very handy to when using adminMongo as a docker container!
-just run `docker run -e HOST=yourchoice -e PORT=1234 ...`
+1.[axios请求封装 统一异常处理](https://github.com/Exrick/x-boot-front/wiki/axios%E8%AF%B7%E6%B1%82%E5%B0%81%E8%A3%85-%E7%BB%9F%E4%B8%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86)
 
-The config file (optional) options are:
+2.路由菜单加载
 
-|Option|Env-variable|Definition|
-|--- |--- |--- |
-|`host`|`HOST`|The IP address  `adminMongo`  will listen on|
-|`port`|`PORT`|The Port `adminMongo` will listen on|
-|`password`|`PASSWORD`|An application level password to add simply authentication|
-|`locale`|`LOCALE`|The locale is automatically set to the detected locale of Nodejs. If there is not a translation, `adminMongo` will default to English. This setting overrides the default/detected value|
-|`context`|`CONTEXT`|Setting a `context` of "dbApp" is like changing the base URL of the app and will mean the app will listen on `http://10.0.0.1:4321/dbApp`. Ommiting a context will mean the application will listen on root. Eg: `http://10.0.0.1:4321`. This setting can be useful when running `adminMongo` behind Nginx etc.|
-|`monitoring`|`MONITORING`|Whether to run monitoring at regular intervals. Defaults to true or on|
+3.控制权限至按钮显示
 
-### Setting a context path
+4.[基于Websocket实现发送消息后右上角消息图标红点实时显示](https://github.com/Exrick/x-boot/wiki/%E5%9F%BA%E4%BA%8EWebsocket%E5%AE%9E%E7%8E%B0%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E5%90%8E%E5%8F%B3%E4%B8%8A%E8%A7%92%E6%B6%88%E6%81%AF%E5%9B%BE%E6%A0%87%E7%BA%A2%E7%82%B9%E5%AE%9E%E6%97%B6%E6%98%BE%E7%A4%BA)
 
-Setting a `context` of "dbApp" is like changing the base URL of the app and will mean the app will listen on `http://10.0.0.1:4321/dbApp`. Ommiting a context will mean the application will listen on
-root. Eg: `http://10.0.0.1:4321`. This setting can be useful when running `adminMongo` behind Nginx etc.
+### Docker下前端端集群部署(更新中)
 
-An example Nginx server block. Note the `location /dbApp {` and `proxy_pass http://10.0.0.1:4321/dbApp;` lines match
-the `context` set in the `/config/app.json` file.
+> 后端端集群部署请跳转至[x-boot](https://github.com/Exrick/x-boot)项目查看
 
-```
-server {
-    listen 80;
+1.[Docker的安装与常用命令](https://github.com/Exrick/x-boot/wiki/Docker%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4)
 
-    server_name mydomain.com www.mydomain.com;
+2.Nginx集群搭建
 
-    location /dbApp {
-        proxy_pass http://10.0.0.1:4321/dbApp;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
+3.XBoot前端集群部署及负载均衡配置
 
-### Language locale
+### 作者其他项目推荐
+- [XPay个人免签收款支付系统v1.2](https://github.com/Exrick/xpay)
 
-> Looking for people to translate into other languages. If you can help, grab the `/locale/en.js` file, translate to your language and submit a pull request.
+    - 现已支持移动端支付 手机扫码体验
 
-The locale is automatically set to the detected locale of Nodejs. If there is not a translation, `adminMongo` will default to English. To override the detected locale
-a setting can be added to the `app.json` file. See Configuration section for a "German" example.
+    ![](http://p77xsahe9.bkt.clouddn.com/18-7-21/16350122.jpg)
 
-### Authentication
+- [XMall：基于SOA架构的分布式电商购物商城](https://github.com/Exrick/xmall)
 
-By default `adminMongo` is not password protected. You can add password authentication by adding a `password` value to the `/config/app.json` file
-(See the Configuration section). Once added you will need to restart `adminMongo` and all routes will be protected until the correct password is added. You
-will then be authenticated for the life of the session (60 mins by default) or if the "Logout" link is clicked.
+    ![](https://i.loli.net/2018/07/22/5b54615b95788.jpg)
 
-## Usage
+- 微信小程序APP 
+    - [前台源码点我提前获取](http://xpay.exrick.cn/pay) [预览视频](https://v.qq.com/x/page/f0627kf4x1e.html)
 
-### Create a connection
+    ![](https://i.loli.net/2018/07/21/5b52e1de385e7.png)
+### 技术疑问交流
+- QQ交流群 `475743731(付费)`，可获取各项目详细图文文档、疑问解答 [![](http://pub.idqqimg.com/wpa/images/group.png)](http://shang.qq.com/wpa/qunwpa?idkey=7b60cec12ba93ebed7568b0a63f22e6e034c0d1df33125ac43ed753342ec6ce7)
+- 免费交流群 `562962309` [![](http://pub.idqqimg.com/wpa/images/group.png)](http://shang.qq.com/wpa/qunwpa?idkey=52f6003e230b26addeed0ba6cf343fcf3ba5d97829d17f5b8fa5b151dba7e842)
 
-After visiting [http://127.0.0.1:1234](http://127.0.0.1:1234) you will be presented with a connection screen. You need to give your connection a unique name as a reference when using adminMongo and a MongoDB formatted connection string. The format of a MongoDB connection string can form: `mongodb://<user>:<password>@127.0.0.1:<port>/<db>` where specifying to the `<db>` level is optional. For more information on MongoDB connection strings, see the [official MongoDB documentation](http://docs.mongodb.org/manual/reference/connection-string/).
-
-You can supply a connection options object (see [docs](http://mongodb.github.io/node-mongodb-native/2.1/reference/connecting/connection-settings/)) with each connection.
-
-For example:
-
-```
-{
-    "poolSize": 10,
-    "autoReconnect": false,
-    "ssl": false
-}
-```
-
-Note: The connection can be either local or remote hosted on VPS or MongoDB service such as mLab.
-
-The connection can also be automatically initiated through the environment (or with the docker -e parameters)
-
-|Env-variable|Description|
-|--- |--- |
-|`CONN_NAME`|The name of the connection to create on boot|
-|`DB_USERNAME`|The username for the database connection|
-|`DB_PASSWORD`|The password for the database user|
-|`DB_HOST`|The host IP address or DNS name without the port!|
-|`DB_PORT`|The port of the mongoDB database, if not provided the default 27017 will be used|
-|`DB_NAME`|The name of the database|
-
-*The Connection setup screen*
-![adminMongo connections screen](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_connections.png "adminMongo connections screen")
-
-### Connection/Database admin
-
-After opening your newly created connection, you are able to see all database objects associated with your connection. Here you can create/delete collections, create/delete users and see various stats for your database.
-
-*The connections/database screen*
-![adminMongo database screen](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_dbview.png "adminMongo database screen")
-
-### Collections
-
-After selecting your collection from the "Database Objects" menu, you will be presented with the collections screen. Here you can see documents in pagination form, create new documents, search documents, delete, edit documents and view/add indexes to your collection.
-
-*The collections screen*
-![adminMongo collections screen](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_collectionview.png "adminMongo collections screen")
-
-### Searching/Querying documents
-
-You can perform searches of documents using the `Search documents` button on the collections screen. You will need to enter the key (field name) and value. Eg: key = "_id" and value = "569ff81e0077663d78a114ce" (Only works on string "_id" fields - Use "Query Documents" for ObjectID's).
-
-> You can clear your search by clicking the `Reset` button on the collections screen.
-
-*Simple search documents*
-![adminMongo search documents](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_searchdocuments.png "adminMongo search documents")
-
-Complex querying of documents is done through the "Query documents" button. This allows a query Object to be passed to MongoDB to return results.
-Queries can be written in full BSON format or EJSON format. For example these queries should return the same results:
-
-```
-{
-    ObjectId("56a97ed3f718fe9a4f599489")
-}
-```
-
-is equivalent to:
-
-```
-{
-    "$oid": "56a97ed3f718fe9a4f599489"
-}
-```
-
-*Query documents*
-![adminMongo search documents](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_querydocuments.png "adminMongo search documents")
-
-
-### Documents
-
-Adding and editing documents is done using a JSON syntax highlighting control.
-
-*Editing a document*
-![adminMongo documents](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_docedit.png "adminMongo documents")
-
-Documents with Media embedded show previews
-
-*Documents with media*
-![adminMongo media](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_media.png "adminMongo media documents")
-
-### Server Monitoring
-
-*Functionality currently in Beta*
-
-Selected server monitoring is done at regular intervals and stored in local database store for 24hrs.
-
-*New connections require an app restart for monitoring to commence*
-
-*Server monitoring*
-![adminMongo server monitoring](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_servermonitoring.png "adminMongo server monitoring")
-
-### Indexes
-
-Indexes can be added from the collection screen. Please see the [official MongoDB documentation](https://docs.mongodb.org/manual/indexes/) on adding indexes.
-
-*Viewing/Adding indexes*
-![adminMongo documents](https://raw.githubusercontent.com/mrvautin/mrvautin.github.io/master/images/adminMongo/adminMongo_manageindexes.png "adminMongo indexes")
-
-## Tests
-
-The `adminMongo` API tests include:
-
-- Add and remove a connection
-- Add and remove a database
-- Add, remove and rename a collection
-- Create and delete a user
-- Add, query and delete a document
-
-To run tests, simply run:
-
-```
-npm test
-```
-
-**Note: You will need to ensure there is no password protection setup in the `/config/app.json`.**
-
-*You may need to edit the variables and connection string in `/tests/tests.js` for your MongoDB instance.*
-
-If you see any missing tests, please submit a PR.
-
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
-
-## Future plans
-
-Please make any suggestions.
-
-## License
-
-[The MIT License](https://github.com/mrvautin/adminMongo/tree/master/LICENSE)
+- 作者博客：[http://blog.exrick.cn](http://blog.exrick.cn)
+### [捐赠](http://xpay.exrick.cn/pay)

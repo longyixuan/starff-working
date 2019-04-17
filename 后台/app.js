@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-02 17:51:29
+ * @Last Modified time: 2019-04-16 22:29:31
  */
 
 
@@ -23,38 +23,56 @@ const jwtKoa = require('koa-jwt'); // 用于路由权限控制
 
 const app = new Koa();
 
-mongoose.connect(config.db, {useNewUrlParser:true}, (err) => {
+mongoose.connect(config.db, {
+    useNewUrlParser: true
+}, (err) => {
     if (err) {
-        console.error('Failed to connect to database');
+        console.error('数据库连接失败');
     } else {
-        console.log('Connecting database successfully');
+        console.log('数据库连接成功');
     }
 });
 
 app.use(cors());
 app.use(bodyParser());
 /* 路由权限控制 */
-const secret = 'secret';
-app.use(jwtKoa({ secret: secret }).unless({
+// 错误处理
+app.use((ctx, next) => {
+    return next().catch((err) => {
+        if (err.status === 401) {
+            ctx.status = 401;
+            ctx.body = '登陆验证失败';
+        } else {
+            throw err;
+        }
+    })
+})
+app.use(jwtKoa({
+    secret: 'jwtSecret',
+    key: 'accessToken',
+    passthrough: true
+}).unless({
     // 设置login、register接口，可以不需要认证访问
     path: [
-        /^\/api\/login/,
-        /^\/api\/register/,
-        /^((?!\/api).)*$/   // 设置除了私有接口外的其它资源，可以不需要认证访问
+        /^\/login/,
+        /^\/regist/
     ]
 }));
+
 const user_router = require('./routes/api/user_router');
-const course_router = require('./routes/api/course_router');
-const school_router = require('./routes/api/school_router');
 const system_router = require('./routes/api/system_router');
-const example_router = require('./routes/api/example_router');
 const worktime_router = require('./routes/api/worktime_router');
+const department_router = require('./routes/api/department_router');
+const role_router = require('./routes/api/role_router');
+const menu_router = require('./routes/api/menu_router');
+// const upload_router = require('./routes/api/upload_router');
 
 app.use(user_router.routes()).use(user_router.allowedMethods());
-app.use(course_router.routes()).use(course_router.allowedMethods());
-app.use(school_router.routes()).use(school_router.allowedMethods());
-app.use(example_router.routes()).use(example_router.allowedMethods());
 app.use(system_router.routes()).use(system_router.allowedMethods());
 app.use(worktime_router.routes()).use(worktime_router.allowedMethods());
+app.use(department_router.routes()).use(department_router.allowedMethods());
+app.use(role_router.routes()).use(role_router.allowedMethods());
+app.use(menu_router.routes()).use(menu_router.allowedMethods());
+// app.use(upload_router.routes()).use(upload_router.allowedMethods());
 
 app.listen(config.port);
