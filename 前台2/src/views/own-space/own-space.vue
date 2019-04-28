@@ -51,7 +51,7 @@
         </FormItem>
         <FormItem label="负责的系统：">
           <template v-for="item in SystemList">
-            <Tag type="border" :key="item.id" color="default" v-if="userForm.systems.indexOf(item.id)!=-1">{{item.title}}</Tag>
+            <Tag type="border" :key="item.id" color="default" v-if="userForm.systems.includes(item.id)">{{item.title}}</Tag>
           </template>
           <Button type="primary" size="small" @click="editSystems">编辑</Button>
         </FormItem>
@@ -311,22 +311,6 @@ export default {
     cancelsystemEdit() {
       this.systemModalVisible=false;
     },
-    // 全选反选
-    // selectTreeAll() {
-    //   this.selectAllFlag = !this.selectAllFlag;
-    //   let checked = this.selectAllFlag;
-    //   this.selectedTreeAll(this.systemData, checked);
-    // },
-    // // 递归全选节点
-    // selectedTreeAll(systemData, checked) {
-    //   let that = this;
-    //   systemData.forEach(function(e) {
-    //     e.checked = checked;
-    //     if (e.children && e.children.length > 0) {
-    //       that.selectedTreeAll(e.children, checked);
-    //     }
-    //   });
-    // },
     submitsystemEdit() {
       let systemIds = [];
       let selectedNodes = this.$refs.sysTree.getCheckedNodes();

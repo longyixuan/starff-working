@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-18 07:38:05
+ * @Last Modified time: 2019-04-28 16:58:06
  */
 
 const config = require('./../../config');
@@ -93,6 +93,9 @@ const register = async (ctx, next) => {
   
   // 插入新用户
   const userId = uuidv1();
+  if (req.userName==='admin') {
+    req.type = 1; //admin账号自动注册为管理员
+  }
   const newUser = await User_col.create({
     userId,
     ...req
@@ -149,7 +152,6 @@ const updateUserInfo = async (ctx, next) => {
   if (result.nModified == 1) {
     ctx.body = {
       code: 1,
-      data: result,
       msg: '信息已更新'
     }
   } else {

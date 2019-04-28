@@ -3,19 +3,14 @@
 </style>
 <template>
     <Card>
-        <DatePicker :value="curYear" @on-change="changeYear" format="yyyy年" type="year" placeholder="年份" style="width: 140px;margin-bottom:15px;"></DatePicker>
-        <Tabs type="card" :value="curMonth" @on-click="changeMonth">
-            <template v-for="item in 12">
-                <TabPane :label="item+ '月'" :name="item.toString()" :key="item"></TabPane>
-            </template>
-        </Tabs>
-        <Select placeholder="选择员工" v-model="people" style="width:150px;margin-bottom: 20px;">
-            <Option v-for="item in peopleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Date-picker type="daterange" class="margin-bottom20" confirm placeholder="选择日期"></Date-picker>
+        <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
+            <Option v-for="item in peopleList" :value="item.userId" :key="item.userId">{{ item.nickName }}</Option>
         </Select>
-        <Select placeholder="选择系统" v-model="people" style="width:150px;margin-bottom: 20px;margin-left: 10px;">
-            <Option v-for="item in peopleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select clearable multiple placeholder="选择系统" v-model="system" class="margin-bottom20">
+            <Option v-for="item in systemList" :value="item.id" :key="item.id">{{ item.title }}</Option>
         </Select>
-        <Button type="primary" style="margin-left:10px;display:inline-block;margin-bottom: 20px;">查询</Button>
+        <Button type="primary" @click="seach" class="margin-bottom20">查询</Button>
         <Table border :columns="columns" :data="tempList" stripe ref="table">
             <template slot-scope="{ row }" slot="systemName">
                 <strong>{{ row.systemName }}</strong>
@@ -32,7 +27,8 @@
 <script>
 import {
   getTimeList,
-  getSystemList
+  getSystemList,
+  getAllUserData
 } from "@/api/index";
 import Cookies from "js-cookie";
 export default {
@@ -40,6 +36,8 @@ export default {
         return {
             people: '',
             peopleList: [],
+            system: '',
+            systemList: [],
             curYear: (new Date).getFullYear()+'',
             columns: [],
             workList: [],
@@ -64,6 +62,14 @@ export default {
         }
     },
     methods: {
+        seach() {
+            let postData = {
+                year: parseInt(this.curYear),
+                month: parseInt(this.curMonth),
+                userId: this.people
+            }
+            this.getTimeList(postData);
+        },
         exportData () {
             this.$refs.table.exportCsv({
                 filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(Cookies.get("userInfo")).nickName+'）'
@@ -134,6 +140,9 @@ export default {
                 month: parseInt(this.curMonth),
                 userId: JSON.parse(Cookies.get("userInfo")).userId
             }
+            this.getTimeList(postData);
+        },
+        getTimeList(postData) {
             getTimeList(postData).then((res)=>{
                 if(res.code===1) {
                     this.workList = res.data;
@@ -142,11 +151,27 @@ export default {
                     this.$Message.error("查询失败");
                 }
             });
+        },
+        getUserList() {
+            getAllUserData().then(res => {
+                if (res.code === 1) {
+                    this.peopleList = res.data;
+                }
+            });
+        },
+        getSystemList() {
+            getSystemList().then(res => {
+                if (res.code === 1) {
+                    this.systemList = res.data;
+                }
+            });
         }
     },
     mounted () {
         this.mGetDate();
         this.initList();
+        this.getUserList();
+        this.getSystemList();
     }
 }
 </script>

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-07 18:51:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-14 19:10:25
+ * @Last Modified time: 2019-04-28 15:55:14
  */
 
 
@@ -39,8 +39,10 @@ const UserSchema = new Schema({
     type: String,
     default: ''
   },
-  permissions: [],
-  roles: [],
+  type: {
+    type: Number,
+    default: 0
+  },
   userName: {
     type: String,
     default: ''
