@@ -16,9 +16,9 @@
       </Header>
       <Layout>
         <Sider hide-trigger :style="{background: '#fff'}">
-          <Menu active-name="0" theme="light" width="auto" :open-names="['1','2']">
+          <Menu active-name="0" theme="light" width="auto">
             <MenuItem name="0" @click.native="toRoute('home')"><Icon type="ios-navigate"></Icon>首页</MenuItem>
-            <Submenu name="1">
+            <Submenu name="1" v-if="type===1">
               <template slot="title">
                 <Icon type="ios-navigate"></Icon>系统设置
               </template>
@@ -31,7 +31,7 @@
                 <Icon type="ios-keypad"></Icon>我的工时
               </template>
               <MenuItem name="2-1" @click.native="$router.push('work-time')">录入</MenuItem>
-              <MenuItem name="2-2" @click.native="$router.push('work-time-seach')">统计</MenuItem>
+              <MenuItem v-if="type===1" name="2-2" @click.native="$router.push('work-time-seach')">统计</MenuItem>
             </Submenu>
             <MenuItem name="3" @click.native="toRoute('own-space')"><Icon type="ios-navigate"></Icon>个人信息</MenuItem>
           </Menu>
@@ -55,8 +55,9 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
-      username: "",
-      userId: ""
+      username: '',
+      userId: '',
+      type: ''
     };
   },
   computed: {
@@ -82,6 +83,7 @@ export default {
   },
   mounted() {
     this.username = JSON.parse(Cookies.get("userInfo")).userName;
+    this.type = JSON.parse(Cookies.get("userInfo")).type;
   }
 };
 </script>

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-28 16:58:06
+ * @Last Modified time: 2019-04-29 10:15:44
  */
 
 const config = require('./../../config');
@@ -12,6 +12,7 @@ const Department_col = require('./../models/department');
 const System_col = require('./../models/system');
 const Passport_col = require('./../models/password');
 const uuidv1 = require('uuid/v1');
+const qs = require('qs');
 const jsonwebtoken = require('jsonwebtoken')
 
 /* jwt密钥 */
@@ -142,9 +143,8 @@ const getUserInfo = async (ctx, next) => {
 }
 // 更新个人信息
 const updateUserInfo = async (ctx, next) => {
-  const req = ctx.request.body;
+  const req = qs.parse(ctx.request.body);
   // 获取用户的 userId
-  req.systems = req.systems.split(',');
   const result = await User_col.updateOne({
     userId: req.userId
   }, req);

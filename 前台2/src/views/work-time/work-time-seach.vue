@@ -3,7 +3,7 @@
 </style>
 <template>
     <Card>
-        <Date-picker type="daterange" class="margin-bottom20" confirm placeholder="选择日期"></Date-picker>
+        <Date-picker @on-change="handelChange" style="width: 100%;" type="daterange" class="margin-bottom20" confirm placeholder="选择日期"></Date-picker>
         <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
             <Option v-for="item in peopleList" :value="item.userId" :key="item.userId">{{ item.nickName }}</Option>
         </Select>
@@ -11,12 +11,9 @@
             <Option v-for="item in systemList" :value="item.id" :key="item.id">{{ item.title }}</Option>
         </Select>
         <Button type="primary" @click="seach" class="margin-bottom20">查询</Button>
-        <Table border :columns="columns" :data="tempList" stripe ref="table">
+        <Table v-if="columns.length>0" border :columns="columns" :data="workList" stripe ref="table">
             <template slot-scope="{ row }" slot="systemName">
                 <strong>{{ row.systemName }}</strong>
-            </template>
-            <template slot-scope="{ row, index }" :slot="day" v-for="day in curMonthDays">
-                <span :key="'day2-'+day">{{ !row[day] ? '-' : row[day] }}</span>
             </template>
         </Table>
         <!-- <div style="margin-top: 20px;">
@@ -26,129 +23,68 @@
 </template>
 <script>
 import {
-  getTimeList,
+  getCountTime,
   getSystemList,
   getAllUserData
 } from "@/api/index";
+import { getAll } from "@/libs/timeHelp";
 import Cookies from "js-cookie";
 export default {
     data () {
         return {
-            people: '',
+            startTime: '',
+            endTime: '',
+            people: [],
             peopleList: [],
-            system: '',
+            system: [],
             systemList: [],
-            curYear: (new Date).getFullYear()+'',
-            columns: [],
             workList: [],
-            curMonth: (new Date().getMonth()+1).toString(), //当前月
-            curMonthDays: 0
         }
     },
     computed: {
-        tempList () {
-            let newList = []
-            for (let i = 0; i<this.workList.length;i++) {
-                let item = {
-                    'systemName': this.workList[i].systemName,
-                    'systemId': this.workList[i].systemId
+        columns() {
+            if (this.startTime!==''&&this.endTime!=='') {
+                let column = [];
+                let dataList = getAll(this.startTime, this.endTime);
+                column.push({
+                    title: '系统/时间(h)',
+                    minWidth: 150,
+                    fixed: 'left',
+                    slot: 'systemName'
+                })
+                for(let i = 1; i<dataList.length; i++) {
+                    column.push({
+                        title: dataList[i],
+                        key: dataList[i],
+                        width: 116,
+                        sortable: true,
+                        align: 'center'
+                    })
                 }
-                for (let j = 0;j<this.workList[i].timeList.length;j++) {
-                    item = Object.assign(item, { [this.workList[i].timeList[j].day] : this.workList[i].timeList[j].duration});
-                }
-                newList.push(item)
+                return column;
+            } else {
+                return [];
             }
-            return newList;
         }
     },
     methods: {
+        handelChange (date) {
+            this.startTime = date[0];
+            this.endTime = date[1];
+        },
         seach() {
             let postData = {
-                year: parseInt(this.curYear),
-                month: parseInt(this.curMonth),
-                userId: this.people
+                startTime: this.startTime,
+                endTime: this.endTime,
+                people: this.people,
+                system: this.system
             }
             this.getTimeList(postData);
         },
-        exportData () {
-            this.$refs.table.exportCsv({
-                filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(Cookies.get("userInfo")).nickName+'）'
-            });
-        },
-        changeMonth (name) {
-            this.curMonth = name;
-            this.changeDate();
-            this.initList();
-        },
-        changeYear(a,b) {
-            this.curYear = a;
-            this.changeDate();
-            this.initList();
-        },
-        readerTable(num) {
-            this.curMonthDays = num;
-            this.columns = [];
-            this.exportColumns = [];
-            this.columns.push({
-                title: '系统/时间(h)',
-                width: 150,
-                fixed: 'left',
-                slot: 'systemName'
-            })
-            this.exportColumns.push({
-                title: '系统/时间(h)',
-                width: 150,
-                fixed: 'left',
-                slot: 'systemName'
-            })
-            for(let i = 1; i<=num; i++) {
-                this.columns.push({
-                    title: i,
-                    slot: i,
-                    width: 70,
-                    sortable: true,
-                    align: 'center'
-                })
-                this.exportColumns.push({
-                    title: i,
-                    slot: i,
-                    width: 70,
-                    sortable: true,
-                    align: 'center'
-                })
-            }
-        },
-        changeDate() {
-            let date = new Date(this.curYear + '-' + this.curMonth),
-                year = date.getFullYear(),
-                month = date.getMonth()+1,
-                d = new Date(year, month, 0),
-                num = d.getDate();
-            this.readerTable(num);
-        },
-        mGetDate () { //获取当前月天数，造日历
-            let date = new Date(),
-                year = date.getFullYear(),
-                month = date.getMonth()+1,
-                d = new Date(year, month, 0),
-                num = d.getDate();
-            this.readerTable(num);
-        },
-        initList () { //请求当前年月数据
-            let postData = {
-                year: parseInt(this.curYear),
-                month: parseInt(this.curMonth),
-                userId: JSON.parse(Cookies.get("userInfo")).userId
-            }
-            this.getTimeList(postData);
-        },
-        getTimeList(postData) {
-            getTimeList(postData).then((res)=>{
-                if(res.code===1) {
-                    this.workList = res.data;
-                    this.$Message.success("查询成功");
-                } else {
-                    this.$Message.error("查询失败");
+        getTimeList(data) {
+            getCountTime(data).then( res => {
+                if (res.code === 1) {
+                    this.workList = res.data
                 }
             });
         },
@@ -168,8 +104,6 @@ export default {
         }
     },
     mounted () {
-        this.mGetDate();
-        this.initList();
         this.getUserList();
         this.getSystemList();
     }

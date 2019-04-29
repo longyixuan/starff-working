@@ -71,6 +71,7 @@ export default {
                 }
                 newList.push(item)
             }
+            console.log(newList)
             return newList;
         }
     },

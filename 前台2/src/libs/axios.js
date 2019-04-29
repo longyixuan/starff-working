@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 import { getStore, setStore } from './storage';
 import { router } from '../router/index';
 import { Message } from 'iview';
@@ -73,11 +74,7 @@ export const postRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         transformRequest: [function (data) {
-            let ret = '';
-            for (let it in data) {
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
-            }
-            return ret;
+            return qs.stringify(data,{allowDots: true});
         }],
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

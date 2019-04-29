@@ -87,8 +87,7 @@ import {
   editUser,
   enableUser,
   disableUser,
-  deleteUser,
-  getAllUserData
+  deleteUser
 } from "@/api/index";
 import departmentChoose from "../../my-components/xboot/department-choose";
 import departmentTreeChoose from "../../my-components/xboot/department-tree-choose";

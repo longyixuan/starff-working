@@ -1,14 +1,16 @@
 /*
  * @Author: yinxl 
- * @Date: 2019-03-19 22:06:49 
+ * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-15 15:27:09
+ * @Last Modified time: 2019-04-29 15:13:56
  */
 
 const WorkTime_col = require('./../models/workTime');
 const System_col = require('./../models/system');
 const User_col = require('./../models/user');
 const uuidv1 = require('uuid/v1');
+const getAll = require('./../middleware/timeHelp');
+const qs = require('qs');
 
 const getTimeList = async (ctx, next) => {
     ctx.status = 200;
@@ -143,8 +145,77 @@ const workTimeCount = async (ctx,next) => {
         }
     };
 }
+/**
+ * 
+ */
+const workTimeSeach = async (ctx, next) => {
+    ctx.status = 200;
+    const req = qs.parse(ctx.request.body);
+    const system = await System_col.find({
+        'id': {
+            '$in': req.system,
+            '$exists': true
+        }
+    });
+    const time = await WorkTime_col.aggregate([ //按系统查询
+        {
+            $match: {
+                'userId': {
+                    '$in': req.people,
+                    '$exists': true
+                },
+                'systemId': {
+                    '$in': req.system,
+                    '$exists': true
+                } 
+            }
+        },
+        {
+            $group: {
+                _id :  { systemId: '$systemId',year: '$year',month: '$month',day: '$day',systemName: '$systemName'},
+                time : { $sum : "$time" },
+            }
+        },
+        {
+            $group: {
+                _id :  { systemId: '$_id.systemId',systemName: '$_id.systemName'},
+                details: {
+                    $push: {
+                        year: '$_id.year',
+                        month: '$_id.month',
+                        day: '$_id.day',
+                        time: '$time'
+                    }
+                }
+            }
+        }
+    ]);
+    let result = [];
+    const date = getAll(req.startTime,req.endTime) //获取日期列表
+    for (let i = 0; i < time.length; i++) {
+        let element = time[i]._id;
+        let timeList = {
+            systemId: element.systemId,
+            systemName: element.systemName
+        };
+        for (let j = 0; j < time[i].details.length; j++) {
+            let element2 = time[i].details[j];
+            let str = element2.year+'-'+(element2.month<10?'0'+element2.month:element2.month)+'-'+(element2.day<10?'0'+element2.day:element2.day);
+            if (date.includes(str)) { //查询到数据
+                timeList[str] = element2.time
+            }
+        }
+        result.push(timeList);
+    }
+    ctx.body = {
+        code: 1,
+        data: result,
+        msg: '查询成功'
+    };
+}
 module.exports = {
     getTimeList,
     postTime,
-    workTimeCount
+    workTimeCount,
+    workTimeSeach
 }
