@@ -6,40 +6,6 @@
   <div class="own-space">
     <Card>
       <Form ref="userForm" :model="userForm" :label-width="100" label-position="right">
-        <FormItem label="用户头像：">
-          <div class="upload-list" v-for="item in uploadList" :key="item.url">
-            <template v-if="item.status === 'finished'">
-              <img :src="item.url">
-              <div class="upload-list-cover">
-                <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-              </div>
-            </template>
-            <template v-else>
-              <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-            </template>
-          </div>
-          <Upload
-            ref="upload"
-            :show-upload-list="false"
-            :default-file-list="defaultList"
-            :on-success="handleSuccess"
-            :on-error="handleError"
-            :format="['jpg','jpeg','png','gif']"
-            :max-size="5120"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            :before-upload="handleBeforeUpload"
-            type="drag"
-            :action="uploadFileUrl"
-            :headers="accessToken"
-            style="display: inline-block;width:58px;"
-          >
-            <div style="width: 58px;height:58px;line-height: 58px;">
-              <Icon type="md-camera" size="20"></Icon>
-            </div>
-          </Upload>
-        </FormItem>
         <FormItem label="用户账号：">
           <span>{{userForm.userName}}</span>
         </FormItem>
@@ -117,7 +83,6 @@ export default {
       uploadFileUrl: 'http://localhost:3000'+uploadFile,
       userForm: {
         userId: "",
-        avatar: "",
         userName: "",
         nickName: "",
         email: "",
@@ -176,51 +141,6 @@ export default {
           this.SystemList = res.data
         }
       })
-    },
-    handleView(imgUrl) {
-      this.imgUrl = imgUrl;
-      this.viewImage = true;
-    },
-    handleRemove(file) {
-      const fileList = this.$refs.upload.fileList;
-      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-    },
-    handleSuccess(res, file) {
-      if (res.success === true) {
-        file.url = res.result;
-        this.userForm.avatar = res.result;
-        this.defaultList[0].url = res.result;
-        this.$refs.upload.fileList.splice(0, 1);
-      } else {
-        this.$Message.error(res.message);
-      }
-    },
-    handleError(error, file, fileList) {
-      this.$Message.error(error.toString());
-    },
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: "不支持的文件格式",
-        desc:
-          "所选文件‘ " +
-          file.name +
-          " ’格式不正确, 请选择 .jpg .jpeg .png .gif格式文件"
-      });
-    },
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: "文件大小过大",
-        desc: "所选文件‘ " + file.name + " ’大小过大, 不得超过 5M."
-      });
-    },
-    handleBeforeUpload() {
-      const check = this.uploadList.length < 2;
-      if (!check) {
-        this.$Notice.warning({
-          title: "最多只能上传 1 张图片"
-        });
-      }
-      return check;
     },
     saveEdit() {
       this.saveLoading = true;
@@ -322,7 +242,6 @@ export default {
     }
   },
   mounted() {
-    this.uploadList = this.$refs.upload.fileList;
     this.init();
   }
 };

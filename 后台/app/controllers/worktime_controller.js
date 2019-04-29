@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-29 15:13:56
+ * @Last Modified time: 2019-04-29 18:26:24
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -213,9 +213,45 @@ const workTimeSeach = async (ctx, next) => {
         msg: '查询成功'
     };
 }
+const getMapTime = async (ctx, next) => {
+    ctx.status = 200;
+    const req = qs.parse(ctx.request.body);
+    const system = await System_col.find({
+        'id': {
+            '$in': req.system,
+            '$exists': true
+        }
+    });
+    const time = await WorkTime_col.aggregate([ //按系统查询
+        {
+            $match: {
+                'userId': {
+                    '$in': req.people,
+                    '$exists': true
+                },
+                'systemId': {
+                    '$in': req.system,
+                    '$exists': true
+                } 
+            }
+        },
+        {
+            $group: {
+                _id :  { systemId: '$systemId', systemName: '$systemName'},
+                time : { $sum : "$time" }
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        data: time,
+        msg: '查询成功'
+    };
+}
 module.exports = {
     getTimeList,
     postTime,
     workTimeCount,
-    workTimeSeach
+    workTimeSeach,
+    getMapTime
 }

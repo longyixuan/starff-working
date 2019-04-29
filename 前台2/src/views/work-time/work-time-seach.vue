@@ -11,19 +11,29 @@
             <Option v-for="item in systemList" :value="item.id" :key="item.id">{{ item.title }}</Option>
         </Select>
         <Button type="primary" @click="seach" class="margin-bottom20">查询</Button>
-        <Table v-if="columns.length>0" border :columns="columns" :data="workList" stripe ref="table">
-            <template slot-scope="{ row }" slot="systemName">
-                <strong>{{ row.systemName }}</strong>
-            </template>
-        </Table>
-        <!-- <div style="margin-top: 20px;">
+        <div class="demo-tabs-style2">
+            <Tabs type="card">
+                <Tab-pane label="表格">
+                    <Table v-if="columns.length>0" border :columns="columns" :data="workList" stripe ref="table">
+                        <template slot-scope="{ row }" slot="systemName">
+                            <strong>{{ row.systemName }}</strong>
+                        </template>
+                    </Table>
+                </Tab-pane>
+                <Tab-pane label="图表">
+
+                </Tab-pane>
+            </Tabs>
+        </div>
+        <div style="margin-top: 20px;">
             <Button type="primary" @click="exportData()">导出数据</Button>
-        </div> -->
+        </div>
     </Card>
 </template>
 <script>
 import {
   getCountTime,
+  getMapTime,
   getSystemList,
   getAllUserData
 } from "@/api/index";
@@ -50,9 +60,11 @@ export default {
                     title: '系统/时间(h)',
                     minWidth: 150,
                     fixed: 'left',
+                    key: 'systemName',
+                    sortable: true,
                     slot: 'systemName'
                 })
-                for(let i = 1; i<dataList.length; i++) {
+                for(let i = 0; i<dataList.length; i++) {
                     column.push({
                         title: dataList[i],
                         key: dataList[i],
@@ -68,6 +80,11 @@ export default {
         }
     },
     methods: {
+        exportData() {
+            this.$refs.table.exportCsv({
+                filename: '工时统计'
+            });
+        },
         handelChange (date) {
             this.startTime = date[0];
             this.endTime = date[1];
@@ -87,6 +104,11 @@ export default {
                     this.workList = res.data
                 }
             });
+            getMapTime(data).then(res => {
+                if (res.code === 1) {
+                    console.log(res)
+                }
+            })
         },
         getUserList() {
             getAllUserData().then(res => {

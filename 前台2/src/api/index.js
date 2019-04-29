@@ -130,4 +130,7 @@ export const workTimeCount = (params) => {
 export const getCountTime = (params) => {
     return postRequest('/time/workTimeSeach', params)
 }
+export const getMapTime = (params) => {
+    return postRequest('/time/getMapTime', params)
+}
 //-----------------------工时管理--------------------------------//

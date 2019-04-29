@@ -13,4 +13,5 @@ router.post('/time/getTimeList', worktime_controller.getTimeList);
 router.post('/time/postTime', worktime_controller.postTime);
 router.get('/time/workTimeCount', worktime_controller.workTimeCount);
 router.post('/time/workTimeSeach', worktime_controller.workTimeSeach);
+router.post('/time/getMapTime', worktime_controller.getMapTime);
 module.exports = router;
