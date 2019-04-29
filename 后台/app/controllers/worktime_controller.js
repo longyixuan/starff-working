@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-29 18:26:24
+ * @Last Modified time: 2019-04-29 21:19:16
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -240,11 +240,17 @@ const getMapTime = async (ctx, next) => {
                 _id :  { systemId: '$systemId', systemName: '$systemName'},
                 time : { $sum : "$time" }
             }
+        },
+        {
+            $sort: {
+                time: -1
+            }
         }
     ]);
     ctx.body = {
         code: 1,
         data: time,
+        system: system,
         msg: '查询成功'
     };
 }

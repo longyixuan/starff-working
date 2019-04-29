@@ -21,7 +21,8 @@
                     </Table>
                 </Tab-pane>
                 <Tab-pane label="图表">
-
+                    <div style="width:100%;height:200px;" id="visite_volume_con"></div>
+                    <div style="width:100%;height:100%;" id="data_source_con"></div>
                 </Tab-pane>
             </Tabs>
         </div>
@@ -38,6 +39,7 @@ import {
   getAllUserData
 } from "@/api/index";
 import { getAll } from "@/libs/timeHelp";
+import echarts from "echarts";
 import Cookies from "js-cookie";
 export default {
     data () {
@@ -49,6 +51,109 @@ export default {
             system: [],
             systemList: [],
             workList: [],
+            visiteVolume: null,
+            dataSourcePie: null,
+            option: {
+                tooltip: {
+                    trigger: "axis",
+                    axisPointer: {
+                        type: "shadow"
+                    }
+                },
+                color: [
+                    "#ff7f50",
+                    "#87cefa",
+                    "#da70d6",
+                    "#32cd32",
+                    "#6495ed",
+                    "#ff69b4",
+                    "#ba55d3",
+                    "#cd5c5c",
+                    "#ffa500",
+                    "#40e0d0",
+                    "#1e90ff",
+                    "#ff6347",
+                    "#7b68ee",
+                    "#00fa9a",
+                    "#ffd700",
+                    "#6699FF",
+                    "#ff6666",
+                    "#3cb371",
+                    "#b8860b",
+                    "#30e0e0"
+                ],
+                grid: {
+                    top: "2%",
+                    left: "2%",
+                    right: "4%",
+                    bottom: "3%",
+                    containLabel: true
+                },
+                xAxis: {
+                    type: "category",
+                    data: [],
+                    axisLabel: {
+                        interval: 0
+                    },
+                    nameTextStyle: {
+                        color: "#c3c3c3"
+                    }
+                },
+                yAxis: {
+                    type: "value"
+                },
+                series: [
+                    {
+                        name: "工作小时数",
+                        type: "bar",
+                        data: []
+                    }
+                ]
+            },
+            option1: {
+                tooltip: {
+                trigger: "item",
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                color: [
+                "#ff7f50",
+                "#87cefa",
+                "#da70d6",
+                "#32cd32",
+                "#6495ed",
+                "#ff69b4",
+                "#ba55d3",
+                "#cd5c5c",
+                "#ffa500",
+                "#40e0d0",
+                "#1e90ff",
+                "#ff6347",
+                "#7b68ee",
+                "#00fa9a",
+                "#ffd700",
+                "#6699FF",
+                "#ff6666",
+                "#3cb371",
+                "#b8860b",
+                "#30e0e0"
+                ],
+                series: [
+                    {
+                        name: "工时占比",
+                        type: "pie",
+                        radius: "66%",
+                        center: ["50%", "60%"],
+                        data: [],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: "rgba(0, 0, 0, 0.5)"
+                            }
+                        }
+                    }
+                ]
+            }
         }
     },
     computed: {
@@ -106,7 +211,25 @@ export default {
             });
             getMapTime(data).then(res => {
                 if (res.code === 1) {
-                    console.log(res)
+                    this.option.xAxis.data = [];
+                    this.option.series[0].data = [];
+                    this.option1.series[0].data = [];
+                    for (let i = 0; i < res.system.length; i++) {
+                        this.option.xAxis.data.push(res.system[i].title);
+                    }
+                    for (let j = 0; j < res.data.length; j++) {
+                        this.option.series[0].data.push({
+                            name: res.data[j]._id.systemName,
+                            value: res.data[j].time,
+                            itemStyle: { normal: {color: this.option.color[j]}}
+                        });
+                        this.option1.series[0].data.push({
+                            name: res.data[j]._id.systemName,
+                            value: res.data[j].time
+                        });
+                    }
+                    this.dataSourcePie.setOption(this.option1);
+                    this.visiteVolume.setOption(this.option);
                 }
             })
         },
@@ -128,6 +251,14 @@ export default {
     mounted () {
         this.getUserList();
         this.getSystemList();
+        this.$nextTick(() => {
+            this.visiteVolume = echarts.init(
+                document.getElementById("visite_volume_con")
+            );
+            this.dataSourcePie = echarts.init(
+                document.getElementById("data_source_con")
+            );
+        });
     }
 }
 </script>
