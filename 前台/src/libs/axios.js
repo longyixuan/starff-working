@@ -4,7 +4,7 @@ import { router } from '../router/index';
 import { Message } from 'iview';
 import Cookies from 'js-cookie';
 // 统一请求路径前缀
-let base = 'http://localhost:3000';
+let base = 'http://172.16.10.185:3000';
 // 超时设定
 axios.defaults.timeout = 15000;
 

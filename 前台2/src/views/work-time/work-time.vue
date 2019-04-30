@@ -26,15 +26,8 @@
                 </div>
             </template>
         </Table>
-        <!-- <Table
-            :columns="exportColumns"
-            :data="tempList"
-            ref="exportTable"
-            style="display: none">
-        </Table> -->
         <div style="margin-top: 20px;">
             <Button type="primary" @click="exportData(1)">导出数据</Button>
-            <!-- <Button type="primary" style="margin-left: 20px;" @click="exportData(2)">导出排序数据</Button> -->
         </div>
     </Card>
 </template>

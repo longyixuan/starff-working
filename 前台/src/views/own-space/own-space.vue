@@ -118,7 +118,7 @@ export default {
   data() {
     return {
       accessToken: {},
-      uploadFileUrl: 'http://localhost:3000'+uploadFile,
+      uploadFileUrl: 'http://172.16.10.185:3000'+uploadFile,
       userForm: {
         userId: "",
         avatar: "",

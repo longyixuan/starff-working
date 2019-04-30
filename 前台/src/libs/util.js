@@ -249,7 +249,7 @@ util.initRouter = function (vm) {
     }
     let accessToken = window.localStorage.getItem('accessToken')
     // 加载菜单
-    axios.get('http://localhost:3000'+getMenuList, {
+    axios.get('http://172.16.10.185:3000'+getMenuList, {
         headers: {
             'accessToken': accessToken
         }
