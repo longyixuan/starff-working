@@ -17,10 +17,10 @@
       <Layout>
         <Sider hide-trigger :style="{background: '#fff'}">
           <Menu active-name="0" theme="light" width="auto">
-            <MenuItem name="0" @click.native="toRoute('home')"><Icon type="ios-navigate"></Icon>首页</MenuItem>
+            <MenuItem name="0" @click.native="toRoute('home')"><Icon type="md-home" />首页</MenuItem>
             <Submenu name="1" v-if="type===1">
               <template slot="title">
-                <Icon type="ios-navigate"></Icon>系统设置
+                <Icon type="md-settings" />系统设置
               </template>
               <MenuItem name="1-1" @click.native="$router.push('department-manage')">部门管理</MenuItem>
               <MenuItem name="1-2" @click.native="toRoute('user-manage')">用户管理</MenuItem>
@@ -28,12 +28,12 @@
             </Submenu>
             <Submenu name="2">
               <template slot="title">
-                <Icon type="ios-keypad"></Icon>我的工时
+                <Icon type="md-calendar"/>我的工时
               </template>
               <MenuItem name="2-1" @click.native="$router.push('work-time')">录入</MenuItem>
-              <MenuItem v-if="type===1" name="2-2" @click.native="$router.push('work-time-seach')">统计</MenuItem>
+              <!-- <MenuItem v-if="type===1" name="2-2" @click.native="$router.push('work-time-seach')">统计</MenuItem> -->
             </Submenu>
-            <MenuItem name="3" @click.native="toRoute('own-space')"><Icon type="ios-navigate"></Icon>个人信息</MenuItem>
+            <MenuItem name="3" @click.native="toRoute('own-space')"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>
         <Layout :style="{padding: '24px'}">

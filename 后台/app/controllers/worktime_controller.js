@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-29 21:19:16
+ * @Last Modified time: 2019-05-05 16:25:37
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -79,7 +79,7 @@ const postTime = async (ctx, next) => { //更新工时
                 ...list[i],
                 ...{
                     id: uuidv1(),
-                    timeDate: new Date(list[i].year + '-' + list[i].month + '-' + list[i].day)
+                    timeDate: new Date(list[i].year + '-' + (list[i].month>9?list[i].month:'0'+list[i].month) + '-' + (list[i].day>9?list[i].day:'0'+list[i].day))
                 }
             });
         }
@@ -98,50 +98,49 @@ const postTime = async (ctx, next) => { //更新工时
 }
 const workTimeCount = async (ctx,next) => {
     ctx.status = 200;
-    const req = ctx.query;
-    const mysystemList = await User_col.findOne({
-        userId: req.userId
-    });
-    const systemList = await System_col.find({
-        'id': {
-            $in: mysystemList.systems
+    const req = ctx.request.body;
+    const systemCount = await System_col.find().ne('parentId', '0').count();
+    const weekCount = await WorkTime_col.aggregate([{
+        $match: {
+            year: (new Date).getFullYear(),
+            month: (new Date).getMonth()
         }
-    }).ne('parentId', '0');
-    let result = [];
-    let resultTitle = [];
-    for (let i = 0; i < systemList.length;i++) {
-        let system = await WorkTime_col.aggregate([{
-            $match: {
-                userId: req.userId,
-                timeDate: {
-                    $gte: new Date(req.beginTime),
-                    $lte: new Date(req.endTime)
-                },
-                systemId: systemList[i].id,
-                parentId: {
-                    $ne: '0'
-                }
-            }
-        },{
-            $project: {
-                total: {
-                    $sum: '$time'
-                }
-            }
-        }]);
-        resultTitle.push(systemList[i].title)
-        result.push({
-            name: systemList[i].title,
-            value: system.length > 0 ? system[0].total : 0
-        })
-    }
-    
+    },
+    {
+        $group: {
+            _id :  { year: '$year',month: '$month'},
+            time : { $sum : "$time" },
+        }
+    }]);
+    const monthCount = await WorkTime_col.aggregate([{
+        $match: {
+            year: (new Date).getFullYear(),
+            month: (new Date).getMonth()+1
+        }
+    },{
+        $group: {
+            _id :  { year: '$year',month: '$month'},
+            time : { $sum : "$time" },
+        }
+    }]);
+    const yearCount = await WorkTime_col.aggregate([{
+        $match: {
+            year: (new Date).getFullYear()
+        }
+    },{
+        $group: {
+            _id :  { year: '$year'},
+            time : { $sum : "$time" },
+        }
+    }]);
     ctx.body = {
         code: 1,
         msg: '查询成功',
         data: {
-            title: resultTitle,
-            content: result
+            systemCount: systemCount,
+            weekCount: weekCount[0].time,
+            monthCount: monthCount[0].time,
+            yearCount: yearCount[0].time
         }
     };
 }
@@ -167,7 +166,11 @@ const workTimeSeach = async (ctx, next) => {
                 'systemId': {
                     '$in': req.system,
                     '$exists': true
-                } 
+                },
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
             }
         },
         {
@@ -232,7 +235,11 @@ const getMapTime = async (ctx, next) => {
                 'systemId': {
                     '$in': req.system,
                     '$exists': true
-                } 
+                },
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
             }
         },
         {

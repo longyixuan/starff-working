@@ -63,7 +63,7 @@ http://xboot.exrick.cn
 
 - 启动后端 [x-boot](https://github.com/Exrick/x-boot) 项目后，在 `vue.config.js` 中修改你的后端接口地址代理配置
 - 在项目根文件夹下先后执行命令 `npm install` (若有报错请使用[cnpm](https://npm.taobao.org/))、 `npm run dev`
-- 前台端口默认9999 http://localhost:9999
+- 前台端口默认9999 http://172.16.10.185:9999
 
 ### 部署
 - 执行过命令 `npm install` 后，执行 `npm run build` 将打包生成的 `dist` 静态文件放置Nginx服务器中，并配置反向代理。当然还可放置Spring Web等其他项目resources静态资源文件夹下可避免跨域(不推荐)。

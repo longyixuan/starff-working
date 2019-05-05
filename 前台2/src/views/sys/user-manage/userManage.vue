@@ -170,19 +170,6 @@ export default {
           sortable: true
         },
         {
-          title: "头像",
-          key: "avatar",
-          width: 80,
-          align: "center",
-          render: (h, params) => {
-            return h("Avatar", {
-              props: {
-                src: params.row.avatar
-              }
-            });
-          }
-        },
-        {
           title: "所属部门",
           key: "departmentTitle",
           width: 120

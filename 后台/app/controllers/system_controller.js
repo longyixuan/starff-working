@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-13 19:43:20
+ * @Last Modified time: 2019-05-05 10:06:24
  */
 
 const System_col = require('./../models/system');
@@ -103,11 +103,24 @@ const getAllList = async (ctx,next) => { //获取系统树
     msg: '请求成功'
   }
 }
+const searchSystem = async (ctx,next) => {
+  ctx.status = 200;
+  var query = new RegExp(ctx.query.title, 'i');
+  const result = await System_col.find({
+      title: query
+  })
+  ctx.body = {
+      code: 1,
+      msg: '请求成功',
+      data: result
+  }
+}
 module.exports = {
   addSystem,
   getSystemList,
   delSystem,
   updateSystem,
   editSystem,
-  getAllList
+  getAllList,
+  searchSystem
 }

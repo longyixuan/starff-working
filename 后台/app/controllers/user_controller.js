@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-29 10:15:44
+ * @Last Modified time: 2019-05-05 09:56:16
  */
 
 const config = require('./../../config');
@@ -346,9 +346,15 @@ const userSystem = async (ctx, next) => { //首页统计功能
       $in: user.systems
     }
   }).ne('parentId', '0').count();
+  const systems = await System_col.find({
+    id: {
+      $in: user.systems
+    }
+  }).ne('parentId', '0');
   ctx.body = {
     code: 1,
     data: systemsCount,
+    syslist: systems,
     msg: '请求成功'
   }
 }

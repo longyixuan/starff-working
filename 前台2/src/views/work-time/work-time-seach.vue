@@ -3,22 +3,82 @@
 </style>
 <template>
   <Card>
-    <Date-picker
-      @on-change="handelChange"
-      style="width: 100%;"
-      type="daterange"
-      class="margin-bottom20"
-      confirm
-      placeholder="选择日期"
-    ></Date-picker>
-    <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
-      <Option v-for="item in peopleList" :value="item.userId" :key="item.userId">{{ item.nickName }}</Option>
-    </Select>
-    <Select clearable multiple placeholder="选择系统" v-model="system" class="margin-bottom20">
-      <Option v-for="item in systemList" :value="item.id" :key="item.id">{{ item.title }}</Option>
-    </Select>
-    <Button type="success" @click="editSystems" class="margin-bottom20">快速选择系统</Button>
-    <Button type="primary" @click="seach" class="margin-bottom20" style="margin-left: 10px;">查询</Button>
+    <Row :gutter="20">
+      <Col span="16">
+        <Date-picker
+          :value="showdate"
+          @on-change="handelChange"
+          style="width: 100%;"
+          type="daterange"
+          class="margin-bottom20"
+          confirm
+          placeholder="选择日期"
+        ></Date-picker>
+      </Col>
+      <Col span="8">
+        <Button type="primary" @click="quickTime('week')" ghost class="margin-bottom20">本周</Button>
+        <Button
+          type="primary"
+          @click="quickTime('month')"
+          ghost
+          class="margin-bottom20"
+          style="margin-left: 10px;"
+        >本月</Button>
+        <Button
+          type="primary"
+          @click="quickTime('preMonth')"
+          ghost
+          class="margin-bottom20"
+          style="margin-left: 10px;"
+        >上月</Button>
+      </Col>
+    </Row>
+    <Row :gutter="20">
+      <Col span="16">
+        <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
+          <Option
+            v-for="item in peopleList"
+            :value="item.userId"
+            :key="item.userId"
+          >{{ item.nickName }}</Option>
+        </Select>
+      </Col>
+      <Col span="8">
+        <Button type="primary" ghost @click="people=[]" class="margin-bottom20">清空选择</Button>
+        <Button
+          type="primary"
+          ghost
+          @click="peopleAll"
+          class="margin-bottom20"
+          style="margin-left: 10px;"
+        >选择全部</Button>
+      </Col>
+    </Row>
+    <Row :gutter="20">
+      <Col span="16">
+        <Select clearable multiple placeholder="选择系统" v-model="system" class="margin-bottom20">
+          <Option v-for="item in systemList" :value="item.id" :key="item.id">{{ item.title }}</Option>
+        </Select>
+      </Col>
+      <Col span="8">
+        <Button type="primary" ghost @click="clearallSystems" class="margin-bottom20">清空选择</Button>
+        <Button
+          type="primary"
+          ghost
+          @click="editallSystems"
+          class="margin-bottom20"
+          style="margin-left: 10px;"
+        >选择全部</Button>
+        <Button
+          type="primary"
+          ghost
+          @click="editSystems"
+          class="margin-bottom20"
+          style="margin-left: 10px;"
+        >快速选择</Button>
+      </Col>
+    </Row>
+    <Button type="primary" @click="seach" class="margin-bottom20">查询</Button>
     <div class="demo-tabs-style2">
       <Tabs type="card">
         <Tab-pane label="表格">
@@ -36,8 +96,28 @@
           </Table>
         </Tab-pane>
         <Tab-pane label="图表">
-          <div style="width:100%;height:200px;" id="visite_volume_con"></div>
-          <div style="width:100%;height:100%;" id="data_source_con"></div>
+          <Row :gutter="10" :style="{marginBottom: '10px'}">
+            <Col span="16">
+              <Card>
+                <p slot="title" class="card-title">
+                  <Icon type="md-map"></Icon>系统工时统计（共计{{total}}小时）
+                </p>
+                <div class="data-source-row">
+                  <div style="width:100%;height:300px;" id="visite_volume_con"></div>
+                </div>
+              </Card>
+            </Col>
+            <Col span="8">
+              <Card>
+                <p slot="title" class="card-title">
+                  <Icon type="md-map"></Icon>系统工时占比分析（共计{{total}}小时）
+                </p>
+                <div class="data-source-row">
+                  <div style="width:100%;height:300px;" id="data_source_con"></div>
+                </div>
+              </Card>
+            </Col>
+          </Row>
         </Tab-pane>
       </Tabs>
     </div>
@@ -80,15 +160,25 @@ import {
   loadSystem,
   getAllUserData
 } from "@/api/index";
-import { getAll } from "@/libs/timeHelp";
+import {
+  getAll,
+  getWeekStartDate,
+  getWeekEndDate,
+  getMonthStartDate,
+  getMonthEndDate,
+  getLastMonthStartDate,
+  getLastMonthEndDate
+} from "@/libs/timeHelp";
 import echarts from "echarts";
 import Cookies from "js-cookie";
 export default {
   data() {
     return {
+      total: 0,
       startTime: "",
       endTime: "",
       people: [],
+      showdate: [],
       peopleList: [],
       system: [],
       systemList: [],
@@ -131,7 +221,7 @@ export default {
           "#30e0e0"
         ],
         grid: {
-          top: "2%",
+          top: "10%",
           left: "2%",
           right: "4%",
           bottom: "3%",
@@ -189,7 +279,7 @@ export default {
           {
             name: "工时占比",
             type: "pie",
-            radius: "66%",
+            radius: "60%",
             center: ["50%", "60%"],
             data: [],
             itemStyle: {
@@ -233,6 +323,47 @@ export default {
     }
   },
   methods: {
+    quickTime(type) {
+      if (type == "week") {
+        //周
+        this.startTime = getWeekStartDate();
+        this.endTime = getWeekEndDate();
+        this.showdate = [];
+        this.showdate.push(this.startTime);
+        this.showdate.push(this.endTime);
+      } else if (type == "month") {
+        //月
+        this.startTime = getMonthStartDate();
+        this.endTime = getMonthEndDate();
+        this.showdate = [];
+        this.showdate.push(this.startTime);
+        this.showdate.push(this.endTime);
+      } else {
+        //上月
+        this.startTime = getLastMonthStartDate();
+        this.endTime = getLastMonthEndDate();
+        this.showdate = [];
+        this.showdate.push(this.startTime);
+        this.showdate.push(this.endTime);
+      }
+    },
+    clearallSystems() {
+      this.system = [];
+    },
+    peopleAll() {
+      this.people = [];
+      for (let i = 0; i < this.peopleList.length; i++) {
+        let element = this.peopleList[i];
+        this.people.push(element.userId);
+      }
+    },
+    editallSystems() {
+      this.system = [];
+      for (let i = 0; i < this.systemList.length; i++) {
+        let element = this.systemList[i];
+        this.system.push(element.id);
+      }
+    },
     editSystems() {
       this.treeLoading = true;
       initSystem().then(res => {
@@ -344,6 +475,7 @@ export default {
           this.option.xAxis.data = [];
           this.option.series[0].data = [];
           this.option1.series[0].data = [];
+          this.total = 0;
           for (let i = 0; i < res.system.length; i++) {
             this.option.xAxis.data.push(res.system[i].title);
           }
@@ -357,6 +489,7 @@ export default {
               name: res.data[j]._id.systemName,
               value: res.data[j].time
             });
+            this.total+= res.data[j].time;
           }
           this.dataSourcePie.setOption(this.option1);
           this.visiteVolume.setOption(this.option);

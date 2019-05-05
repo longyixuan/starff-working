@@ -9,7 +9,7 @@
                 <TabPane :label="item+ '月'" :name="item.toString()" :key="item"></TabPane>
             </template>
         </Tabs>
-        <Table border :columns="columns" :data="tempList" stripe ref="table">
+        <Table border :columns="columns" :data="tempList" stripe ref="table" :loading="loading">
             <template slot-scope="{ row }" slot="systemName">
                 <strong>{{ row.systemName }}</strong>
             </template>
@@ -34,8 +34,7 @@
 <script>
 import {
   getTimeList,
-  postTime,
-  getSystemList
+  postTime
 } from "@/api/index";
 import Cookies from "js-cookie";
 import qs from "qs";
@@ -47,6 +46,7 @@ export default {
             exportColumns: [],
             editIndex: -1,  // 当前聚焦的输入框的行数
             workList: [],
+            loading: false,
             curMonth: (new Date().getMonth()+1).toString(), //当前月
             curMonthDays: 0
         }
@@ -64,7 +64,6 @@ export default {
                 }
                 newList.push(item)
             }
-            console.log(newList)
             return newList;
         }
     },
@@ -193,7 +192,9 @@ export default {
                 month: parseInt(this.curMonth),
                 userId: JSON.parse(Cookies.get("userInfo")).userId
             }
+            this.loading = true;
             getTimeList(postData).then((res)=>{
+                this.loading = false;
                 if(res.code===1) {
                     this.workList = res.data;
                     this.$Message.success("查询成功");
