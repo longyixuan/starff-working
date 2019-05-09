@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-03-15 17:11:34 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-16 13:00:05
+ * @Last Modified time: 2019-05-06 17:32:34
  */
 
 const Router = require('koa-router');
@@ -20,7 +20,7 @@ router.post('/user/admin/edit', user_controller.adminEdit);
 router.post('/user/admin/disable/:id', user_controller.userDisable);
 router.post('/user/admin/enable/:id', user_controller.userEnable);
 router.delete('/user/delByIds/:id', user_controller.delUser);
-router.get('/user/userSystem', user_controller.userSystem);
+router.post('/user/userSystem', user_controller.userSystem);
 router.post('/user/modifyPass', user_controller.resetPassword);
 router.get('/user/getByDepartmentId/:id', user_controller.getByDepartment);
 module.exports = router;

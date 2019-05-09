@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-05-05 10:10:42
+ * @Last Modified time: 2019-05-07 11:29:44
  */
 
 const Router = require('koa-router');
@@ -16,4 +16,5 @@ router.post('/system/edit', system_controller.editSystem);
 router.delete('/system/delByIds/:id', system_controller.delSystem);
 router.get('/system/getAllList', system_controller.getAllList);
 router.get('/system/search', system_controller.searchSystem);
+router.get('/system/systemTree', system_controller.systemTree);
 module.exports = router;

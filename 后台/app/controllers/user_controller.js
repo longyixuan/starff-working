@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-05-05 09:56:16
+ * @Last Modified time: 2019-05-07 12:35:57
  */
 
 const config = require('./../../config');
@@ -145,6 +145,7 @@ const getUserInfo = async (ctx, next) => {
 const updateUserInfo = async (ctx, next) => {
   const req = qs.parse(ctx.request.body);
   // 获取用户的 userId
+  req.systems = Object.keys(req.systems).map(key=> req.systems[key])
   const result = await User_col.updateOne({
     userId: req.userId
   }, req);
@@ -339,22 +340,24 @@ const resetPassword = async (ctx,next) => {
 }
 const userSystem = async (ctx, next) => { //首页统计功能
   ctx.status = 200;
-  const req = ctx.query;
-  const user = await User_col.findOne({userId: req.userId});
-  const systemsCount = await System_col.find({
-    id: {
-      $in: user.systems
+  const req = qs.parse(ctx.request.body);
+  const systems = await User_col.aggregate([
+    {
+      $match: {
+          'userId': {
+              '$in': req.userlist
+          }
+      }
     }
-  }).ne('parentId', '0').count();
-  const systems = await System_col.find({
-    id: {
-      $in: user.systems
-    }
-  }).ne('parentId', '0');
+  ]);
+  let result = [];
+  for (let i = 0; i < systems.length; i++) {
+    const element = systems[i].systems;
+    result = Array.from(new Set([...result,...element]))
+  }
   ctx.body = {
     code: 1,
-    data: systemsCount,
-    syslist: systems,
+    data: result,
     msg: '请求成功'
   }
 }

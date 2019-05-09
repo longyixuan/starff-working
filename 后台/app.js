@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-16 22:29:31
+ * @Last Modified time: 2019-05-06 19:15:39
  */
 
 
@@ -27,9 +27,9 @@ mongoose.connect(config.db, {
     useNewUrlParser: true
 }, (err) => {
     if (err) {
-        console.error('数据库连接失败');
+        console.error('fail');
     } else {
-        console.log('数据库连接成功');
+        console.log('success');
     }
 });
 

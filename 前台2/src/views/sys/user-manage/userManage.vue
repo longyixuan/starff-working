@@ -114,7 +114,7 @@ export default {
         type: "",
         status: "",
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 20,
         sort: "createTime",
         order: "desc",
         startDate: "",

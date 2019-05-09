@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-05-05 16:25:37
+ * @Last Modified time: 2019-05-06 19:14:02
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -98,7 +98,6 @@ const postTime = async (ctx, next) => { //更新工时
 }
 const workTimeCount = async (ctx,next) => {
     ctx.status = 200;
-    const req = ctx.request.body;
     const systemCount = await System_col.find().ne('parentId', '0').count();
     const weekCount = await WorkTime_col.aggregate([{
         $match: {
@@ -138,9 +137,9 @@ const workTimeCount = async (ctx,next) => {
         msg: '查询成功',
         data: {
             systemCount: systemCount,
-            weekCount: weekCount[0].time,
-            monthCount: monthCount[0].time,
-            yearCount: yearCount[0].time
+            weekCount: weekCount.length>0?weekCount[0].time:0,
+            monthCount: monthCount.length>0?monthCount[0].time:0,
+            yearCount: yearCount.length>0?yearCount[0].time:0
         }
     };
 }
@@ -150,22 +149,14 @@ const workTimeCount = async (ctx,next) => {
 const workTimeSeach = async (ctx, next) => {
     ctx.status = 200;
     const req = qs.parse(ctx.request.body);
-    const system = await System_col.find({
-        'id': {
-            '$in': req.system,
-            '$exists': true
-        }
-    });
     const time = await WorkTime_col.aggregate([ //按系统查询
         {
             $match: {
                 'userId': {
-                    '$in': req.people,
-                    '$exists': true
+                    '$in': req.people
                 },
                 'systemId': {
-                    '$in': req.system,
-                    '$exists': true
+                    '$in': Object.keys(req.system).map(key=> req.system[key])
                 },
                 'timeDate': {
                     $gte: new Date(req.startTime),
@@ -221,20 +212,17 @@ const getMapTime = async (ctx, next) => {
     const req = qs.parse(ctx.request.body);
     const system = await System_col.find({
         'id': {
-            '$in': req.system,
-            '$exists': true
+            '$in': Array.from(req.system)
         }
     });
     const time = await WorkTime_col.aggregate([ //按系统查询
         {
             $match: {
                 'userId': {
-                    '$in': req.people,
-                    '$exists': true
+                    '$in': req.people
                 },
                 'systemId': {
-                    '$in': req.system,
-                    '$exists': true
+                    '$in': Object.keys(req.system).map(key=> req.system[key])
                 },
                 'timeDate': {
                     $gte: new Date(req.startTime),

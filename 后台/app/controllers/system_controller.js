@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-05-05 10:06:24
+ * @Last Modified time: 2019-05-07 13:51:10
  */
 
 const System_col = require('./../models/system');
@@ -115,9 +115,38 @@ const searchSystem = async (ctx,next) => {
       data: result
   }
 }
+const systemTree = async (ctx,next) => {
+  ctx.status = 200;
+  const result = await System_col.find({
+      parentId: '0'
+  });
+  let clone = [];
+  for (let i = 0; i < result.length; i++) {
+      clone.push({
+          title: result[i].title,
+          id: result[i].id,
+          parentId: result[i].parentId,
+          children: []
+      })
+  }
+  for (let i = 0; i < clone.length; i++) {
+      let children = await System_col.find({ //获取二级数据
+          parentId: clone[i].id
+      });
+      for (let j = 0; j < children.length; j++) {
+          clone[i].children.push(children[j])
+      }
+  }
+  ctx.body = {
+      code: 1,
+      data: clone,
+      msg: 'success'
+  };
+}
 module.exports = {
   addSystem,
   getSystemList,
+  systemTree,
   delSystem,
   updateSystem,
   editSystem,

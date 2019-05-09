@@ -1,8 +1,8 @@
 {
-  "name": "lihailong",
+  "name": "yinxiaolong",
   "version": "0.1.0",
-  "description": "新疆褐牛体尺数据管理系统设计与实现",
-  "author": "李海龙",
+  "description": "工时系统",
+  "author": "尹晓龙",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",

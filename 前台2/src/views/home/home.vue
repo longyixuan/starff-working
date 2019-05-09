@@ -40,7 +40,7 @@
             :end-val="systemCount"
             iconType="md-desktop"
             color="#f25e43"
-            intro-text="负责系统个数"
+            intro-text="系统总数"
           ></infor-card>
         </Col>
       </Row>
@@ -80,12 +80,12 @@
             </Row>
             <Row :gutter="20">
               <Col span="16">
-                <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
+                <Select clearable multiple placeholder="选择员工" @on-change="peopleChange" v-model="people" class="margin-bottom20">
                   <Option
                     v-for="item in peopleList"
                     :value="item.userId"
                     :key="item.userId"
-                  >{{ item.nickName }}</Option>
+                  >{{ !!item.nickName? item.nickName: item.userName}}</Option>
                 </Select>
               </Col>
               <Col span="8">
@@ -149,8 +149,8 @@
                   </Table>
                 </Tab-pane>
                 <Tab-pane label="图表">
-                  <Row :gutter="10" :style="{marginBottom: '10px'}">
-                    <Col span="16">
+                  <Row :style="{marginBottom: '20px'}">
+                    <Col span="24">
                       <Card>
                         <p slot="title" class="card-title">
                           <Icon type="md-map"></Icon>系统工时统计（共计{{total}}小时）
@@ -160,13 +160,15 @@
                         </div>
                       </Card>
                     </Col>
-                    <Col span="8">
+                  </Row>
+                  <Row :style="{marginBottom: '10px'}">
+                    <Col span="24">
                       <Card>
                         <p slot="title" class="card-title">
                           <Icon type="md-map"></Icon>系统工时占比分析（共计{{total}}小时）
                         </p>
-                        <div class="data-source-row">
-                          <div style="width:100%;height:300px;" id="data_source_con"></div>
+                        <div class="data-source-row" style="width:100%;height:500px;">
+                          <div style="width:100%;height:100%;" id="data_source_con"></div>
                         </div>
                       </Card>
                     </Col>
@@ -187,10 +189,8 @@
                 ref="sysTree"
                 empty-text="请联系管理员录入系统列表"
                 :data="systemData"
-                :load-data="loadData"
-                @on-toggle-expand="expandCheckSys"
-                on-check-change
                 show-checkbox
+                check-directly
                 multiple
               ></Tree>
               <Spin size="large" v-if="treeLoading"></Spin>
@@ -216,7 +216,8 @@ import {
   getMapTime,
   getSystemList,
   initSystem,
-  loadSystem,
+  getSystemTree,
+  getSystemCount,
   getAllUserData
 } from "@/api/index";
 import {
@@ -265,8 +266,8 @@ export default {
           }
         },
         color: [
-          "#ff7f50",
           "#87cefa",
+          "#ff7f50",
           "#da70d6",
           "#32cd32",
           "#6495ed",
@@ -297,7 +298,8 @@ export default {
           type: "category",
           data: [],
           axisLabel: {
-            interval: 0
+            interval: 0,
+            rotate: 30
           },
           nameTextStyle: {
             color: "#c3c3c3"
@@ -392,6 +394,20 @@ export default {
     }
   },
   methods: {
+    peopleChange(arr) {
+      if (arr.length === 0 ) {
+        this.system = [];
+        return;
+      }
+      let postData =  {
+        userlist: arr
+      }
+      getSystemCount(postData).then(res=> {
+        if (res.code === 1) {
+          this.system = res.data;
+        }
+      })
+    },
     init() {
       let userInfo = JSON.parse(Cookies.get("userInfo"));
       workTimeCount({ userId: userInfo.userId }).then(res => {
@@ -444,83 +460,42 @@ export default {
         this.system.push(element.id);
       }
     },
-    editSystems() {
+   editSystems() {
       this.treeLoading = true;
-      initSystem().then(res => {
+      getSystemTree().then(res => {
         this.treeLoading = false;
         if (res.code === 1) {
-          res.data.forEach(function(e) {
-            e.checked = false;
-            if (e.isParent) {
-              e.loading = false;
-              e.children = [];
-            }
-            if (e.status === -1) {
-              e.title = "[已禁用] " + e.title;
-              e.disabled = true;
-            }
-          });
           this.systemData = res.data;
           // 判断子节点
           this.checkSysTree(this.systemData, this.system);
-          this.systemModalVisible = true;
+          this.systemModalVisible=true
         }
-      });
-    },
-    expandCheckSys(v) {
-      // 判断展开子节点
-      this.checkSysTree(v.children, this.system);
+      })
     },
     // 判断子节点
     checkSysTree(systemData, systems) {
       let that = this;
       systemData.forEach(function(p) {
-        if (that.hasSysPerm(p, systems)) {
-          p.checked = true;
-        } else {
-          p.checked = false;
-        }
+        that.hasSysPerm(p, systems)
       });
     },
     // 判断节点勾选
     hasSysPerm(p, systems) {
-      let flag = false;
-      for (let i = 0; i < systems.length; i++) {
-        if (p.id === systems[i]) {
-          flag = true;
-          break;
+      for (let i = 0; i < p.children.length; i++) {
+        if (systems.includes(p.children[i].id)) {
+          p.children[i].checked = true;
+        } else {
+          p.children[i].checked = false;
         }
       }
-      if (flag) {
-        return true;
-      }
-      return false;
-    },
-    loadData(item, callback) {
-      loadSystem(item.id, { openDataFilter: false }).then(res => {
-        if (res.code === 1) {
-          res.data.forEach(function(e) {
-            e.selected = false;
-            if (e.isParent) {
-              e.loading = false;
-              e.children = [];
-            }
-            if (e.status === -1) {
-              e.title = "[已禁用] " + e.title;
-              e.disabled = true;
-            }
-          });
-          callback(res.data);
-        }
-      });
     },
     cancelsystemEdit() {
-      this.systemModalVisible = false;
+      this.systemModalVisible=false;
     },
     submitsystemEdit() {
       let systemIds = [];
-      let selectedNodes = this.$refs.sysTree.getCheckedNodes();
-      selectedNodes.forEach(function(e) {
+      let checkedNodes = this.$refs.sysTree.getCheckedNodes();
+      checkedNodes.forEach(function(e) {
         systemIds.push(e.id);
       });
       this.system = systemIds;
@@ -567,8 +542,7 @@ export default {
           for (let j = 0; j < res.data.length; j++) {
             this.option.series[0].data.push({
               name: res.data[j]._id.systemName,
-              value: res.data[j].time,
-              itemStyle: { normal: { color: this.option.color[j] } }
+              value: res.data[j].time
             });
             this.option1.series[0].data.push({
               name: res.data[j]._id.systemName,
@@ -598,6 +572,9 @@ export default {
   },
   mounted() {
     this.type = JSON.parse(Cookies.get("userInfo")).type;
+    if (this.type!==1) {
+      return;
+    }
     this.init();
     this.getUserList();
     this.getSystemList();

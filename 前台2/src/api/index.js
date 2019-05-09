@@ -113,7 +113,10 @@ export const getSystemList = (params) => {
     return getRequest('/system/getAllList', params)
 }
 export const getSystemCount = (params) => {
-    return getRequest('/user/userSystem', params)
+    return postRequest('/user/userSystem', params)
+}
+export const getSystemTree = (params) => {
+    return getRequest('/system/systemTree', params)
 }
 //-----------------------系统管理--------------------------------//
 //-----------------------工时管理--------------------------------//

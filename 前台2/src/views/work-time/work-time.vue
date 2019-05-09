@@ -138,6 +138,7 @@ export default {
                 title: '系统/时间(h)',
                 width: 150,
                 fixed: 'left',
+                sortable: true,
                 slot: 'systemName'
             })
             this.exportColumns.push({
