@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-05-06 19:14:02
+ * @Last Modified time: 2019-05-09 21:46:06
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -65,15 +65,26 @@ const postTime = async (ctx, next) => { //更新工时
             'day': list[i].day
         });
         if (time) { //更新
-            await WorkTime_col.updateOne({
-                'systemId': list[i].systemId,
-                'userId': list[i].userId,
-                'year': list[i].year,
-                'month': list[i].month,
-                'day': list[i].day
-            },{
-                time: list[i].time
-            });
+            if (list[i].time===0) { //删除
+                await WorkTime_col.deleteMany({
+                    'systemId': list[i].systemId,
+                    'userId': list[i].userId,
+                    'year': list[i].year,
+                    'month': list[i].month,
+                    'day': list[i].day,
+                    'time': list[i].time
+                });
+            } else { //更改
+                await WorkTime_col.updateOne({
+                    'systemId': list[i].systemId,
+                    'userId': list[i].userId,
+                    'year': list[i].year,
+                    'month': list[i].month,
+                    'day': list[i].day
+                }, {
+                    time: list[i].time
+                });
+            }
         } else { //新增加
             await WorkTime_col.create({
                 ...list[i],

@@ -74,7 +74,8 @@ export default {
         handleSave (row, index) { //保存
             let postData = [];
             for (let i = 1; i<=this.curMonthDays; i++) {
-                if (!!row[i]) {
+                if (typeof(row[i])!=='undefined') {
+                    console.log(row[i])
                     postData.push({
                         systemId: row.systemId,
                         systemName: row.systemName,
@@ -88,7 +89,6 @@ export default {
                 }
             }
             this.editIndex = -1;
-            console.log(postData)
             postTime({
                 systemId: row.systemId,
                 systemName: row.systemName,
