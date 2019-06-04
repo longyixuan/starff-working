@@ -136,4 +136,7 @@ export const getCountTime = (params) => {
 export const getMapTime = (params) => {
     return postRequest('/time/getMapTime', params)
 }
+export const resetTime = (params) => {
+    return getRequest('/time/resetTime', params)
+}
 //-----------------------工时管理--------------------------------//

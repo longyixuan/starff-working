@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-05-09 21:46:06
+ * @Last Modified time: 2019-06-04 17:03:30
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -51,7 +51,27 @@ const getTimeList = async (ctx, next) => {
         data: seachList
     };
 }
-
+const resetTime = async(ctx, next) => {
+    ctx.status = 200;
+    const list = await WorkTime_col.find();
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].time===0 || list[i].time===null) {
+            await WorkTime_col.deleteOne({
+                'id': list[i].id
+            })
+        } else {
+            await WorkTime_col.updateOne({
+                'id': list[i].id
+            }, {
+                timeDate: new Date(list[i].timeDate)
+            });
+        }
+    }
+    ctx.body = {
+        code: 1,
+        msg: '重置成功'
+    };
+}
 const postTime = async (ctx, next) => { //更新工时
     ctx.status = 200;
     const req = ctx.request.body;
@@ -66,13 +86,12 @@ const postTime = async (ctx, next) => { //更新工时
         });
         if (time) { //更新
             if (list[i].time===0) { //删除
-                await WorkTime_col.deleteMany({
+                await WorkTime_col.deleteOne({
                     'systemId': list[i].systemId,
                     'userId': list[i].userId,
                     'year': list[i].year,
                     'month': list[i].month,
-                    'day': list[i].day,
-                    'time': list[i].time
+                    'day': list[i].day
                 });
             } else { //更改
                 await WorkTime_col.updateOne({
@@ -169,6 +188,9 @@ const workTimeSeach = async (ctx, next) => {
                 'systemId': {
                     '$in': Object.keys(req.system).map(key=> req.system[key])
                 },
+                'time': {
+                    '$nin': [0,null]
+                },
                 'timeDate': {
                     $gte: new Date(req.startTime),
                     $lte: new Date(req.endTime)
@@ -235,6 +257,9 @@ const getMapTime = async (ctx, next) => {
                 'systemId': {
                     '$in': Object.keys(req.system).map(key=> req.system[key])
                 },
+                'time': {
+                    '$nin': [0,null]
+                },
                 'timeDate': {
                     $gte: new Date(req.startTime),
                     $lte: new Date(req.endTime)
@@ -265,5 +290,6 @@ module.exports = {
     postTime,
     workTimeCount,
     workTimeSeach,
-    getMapTime
+    getMapTime,
+    resetTime
 }

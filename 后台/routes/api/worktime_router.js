@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-03-19 22:02:29 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-29 08:51:11
+ * @Last Modified time: 2019-06-04 16:42:24
  */
 
 const Router = require('koa-router');
@@ -14,4 +14,5 @@ router.post('/time/postTime', worktime_controller.postTime);
 router.get('/time/workTimeCount', worktime_controller.workTimeCount);
 router.post('/time/workTimeSeach', worktime_controller.workTimeSeach);
 router.post('/time/getMapTime', worktime_controller.getMapTime);
+router.get('/time/resetTime', worktime_controller.resetTime);
 module.exports = router;

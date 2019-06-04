@@ -1,4 +1,4 @@
-<style lang="less" scoped>
+<style lang="less">
   @import "./work-time.less";
 </style>
 <template>
@@ -14,7 +14,7 @@
                 <strong>{{ row.systemName }}</strong>
             </template>
             <template slot-scope="{ row, index }" :slot="day" v-for="day in curMonthDays">
-                <Input :key="'day-'+day" type="text" number v-model="row[day]" v-if="editIndex === index"/>
+                <Input :key="'day-'+day" :placeholder="day.toString()" type="text" number v-model="row[day]" v-if="editIndex === index"/>
                 <span :key="'day2-'+day" v-else>{{ !row[day] ? '-' : row[day] }}</span>
             </template>
             <template slot-scope="{ row, index }" slot="action">
@@ -75,7 +75,9 @@ export default {
             let postData = [];
             for (let i = 1; i<=this.curMonthDays; i++) {
                 if (typeof(row[i])!=='undefined') {
-                    console.log(row[i])
+                    if (row[i] == '') {
+                        row[i] = 0;
+                    }
                     postData.push({
                         systemId: row.systemId,
                         systemName: row.systemName,
@@ -151,7 +153,7 @@ export default {
                 this.columns.push({
                     title: i,
                     slot: i,
-                    width: 70,
+                    width: 50,
                     sortable: true,
                     align: 'center'
                 })

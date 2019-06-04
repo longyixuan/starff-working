@@ -122,6 +122,7 @@ export default {
                     Cookies.set("userInfo", JSON.stringify(res.data));
                   }
                   this.setStore("userInfo", res.data);
+                  console.log()
                   this.$router.push({
                     name: "home_index"
                   });

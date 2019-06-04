@@ -124,6 +124,7 @@
               </Col>
             </Row>
             <Button type="primary" @click="seach" class="margin-bottom20">查询</Button>
+            <Button type="primary" v-if="isReset === 'admin'" @click="resetTime" class="margin-bottom20" style="margin-left: 10px;">重置工时</Button>
           </Card>
         </Col>
       </Row>
@@ -218,7 +219,8 @@ import {
   initSystem,
   getSystemTree,
   getSystemCount,
-  getAllUserData
+  getAllUserData,
+  resetTime
 } from "@/api/index";
 import {
   getAll,
@@ -236,6 +238,7 @@ export default {
   name: "home",
   data() {
     return {
+      isReset: JSON.parse(Cookies.get('userInfo')).userName,
       type: '',
       systemCount: 0,
       weekCount: 0,
@@ -394,6 +397,15 @@ export default {
     }
   },
   methods: {
+    resetTime() {
+      resetTime().then(res => {
+        if (res.code===1) {
+          this.$Message.success('重置成功')
+        } else {
+          this.$Message.error('重置失败')
+        }
+      })
+    },
     peopleChange(arr) {
       if (arr.length === 0 ) {
         this.system = [];
