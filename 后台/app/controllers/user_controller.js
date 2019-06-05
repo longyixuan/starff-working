@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-05-07 12:35:57
+ * @Last Modified time: 2019-06-05 14:39:30
  */
 
 const config = require('./../../config');
@@ -145,7 +145,11 @@ const getUserInfo = async (ctx, next) => {
 const updateUserInfo = async (ctx, next) => {
   const req = qs.parse(ctx.request.body);
   // 获取用户的 userId
-  req.systems = Object.keys(req.systems).map(key=> req.systems[key])
+  if (!req.systems) {
+    req.systems = []
+  } else {
+    req.systems = Object.keys(req.systems).map(key=> req.systems[key])
+  }
   const result = await User_col.updateOne({
     userId: req.userId
   }, req);
@@ -218,7 +222,7 @@ const getByCondition = async (ctx, next) => {
       { email: { $regex: req.email }}
     ]
   })
-  .limit(parseInt(req.pageSize)).skip((parseInt(req.pageNumber) - 1), parseInt(req.pageSize));
+  .limit(parseInt(req.pageSize)).skip((parseInt(req.pageNumber) - 1)*parseInt(req.pageSize));
   const allPage = await User_col.find({});
   const totalElements = Math.ceil(allPage.length / parseInt(req.pageSize)); //计算页数
   ctx.body = {
@@ -226,7 +230,7 @@ const getByCondition = async (ctx, next) => {
     msg: '获取用户列表成功',
     data: {
       content: AllByPage,
-      totalElements: totalElements
+      totalElements: allPage.length
     }
   }
 }

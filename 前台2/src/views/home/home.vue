@@ -385,7 +385,7 @@ export default {
           column.push({
             title: dataList[i],
             key: dataList[i],
-            width: 116,
+            width: 100,
             sortable: true,
             align: "center"
           });

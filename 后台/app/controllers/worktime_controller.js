@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-06-04 17:03:30
+ * @Last Modified time: 2019-06-05 13:49:51
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -56,6 +56,7 @@ const resetTime = async(ctx, next) => {
     const list = await WorkTime_col.find();
     for (let i = 0; i < list.length; i++) {
         if (list[i].time===0 || list[i].time===null) {
+            console.log(list[i])
             await WorkTime_col.deleteOne({
                 'id': list[i].id
             })
