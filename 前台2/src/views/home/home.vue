@@ -477,29 +477,20 @@ export default {
       getSystemTree().then(res => {
         this.treeLoading = false;
         if (res.code === 1) {
+          //回显
+          for (let i = 0; i < res.data.length; i++) {
+            for (let j = 0; j < res.data[i].children.length; j++) {
+              if (this.system.includes(res.data[i].children[j].id)) {
+                this.$set(res.data[i].children[j], 'checked', true)
+              } else {
+                this.$set(res.data[i].children[j], 'checked', false)
+              }
+            }
+          }
           this.systemData = res.data;
-          // 判断子节点
-          this.checkSysTree(this.systemData, this.system);
-          this.systemModalVisible=true
+          this.systemModalVisible = true;
         }
       })
-    },
-    // 判断子节点
-    checkSysTree(systemData, systems) {
-      let that = this;
-      systemData.forEach(function(p) {
-        that.hasSysPerm(p, systems)
-      });
-    },
-    // 判断节点勾选
-    hasSysPerm(p, systems) {
-      for (let i = 0; i < p.children.length; i++) {
-        if (systems.includes(p.children[i].id)) {
-          p.children[i].checked = true;
-        } else {
-          p.children[i].checked = false;
-        }
-      }
     },
     cancelsystemEdit() {
       this.systemModalVisible=false;

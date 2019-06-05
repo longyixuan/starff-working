@@ -17,7 +17,7 @@
         </FormItem>
         <FormItem label="负责的系统：">
           <template v-for="item in SystemList">
-            <Tag type="border" :key="item.id" color="default" v-if="userForm.systems.includes(item.id)">{{item.title}}</Tag>
+            <Tag type="border" :key="item.id" color="default" v-show="userForm.systems.includes(item.id)">{{item.title}}</Tag>
           </template>
           <Button type="primary" size="small" @click="editSystems">编辑</Button>
         </FormItem>
@@ -117,6 +117,7 @@ export default {
       let str = JSON.stringify(v);
       let userInfo = JSON.parse(str);
       this.userForm = userInfo;
+      console.log(this.userForm)
       this.getSystemList();
     },
     getSystemList() {
@@ -145,29 +146,20 @@ export default {
       getSystemTree().then(res => {
         this.treeLoading = false;
         if (res.code === 1) {
+          //回显
+          for (let i = 0; i < res.data.length; i++) {
+            for (let j = 0; j < res.data[i].children.length; j++) {
+              if (this.userForm.systems.includes(res.data[i].children[j].id)) {
+                this.$set(res.data[i].children[j], 'checked', true)
+              } else {
+                this.$set(res.data[i].children[j], 'checked', false)
+              }
+            }
+          }
           this.systemData = res.data;
-          // 判断子节点
-          this.checkSysTree(this.systemData, this.userForm.systems);
-          this.systemModalVisible=true
+          this.systemModalVisible = true;
         }
       })
-    },
-    // 判断子节点
-    checkSysTree(systemData, systems) {
-      let that = this;
-      systemData.forEach(function(p) {
-        that.hasSysPerm(p, systems)
-      });
-    },
-    // 判断节点勾选
-    hasSysPerm(p, systems) {
-      for (let i = 0; i < p.children.length; i++) {
-        if (systems.includes(p.children[i].id)) {
-          p.children[i].checked = true;
-        } else {
-          p.children[i].checked = false;
-        }
-      }
     },
     cancelsystemEdit() {
       this.systemModalVisible=false;
