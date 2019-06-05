@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import {
   getUserListData,
   addUser,
@@ -254,7 +255,11 @@ export default {
           key: "createdAt",
           sortable: true,
           sortType: "desc",
-          width: 150
+          align: "center",
+          width: 130,
+          render: (h,params) => {
+            return h('span',moment(params.row.createdAt).format('YYYY年MM月DD日'));
+          }
         },
         {
           title: "操作",

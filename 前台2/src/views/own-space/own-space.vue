@@ -25,7 +25,7 @@
           <span>{{ userForm.departmentTitle }}</span>
         </FormItem>
         <FormItem label="创建时间：">
-          <span>{{ userForm.createdAt }}</span>
+          <span>{{ userForm.createdAt | timeFormat }}</span>
         </FormItem>
         <FormItem>
           <Button
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import {
   userInfoEdit,
   initSystem,
@@ -95,6 +96,11 @@ export default {
       editSystem: [],
       selectAllFlag: false
     };
+  },
+  filters: {
+    timeFormat: function(data) {
+      return moment(data).format('YYYY年MM月DD日');
+    }
   },
   methods: {
     init() {

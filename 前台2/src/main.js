@@ -22,7 +22,6 @@ import {
     removeStore
 } from '@/libs/storage'
 import '@babel/polyfill'
-
 Vue.config.productionTip = false
 Vue.use(iView);
 // 挂载全局使用的方法
