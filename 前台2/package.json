@@ -37,6 +37,7 @@
     "@vue/cli-service": "^3.0.0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
+    "os": "^0.1.1",
     "qs": "^6.7.0",
     "vue-template-compiler": "^2.5.17"
   }
