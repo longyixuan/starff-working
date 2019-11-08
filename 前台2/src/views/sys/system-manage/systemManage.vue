@@ -373,6 +373,8 @@ export default {
               this.selectCount = 0;
               this.cancelEdit();
               this.init();
+            } else {
+              this.$Message.error(res.msg);
             }
           });
         }

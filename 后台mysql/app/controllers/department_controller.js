@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-10-08 17:27:30
+ * @Last Modified time: 2019-04-17 17:00:09
  */
 
 const Department_col = require('./../models/department');
@@ -56,6 +56,7 @@ const getDepartmentList = async (ctx, next) => {
     }
 }
 const depTree = async (o, p) => { //p为父菜单节点。o为菜单列表id。
+    console.log(p)
     const depList = await Department_col.find({
         parentId: o
     });

@@ -14,7 +14,7 @@ const addmenu = async (ctx, next) => {
     req.id = uuidv1();
     // 新增
     if (req.parentId == '0') {
-        req.parentTitle = '一级菜单'
+        req.parentTitle = '一级部门'
     } else {
         let parent = await Menu_col.findOne({
             id: req.parentId

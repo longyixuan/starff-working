@@ -1,14 +1,14 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import iView from 'iview'
+import ViewUI from 'view-design';
 //省市县
 import App from './App'
 import {
     router
 } from './router/index'
 import store from './store'
-import 'iview/dist/styles/iview.css'
+import 'view-design/dist/styles/iview.css'
 import {
     getRequest,
     postRequest,
@@ -23,7 +23,7 @@ import {
 } from '@/libs/storage'
 import '@babel/polyfill'
 Vue.config.productionTip = false
-Vue.use(iView);
+Vue.use(ViewUI);
 // 挂载全局使用的方法
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.postRequest = postRequest;

@@ -12,15 +12,6 @@ module.exports = {
         overlay: {
             errors: true,
         },
-        proxy: {
-            '/api': {
-                target: 'http://172.16.10.185:3333',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            }
-        },
         port: 9999
     },
     productionSourceMap: false

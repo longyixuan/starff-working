@@ -153,7 +153,7 @@ export default {
                 this.columns.push({
                     title: i,
                     slot: i,
-                    width: 50,
+                    width: 55,
                     sortable: true,
                     align: 'center'
                 })

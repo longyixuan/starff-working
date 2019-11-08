@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-06 11:21:36
+ * @Last Modified time: 2019-06-12 08:25:16
  */
 
 const config = require('./../../config');
@@ -56,6 +56,7 @@ const login = async (ctx, next) => {
   ctx.status = 200;
   if (match) {
     //这是加密的 key（密钥）
+    console.log(req.userName+'登录成功')
     ctx.body = {
       code: 1,
       msg: '登录成功',
