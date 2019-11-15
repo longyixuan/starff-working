@@ -8,8 +8,7 @@
   >
     <Col :xs="{span:22}" style="width: 368px;">
       <Row class="header">
-        <img src="../assets/xboot.png" width="220px">
-        <div class="description">T-Work 是很不错的Web前后端分离架构开发平台</div>
+        <img src="../assets/xboot.png" width="360px">
       </Row>
 
       <Alert type="error" show-icon v-if="error">{{errorMsg}}</Alert>

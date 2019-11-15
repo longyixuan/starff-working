@@ -5,8 +5,6 @@ const user = {
     mutations: {
         logout (state, vm) {
             Cookies.remove('userInfo');
-            Cookies.remove('access');
-            // 清空打开的页面等数据
             localStorage.clear();
         }
     }

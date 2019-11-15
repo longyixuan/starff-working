@@ -1,4 +1,4 @@
-<style lang="less" scoped>
+<style lang="less">
   @import "./work-time.less";
 </style>
 <template>
@@ -9,12 +9,12 @@
                 <TabPane :label="item+ '月'" :name="item.toString()" :key="item"></TabPane>
             </template>
         </Tabs>
-        <Table border :columns="columns" :data="tempList" stripe ref="table">
+        <Table border :columns="columns" :data="tempList" stripe ref="table" :loading="loading">
             <template slot-scope="{ row }" slot="systemName">
                 <strong>{{ row.systemName }}</strong>
             </template>
             <template slot-scope="{ row, index }" :slot="day" v-for="day in curMonthDays">
-                <Input :key="'day-'+day" type="text" number v-model="row[day]" v-if="editIndex === index"/>
+                <Input :key="'day-'+day" :placeholder="day.toString()" type="text" number v-model="row[day]" v-if="editIndex === index"/>
                 <span :key="'day2-'+day" v-else>{{ !row[day] ? '-' : row[day] }}</span>
             </template>
             <template slot-scope="{ row, index }" slot="action">
@@ -26,23 +26,15 @@
                 </div>
             </template>
         </Table>
-        <!-- <Table
-            :columns="exportColumns"
-            :data="tempList"
-            ref="exportTable"
-            style="display: none">
-        </Table> -->
         <div style="margin-top: 20px;">
             <Button type="primary" @click="exportData(1)">导出数据</Button>
-            <!-- <Button type="primary" style="margin-left: 20px;" @click="exportData(2)">导出排序数据</Button> -->
         </div>
     </Card>
 </template>
 <script>
 import {
   getTimeList,
-  postTime,
-  getSystemList
+  postTime
 } from "@/api/index";
 import Cookies from "js-cookie";
 import qs from "qs";
@@ -54,6 +46,7 @@ export default {
             exportColumns: [],
             editIndex: -1,  // 当前聚焦的输入框的行数
             workList: [],
+            loading: false,
             curMonth: (new Date().getMonth()+1).toString(), //当前月
             curMonthDays: 0
         }
@@ -81,7 +74,10 @@ export default {
         handleSave (row, index) { //保存
             let postData = [];
             for (let i = 1; i<=this.curMonthDays; i++) {
-                if (!!row[i]) {
+                if (typeof(row[i])!=='undefined') {
+                    if (row[i] == '') {
+                        row[i] = 0;
+                    }
                     postData.push({
                         systemId: row.systemId,
                         systemName: row.systemName,
@@ -95,7 +91,6 @@ export default {
                 }
             }
             this.editIndex = -1;
-            console.log(postData)
             postTime({
                 systemId: row.systemId,
                 systemName: row.systemName,
@@ -145,6 +140,7 @@ export default {
                 title: '系统/时间(h)',
                 width: 150,
                 fixed: 'left',
+                sortable: true,
                 slot: 'systemName'
             })
             this.exportColumns.push({
@@ -157,7 +153,7 @@ export default {
                 this.columns.push({
                     title: i,
                     slot: i,
-                    width: 70,
+                    width: 55,
                     sortable: true,
                     align: 'center'
                 })
@@ -199,7 +195,9 @@ export default {
                 month: parseInt(this.curMonth),
                 userId: JSON.parse(Cookies.get("userInfo")).userId
             }
+            this.loading = true;
             getTimeList(postData).then((res)=>{
+                this.loading = false;
                 if(res.code===1) {
                     this.workList = res.data;
                     this.$Message.success("查询成功");

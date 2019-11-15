@@ -2,8 +2,7 @@
     <Row type="flex" justify="center" align="middle" class="regist" @keydown.enter="submitRegist">
         <Col :xs="{span:22}" style="width: 368px;">
         <Row class="header">
-            <img src="../assets/xboot.png" width="220px" />
-            <div class="description">X-Boot 是很不错的Web前后端分离架构开发平台</div>
+            <img src="../assets/xboot.png" width="360px" />
         </Row>
     
         <Row class="success">

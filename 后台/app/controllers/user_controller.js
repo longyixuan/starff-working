@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-06 11:21:36
+ * @Last Modified time: 2019-11-15 16:20:40
  */
 
 const config = require('./../../config');
@@ -303,6 +303,32 @@ const getByDepartment = async (ctx, next) => {
 }
 const resetPassword = async (ctx,next) => {
   const req = ctx.request.body;
+  const hash = await passport.encrypt('000000', config.saltTimes);
+  const result = await Passport_col.updateOne({
+    userId: req.id
+  }, {hash: hash })
+  ctx.status = 200;
+  ctx.body = {
+    code: 1,
+    msg: '密码重置成功'
+  }
+}
+
+const editPassword = async (ctx,next) => {
+  const req = ctx.request.body;
+  const hash = await passport.encrypt(req.password, config.saltTimes);
+  await Passport_col.updateOne({
+    userId: req.userId
+  }, {hash: hash });
+  ctx.status = 200;
+  ctx.body = {
+    code: 1,
+    msg: '密码修改成功'
+  }
+}
+
+const resetPasswordAdmin = async (ctx,next) => {
+  const req = ctx.request.body;
   const token = ctx.request.headers.accesstoken;
   //解密
   const userId = jsonwebtoken.verify(token, jwtSecret).data.userId;
@@ -342,6 +368,7 @@ const resetPassword = async (ctx,next) => {
     }
   }
 }
+
 const userSystem = async (ctx, next) => { //首页统计功能
   ctx.status = 200;
   const req = qs.parse(ctx.request.body);
@@ -379,5 +406,6 @@ module.exports = {
   delUser,
   getByDepartment,
   userSystem,
-  resetPassword
+  resetPassword,
+  editPassword
 }

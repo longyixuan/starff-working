@@ -1,8 +1,18 @@
+var os = require('os');
+var lacalhost = ''
+try {
+var network = os.networkInterfaces()
+localhost = network[Object.keys(network)[0]][1].address
+} catch (e) {
+localhost = 'localhost';
+}
 module.exports = {
     devServer: {
-        host: '127.0.0.1',
+        host: lacalhost,
+        overlay: {
+            errors: true,
+        },
         port: 9999
     },
-    // 打包时不生成.map文件 避免看到源码
     productionSourceMap: false
 }

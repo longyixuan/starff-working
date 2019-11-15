@@ -5,7 +5,7 @@ export const loginRouter = {
     path: '/login',
     name: 'login',
     meta: {
-        title: '登录 - X-Boot前后端分离开发平台 '
+        title: '登录 - 工时系统 '
     },
     component: () => import('@/views/login.vue')
 };
@@ -14,7 +14,7 @@ export const registRouter = {
     path: '/regist',
     name: 'regist',
     meta: {
-        title: '注册 - X-Boot前后端分离开发平台'
+        title: '注册 - 工时系统'
     },
     component: () => import('@/views/regist.vue')
 };
@@ -23,7 +23,7 @@ export const registResult = {
     path: '/regist-result',
     name: 'regist-result',
     meta: {
-        title: '注册结果 - X-Boot前后端分离开发平台'
+        title: '注册结果 - 工时系统'
     },
     component: () => import('@/views/regist-result.vue')
 };
@@ -55,52 +55,64 @@ export const page500 = {
     component: () => import('@/views/error-page/500.vue')
 };
 
-export const locking = {
-    path: '/locking',
-    name: 'locking',
-    component: () => import('@/views/main-components/lockscreen/components/locking-page.vue')
-};
-
-// 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
-export const otherRouter = {
+// 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
+export const appRouter = {
     path: '/',
-    name: 'otherRouter',
+    name: 'appRouter',
     redirect: '/home',
     component: Main,
     children: [
-        { path: 'home', title: '首页', name: 'home_index', component: () => import('@/views/home/home.vue') },
-        { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue') },
-        { path: 'change-pass', title: '修改密码', name: 'change_pass', component: () => import('@/views/change-pass/change-pass.vue') },
-        { path: 'add', title: '添加', name: 'add', component: () => import('@/views/xboot-vue-template/new-window/add.vue') },
-        { path: 'edit', title: '编辑', name: 'edit', component: () => import('@/views/xboot-vue-template/new-window/edit.vue') },
+        { 
+            path: 'home',
+            title: '首页', 
+            name: 'home_index', 
+            component: () => import('@/views/home/home.vue')
+        },
+        {
+            path: 'department-manage',
+            title: '部门管理',
+            name: 'department-manage',
+            component: () => import('@/views/sys/department-manage/departmentManage.vue')
+        },
+        {
+            path: 'user-manage',
+            title: '用户管理',
+            name: 'user-manage',
+            component: () => import('@/views/sys/user-manage/userManage.vue')
+        },
+        {
+            path: 'system-manage',
+            title: '系统管理',
+            name: 'system-manage',
+            component: () => import('@/views/sys/system-manage/systemManage.vue')
+        },
+        {
+            path: 'work-time',
+            title: '我的工时-录入',
+            name: 'work-time',
+            component: () => import('@/views/work-time/work-time.vue')
+        }, 
+        {
+            path: 'work-time-seach',
+            title: '我的工时-统计',
+            name: 'work-time-seach',
+            component: () => import('@/views/work-time/work-time-seach.vue')
+        },
+        {
+            path: 'own-space',
+            title: '个人信息',
+            name: 'own-space',
+            component: () => import('@/views/own-space/own-space.vue')
+        }
     ]
 };
-
-// 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
-export const appRouter = [
-    {
-        path: '/form',
-        icon: 'ios-gear',
-        name: 'sys',
-        title: '系统管理',
-        component: Main,
-        children: [
-            { path: 'user-manage', title: '用户管理', name: 'user-manage', icon: 'android-person', component: () => import('@/views/sys/user-manage/userManage') },
-            { path: 'role-manage', title: '角色管理', name: 'role-manage', icon: 'android-contacts', component: () => import('@/views/sys/role-manage/roleManage.vue') },
-            { path: 'menu-manage', title: '菜单管理', name: 'menu-manage', icon: 'navicon-round', component: () => import('@/views/sys/menu-manage/menuManage.vue') },
-            { path: 'log-manage', title: '日志管理', name: 'log-manage', icon: 'android-list', component: () => import('@/views/sys/log-manage/logManage.vue') }
-        ]
-    }
-];
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
     loginRouter,
     registRouter,
     registResult,
-    otherRouter,
-    locking,
-    ...appRouter,
+    appRouter,
     page500,
     page403
 ];

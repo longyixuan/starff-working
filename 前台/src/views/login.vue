@@ -8,12 +8,9 @@
   >
     <Col :xs="{span:22}" style="width: 368px;">
       <Row class="header">
-        <img src="../assets/xboot.png" width="220px">
-        <div class="description">T-Work 是很不错的Web前后端分离架构开发平台</div>
+        <img src="../assets/xboot.png" width="360px;">
       </Row>
-
       <Alert type="error" show-icon v-if="error">{{errorMsg}}</Alert>
-
       <Row class="login-form">
         <Form ref="userNameLoginForm" :model="form" :rules="rules" class="form">
           <FormItem prop="userName">
@@ -39,11 +36,9 @@
           </FormItem>
         </Form>
         <Row type="flex" justify="space-between" class="code-row-bg">
-          <Checkbox v-model="saveLogin" size="large">自动登录</Checkbox>
           <Dropdown>
-            <a class="forget-pass" @click="$Message.info('请联系管理员重置密码')">忘记密码</a>
             <router-link to="/regist">
-              <a class="forget-pass margin-l20">注册账户</a>
+              <a class="forget-pass">注册账户</a>
             </router-link>
           </Dropdown>
         </Row>
@@ -68,7 +63,6 @@
 <script>
 import Cookies from "js-cookie";
 import { login, userInfo, getJWT } from "@/api/index";
-import util from "@/libs/util.js";
 export default {
   data() {
     return {
@@ -126,9 +120,6 @@ export default {
                     Cookies.set("userInfo", JSON.stringify(res.data));
                   }
                   this.setStore("userInfo", res.data);
-                  this.$store.commit("setAvatarPath", res.data.avatar);
-                  // 加载菜单
-                  util.initRouter(this);
                   this.$router.push({
                     name: "home_index"
                   });

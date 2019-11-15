@@ -1,5 +1,5 @@
 <style lang="less">
-    @import './styles/infor-card.less';
+    @import './infor-card.less';
 </style>
 
 <template>
