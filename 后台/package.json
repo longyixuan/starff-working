@@ -26,6 +26,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "jszip": "^3.2.2",
     "multer": "^1.4.1"
   }
 }

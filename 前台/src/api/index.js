@@ -150,4 +150,7 @@ export const getMapTime = (params) => {
 export const resetTime = (params) => {
     return getRequest('/time/resetTime', params)
 }
+export const exportTime = (params) => {
+    return getRequest('/exportTime', params)
+}
 //-----------------------工时管理--------------------------------//

@@ -2,15 +2,22 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-06-12 14:25:38
+ * @Last Modified time: 2019-11-18 15:18:35
  */
 
 const WorkTime_col = require('./../models/workTime');
 const System_col = require('./../models/system');
 const User_col = require('./../models/user');
+const Role_col = require('./../models/role');
+const Menu_col = require('./../models/menu');
+const Department_col = require('./../models/department');
+const Passport_col = require('./../models/password');
 const uuidv1 = require('uuid/v1');
 const getAll = require('./../middleware/timeHelp');
 const qs = require('qs');
+const fs = require('fs');
+const JSZip = require('jszip');
+const sendMail = require('../../mailer')
 
 const getTimeList = async (ctx, next) => {
     ctx.status = 200;
@@ -290,11 +297,57 @@ const getMapTime = async (ctx, next) => {
         msg: '查询成功'
     };
 }
+
+const exportTime = async (ctx, next) => {
+    const system = await System_col.find();
+    const worktime = await WorkTime_col.find();
+    const user = await User_col.find();
+    const role = await Role_col.find();
+    const menu = await Menu_col.find();
+    const department = await Department_col.find();
+    const passport = await Passport_col.find();
+    let zip = new JSZip();
+    zip.file('system.json',JSON.stringify(system,null,2));
+    zip.file('worktime.json',JSON.stringify(worktime,null,2));
+    zip.file('user.json',JSON.stringify(user,null,2));
+    zip.file('role.json',JSON.stringify(role,null,2));
+    zip.file('menu.json',JSON.stringify(menu,null,2));
+    zip.file('department.json',JSON.stringify(department,null,2));
+    zip.file('passport.json',JSON.stringify(passport,null,2));
+    let zipName = '工时系统数据备份.zip';
+    zip.generateAsync({
+        // 压缩类型选择nodebuffer，在回调函数中会返回zip压缩包的Buffer的值，再利用fs保存至本地
+        type: "nodebuffer",
+        // 压缩算法
+        compression: "DEFLATE",
+        compressionOptions: {
+            level: 9
+        }
+    }).then(function (content) {
+        // 写入磁盘
+        fs.writeFile('data/' + zipName , content, function (err) {
+            if (!err) {
+                // 写入磁盘成功
+                console.log(zipName + '压缩成功');
+                sendMail();
+            } else {
+                console.log(zipName + '压缩失败');
+            }
+        });
+    });
+    ctx.status = 200;
+    ctx.body = {
+        code: 1,
+        msg: zipName + '生成成功',
+        data: zip
+    }
+}
 module.exports = {
     getTimeList,
     postTime,
     workTimeCount,
     workTimeSeach,
     getMapTime,
-    resetTime
+    resetTime,
+    exportTime
 }

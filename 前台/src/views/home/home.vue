@@ -125,6 +125,7 @@
             </Row>
             <Button type="primary" @click="seach" class="margin-bottom20">查询</Button>
             <Button type="primary" v-if="isReset === 'admin'" @click="resetTime" class="margin-bottom20" style="margin-left: 10px;">重置工时</Button>
+            <Button type="primary" v-if="isReset === 'admin'" @click="exportTime" class="margin-bottom20" style="margin-left: 10px;">备份数据</Button>
           </Card>
         </Col>
       </Row>
@@ -220,7 +221,8 @@ import {
   getSystemTree,
   getSystemCount,
   getAllUserData,
-  resetTime
+  resetTime,
+  exportTime
 } from "@/api/index";
 import {
   getAll,
@@ -397,6 +399,13 @@ export default {
     }
   },
   methods: {
+    exportTime () { //导出json数据
+      exportTime().then( res => {
+        if (res.code===1) {
+          this.$Message.success('文件生成成功')
+        }
+      })
+    },
     resetTime() {
       resetTime().then(res => {
         if (res.code===1) {
