@@ -2,7 +2,8 @@
 import {
     getRequest,
     postRequest,
-    deleteRequest
+    deleteRequest,
+    uploadFileRequest
 } from '@/libs/axios';
 
 // 文件上传接口

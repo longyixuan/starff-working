@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-18 15:18:35
+ * @Last Modified time: 2019-11-21 16:34:33
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -63,7 +63,6 @@ const resetTime = async(ctx, next) => {
     const list = await WorkTime_col.find();
     for (let i = 0; i < list.length; i++) {
         if (list[i].time===0 || list[i].time===null) {
-            console.log(list[i])
             await WorkTime_col.deleteOne({
                 'id': list[i].id
             })
@@ -299,6 +298,7 @@ const getMapTime = async (ctx, next) => {
 }
 
 const exportTime = async (ctx, next) => {
+    const req = ctx.query;
     const system = await System_col.find();
     const worktime = await WorkTime_col.find();
     const user = await User_col.find();
@@ -315,6 +315,7 @@ const exportTime = async (ctx, next) => {
     zip.file('department.json',JSON.stringify(department,null,2));
     zip.file('passport.json',JSON.stringify(passport,null,2));
     let zipName = '工时系统数据备份.zip';
+    ctx.status = 200;
     zip.generateAsync({
         // 压缩类型选择nodebuffer，在回调函数中会返回zip压缩包的Buffer的值，再利用fs保存至本地
         type: "nodebuffer",
@@ -329,17 +330,17 @@ const exportTime = async (ctx, next) => {
             if (!err) {
                 // 写入磁盘成功
                 console.log(zipName + '压缩成功');
-                sendMail();
+                if (req.sendMail) {
+                    sendMail();
+                }
             } else {
                 console.log(zipName + '压缩失败');
             }
         });
     });
-    ctx.status = 200;
     ctx.body = {
         code: 1,
-        msg: zipName + '生成成功',
-        data: zip
+        msg: zipName + '生成成功'
     }
 }
 module.exports = {

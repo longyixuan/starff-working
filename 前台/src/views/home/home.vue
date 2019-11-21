@@ -123,9 +123,13 @@
                 >快速选择</Button>
               </Col>
             </Row>
-            <Button type="primary" @click="seach" class="margin-bottom20">查询</Button>
-            <Button type="primary" v-if="isReset === 'admin'" @click="resetTime" class="margin-bottom20" style="margin-left: 10px;">重置工时</Button>
-            <Button type="primary" v-if="isReset === 'admin'" @click="exportTime" class="margin-bottom20" style="margin-left: 10px;">备份数据</Button>
+            <Button type="primary" @click="seach">查询</Button>
+            <ButtonGroup style="margin-left: 10px">
+              <Button type="primary" ghost v-if="isReset === 'admin'" @click="resetTime" >重置工时</Button>
+              <Button type="primary" ghost v-if="isReset === 'admin'" @click="exportTime(false)">下载备份</Button>
+              <Button type="primary" ghost v-if="isReset === 'admin'" @click="exportTime(true)">邮件备份</Button>
+              <!-- <Button v-if="isReset === 'admin'" @click="inportTime">上传备份</Button> -->
+            </ButtonGroup>
           </Card>
         </Col>
       </Row>
@@ -208,6 +212,17 @@
     <template v-else>
       <Alert show-icon>欢迎使用工时系统</Alert>
     </template>
+    <Modal v-model="show" title="上传文件（工时备份）">
+      <Upload
+          multiple
+          type="drag"
+          :action="action">
+          <div style="padding: 40px 0">
+              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+              <p>Click or drag files here to upload</p>
+          </div>
+      </Upload>
+    </Modal>
   </div>
 </template>
 
@@ -222,7 +237,8 @@ import {
   getSystemCount,
   getAllUserData,
   resetTime,
-  exportTime
+  exportTime,
+  uploadFile
 } from "@/api/index";
 import {
   getAll,
@@ -240,6 +256,8 @@ export default {
   name: "home",
   data() {
     return {
+      show: false,
+      action: '',
       isReset: JSON.parse(Cookies.get('userInfo')).userName,
       type: '',
       systemCount: 0,
@@ -399,10 +417,17 @@ export default {
     }
   },
   methods: {
-    exportTime () { //导出json数据
-      exportTime().then( res => {
+    inportTime () {
+      this.show = true;
+    },
+    exportTime (sendMail) { //导出json数据
+      exportTime({ sendMail: sendMail }).then( res => {
         if (res.code===1) {
-          this.$Message.success('文件生成成功')
+          if (sendMail) {
+            this.$Message.success('文件已经通过邮件形式发送');
+          } else {
+            window.location.href = 'http://' + window.location.hostname + ':3333/download/all';
+          }
         }
       })
     },
@@ -583,6 +608,7 @@ export default {
     }
   },
   mounted() {
+    this.action = 'http://'+window.location.hostname+':3333'+uploadFile;
     this.type = JSON.parse(Cookies.get("userInfo")).type;
     if (this.type!==1) {
       return;
