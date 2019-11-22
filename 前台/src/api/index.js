@@ -154,4 +154,7 @@ export const resetTime = (params) => {
 export const exportTime = (params) => {
     return getRequest('/exportTime', params)
 }
+export const installTime = (params) => {
+    return getRequest('/installTime', params)
+}
 //-----------------------工时管理--------------------------------//

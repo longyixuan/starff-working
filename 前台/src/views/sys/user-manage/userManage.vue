@@ -525,7 +525,7 @@ export default {
         onOk: () => {
           resetPassword({id: v.userId}).then((res) =>{
             if (res.code === 1) {
-              this.$Message.success("密码重置成功");
+              this.$Message.success(res.msg);
             } else {
               this.$Message.success(res.msg);
             }

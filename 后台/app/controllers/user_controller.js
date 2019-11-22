@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-15 16:20:40
+ * @Last Modified time: 2019-11-22 11:53:42
  */
 
 const config = require('./../../config');
@@ -310,7 +310,7 @@ const resetPassword = async (ctx,next) => {
   ctx.status = 200;
   ctx.body = {
     code: 1,
-    msg: '密码重置成功'
+    msg: '密码重置成功，默认密码000000'
   }
 }
 

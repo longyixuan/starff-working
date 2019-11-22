@@ -1,0 +1,19 @@
+[
+  {
+    "mainHeader": [],
+    "viceHeader": [],
+    "createBy": null,
+    "updateBy": null,
+    "delFlag": 0,
+    "isParent": false,
+    "parentId": "0",
+    "parentTitle": "一级部门",
+    "sortOrder": 0,
+    "status": 0,
+    "title": "设计部",
+    "_id": "5d1c8de06ddd6151ed1614b1",
+    "id": "64b92e00-7021-11e9-aa87-37732e5007de",
+    "createdAt": "2019-05-06T17:07:13.766Z",
+    "updatedAt": "2019-05-06T17:07:13.766Z"
+  }
+]

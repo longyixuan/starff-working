@@ -126,9 +126,10 @@
             <Button type="primary" @click="seach">查询</Button>
             <ButtonGroup style="margin-left: 10px">
               <Button type="primary" ghost v-if="isReset === 'admin'" @click="resetTime" >重置工时</Button>
-              <Button type="primary" ghost v-if="isReset === 'admin'" @click="exportTime(false)">下载备份</Button>
-              <Button type="primary" ghost v-if="isReset === 'admin'" @click="exportTime(true)">邮件备份</Button>
-              <!-- <Button v-if="isReset === 'admin'" @click="inportTime">上传备份</Button> -->
+              <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(false)">生成备份</Button>
+              <!-- <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(true)">邮件备份</Button> -->
+              <Button type="warning" ghost v-if="isReset === 'admin'" @click="inportTime">上传备份</Button>
+              <Button type="error" ghost v-if="isReset === 'admin'" @click="installTime">恢复备份</Button>
             </ButtonGroup>
           </Card>
         </Col>
@@ -222,6 +223,9 @@
               <p>Click or drag files here to upload</p>
           </div>
       </Upload>
+      <div slot="footer">
+        <Button type="primary" @click="show=false">关闭</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -238,7 +242,8 @@ import {
   getAllUserData,
   resetTime,
   exportTime,
-  uploadFile
+  uploadFile,
+  installTime
 } from "@/api/index";
 import {
   getAll,
@@ -417,6 +422,19 @@ export default {
     }
   },
   methods: {
+    installTime () {
+      this.$Modal.confirm({
+        title: "提示",
+        content: "数据恢复将会导致原有数据清空，确定执行此操作？",
+        onOk: () => {
+          installTime().then( res => {
+            if (res.code===1) {
+              this.$Message.success('导入成功');
+            }
+          })
+        }
+      });
+    },
     inportTime () {
       this.show = true;
     },

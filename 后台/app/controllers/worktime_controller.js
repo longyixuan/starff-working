@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-21 16:34:33
+ * @Last Modified time: 2019-11-22 11:10:54
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -17,7 +17,7 @@ const getAll = require('./../middleware/timeHelp');
 const qs = require('qs');
 const fs = require('fs');
 const JSZip = require('jszip');
-const sendMail = require('../../mailer')
+// const sendMail = require('../../mailer')
 
 const getTimeList = async (ctx, next) => {
     ctx.status = 200;
@@ -314,7 +314,7 @@ const exportTime = async (ctx, next) => {
     zip.file('menu.json',JSON.stringify(menu,null,2));
     zip.file('department.json',JSON.stringify(department,null,2));
     zip.file('passport.json',JSON.stringify(passport,null,2));
-    let zipName = '工时系统数据备份.zip';
+    let zipName = 'worktimeCopy.zip';
     ctx.status = 200;
     zip.generateAsync({
         // 压缩类型选择nodebuffer，在回调函数中会返回zip压缩包的Buffer的值，再利用fs保存至本地
@@ -329,18 +329,16 @@ const exportTime = async (ctx, next) => {
         fs.writeFile('data/' + zipName , content, function (err) {
             if (!err) {
                 // 写入磁盘成功
-                console.log(zipName + '压缩成功');
-                if (req.sendMail) {
-                    sendMail();
-                }
+                // if (req.sendMail) {
+                //     sendMail();
+                // }
             } else {
-                console.log(zipName + '压缩失败');
             }
         });
     });
     ctx.body = {
         code: 1,
-        msg: zipName + '生成成功'
+        msg: zipName + '压缩成功'
     }
 }
 module.exports = {
