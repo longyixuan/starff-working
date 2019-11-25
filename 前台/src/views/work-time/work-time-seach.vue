@@ -170,7 +170,6 @@ import {
   getLastMonthEndDate
 } from "@/libs/timeHelp";
 import echarts from "echarts";
-import Cookies from "js-cookie";
 export default {
   data() {
     return {

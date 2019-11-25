@@ -54,7 +54,6 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
 import { editPassword } from "@/api/index";
 export default {
   data() {
@@ -87,7 +86,7 @@ export default {
         location.reload();
     },
     editPassword() {
-      editPassword({ userId: JSON.parse(Cookies.get("userInfo")).userId, password: this.value}).then(res =>{
+      editPassword({ userId: JSON.parse(localStorage.getItem('userInfo')).userId, password: this.value}).then(res =>{
         if (res.code === 1) {
           this.$Message.success("密码修改成功");
         } else {
@@ -97,8 +96,8 @@ export default {
     }
   },
   mounted() {
-    this.username = JSON.parse(Cookies.get("userInfo")).userName;
-    this.type = JSON.parse(Cookies.get("userInfo")).type;
+    this.username = JSON.parse(localStorage.getItem('userInfo')).userName;
+    this.type = JSON.parse(localStorage.getItem('userInfo')).type;
   }
 };
 </script>

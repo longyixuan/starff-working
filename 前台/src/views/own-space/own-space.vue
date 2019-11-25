@@ -64,7 +64,6 @@ import {
   getSystemTree,
   getSystemList
 } from "@/api/index";
-import Cookies from "js-cookie";
 export default {
   name: "ownspace_index",
   data() {
@@ -107,7 +106,7 @@ export default {
       this.accessToken = {
         accessToken: this.getStore("accessToken")
       };
-      let v = JSON.parse(Cookies.get("userInfo"));
+      let v =JSON.parse(localStorage.getItem('userInfo'));
       // 转换null为""
       for (let attr in v) {
         if (v[attr] === null && (arr.constructor != Array)) {
@@ -117,7 +116,6 @@ export default {
       let str = JSON.stringify(v);
       let userInfo = JSON.parse(str);
       this.userForm = userInfo;
-      console.log(this.userForm)
       this.getSystemList();
     },
     getSystemList() {
@@ -135,7 +133,7 @@ export default {
         if (res.code === 1) {
           this.$Message.success("保存成功");
           // 更新用户信息
-          Cookies.set("userInfo", this.userForm);
+          this.setStore("userInfo", this.userForm);
         } else {
           this.$Message.error("保存失败");
         }

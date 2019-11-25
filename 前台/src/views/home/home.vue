@@ -125,7 +125,7 @@
             </Row>
             <Button type="primary" @click="seach">查询</Button>
             <ButtonGroup style="margin-left: 10px">
-              <Button type="primary" ghost v-if="isReset === 'admin'" @click="resetTime" >重置工时</Button>
+              <Button type="info" ghost v-if="isReset === 'admin'" @click="resetTime" >重置工时</Button>
               <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(false)">生成备份</Button>
               <!-- <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(true)">邮件备份</Button> -->
               <Button type="warning" ghost v-if="isReset === 'admin'" @click="inportTime">上传备份</Button>
@@ -255,7 +255,6 @@ import {
   getLastMonthEndDate
 } from "@/libs/timeHelp";
 import echarts from "echarts";
-import Cookies from "js-cookie";
 import inforCard from "./components/inforCard.vue";
 export default {
   name: "home",
@@ -263,7 +262,7 @@ export default {
     return {
       show: false,
       action: '',
-      isReset: JSON.parse(Cookies.get('userInfo')).userName,
+      isReset: JSON.parse(localStorage.getItem('userInfo')).userName,
       type: '',
       systemCount: 0,
       weekCount: 0,
@@ -473,7 +472,7 @@ export default {
       })
     },
     init() {
-      let userInfo = JSON.parse(Cookies.get("userInfo"));
+      let userInfo = JSON.parse(localStorage.getItem('userInfo'));
       workTimeCount({ userId: userInfo.userId }).then(res => {
         if (res.code===1) {
           this.systemCount = res.data.systemCount;
@@ -627,7 +626,7 @@ export default {
   },
   mounted() {
     this.action = 'http://'+window.location.hostname+':3333'+uploadFile;
-    this.type = JSON.parse(Cookies.get("userInfo")).type;
+    this.type = JSON.parse(localStorage.getItem('userInfo')).type;
     if (this.type!==1) {
       return;
     }

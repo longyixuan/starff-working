@@ -77,7 +77,6 @@
 
 <script>
 import { regist } from "@/api/index";
-import Cookies from "js-cookie";
 export default {
   data() {
     const validatePassword = (rule, value, callback) => {

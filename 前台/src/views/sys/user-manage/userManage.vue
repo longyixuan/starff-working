@@ -52,9 +52,9 @@
       :width="500"
       :styles="{top: '30px'}"
     >
-      <Form ref="userForm" :model="userForm" :label-width="70" :rules="userFormValidate">
+      <Form ref="userForm" :model="userForm" :label-width="70">
         <FormItem label="用户名" prop="userName">
-          <Input v-model="userForm.userName" autocomplete="off"/>
+          {{userForm.userName}}
         </FormItem>
         <FormItem label="姓名" prop="nickName">
           <Input v-model="userForm.nickName" autocomplete="off"/>
@@ -82,7 +82,6 @@
 
 <script>
 import moment from "moment";
-import Cookies from "js-cookie";
 import {
   getUserListData,
   addUser,
@@ -569,7 +568,7 @@ export default {
     }
   },
   mounted() {
-    if (JSON.parse(Cookies.get("userInfo")).userName=='admin') {
+    if (JSON.parse(localStorage.getItem('userInfo')).userName=='admin') {
       this.admin = true;
     }
     this.init();

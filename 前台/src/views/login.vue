@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
 import { login, userInfo, getJWT } from "@/api/index";
 export default {
   data() {
@@ -111,14 +110,6 @@ export default {
               // 获取用户信息
               userInfo().then(res => {
                 if (res.code === 1) {
-                  if (this.saveLogin) {
-                    // 保存7天
-                    Cookies.set("userInfo", JSON.stringify(res.data), {
-                      expires: 7
-                    });
-                  } else {
-                    Cookies.set("userInfo", JSON.stringify(res.data));
-                  }
                   this.setStore("userInfo", res.data);
                   this.$router.push({
                     name: "home_index"

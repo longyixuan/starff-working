@@ -36,7 +36,6 @@ import {
   getTimeList,
   postTime
 } from "@/api/index";
-import Cookies from "js-cookie";
 import qs from "qs";
 export default {
     data () {
@@ -81,8 +80,8 @@ export default {
                     postData.push({
                         systemId: row.systemId,
                         systemName: row.systemName,
-                        userId: JSON.parse(Cookies.get("userInfo")).userId,
-                        userName: JSON.parse(Cookies.get("userInfo")).userName,
+                        userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+                        userName: JSON.parse(localStorage.getItem('userInfo')).userName,
                         year: parseInt(this.curYear),
                         month: parseInt(this.curMonth),
                         day: i,
@@ -94,8 +93,8 @@ export default {
             postTime({
                 systemId: row.systemId,
                 systemName: row.systemName,
-                userId: JSON.parse(Cookies.get("userInfo")).userId,
-                userName: JSON.parse(Cookies.get("userInfo")).userName,
+                userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+                userName: JSON.parse(localStorage.getItem('userInfo')).userName,
                 year: parseInt(this.curYear),
                 month: parseInt(this.curMonth),
                 data: JSON.stringify(postData)
@@ -110,11 +109,11 @@ export default {
         exportData (type) {
             if (type === 1) {
                 this.$refs.exportTable.exportCsv({
-                    filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(Cookies.get("userInfo")).nickName+'）'
+                    filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(localStorage.getItem('userInfo')).nickName+'）'
                 });
             } else {
                 this.$refs.exportTable.exportCsv({
-                    filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(Cookies.get("userInfo")).nickName+'）',
+                    filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(localStorage.getItem('userInfo')).nickName+'）',
                     original: false
                 });
             }
@@ -160,7 +159,7 @@ export default {
                 this.exportColumns.push({
                     title: i,
                     slot: i,
-                    width: 70,
+                    width: 50,
                     sortable: true,
                     align: 'center'
                 })
@@ -193,7 +192,7 @@ export default {
             let postData = {
                 year: parseInt(this.curYear),
                 month: parseInt(this.curMonth),
-                userId: JSON.parse(Cookies.get("userInfo")).userId
+                userId: JSON.parse(localStorage.getItem('userInfo')).userId
             }
             this.loading = true;
             getTimeList(postData).then((res)=>{
