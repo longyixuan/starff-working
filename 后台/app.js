@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-20 15:00:26
+ * @Last Modified time: 2019-11-26 15:34:38
  */
 
 
@@ -13,8 +13,6 @@ const config = require('./config');
 const cors = require('koa2-cors');
 
 const koaBody = require('koa-body');
-// https://www.npmjs.com/package/koa-bodyparser
-// const bodyParser = require('koa-bodyparser');
 
 // https://github.com/Automattic/mongoose
 const mongoose = require('mongoose');
@@ -22,6 +20,8 @@ const mongoose = require('mongoose');
 const jwtKoa = require('koa-jwt'); // 用于路由权限控制
 
 const app = new Koa();
+
+const {  accessLogger,systemLogger } = require('./logger');
 
 mongoose.connect(config.db, {
     useNewUrlParser: true
@@ -32,7 +32,8 @@ mongoose.connect(config.db, {
         console.log('success');
     }
 });
-
+app.use(accessLogger());
+app.on('error', err => {logger.error(err); });
 app.use(cors());
 app.use(koaBody({
     multipart: true,
@@ -41,7 +42,7 @@ app.use(koaBody({
         maxFileSize: 1000*1024*1024    // 设置上传文件大小最大限制，默认2M
     }
 }));
-// app.use(bodyParser());
+
 /* 路由权限控制 */
 // 错误处理
 app.use((ctx, next) => {

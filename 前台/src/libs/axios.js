@@ -3,7 +3,6 @@ import qs from 'qs';
 import { getStore, setStore } from './storage';
 import { router } from '../router/index';
 import { Message } from 'view-design';
-import Cookies from 'js-cookie';
 // 统一请求路径前缀
 let base = 'http://localhost:3333';
 // 超时设定
@@ -24,7 +23,7 @@ axios.interceptors.response.use(response => {
     switch (data.code) {
         case 401:
             // 未登录 清除已登录状态
-            Cookies.set('userInfo', '');
+            setStore('userInfo', '');
             setStore('accessToken', '');
             router.push('/login');
             break;
