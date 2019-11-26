@@ -2,18 +2,18 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-22 11:53:42
+ * @Last Modified time: 2019-11-26 16:33:40
  */
 
 const config = require('./../../config');
 const passport = require('./../utils/passport');
 const User_col = require('./../models/user');
 const Department_col = require('./../models/department');
-const System_col = require('./../models/system');
 const Passport_col = require('./../models/password');
 const uuidv1 = require('uuid/v1');
 const qs = require('qs');
 const jsonwebtoken = require('jsonwebtoken')
+const { out } = require('../../logger');
 
 /* jwt密钥 */
 //秘钥
@@ -56,6 +56,7 @@ const login = async (ctx, next) => {
   ctx.status = 200;
   if (match) {
     //这是加密的 key（密钥）
+    out.info(req.userName+'登录成功');
     ctx.body = {
       code: 1,
       msg: '登录成功',

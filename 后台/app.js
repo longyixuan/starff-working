@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-26 15:34:38
+ * @Last Modified time: 2019-11-26 16:26:33
  */
 
 
@@ -21,7 +21,7 @@ const jwtKoa = require('koa-jwt'); // 用于路由权限控制
 
 const app = new Koa();
 
-const {  accessLogger,systemLogger } = require('./logger');
+const {  accessLogger,logger } = require('./logger');
 
 mongoose.connect(config.db, {
     useNewUrlParser: true

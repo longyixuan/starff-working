@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-22 15:31:54
+ * @Last Modified time: 2019-11-26 16:42:03
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -17,6 +17,7 @@ const getAll = require('./../middleware/timeHelp');
 const qs = require('qs');
 const fs = require('fs');
 const JSZip = require('jszip');
+const { out } = require('../../logger');
 // const sendMail = require('../../mailer')
 
 const getTimeList = async (ctx, next) => {
@@ -61,6 +62,7 @@ const getTimeList = async (ctx, next) => {
 const resetTime = async(ctx, next) => {
     ctx.status = 200;
     const list = await WorkTime_col.find();
+    out.info('重置工时');
     for (let i = 0; i < list.length; i++) {
         if (list[i].time===0 || list[i].time===null) {
             await WorkTime_col.deleteOne({
@@ -128,7 +130,7 @@ const postTime = async (ctx, next) => { //更新工时
         month: req.month
     })
     if (workTimeList.length!==0) {
-        console.log(list[0].userName+'编辑工时')
+        out.info(req.userName+'编辑工时')
     }
     ctx.body = {
         code: 1,
@@ -187,9 +189,9 @@ const workTimeCount = async (ctx,next) => {
  * 
  */
 const workTimeSeach = async (ctx, next) => {
-    console.log('查询统计')
     ctx.status = 200;
     const req = qs.parse(ctx.request.body);
+    out.info('查询统计');
     const time = await WorkTime_col.aggregate([ //按系统查询
         {
             $match: {
