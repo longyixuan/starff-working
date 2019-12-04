@@ -1459,3 +1459,41 @@
         [Symbol(mongoose:validatorError)]: true } },
   _message: 'document validation failed',
   name: 'ValidationError' }
+[2019-12-04T22:35:22.334] [ERROR] application - { ValidationError: document validation failed: documentName: Path `documentName` is required.
+    at ValidationError.inspect (/Volumes/D/公司项目/starff-working/后台/node_modules/_mongoose@5.7.13@mongoose/lib/error/validation.js:61:24)
+    at formatValue (util.js:438:38)
+    at inspect (util.js:328:10)
+    at Object.format (util.js:195:12)
+    at basicLayout (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/layouts.js:69:12)
+    at app (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/appenders/dateFile.js:30:19)
+    at categoryAppenders.forEach (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/log4js.js:42:5)
+    at Array.forEach (<anonymous>)
+    at sendLogEventToAppender (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/log4js.js:41:21)
+    at listeners.forEach.l (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/clustering.js:16:26)
+    at Array.forEach (<anonymous>)
+    at sendToListeners (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/clustering.js:16:13)
+    at Object.send (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/clustering.js:78:7)
+    at Logger._log (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/logger.js:56:16)
+    at Logger.log (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/logger.js:45:12)
+    at Logger.(anonymous function) [as error] (/Volumes/D/公司项目/starff-working/后台/node_modules/_log4js@3.0.6@log4js/lib/logger.js:84:10)
+  errors: 
+   { documentName: 
+      { ValidatorError: Path `documentName` is required.
+    at new ValidatorError (/Volumes/D/公司项目/starff-working/后台/node_modules/_mongoose@5.7.13@mongoose/lib/error/validator.js:29:11)
+    at validate (/Volumes/D/公司项目/starff-working/后台/node_modules/_mongoose@5.7.13@mongoose/lib/schematype.js:1055:13)
+    at /Volumes/D/公司项目/starff-working/后台/node_modules/_mongoose@5.7.13@mongoose/lib/schematype.js:1109:11
+    at Array.forEach (<anonymous>)
+    at SchemaString.SchemaType.doValidate (/Volumes/D/公司项目/starff-working/后台/node_modules/_mongoose@5.7.13@mongoose/lib/schematype.js:1064:14)
+    at /Volumes/D/公司项目/starff-working/后台/node_modules/_mongoose@5.7.13@mongoose/lib/document.js:2255:9
+    at _combinedTickCallback (internal/process/next_tick.js:131:7)
+    at process._tickCallback (internal/process/next_tick.js:180:9)
+        message: 'Path `documentName` is required.',
+        name: 'ValidatorError',
+        properties: [Object],
+        kind: 'required',
+        path: 'documentName',
+        value: '',
+        reason: undefined,
+        [Symbol(mongoose:validatorError)]: true } },
+  _message: 'document validation failed',
+  name: 'ValidationError' }

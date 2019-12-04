@@ -6,50 +6,43 @@
         <Tabs value="tab1"  @on-click="changeTab">
             <TabPane label="我的工作总结" name="tab1"></TabPane>
             <TabPane label="总结汇总查询" name="tab2" @on-click="$router.push('summary-seach')"></TabPane>
-            <Button size="small" type="primary" slot="extra">增加</Button>
+            <Button size="small" type="primary" slot="extra" @click="add">新增</Button>
         </Tabs>
-        <List>
-            <ListItem v-for="(item,index) in list" :key="item.documentId">{{item.documentName}}
-                <template slot="action">
-                    <li>
-                        <a @click="show(item.documentId)">查看</a>
-                    </li>
-                    <li>
-                        <template v-if="item.status">
-                            编辑
-                        </template>
-                        <template v-else>
-                            <a @click="edit(item.documentId)">编辑</a>
-                        </template>
-                    </li>
-                    <li>
-                        <template v-if="item.status">
-                            <span style="color: #19be6b">已上报</span>
-                        </template>
-                        <template v-else>
-                            <a @click="commit(index,item.documentId,item.userId)">上报</a>
-                        </template>
-                    </li>
-                    <li>
-                        <a href="">下载</a>
-                    </li>
-                </template>
-            </ListItem>
-            <div slot="footer" style="text-align: right;">
-                <!-- <Page :total="100" show-elevator /> -->
-            </div>
-        </List>
+        <Table border :columns="columns" :data="list">
+            <template slot-scope="{ row }" slot="name">
+                <strong>{{ row.documentName }}</strong>
+            </template>
+            <template slot-scope="{ row, index }" slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
+                <Button type="warning" size="small" :disabled="row.status" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
+                <Button type="success" size="small" :disabled="row.status" style="margin-right: 5px" @click="commit(index,row.documentId,row.userId)">上报</Button>
+                <Button type="error" size="small" :disabled="row.status" @click="del(index,row.documentId)">删除</Button>
+            </template>
+        </Table>
     </Card>
 </template>
 <script>
     import {
         getDocumentList,
-        commitDocument
+        commitDocument,
+        delDocument
     } from "@/api/index";
     export default {
         data() {
             return {
-                list: []
+                list: [],
+                columns: [
+                    {
+                        title: '名称',
+                        slot: 'name'
+                    },
+                    {
+                        title: '操作',
+                        slot: 'action',
+                        width: 230,
+                        align: 'center'
+                    }
+                ]
             }
         },
         methods: {
@@ -69,6 +62,7 @@
                 commitDocument({documentId: documentId, userId: userId}).then(res => {
                     if (res.code==1) {
                         this.list[indx].status = true;
+                        this.$Message.success('上报成功');
                     }
                 })
             },
@@ -77,6 +71,17 @@
             },
             edit(id) {
                 this.$router.push({ name: 'summary-edit', params: { id: id }})
+            },
+            add() {
+                this.$router.push({ name: 'summary-edit', params: { id: '' }})
+            },
+            del(idnx,id) {
+                delDocument(id).then(res => {
+                    if(res.code==1) {
+                        this.list.splice(idnx,1);
+                        this.$Message.success('删除成功');
+                    }
+                })
             }
         },
         mounted() {

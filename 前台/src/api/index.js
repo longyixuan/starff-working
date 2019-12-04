@@ -171,4 +171,7 @@ export const commitDocument = (params) => {
 export const getDocumentDetails = (ids,params) => {
     return getRequest(`/document/details/${ids}`, params)
 }
+export const delDocument = (ids, params) => {
+    return deleteRequest(`/document/del/${ids}`, params)
+}
 //-----------------------工作总结--------------------------------//

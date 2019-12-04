@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-04 16:28:18
+ * @Last Modified time: 2019-12-04 22:30:48
  */
 
 const Document_col = require('./../models/document');
@@ -69,9 +69,22 @@ const getDetails = async (ctx) => {
     }
 }
 
+const delDocument = async (ctx) => {
+    ctx.status = 200;
+    const id = ctx.params.id;
+    await Document_col.remove({
+        'documentId': id
+    })
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
     commitDocument,
-    getDetails
+    getDetails,
+    delDocument
 }
