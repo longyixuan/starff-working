@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import iView from 'iview';
+import ViewUI from 'view-design';
 import VueRouter from 'vue-router';
 import { routers } from './router';
 
@@ -12,10 +12,9 @@ const RouterConfig = {
 };
 
 export const router = new VueRouter(RouterConfig);
-window.document.title = '员工工时管理系统';
 
 router.beforeEach((to, from, next) => {
-    iView.LoadingBar.start();
+    ViewUI.LoadingBar.start();
     if (!JSON.parse(localStorage.getItem('userInfo')) && to.name !== 'login' && to.name !== 'regist' && to.name !== 'regist-result' && to.name !== 'relate') { // 判断是否已经登录且前往的页面不是登录页
         next({
             name: 'login'
@@ -31,6 +30,6 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to) => {
-    iView.LoadingBar.finish();
+    ViewUI.LoadingBar.finish();
     window.scrollTo(0, 0);
 });

@@ -26,9 +26,6 @@
                 </div>
             </template>
         </Table>
-        <div style="margin-top: 20px;">
-            <Button type="primary" @click="exportData(1)">导出数据</Button>
-        </div>
     </Card>
 </template>
 <script>
@@ -105,18 +102,6 @@ export default {
                     this.$Message.err("保存失败");
                 }
             });
-        },
-        exportData (type) {
-            if (type === 1) {
-                this.$refs.exportTable.exportCsv({
-                    filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(localStorage.getItem('userInfo')).nickName+'）'
-                });
-            } else {
-                this.$refs.exportTable.exportCsv({
-                    filename: this.curYear+'年'+this.curMonth+'月工时统计'+'（'+JSON.parse(localStorage.getItem('userInfo')).nickName+'）',
-                    original: false
-                });
-            }
         },
         remove (index) {
             this.data.splice(index, 1);

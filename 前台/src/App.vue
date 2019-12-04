@@ -1,6 +1,6 @@
 <template>
     <div id="main" class="app-main">
-        <router-view></router-view>
+        <router-view v-wechat-title="$route.meta.title"></router-view>
     </div>
 </template>
 

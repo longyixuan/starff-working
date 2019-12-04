@@ -34,6 +34,7 @@
               <MenuItem name="2-1" @click.native="$router.push('work-time')">录入</MenuItem>
               <!-- <MenuItem v-if="type===1" name="2-2" @click.native="$router.push('work-time-seach')">统计</MenuItem> -->
             </Submenu>
+            <MenuItem name="4" @click.native="$router.push({name: 'summary'})"><Icon type="md-document" />工作总结</MenuItem>
             <MenuItem name="3" @click.native="toRoute('own-space')"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>

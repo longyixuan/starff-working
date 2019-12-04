@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import ViewUI from 'view-design';
-//省市县
+import VueWechatTitle from 'vue-wechat-title'
 import App from './App'
 import {
     router
@@ -24,6 +24,8 @@ import {
 import '@babel/polyfill'
 Vue.config.productionTip = false
 Vue.use(ViewUI);
+
+Vue.use(VueWechatTitle);
 // 挂载全局使用的方法
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.postRequest = postRequest;

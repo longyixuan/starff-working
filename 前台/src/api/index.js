@@ -158,3 +158,17 @@ export const installTime = (params) => {
     return getRequest('/installTime', params)
 }
 //-----------------------工时管理--------------------------------//
+//-----------------------工作总结--------------------------------//
+export const addDocument = (params) => {
+    return postRequest('/document/add', params)
+}
+export const getDocumentList = (params) => {
+    return getRequest('/document/list', params)
+}
+export const commitDocument = (params) => {
+    return postRequest('/document/commit', params)
+}
+export const getDocumentDetails = (ids,params) => {
+    return getRequest(`/document/details/${ids}`, params)
+}
+//-----------------------工作总结--------------------------------//

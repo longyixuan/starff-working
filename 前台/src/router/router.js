@@ -64,45 +64,91 @@ export const appRouter = {
     children: [
         { 
             path: 'home',
-            title: '首页', 
+            meta: {
+                title: '首页'
+            }, 
             name: 'home_index', 
             component: () => import('@/views/home/home.vue')
         },
         {
             path: 'department-manage',
-            title: '部门管理',
+            meta: {
+                title: '部门管理'
+            }, 
             name: 'department-manage',
             component: () => import('@/views/sys/department-manage/departmentManage.vue')
         },
         {
             path: 'user-manage',
-            title: '用户管理',
+            meta: {
+                title: '用户管理'
+            }, 
             name: 'user-manage',
             component: () => import('@/views/sys/user-manage/userManage.vue')
         },
         {
             path: 'system-manage',
-            title: '系统管理',
+            meta: {
+                title: '系统管理'
+            }, 
             name: 'system-manage',
             component: () => import('@/views/sys/system-manage/systemManage.vue')
         },
         {
             path: 'work-time',
-            title: '我的工时-录入',
+            meta: {
+                title: '我的工时-录入'
+            }, 
             name: 'work-time',
             component: () => import('@/views/work-time/work-time.vue')
         }, 
         {
             path: 'work-time-seach',
-            title: '我的工时-统计',
+            meta: {
+                title: '我的工时-统计'
+            }, 
             name: 'work-time-seach',
             component: () => import('@/views/work-time/work-time-seach.vue')
         },
         {
             path: 'own-space',
-            title: '个人信息',
+            meta: {
+                title: '个人信息'
+            },
             name: 'own-space',
             component: () => import('@/views/own-space/own-space.vue')
+        },
+        {
+            path: 'summary',
+            meta: {
+                title: '工作总结'
+            },
+            name: 'summary',
+            component: () => import('@/views/document/summary.vue')
+        },
+        {
+            path: 'summary/seach',
+            meta: {
+                title: '工作总结'
+            },
+            name: 'summary-seach',
+            component: () => import('@/views/document/seach.vue')
+        },
+        {
+            path: 'summary/edit/:id',
+            meta: {
+                title: '工作总结'
+            },
+            name: 'summary-edit',
+            component: () => import('@/views/document/edit.vue')
+        },
+        {
+            path: 'summary/show/:id',
+            meta: {
+                title: '工作总结'
+            },
+            name: 'summary-show',
+            component: () => import('@/views/document/show.vue')
         }
     ]
 };

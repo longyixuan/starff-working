@@ -2,9 +2,8 @@
  * @Author: yinxl 
  * @Date: 2019-11-18 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-19 08:35:25
+ * @Last Modified time: 2019-11-29 14:30:57
  */
-let fs = require('fs'); 
 let nodemailer = require('nodemailer');
 let smtpTransport = require('nodemailer-smtp-transport');
   // SMTP 连接

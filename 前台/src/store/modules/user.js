@@ -1,10 +1,12 @@
-import Cookies from 'js-cookie';
+import {
+    removeStore
+} from '@/libs/storage'
 
 const user = {
     state: {},
     mutations: {
         logout (state, vm) {
-            Cookies.remove('userInfo');
+            removeStore('userInfo');
             localStorage.clear();
         }
     }

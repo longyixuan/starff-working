@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-26 16:26:33
+ * @Last Modified time: 2019-12-04 09:58:51
  */
 
 
@@ -75,6 +75,7 @@ const role_router = require('./routes/api/role_router');
 const menu_router = require('./routes/api/menu_router');
 const download_router = require('./routes/api/download_router');
 const upload_router = require('./routes/api/upload_router');
+const document_router = require('./routes/api/document_router');
 
 app.use(user_router.routes()).use(user_router.allowedMethods());
 app.use(system_router.routes()).use(system_router.allowedMethods());
@@ -84,5 +85,6 @@ app.use(role_router.routes()).use(role_router.allowedMethods());
 app.use(menu_router.routes()).use(menu_router.allowedMethods());
 app.use(download_router.routes()).use(download_router.allowedMethods());
 app.use(upload_router.routes()).use(upload_router.allowedMethods());
+app.use(document_router.routes()).use(document_router.allowedMethods());
 
 app.listen(config.port);
