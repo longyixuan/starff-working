@@ -27,6 +27,7 @@
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
                 <Button type="success" size="small" style="margin-right: 5px" :disabled="!row.status" @click="reset(index,row.documentId)">置为补充状态</Button>
+                <Button type="info" size="small" :disabled="row.status" @click="download(row.documentName)">下载</Button>
             </template>
         </Table>
         <div></div>
@@ -70,7 +71,7 @@ export default {
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 200,
+                        width: 240,
                         align: 'center'
                     }
                 ]
@@ -83,6 +84,9 @@ export default {
                         this.list = res.data;
                     }
                 })
+            },
+            download(fileName) {
+                window.location.href = 'http://' + window.location.hostname + ':3333/download/markdown?fileName='+fileName;
             },
             seach() {
                 this.init();

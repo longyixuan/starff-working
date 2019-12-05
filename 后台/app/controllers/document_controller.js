@@ -2,9 +2,10 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-05 15:06:55
+ * @Last Modified time: 2019-12-05 16:26:24
  */
 
+const fs = require('fs');
 const Document_col = require('./../models/document');
 const uuidv1 = require('uuid/v1');
 
@@ -22,6 +23,9 @@ const addDocument= async (ctx, next) => {
             documentId: req.parentId
         },req);
     }
+    fs.writeFile('data/markdown/' + req.documentName + '.md', req.content, function (err) {
+        console.error(err);
+    })
     let newdocument = await Document_col.find({documentId: req.documentId});
     ctx.body = {
         code: 1,

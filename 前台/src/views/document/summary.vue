@@ -19,7 +19,8 @@
                 <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
                 <Button type="warning" size="small" :disabled="row.status" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
                 <Button type="success" size="small" :disabled="row.status" style="margin-right: 5px" @click="commit(index,row.documentId,row.userId)">上报</Button>
-                <Button type="error" size="small" :disabled="row.status" @click="del(index,row.documentId)">删除</Button>
+                <Button type="error" size="small" :disabled="row.status" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
+                <Button type="info" size="small" :disabled="row.status" @click="download(row.documentName)">下载</Button>
             </template>
         </Table>
     </Card>
@@ -53,27 +54,30 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 230,
+                        width: 290,
                         align: 'center'
                     }
                 ]
             }
         },
         methods: {
+            download(fileName) {
+                window.location.href = 'http://' + window.location.hostname + ':3333/download/markdown?fileName='+fileName;
+            },
             changeTab(name) {
                 if (name=='tab2') {
-                    this.$router.push({name:'summary-seach'})
+                    this.$router.push({'name':'summary-seach'})
                 }
             },
             initList() {
-                getDocumentList({userId: JSON.parse(localStorage.getItem('userInfo')).userId}).then(res => {
+                getDocumentList({'userId': JSON.parse(localStorage.getItem('userInfo')).userId}).then(res => {
                     if (res.code==1) {
                         this.list = res.data;
                     }
                 })
             },
             commit(indx,documentId,userId) {
-                commitDocument({documentId: documentId, userId: userId}).then(res => {
+                commitDocument({'documentId': documentId, 'userId': userId}).then(res => {
                     if (res.code==1) {
                         this.list[indx].status = true;
                         this.$Message.success('上报成功');
@@ -81,13 +85,13 @@
                 })
             },
             show(id) {
-                this.$router.push({ name: 'summary-show', params: { id: id }})
+                this.$router.push({ 'name': 'summary-show', 'params': { id: id }})
             },
             edit(id) {
-                this.$router.push({ name: 'summary-edit', params: { id: id }})
+                this.$router.push({ 'name': 'summary-edit', 'params': { id: id }})
             },
             add() {
-                this.$router.push({ name: 'summary-edit', params: { id: '' }})
+                this.$router.push({ 'name': 'summary-edit', 'params': { id: '' }})
             },
             del(idnx,id) {
                 delDocument(id).then(res => {

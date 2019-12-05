@@ -180,4 +180,7 @@ export const delDocument = (ids, params) => {
 export const resetDocument = (ids, params) => {
     return getRequest(`/document/reset/${ids}`, params)
 }
+export const downloadDocument = (params) => {
+    return getRequest('/download/markdown', params)
+}
 //-----------------------工作总结--------------------------------//
