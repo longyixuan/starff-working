@@ -1,0 +1,67 @@
+[2019-12-05T14:16:56.501] [ERROR] application - { PayloadTooLargeError: request entity too large
+    at readStream (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:155:17)
+    at executor (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:112:5)
+    at new Promise (<anonymous>)
+    at getRawBody (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:111:10)
+    at D:\1\starff-working\后台\node_modules\_co-body@5.2.0@co-body\lib\form.js:42:14
+  message: 'request entity too large',
+  expected: 108138,
+  length: 108138,
+  limit: 57344,
+  type: 'entity.too.large' }
+[2019-12-05T14:16:59.950] [ERROR] application - { PayloadTooLargeError: request entity too large
+    at readStream (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:155:17)
+    at executor (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:112:5)
+    at new Promise (<anonymous>)
+    at getRawBody (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:111:10)
+    at D:\1\starff-working\后台\node_modules\_co-body@5.2.0@co-body\lib\form.js:42:14
+  message: 'request entity too large',
+  expected: 108138,
+  length: 108138,
+  limit: 57344,
+  type: 'entity.too.large' }
+[2019-12-05T14:17:13.640] [ERROR] application - { PayloadTooLargeError: request entity too large
+    at readStream (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:155:17)
+    at executor (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:112:5)
+    at new Promise (<anonymous>)
+    at getRawBody (D:\1\starff-working\后台\node_modules\_raw-body@2.4.1@raw-body\index.js:111:10)
+    at D:\1\starff-working\后台\node_modules\_co-body@5.2.0@co-body\lib\form.js:42:14
+  message: 'request entity too large',
+  expected: 68200,
+  length: 68200,
+  limit: 57344,
+  type: 'entity.too.large' }
+[2019-12-05T15:04:57.930] [ERROR] application - ReferenceError: Department_col is not defined
+    at addDocument (D:\1\starff-working\后台\app\controllers\document_controller.js:21:9)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:44:32)
+    at next (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:45:18)
+    at D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:346:16
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:44:32)
+    at D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:36:12
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:351:31)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at allowedMethods (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:407:12)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:332:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at allowedMethods (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:407:12)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:332:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+[2019-12-05T15:05:15.393] [ERROR] application - ReferenceError: Department_col is not defined
+    at addDocument (D:\1\starff-working\后台\app\controllers\document_controller.js:21:9)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:44:32)
+    at next (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:45:18)
+    at D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:346:16
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:44:32)
+    at D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:36:12
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:351:31)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at allowedMethods (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:407:12)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:332:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at allowedMethods (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:407:12)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:332:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)

@@ -2,7 +2,7 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card>
+    <Card title="工作总结">
         <Tabs value="tab2" @on-click="changeTab">
             <TabPane label="我的工作总结" name="tab1"></TabPane>
             <TabPane label="总结汇总查询" name="tab2"></TabPane>
@@ -10,119 +10,83 @@
         <div>
             <Form ref="formInline" inline>
                 <FormItem>
-                    <Input v-model="nf" style="width: 160px;">
-                        <span slot="prepend">年份</span>
-                    </Input>
-                </FormItem>
-                <FormItem>
-                    <Input v-model="yf" style="width: 160px;">
-                        <span slot="prepend">月份</span>
-                    </Input>
+                    <DatePicker :value="time" @on-change="change" format="yyyy-MM" type="month" placeholder="请选择年月" style="width: 160px"></DatePicker>
                 </FormItem>  
                 <FormItem>
-                    <Button type="primary">查询</Button>
+                    <Button type="primary" @click="seach">查询</Button>
                 </FormItem>
             </Form>
         </div>
-        <Divider size="small" style="margin: 0"/>
-        <List>
-            <ListItem>
-                <a href="###">2019年11月月终工作总结</a><Tag color="warning" style="margin-left: 10px;">设计部</Tag>
-                    <template slot="action">
-                    <li>
-                        <a href="">查看</a>
-                    </li>
-                    <li>
-                        <a href="">编辑</a>
-                    </li>
-                    <li>
-                        <a href="">下载</a>
-                    </li>
-                </template>
-            </ListItem>
-            <ListItem>
-                <Checkbox
-                    :indeterminate="indeterminate"
-                    :value="checkAll"
-                    @click.prevent.native="handleCheckAll">全选
-                </Checkbox>
-            </ListItem>
-            <CheckboxGroup v-model="checkAllGroup" @on-change="checkAllGroupChange">
-                <ListItem>
-                    <Checkbox label="尹晓龙">2019年11月月终工作总结（尹晓龙）</Checkbox>
-                    <template slot="action">
-                        <li>
-                            <a href="">查看</a>
-                        </li>
-                        <li>
-                            <a href="">置为补充状态</a>
-                        </li>
-                    </template>
-                </ListItem>
-                <ListItem>
-                    <Checkbox label="王利英">2019年11月月终工作总结（王利英）</Checkbox>
-                    <template slot="action">
-                        <li>
-                            <a href="">查看</a>
-                        </li>
-                        <li>
-                            <a href="">置为补充状态</a>
-                        </li>
-                    </template>
-                </ListItem>
-                <ListItem>
-                    <Checkbox label="马艳雄">2019年11月月终工作总结（马艳雄）</Checkbox>
-                    <template slot="action">
-                        <li>
-                            <a href="">查看</a>
-                        </li>
-                         <li>
-                            <a href="">置为补充状态</a>
-                        </li>
-                    </template>
-                </ListItem>
-                <ListItem>
-                    <Checkbox label="崔永辉">2019年11月月终工作总结（崔永辉）</Checkbox>
-                    <template slot="action">
-                        <li>
-                            <a href="">查看</a>
-                        </li>
-                        <li>
-                            <a href="">置为补充状态</a>
-                        </li>
-                    </template>
-                </ListItem>
-                <ListItem>
-                    <Checkbox label="贾晓东">2019年11月月终工作总结（贾晓东）</Checkbox>
-                    <template slot="action">
-                        <li>
-                            <a href="">查看</a>
-                        </li>
-                        <li>
-                            <a href="">置为补充状态</a>
-                        </li>
-                    </template>
-                </ListItem>
-            </CheckboxGroup>
-            <div slot="footer">
-                <Button type="success">自动合并生成设计部工作总结</Button>
-            </div>
-        </List>
+        <Table border :columns="columns" :data="list">
+            <template slot-scope="{ row }" slot="name">
+                <strong>{{ row.documentName }}</strong>
+            </template>
+            <template slot-scope="{ row }" slot="time">
+                <strong>{{row.year + '-' + row.month}}</strong>
+            </template>
+            <template slot-scope="{ row, index }" slot="action">
+                <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
+                <Button type="success" size="small" style="margin-right: 5px" :disabled="!row.status" @click="reset(index,row.documentId)">置为补充状态</Button>
+            </template>
+        </Table>
+        <div></div>
     </Card>
 </template>
 <script>
+import {
+    resetDocument,
+    getDocumentListall
+} from "@/api/index";
 export default {
         data () {
             return {
-                nf: '2019',
-                yf: '11',
+                time: '',
                 single: false,
                 indeterminate: true,
                 checkAll: false,
-                checkAllGroup: []
+                list: [],
+                checkAllGroup: [],
+                columns: [
+                    {
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        title: '名称',
+                        slot: 'name'
+                    },
+                    {
+                        title: '时间',
+                        width: 90,
+                        align: 'center',
+                        slot: 'time'
+                    },
+                    {
+                        title: '操作',
+                        slot: 'action',
+                        width: 200,
+                        align: 'center'
+                    }
+                ]
             }
         },
         methods: {
+            init() {
+                getDocumentListall({time: this.time}).then(res => {
+                    if (res.code == 1) {
+                        this.list = res.data;
+                    }
+                })
+            },
+            seach() {
+                this.init();
+            },
             changeTab(name) {
                 if (name=='tab1') {
                     this.$router.push({name: 'summary'})
@@ -153,7 +117,24 @@ export default {
                     this.indeterminate = false;
                     this.checkAll = false;
                 }
+            },
+            show(id) {
+                this.$router.push({ name: 'summary-show', params: { id: id }})
+            },
+            reset(indx,id) {
+                resetDocument(id).then(res => {
+                    if (res.code == 1) {
+                        this.list.splice(indx,1);
+                        this.$Message.success('操作成功')
+                    }
+                })
+            },
+            change(value) {
+                this.time = value;
             }
+        },
+        mounted() {
+            this.init();
         }
     }
 </script>

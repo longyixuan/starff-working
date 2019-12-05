@@ -2,7 +2,7 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card>
+    <Card title="工作总结">
         <Tabs value="tab1"  @on-click="changeTab">
             <TabPane label="我的工作总结" name="tab1"></TabPane>
             <TabPane label="总结汇总查询" name="tab2" @on-click="$router.push('summary-seach')"></TabPane>
@@ -11,6 +11,9 @@
         <Table border :columns="columns" :data="list">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.documentName }}</strong>
+            </template>
+            <template slot-scope="{ row }" slot="time">
+                <strong>{{row.year + '-' + row.month}}</strong>
             </template>
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
@@ -33,8 +36,19 @@
                 list: [],
                 columns: [
                     {
+                        type: 'index',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
                         title: '名称',
                         slot: 'name'
+                    },
+                    {
+                        title: '时间',
+                        width: 90,
+                        align: 'center',
+                        slot: 'time'
                     },
                     {
                         title: '操作',

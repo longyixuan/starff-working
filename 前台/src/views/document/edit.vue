@@ -8,6 +8,10 @@
         <Input v-model="title" placeholder="输入工作总结标题..." class="markdown-title"/>
         <vue-simplemde v-model="content" ref="markdownEditor" :configs="configs" @input="input" preview-class="markdown-body"/>
         <div class="markdown-footer">
+            <span style="float: left;">
+                <DatePicker :value="time" @on-change="onChange" format="yyyy-MM" type="month" placeholder="工作总结年月" style="width: 160px;margin-right: 10px"></DatePicker>
+                <span style="color: #ed4014">标记工时提交日期</span>
+            </span>
             <Button style="margin-right: 10px">返回</Button>
             <Button type="primary" @click="save">保存</Button>
         </div>
@@ -23,6 +27,7 @@
         data() {
             return {
                 title: '',
+                time: '',
                 content: '',
                 contentHtml: '',
                 configs: {
@@ -46,10 +51,11 @@
         methods: {
             save() {
                 let postData = {
-                    documentId: '',
+                    documentId: this.documentId,
                     contentHtml: this.contentHtml,
                     documentName: this.title,
                     userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+                    time: this.time,
                     content: this.content,
                 }
                 addDocument(postData).then(res => {
@@ -65,12 +71,16 @@
                             this.contentHtml = res.data.contentHtml;
                             this.content = res.data.content;
                             this.title = res.data.documentName;
+                            this.time = res.data.year+'-'+res.data.month;
                         }
                     })
                 }
             },
             input(value) {
                 this.contentHtml = this.$refs['markdownEditor'].simplemde.markdown(value);
+            },
+            onChange(val) {
+                this.time = val;
             }
         },
         mounted() {

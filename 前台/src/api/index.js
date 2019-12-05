@@ -165,6 +165,9 @@ export const addDocument = (params) => {
 export const getDocumentList = (params) => {
     return getRequest('/document/list', params)
 }
+export const getDocumentListall = (params) => {
+    return getRequest('/document/listALL',params)
+}
 export const commitDocument = (params) => {
     return postRequest('/document/commit', params)
 }
@@ -173,5 +176,8 @@ export const getDocumentDetails = (ids,params) => {
 }
 export const delDocument = (ids, params) => {
     return deleteRequest(`/document/del/${ids}`, params)
+}
+export const resetDocument = (ids, params) => {
+    return getRequest(`/document/reset/${ids}`, params)
 }
 //-----------------------工作总结--------------------------------//

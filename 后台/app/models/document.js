@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-04 16:20:05
+ * @Last Modified time: 2019-12-05 11:50:58
  */
 
 const mongoose = require('mongoose');
@@ -32,6 +32,14 @@ const DocumentSchema = new Schema({
     },
     contentHtml: {
         type: String
+    },
+    year: {
+        type: String,
+        required: true
+    },
+    month: {
+        type: String,
+        required: true
     }
 }, { collection: 'document', versionKey: false});
 

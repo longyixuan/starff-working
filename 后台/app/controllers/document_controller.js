@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-04 22:30:48
+ * @Last Modified time: 2019-12-05 15:06:55
  */
 
 const Document_col = require('./../models/document');
@@ -11,16 +11,18 @@ const uuidv1 = require('uuid/v1');
 const addDocument= async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const arr = req.time.split('-');
+    req.year = arr[0];
+    req.month = arr[1];
     if (req.documentId=='') { //新增
         req.documentId = uuidv1();
         await Document_col.create(req);
     } else {
-        await Department_col.updateOne({
+        await Document_col.updateOne({
             documentId: req.parentId
         },req);
     }
     let newdocument = await Document_col.find({documentId: req.documentId});
-    console.log(newdocument)
     ctx.body = {
         code: 1,
         msg: '请求成功',
@@ -56,6 +58,20 @@ const commitDocument = async (ctx,next) => {
     }
 }
 
+const resetDocument = async (ctx,next) => {
+    ctx.status = 200;
+    const req = ctx.params;
+    await Document_col.updateMany({
+        'documentId': req.id
+    },{
+        status: false
+    });
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
 const getDetails = async (ctx) => {
     const id = ctx.params.id;
     const document = await Document_col.findOne({
@@ -81,10 +97,34 @@ const delDocument = async (ctx) => {
     }
 }
 
+const allDocument = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.query;
+    if (!!req.time) {
+        const arr = req.time.split('-');
+        var documentList = await Document_col.find({
+            year: arr[0],
+            month: arr[1],
+            status: true
+        });
+    } else {
+        var documentList = await Document_col.find({
+            status: true
+        });
+    }
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: documentList
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
     commitDocument,
     getDetails,
-    delDocument
+    delDocument,
+    allDocument,
+    resetDocument
 }
