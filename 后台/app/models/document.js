@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-05 11:50:58
+ * @Last Modified time: 2019-12-06 11:51:27
  */
 
 const mongoose = require('mongoose');
@@ -21,6 +21,13 @@ const DocumentSchema = new Schema({
     userId: {
         type: String,
         required: true
+    },
+    userName: {
+        type: String,
+        required: true
+    },
+    nickName: {
+        type: String
     },
     status: {
         type: Boolean,

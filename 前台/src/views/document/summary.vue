@@ -3,11 +3,7 @@
 </style>
 <template>
     <Card title="工作总结">
-        <Tabs value="tab1"  @on-click="changeTab">
-            <TabPane label="我的工作总结" name="tab1"></TabPane>
-            <TabPane label="总结汇总查询" name="tab2" @on-click="$router.push('summary-seach')"></TabPane>
-            <Button size="small" type="primary" slot="extra" @click="add">新增</Button>
-        </Tabs>
+        <Button type="primary" slot="extra" @click="add">新增</Button>
         <Table border :columns="columns" :data="list">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.documentName }}</strong>
@@ -20,7 +16,7 @@
                 <Button type="warning" size="small" :disabled="row.status" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
                 <Button type="success" size="small" :disabled="row.status" style="margin-right: 5px" @click="commit(index,row.documentId,row.userId)">上报</Button>
                 <Button type="error" size="small" :disabled="row.status" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
-                <Button type="info" size="small" :disabled="row.status" @click="download(row.documentName)">下载</Button>
+                <Button type="info" size="small" @click="download(row.documentName)">下载</Button>
             </template>
         </Table>
     </Card>
@@ -64,11 +60,6 @@
             download(fileName) {
                 window.location.href = 'http://' + window.location.hostname + ':3333/download/markdown?fileName='+fileName;
             },
-            changeTab(name) {
-                if (name=='tab2') {
-                    this.$router.push({'name':'summary-seach'})
-                }
-            },
             initList() {
                 getDocumentList({'userId': JSON.parse(localStorage.getItem('userInfo')).userId}).then(res => {
                     if (res.code==1) {
@@ -77,11 +68,13 @@
                 })
             },
             commit(indx,documentId,userId) {
-                commitDocument({'documentId': documentId, 'userId': userId}).then(res => {
-                    if (res.code==1) {
-                        this.list[indx].status = true;
-                        this.$Message.success('上报成功');
-                    }
+                this.confirm('上报之后不可修改和删除，是否要上报？',() => {
+                    commitDocument({'documentId': documentId, 'userId': userId}).then(res => {
+                        if (res.code==1) {
+                            this.list[indx].status = true;
+                            this.$Message.success('上报成功');
+                        }
+                    })
                 })
             },
             show(id) {
@@ -94,12 +87,23 @@
                 this.$router.push({ 'name': 'summary-edit', 'params': { id: '' }})
             },
             del(idnx,id) {
-                delDocument(id).then(res => {
-                    if(res.code==1) {
-                        this.list.splice(idnx,1);
-                        this.$Message.success('删除成功');
+                this.confirm('确定要删除？',() => {
+                    delDocument(id).then(res => {
+                        if(res.code==1) {
+                            this.list.splice(idnx,1);
+                            this.$Message.success('删除成功');
+                        }
+                    })
+                });
+            },
+            confirm(tip,callback) {
+                this.$Modal.confirm({
+                    title: "提示",
+                    content: tip,
+                    onOk: () => {
+                        callback();
                     }
-                })
+                });
             }
         },
         mounted() {

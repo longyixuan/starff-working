@@ -12,7 +12,7 @@
                 <DatePicker :value="time" @on-change="onChange" format="yyyy-MM" type="month" placeholder="工作总结年月" style="width: 160px;margin-right: 10px"></DatePicker>
                 <span style="color: #ed4014">标记工时提交日期</span>
             </span>
-            <Button style="margin-right: 10px">返回</Button>
+            <Button style="margin-right: 10px" @click="$router.push({name: 'summary'})">返回</Button>
             <Button type="primary" @click="save">保存</Button>
         </div>
     </Card>
@@ -55,6 +55,8 @@
                     contentHtml: this.contentHtml,
                     documentName: this.title,
                     userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+                    userName: JSON.parse(localStorage.getItem('userInfo')).userName,
+                    nickName: JSON.parse(localStorage.getItem('userInfo')).nickName,
                     time: this.time,
                     content: this.content,
                 }

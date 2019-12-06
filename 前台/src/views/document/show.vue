@@ -2,12 +2,11 @@
 @import "./summary.less";
 </style>
 <template>
-    <div class="">
-        <Card title="工作总结">
-            <h2 class="summary-title">{{contentHtml.documentName}}</h2>
-            <div class="summary-html" v-html="contentHtml.contentHtml"></div>
-        </Card>
-    </div>
+    <Card title="工作总结">
+        <h2 class="summary-title">{{contentHtml.documentName}}</h2>
+        <div class="summary-html" v-html="contentHtml.contentHtml"></div>
+        <Button type="primary" slot="extra" @click="$router.push({name: 'summary'})">返回</Button>
+    </Card>
 </template>
 <script>
 import {

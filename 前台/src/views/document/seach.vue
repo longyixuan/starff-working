@@ -3,20 +3,14 @@
 </style>
 <template>
     <Card title="工作总结">
-        <Tabs value="tab2" @on-click="changeTab">
-            <TabPane label="我的工作总结" name="tab1"></TabPane>
-            <TabPane label="总结汇总查询" name="tab2"></TabPane>
-        </Tabs>
-        <div>
-            <Form ref="formInline" inline>
-                <FormItem>
-                    <DatePicker :value="time" @on-change="change" format="yyyy-MM" type="month" placeholder="请选择年月" style="width: 160px"></DatePicker>
-                </FormItem>  
-                <FormItem>
-                    <Button type="primary" @click="seach">查询</Button>
-                </FormItem>
-            </Form>
-        </div>
+        <Form ref="formInline" inline>
+            <FormItem>
+                <DatePicker :value="time" @on-change="change" format="yyyy-MM" type="month" placeholder="请选择年月" style="width: 160px"></DatePicker>
+            </FormItem>  
+            <FormItem>
+                <Button type="primary" @click="seach">查询</Button>
+            </FormItem>
+        </Form>
         <Table border :columns="columns" :data="list">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.documentName }}</strong>
@@ -26,11 +20,10 @@
             </template>
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                <Button type="success" size="small" style="margin-right: 5px" :disabled="!row.status" @click="reset(index,row.documentId)">置为补充状态</Button>
-                <Button type="info" size="small" :disabled="row.status" @click="download(row.documentName)">下载</Button>
+                <Button type="warning" size="small" style="margin-right: 5px" :disabled="!row.status" @click="reset(index,row.documentId)">置为补充状态</Button>
+                <Button type="info" size="small" @click="download(row.documentName)">下载</Button>
             </template>
         </Table>
-        <div></div>
     </Card>
 </template>
 <script>
@@ -63,6 +56,18 @@ export default {
                         slot: 'name'
                     },
                     {
+                        title: '用户名',
+                        width: 120,
+                        align: 'center',
+                        key: 'userName'
+                    },
+                    {
+                        title: '姓名',
+                        width: 120,
+                        align: 'center',
+                        key: 'nickName'
+                    },
+                    {
                         title: '时间',
                         width: 90,
                         align: 'center',
@@ -91,50 +96,30 @@ export default {
             seach() {
                 this.init();
             },
-            changeTab(name) {
-                if (name=='tab1') {
-                    this.$router.push({name: 'summary'})
-                }
-            },
-            handleCheckAll () {
-                if (this.indeterminate) {
-                    this.checkAll = false;
-                } else {
-                    this.checkAll = !this.checkAll;
-                }
-                this.indeterminate = false;
-
-                if (this.checkAll) {
-                    this.checkAllGroup = ['尹晓龙', '王利英', '马艳雄','崔永辉','贾晓东'];
-                } else {
-                    this.checkAllGroup = [];
-                }
-            },
-            checkAllGroupChange (data) {
-                if (data.length === 3) {
-                    this.indeterminate = false;
-                    this.checkAll = true;
-                } else if (data.length > 0) {
-                    this.indeterminate = true;
-                    this.checkAll = false;
-                } else {
-                    this.indeterminate = false;
-                    this.checkAll = false;
-                }
-            },
             show(id) {
                 this.$router.push({ name: 'summary-show', params: { id: id }})
             },
             reset(indx,id) {
-                resetDocument(id).then(res => {
-                    if (res.code == 1) {
-                        this.list.splice(indx,1);
-                        this.$Message.success('操作成功')
-                    }
+                this.confirm('置为可修改状态？',() =>{
+                    resetDocument(id).then(res => {
+                        if (res.code == 1) {
+                            this.list.splice(indx,1);
+                            this.$Message.success('操作成功')
+                        }
+                    })
                 })
             },
             change(value) {
                 this.time = value;
+            },
+            confirm(tip,callback) {
+                this.$Modal.confirm({
+                    title: "提示",
+                    content: tip,
+                    onOk: () => {
+                        callback();
+                    }
+                });
             }
         },
         mounted() {

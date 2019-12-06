@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-05 16:26:24
+ * @Last Modified time: 2019-12-06 11:35:50
  */
 
 const fs = require('fs');
@@ -20,11 +20,10 @@ const addDocument= async (ctx, next) => {
         await Document_col.create(req);
     } else {
         await Document_col.updateOne({
-            documentId: req.parentId
+            documentId: req.documentId
         },req);
     }
     fs.writeFile('data/markdown/' + req.documentName + '.md', req.content, function (err) {
-        console.error(err);
     })
     let newdocument = await Document_col.find({documentId: req.documentId});
     ctx.body = {

@@ -32,17 +32,20 @@
                 <Icon type="md-calendar"/>我的工时
               </template>
               <MenuItem name="2-1" @click.native="$router.push('work-time')">录入</MenuItem>
-              <!-- <MenuItem v-if="type===1" name="2-2" @click.native="$router.push('work-time-seach')">统计</MenuItem> -->
             </Submenu>
-            <MenuItem name="4" @click.native="$router.push({name: 'summary'})"><Icon type="md-document" />工作总结</MenuItem>
-            <MenuItem name="3" @click.native="toRoute('own-space')"><Icon type="md-person" />个人信息</MenuItem>
+            <Submenu name="3">
+              <template slot="title">
+                <Icon type="md-document"/>工作总结
+              </template>
+              <MenuItem name="3-1" @click.native="$router.push({name: 'summary'})">个人总结</MenuItem>
+              <MenuItem name="3-2" @click.native="$router.push({name: 'summary-seach'})">部门总结</MenuItem>
+            </Submenu>
+            <MenuItem name="4" @click.native="toRoute('own-space')"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>
         <Layout :style="{padding: '24px'}">
           <Content :style="{minHeight: '280px'}">
-            <keep-alive>
               <router-view></router-view>
-            </keep-alive>
           </Content>
         </Layout>
       </Layout>
