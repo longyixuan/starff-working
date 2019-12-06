@@ -149,6 +149,14 @@ export const appRouter = {
             },
             name: 'summary-show',
             component: () => import('@/views/document/show.vue')
+        },
+        {
+            path: 'summary/template',
+            meta: {
+                title: '工作总结'
+            },
+            name: 'summary-template',
+            component: () => import('@/views/document/template.vue')
         }
     ]
 };

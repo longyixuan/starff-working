@@ -3,7 +3,10 @@
 </style>
 <template>
     <Card title="工作总结">
-        <Button type="primary" slot="extra" @click="add">新增</Button>
+        <template slot="extra">
+            <Button type="primary"  @click="add">MarkDown新增</Button>
+            <Button type="primary" @click="addTemplate" style="margin-left: 10px">模板新增</Button>
+        </template>
         <Table border :columns="columns" :data="list">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.documentName }}</strong>
@@ -104,6 +107,9 @@
                         callback();
                     }
                 });
+            },
+            addTemplate() {
+                this.$router.push({ 'name': 'summary-template'})
             }
         },
         mounted() {

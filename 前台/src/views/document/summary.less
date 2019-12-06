@@ -35,3 +35,49 @@
         font-size: 16px;
     }
 }
+.marginB-20 {
+    margin-bottom: 20px;
+}
+.summary-template {
+    border: 1px dashed #ddd;
+    padding: 40px;
+    margin-bottom: 20px;
+    position: relative;
+    background: rgba(245,249,254,.5);
+    .ivu-input{
+        &::placeholder {
+            color: #999;
+        }
+    }
+    .ivu-select-placeholder {
+        color: #999 !important;
+    }
+    .summary-tag {
+        position: absolute;
+        top: -2px;
+        left: 0;
+    }
+    .summary-tag-right {
+        position: absolute;
+        top: -2px;
+        right: -4px;
+        cursor: pointer;
+    }
+}
+.summary-template-add {
+    background: rgba(245,249,254,.5);
+    border: 1px dashed #ddd;
+    text-align: center;
+    padding:  10px;
+    cursor: pointer;
+}
+.summary-input {
+    .ivu-input {
+        height: auto;
+        font-size: 28px;
+        font-weight: 700;
+        &::placeholder {
+            color: #999;
+        }
+    }
+}
