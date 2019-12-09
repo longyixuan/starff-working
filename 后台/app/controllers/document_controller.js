@@ -2,11 +2,12 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-06 11:35:50
+ * @Last Modified time: 2019-12-09 17:16:59
  */
 
 const fs = require('fs');
 const Document_col = require('./../models/document');
+const Template_col = require('./../models/template');
 const uuidv1 = require('uuid/v1');
 
 const addDocument= async (ctx, next) => {
@@ -122,6 +123,80 @@ const allDocument = async (ctx) => {
     }
 }
 
+const addTemplate = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const arr = req.time.split('-');
+    req.year = arr[0];
+    req.month = arr[1];
+    if (req.templateId!='') { //删除原有数据
+        await Template_col.deleteMany({
+            templateId: req.templateId
+        });
+    }
+    req.templateId = uuidv1();
+    await Template_col.create(req);
+    let newTemplate = await Template_col.find({templateId: req.templateId});
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: newTemplate
+    }
+}
+
+const seachTemplate = async (ctx,next) => {
+    ctx.status = 200;
+    const req = ctx.query;
+    let templateList = await Template_col.find({
+        'userId': req.userId
+    });
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: templateList
+    }
+}
+
+const getTemplateDetails = async (ctx,next) => {
+    const id = ctx.params.id;
+    const template = await Template_col.findOne({
+        'templateId': id
+    });
+    ctx.status = 200;
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: template
+    }
+}
+
+const delTemplate = async (ctx) => {
+    ctx.status = 200;
+    const id = ctx.params.id;
+    await Template_col.remove({
+        'templateId': id
+    })
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const commitTemplate = async (ctx,next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Template_col.updateMany({
+        'userId': req.userId,
+        'templateId': req.templateId
+    },{
+        status: true
+    });
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
@@ -129,5 +204,10 @@ module.exports = {
     getDetails,
     delDocument,
     allDocument,
-    resetDocument
+    resetDocument,
+    addTemplate,
+    seachTemplate,
+    getTemplateDetails,
+    delTemplate,
+    commitTemplate
 }

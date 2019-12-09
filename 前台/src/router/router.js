@@ -157,6 +157,22 @@ export const appRouter = {
             },
             name: 'summary-template',
             component: () => import('@/views/document/template.vue')
+        },
+        {
+            path: 'summary/template/edit/:id',
+            meta: {
+                title: '工作总结'
+            },
+            name: 'template-edit',
+            component: () => import('@/views/document/template.vue')
+        },
+        {
+            path: 'summary/template/details/:id',
+            meta: {
+                title: '工作总结'
+            },
+            name: 'template-view',
+            component: () => import('@/views/document/templateView.vue')
         }
     ]
 };

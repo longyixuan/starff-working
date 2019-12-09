@@ -180,4 +180,15 @@ export const delDocument = (ids, params) => {
 export const resetDocument = (ids, params) => {
     return getRequest(`/document/reset/${ids}`, params)
 }
+//--------------------模板--------------------------//
+export const addTemplate = (params) => {
+    return postRequest('/template/add', params)
+}
+export const getTemplateList = (params) => {
+    return getRequest('/template/list', params)
+}
+export const getTemplateDetails = (ids,params) => {
+    return getRequest(`/template/details/${ids}`, params)
+}
+
 //-----------------------工作总结--------------------------------//

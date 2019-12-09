@@ -7,26 +7,28 @@
             <Button type="primary"  @click="add">MarkDown新增</Button>
             <Button type="primary" @click="addTemplate" style="margin-left: 10px">模板新增</Button>
         </template>
-        <Table border :columns="columns" :data="list">
+        <Table border :columns="columns" :data="list" style="margin-bottom:20px">
             <template slot-scope="{ row }" slot="name">
-                <strong>{{ row.documentName }}</strong>
+                <strong>{{ row.templateName }}</strong>
             </template>
             <template slot-scope="{ row }" slot="time">
                 <strong>{{row.year + '-' + row.month}}</strong>
             </template>
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                <Button type="warning" size="small" :disabled="row.status" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
+                <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.templateId)">查看</Button>
+                <Button type="warning" size="small" :disabled="row.status" style="margin-right: 5px" @click="edit(row.templateId)">修改</Button>
                 <Button type="success" size="small" :disabled="row.status" style="margin-right: 5px" @click="commit(index,row.documentId,row.userId)">上报</Button>
                 <Button type="error" size="small" :disabled="row.status" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
                 <Button type="info" size="small" @click="download(row.documentName)">下载</Button>
             </template>
         </Table>
+        <Button type="primary" @click="seach">自动合并生成年终总结</Button>
     </Card>
 </template>
 <script>
     import {
         getDocumentList,
+        getTemplateList,
         commitDocument,
         delDocument
     } from "@/api/index";
@@ -37,6 +39,11 @@
                 columns: [
                     {
                         type: 'index',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        type: 'selection',
                         width: 60,
                         align: 'center'
                     },
@@ -64,7 +71,7 @@
                 window.location.href = 'http://' + window.location.hostname + ':3333/download/markdown?fileName='+fileName;
             },
             initList() {
-                getDocumentList({'userId': JSON.parse(localStorage.getItem('userInfo')).userId}).then(res => {
+                getTemplateList({'userId': JSON.parse(localStorage.getItem('userInfo')).userId}).then(res => {
                     if (res.code==1) {
                         this.list = res.data;
                     }
@@ -81,10 +88,12 @@
                 })
             },
             show(id) {
-                this.$router.push({ 'name': 'summary-show', 'params': { id: id }})
+                // this.$router.push({ 'name': 'summary-show', 'params': { id: id }})
+                this.$router.push({ 'name': 'template-view', 'params': { id: id }})
             },
             edit(id) {
-                this.$router.push({ 'name': 'summary-edit', 'params': { id: id }})
+                this.$router.push({ 'name': 'template-edit', 'params': { id: id }})
+                // this.$router.push({ 'name': 'summary-edit', 'params': { id: id }})
             },
             add() {
                 this.$router.push({ 'name': 'summary-edit', 'params': { id: '' }})

@@ -11,7 +11,7 @@
                 <Button type="primary" @click="seach">查询</Button>
             </FormItem>
         </Form>
-        <Table border :columns="columns" :data="list">
+        <Table border :columns="columns" :data="list" style="margin-bottom:20px">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.documentName }}</strong>
             </template>
@@ -24,6 +24,7 @@
                 <Button type="info" size="small" @click="download(row.documentName)">下载</Button>
             </template>
         </Table>
+        <Button type="primary" @click="seach">合并勾选并生成部门总结</Button>
     </Card>
 </template>
 <script>
