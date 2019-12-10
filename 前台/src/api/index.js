@@ -190,5 +190,19 @@ export const getTemplateList = (params) => {
 export const getTemplateDetails = (ids,params) => {
     return getRequest(`/template/details/${ids}`, params)
 }
-
+export const delTemplate = (ids, params) => {
+    return deleteRequest(`/template/del/${ids}`, params)
+}
+export const commitTemplate = (params) => {
+    return postRequest('/template/commit', params)
+}
+export const mergeTemplate = (params) => {
+    return postRequest('/template/merge', params)
+}
+export const getTemplateListall = (params) => {
+    return getRequest('/template/listALL',params)
+}
+export const resetTemplate = (ids, params) => {
+    return getRequest(`/template/reset/${ids}`, params)
+}
 //-----------------------工作总结--------------------------------//

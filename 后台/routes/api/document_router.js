@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-09 12:39:26
+ * @Last Modified time: 2019-12-10 11:19:34
  */
 
 const Router = require('koa-router');
@@ -20,4 +20,10 @@ router.get('/document/reset/:id', document_controller.resetDocument);
 router.post('/template/add', document_controller.addTemplate);
 router.get('/template/list', document_controller.seachTemplate);
 router.get('/template/details/:id', document_controller.getTemplateDetails);
+router.post('/template/merge', document_controller.mergeTemplate);
+router.post('/template/commit', document_controller.commitTemplate);
+router.delete('/template/del/:id', document_controller.delTemplate);
+router.get('/template/listALL', document_controller.allTemplate);
+router.get('/template/reset/:id', document_controller.resetTemplate);
+
 module.exports = router;

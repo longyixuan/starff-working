@@ -1,5 +1,5 @@
 {
-  "name": "daike-server",
+  "name": "yggs-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "pm2": "pm2 start app.js",
     "start": "node app.js"
   },
-  "author": "frank",
+  "author": "yinxl",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -7,7 +7,7 @@
             <Button type="primary"  @click="add">MarkDown新增</Button>
             <Button type="primary" @click="addTemplate" style="margin-left: 10px">模板新增</Button>
         </template>
-        <Table border :columns="columns" :data="list" style="margin-bottom:20px">
+        <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.templateName }}</strong>
             </template>
@@ -17,12 +17,12 @@
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.templateId)">查看</Button>
                 <Button type="warning" size="small" :disabled="row.status" style="margin-right: 5px" @click="edit(row.templateId)">修改</Button>
-                <Button type="success" size="small" :disabled="row.status" style="margin-right: 5px" @click="commit(index,row.documentId,row.userId)">上报</Button>
-                <Button type="error" size="small" :disabled="row.status" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
+                <Button type="success" size="small" :disabled="row.status" style="margin-right: 5px" @click="commit(index,row.templateId,row.userId)">上报</Button>
+                <Button type="error" size="small" :disabled="row.status" style="margin-right: 5px" @click="del(index,row.templateId)">删除</Button>
                 <Button type="info" size="small" @click="download(row.documentName)">下载</Button>
             </template>
         </Table>
-        <Button type="primary" @click="seach">自动合并生成年终总结</Button>
+        <Button type="primary" @click="merge">自动合并生成年终总结</Button>
     </Card>
 </template>
 <script>
@@ -30,12 +30,16 @@
         getDocumentList,
         getTemplateList,
         commitDocument,
-        delDocument
+        delDocument,
+        mergeTemplate,
+        delTemplate,
+        commitTemplate
     } from "@/api/index";
     export default {
         data() {
             return {
                 list: [],
+                selectionList: [],
                 columns: [
                     {
                         type: 'index',
@@ -67,6 +71,15 @@
             }
         },
         methods: {
+            selectionChange(checkedList) {
+                this.selectionList = checkedList;
+            },
+            merge() {
+                this.$Message.warning('正在开发中')
+                // mergeTemplate({mergeList: this.selectionList}).then((res) =>{
+
+                // })
+            },
             download(fileName) {
                 window.location.href = 'http://' + window.location.hostname + ':3333/download/markdown?fileName='+fileName;
             },
@@ -77,9 +90,9 @@
                     }
                 })
             },
-            commit(indx,documentId,userId) {
+            commit(indx,templateId,userId) {
                 this.confirm('上报之后不可修改和删除，是否要上报？',() => {
-                    commitDocument({'documentId': documentId, 'userId': userId}).then(res => {
+                    commitTemplate({'templateId': templateId, 'userId': userId}).then(res => {
                         if (res.code==1) {
                             this.list[indx].status = true;
                             this.$Message.success('上报成功');

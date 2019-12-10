@@ -1,8 +1,8 @@
 {
-  "name": "yinxiaolong",
+  "name": "yinxl-client",
   "version": "0.1.0",
   "description": "工时系统",
-  "author": "尹晓龙",
+  "author": "yinxl",
   "private": true,
   "scripts": {
     "start": "vue-cli-service serve",

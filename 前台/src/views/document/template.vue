@@ -15,10 +15,8 @@
                 </Tag>
                 <Row class="marginB-20">
                     <Col span="24">
-                        <Select placeholder="选择系统" v-model="summary.systemId">
-                            <Option :value="item.id" v-for="item in sysList">
-                                {{item.title}}
-                            </Option>)
+                        <Select placeholder="选择系统" v-model="summary.systemId" filterable>
+                            <Option :value="item.id" v-for="item in sysList">{{item.title}}</Option>)
                         </Select>
                     </Col>
                 </Row>
@@ -48,10 +46,8 @@
                 </Tag>
                 <Row class="marginB-20">
                     <Col span="24">
-                        <Select placeholder="选择系统" v-model="summary.systemId">
-                            <Option :value="item.id" v-for="item in sysList">
-                                {{item.title}}
-                            </Option>)
+                        <Select placeholder="选择系统" v-model="summary.systemId" filterable>
+                            <Option :value="item.id" v-for="item in sysList">{{item.title}}</Option>)
                         </Select>
                     </Col>
                 </Row>
@@ -157,7 +153,9 @@
                     time: this.time
                 }
                 addTemplate(postData).then(res => {
-                    console.log(postData);
+                    if (res.code == 1) {
+                        this.$Message.success('操作成功');
+                    }
                 })
             },
             init() {

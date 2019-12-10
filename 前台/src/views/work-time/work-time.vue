@@ -33,7 +33,6 @@ import {
   getTimeList,
   postTime
 } from "@/api/index";
-import qs from "qs";
 export default {
     data () {
         return {

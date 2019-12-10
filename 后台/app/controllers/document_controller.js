@@ -2,12 +2,13 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-09 17:16:59
+ * @Last Modified time: 2019-12-10 15:39:11
  */
 
 const fs = require('fs');
 const Document_col = require('./../models/document');
 const Template_col = require('./../models/template');
+const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
 const addDocument= async (ctx, next) => {
@@ -92,7 +93,7 @@ const getDetails = async (ctx) => {
 const delDocument = async (ctx) => {
     ctx.status = 200;
     const id = ctx.params.id;
-    await Document_col.remove({
+    await Document_col.deleteOne({
         'documentId': id
     })
     ctx.body = {
@@ -136,6 +137,8 @@ const addTemplate = async (ctx) => {
     }
     req.templateId = uuidv1();
     await Template_col.create(req);
+    fs.writeFile('data/template/' + req.templateName + '.md', writeTemplate(req), function (err) {
+    })
     let newTemplate = await Template_col.find({templateId: req.templateId});
     ctx.body = {
         code: 1,
@@ -143,7 +146,28 @@ const addTemplate = async (ctx) => {
         data: newTemplate
     }
 }
-
+const writeTemplate = (data) => {
+    let text = '# ' + data.templateName;
+    for(let i = 0; i <data.templateList.length; i++) { //本月总结
+        text += '\n';
+        text += '## ' + toChinesNum(i+1) +'、' + data.templateList[i].systemName;
+        for(let j = 0; j <data.templateList[i].content.length; j++) {
+            text += '\n';
+            text += '- **' + (j+1) + '、' + data.templateList[i].content[j].contentTitle + '：**' + data.templateList[i].content[j].contentDescription
+        }
+    }
+    text += '\n';
+    text += '## 附：下月工作计划';
+    for(let m = 0; m <data.templateList.length; m++) { //下月计划
+        text += '\n';
+        text += '### ' + data.templateList[m].systemName;
+        for(let n = 0; n <data.templateList[m].content.length; n++) {
+            text += '\n';
+            text += '- **' + data.templateList[m].content[n].contentTitle + '：' + data.templateList[m].content[n].contentDescription + '**'
+        }
+    }
+    return text;
+}
 const seachTemplate = async (ctx,next) => {
     ctx.status = 200;
     const req = ctx.query;
@@ -173,7 +197,7 @@ const getTemplateDetails = async (ctx,next) => {
 const delTemplate = async (ctx) => {
     ctx.status = 200;
     const id = ctx.params.id;
-    await Template_col.remove({
+    await Template_col.deleteOne({
         'templateId': id
     })
     ctx.body = {
@@ -197,6 +221,54 @@ const commitTemplate = async (ctx,next) => {
     }
 }
 
+const mergeTemplate = async (ctx,next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    req.mergeList.each(item => {
+
+    })
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const resetTemplate = async (ctx,next) => {
+    ctx.status = 200;
+    const req = ctx.params;
+    await Template_col.updateMany({
+        'templateId': req.id
+    },{
+        status: false
+    });
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const allTemplate = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.query;
+    if (!!req.time) {
+        const arr = req.time.split('-');
+        var templateList = await Template_col.find({
+            year: arr[0],
+            month: arr[1],
+            status: true
+        });
+    } else {
+        var templateList = await Template_col.find({
+            status: true
+        });
+    }
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: templateList
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
@@ -209,5 +281,8 @@ module.exports = {
     seachTemplate,
     getTemplateDetails,
     delTemplate,
-    commitTemplate
+    commitTemplate,
+    allTemplate,
+    resetTemplate,
+    mergeTemplate
 }

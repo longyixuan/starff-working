@@ -1,0 +1,8 @@
+[2019-12-10T10:19:50.012] [ERROR] application - { [Error: ENOENT: no such file or directory, stat 'D:\1\starff-working\后台\data\markdown\undefined.md']
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'stat',
+  path: 'D:\\1\\starff-working\\后台\\data\\markdown\\undefined.md',
+  expose: true,
+  statusCode: 404,
+  status: 404 }

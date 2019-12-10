@@ -13,15 +13,15 @@
         </Form>
         <Table border :columns="columns" :data="list" style="margin-bottom:20px">
             <template slot-scope="{ row }" slot="name">
-                <strong>{{ row.documentName }}</strong>
+                <strong>{{ row.templateName }}</strong>
             </template>
             <template slot-scope="{ row }" slot="time">
                 <strong>{{row.year + '-' + row.month}}</strong>
             </template>
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                <Button type="warning" size="small" style="margin-right: 5px" :disabled="!row.status" @click="reset(index,row.documentId)">置为补充状态</Button>
-                <Button type="info" size="small" @click="download(row.documentName)">下载</Button>
+                <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.templateId)">查看</Button>
+                <Button type="warning" size="small" style="margin-right: 5px" :disabled="!row.status" @click="reset(index,row.templateId)">置为补充状态</Button>
+                <Button type="info" size="small" @click="download(row.templateName)">下载</Button>
             </template>
         </Table>
         <Button type="primary" @click="seach">合并勾选并生成部门总结</Button>
@@ -30,7 +30,9 @@
 <script>
 import {
     resetDocument,
-    getDocumentListall
+    getDocumentListall,
+    getTemplateListall,
+    resetTemplate
 } from "@/api/index";
 export default {
         data () {
@@ -85,7 +87,7 @@ export default {
         },
         methods: {
             init() {
-                getDocumentListall({time: this.time}).then(res => {
+                getTemplateListall({time: this.time}).then(res => {
                     if (res.code == 1) {
                         this.list = res.data;
                     }
@@ -98,11 +100,12 @@ export default {
                 this.init();
             },
             show(id) {
-                this.$router.push({ name: 'summary-show', params: { id: id }})
+                this.$router.push({ 'name': 'template-view', 'params': { id: id }})
+                // this.$router.push({ name: 'summary-show', params: { id: id }})
             },
             reset(indx,id) {
                 this.confirm('置为可修改状态？',() =>{
-                    resetDocument(id).then(res => {
+                    resetTemplate(id).then(res => {
                         if (res.code == 1) {
                             this.list.splice(indx,1);
                             this.$Message.success('操作成功')

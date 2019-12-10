@@ -24,9 +24,12 @@
                 <template v-for="(item,num) in submitList2">
                     <h2 class="summary-view-h2">{{toChinesNum(num+1)}}、{{item.systemName}}</h2>
                     <div v-for="(item2,index) in item.content" class="summary-view-content">
-                        <p class="summary-view-p">
+                        <p class="summary-view-p" v-if="item2.contentTitle!=''">
                             <strong>{{index+1}}、{{item2.contentTitle}}：</strong>
                             <span>{{item2.contentDescription}}</span>
+                        </p>
+                        <p class="summary-view-p" v-else>
+                            <strong>{{item2.contentDescription}}</strong>
                         </p>
                     </div>
                 </template>
