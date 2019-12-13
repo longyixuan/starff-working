@@ -38,7 +38,7 @@
                 <Icon type="md-document"/>工作总结
               </template>
               <MenuItem name="3-1" @click.native="$router.push({name: 'summary'})">个人总结</MenuItem>
-              <MenuItem name="3-2" @click.native="$router.push({name: 'summary-seach'})">部门总结</MenuItem>
+              <MenuItem name="3-2" v-if="type===1" @click.native="$router.push({name: 'summary-seach'})">部门总结</MenuItem>
             </Submenu>
             <MenuItem name="4" @click.native="toRoute('own-space')"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>

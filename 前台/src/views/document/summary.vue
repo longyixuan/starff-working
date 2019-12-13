@@ -4,8 +4,8 @@
 <template>
     <Card title="工作总结">
         <template slot="extra">
-            <Button type="primary"  @click="add">MarkDown新增</Button>
-            <Button type="primary" @click="addTemplate" style="margin-left: 10px">模板新增</Button>
+            <!-- <Button type="primary"  @click="add">MarkDown新增</Button> -->
+            <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
         </template>
         <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
             <template slot-scope="{ row }" slot="name">
@@ -19,7 +19,7 @@
                 <Button type="warning" size="small" :disabled="row.status" style="margin-right: 5px" @click="edit(row.templateId)">修改</Button>
                 <Button type="success" size="small" :disabled="row.status" style="margin-right: 5px" @click="commit(index,row.templateId,row.userId)">上报</Button>
                 <Button type="error" size="small" :disabled="row.status" style="margin-right: 5px" @click="del(index,row.templateId)">删除</Button>
-                <Button type="info" size="small" @click="download(row.documentName)">下载</Button>
+                <Button type="info" size="small" @click="download(row.templateName)">下载</Button>
             </template>
         </Table>
         <Button type="primary" @click="merge">自动合并生成年终总结</Button>

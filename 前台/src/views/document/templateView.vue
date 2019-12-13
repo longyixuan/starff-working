@@ -13,7 +13,7 @@
                         <p class="summary-view-p">
                             <strong>{{index+1}}、{{item2.contentTitle}}：</strong>
                             <span>{{item2.contentDescription}}</span>
-                            <Tag color="warning" class="summary-view-tag">尹晓龙</Tag>
+                            <!-- <Tag color="warning" class="summary-view-tag">尹晓龙</Tag> -->
                         </p>
                     </div>
                 </template>
@@ -22,7 +22,7 @@
             <div class="summary-view-label">下月工作计划</div>
             <div class="summary-view-warp">
                 <template v-for="(item,num) in submitList2">
-                    <h2 class="summary-view-h2">{{toChinesNum(num+1)}}、{{item.systemName}}</h2>
+                    <h2 class="summary-view-h2">{{item.systemName}}</h2>
                     <div v-for="(item2,index) in item.content" class="summary-view-content">
                         <p class="summary-view-p" v-if="item2.contentTitle!=''">
                             <strong>{{index+1}}、{{item2.contentTitle}}：</strong>
