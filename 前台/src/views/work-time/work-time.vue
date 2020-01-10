@@ -111,7 +111,7 @@ export default {
             this.initList();
         },
         changeYear(a,b) {
-            this.curYear = a;
+            this.curYear = a.slice(0,4);
             this.changeDate();
             this.initList();
         },

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-12-10 15:39:11
+ * @Last Modified time: 2020-01-06 16:17:21
  */
 
 const fs = require('fs');
@@ -225,7 +225,7 @@ const mergeTemplate = async (ctx,next) => {
     ctx.status = 200;
     const req = ctx.request.body;
     req.mergeList.each(item => {
-
+        
     })
     ctx.body = {
         code: 1,
