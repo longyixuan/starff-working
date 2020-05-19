@@ -1,0 +1,3 @@
+[2020-01-16T10:02:59.341] [INFO] access - ::ffff:172.16.1.252 - - "GET / HTTP/1.0" 404 - "" "undefined"
+[2020-01-16T10:02:59.354] [INFO] access - ::ffff:172.16.1.252 - - "OPTIONS / HTTP/1.0" 404 - "" "undefined"
+[2020-01-16T10:02:59.411] [INFO] access - ::ffff:172.16.1.252 - - "GET /nice%20ports%2C/Tri%6Eity.txt%2ebak HTTP/1.0" 404 - "" "undefined"

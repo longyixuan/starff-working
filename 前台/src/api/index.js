@@ -197,6 +197,7 @@ export const commitTemplate = (params) => {
     return postRequest('/template/commit', params)
 }
 export const mergeTemplate = (params) => {
+    console.log(params)
     return postRequest('/template/merge', params)
 }
 export const getTemplateListall = (params) => {

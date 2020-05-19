@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-01-06 16:17:21
+ * @Last Modified time: 2020-01-10 16:17:08
  */
 
 const fs = require('fs');
@@ -223,13 +223,21 @@ const commitTemplate = async (ctx,next) => {
 
 const mergeTemplate = async (ctx,next) => {
     ctx.status = 200;
-    const req = ctx.request.body;
-    req.mergeList.each(item => {
-        
+    const req = ctx.request.body.mergeList;
+    let result = {
+        month: req[0].month,
+        year: req[0].year,
+        templateList: [],
+        templateList2: []
+    };
+    req.forEach(item => {
+        result.templateList = [...result.templateList,...item.templateList]
+        result.templateList2 = [...result.templateList2,...item.templateList2]
     })
     ctx.body = {
         code: 1,
-        msg: '请求成功'
+        msg: '请求成功',
+        data: result
     }
 }
 

@@ -11,7 +11,7 @@
                 <Button type="primary" @click="seach">查询</Button>
             </FormItem>
         </Form>
-        <Table border :columns="columns" :data="list" style="margin-bottom:20px">
+        <Table border @on-select="tableSelected" :columns="columns" :data="list" style="margin-bottom:20px">
             <template slot-scope="{ row }" slot="name">
                 <strong>{{ row.templateName }}</strong>
             </template>
@@ -24,7 +24,7 @@
                 <Button type="info" size="small" @click="download(row.templateName)">下载</Button>
             </template>
         </Table>
-        <Button type="primary" @click="seach">合并勾选并生成部门总结</Button>
+        <Button type="primary" @click="merage">合并勾选并生成部门总结</Button>
     </Card>
 </template>
 <script>
@@ -32,7 +32,8 @@ import {
     resetDocument,
     getDocumentListall,
     getTemplateListall,
-    resetTemplate
+    resetTemplate,
+    mergeTemplate
 } from "@/api/index";
 export default {
         data () {
@@ -43,6 +44,7 @@ export default {
                 checkAll: false,
                 list: [],
                 checkAllGroup: [],
+                selectionData: [],
                 columns: [
                     {
                         type: 'index',
@@ -86,6 +88,9 @@ export default {
             }
         },
         methods: {
+            tableSelected(selection) {
+                this.selectionData = selection;
+            },
             init() {
                 getTemplateListall({time: this.time}).then(res => {
                     if (res.code == 1) {
@@ -124,6 +129,11 @@ export default {
                         callback();
                     }
                 });
+            },
+            merage() {
+                mergeTemplate({mergeList: this.selectionData}).then(res => {
+                    console.log(res);
+                })
             }
         },
         mounted() {
