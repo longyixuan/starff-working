@@ -3,32 +3,31 @@
 </style>
 <template>
     <Card title="工作总结">
-        <h1 class="summary-view-h1" slot="title">
-            {{title}}
-            <div class="summary-view-time"><Icon type="md-calendar" size="26"/> {{time}}</div>
-        </h1>
         <div style="padding: 0 20px;">
+            <div class="summary-view-label">{{title}}</div>
             <div class="summary-view-warp">
                 <template v-for="(item,num) in submitList">
                     <h2 class="summary-view-h2">{{toChinesNum(num+1)}}、{{item.systemName}}</h2>
-                    <div class="summary-view-content">
-                        <table class="summary-table">
-                            <thead>
-                                <tr>
-                                    <th width="140">模块</th>
-                                    <th>工作内容</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item2,index) in item.content">
-                                    <td>{{item2.contentTitle}}</td>
-                                    <td>
-                                        <div style=" white-space: pre-line;">{{item2.contentDescription}}</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th width="140">模块</th>
+                                <th>工作内容</th>
+                                <th width="120">日期</th>
+                                <th width="120" v-if="$route.query.admin">姓名</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item2,index) in item.content">
+                                <td>{{item2.contentTitle}}</td>
+                                <td>
+                                    <div style=" white-space: pre-line;">{{item2.contentDescription}}</div>
+                                </td>
+                                <td>{{`${item2.year}-${item2.month}-${item2.day}`}}</td>
+                                <td v-if="$route.query.admin">{{item2.nickName}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </template>
             </div>
             <div class="summary-view-line"></div>
@@ -38,7 +37,8 @@
 </template>
 <script>
 import {
-    detailsDocumentday
+    detailsDocumentday,
+    mergeDocumentday
 } from "@/api/index";
 export default {
     data() {
@@ -46,22 +46,26 @@ export default {
             templateId: this.$route.query.id,
             title: '',
             time: '',
+            type: 0,
             submitList: []
         }
     },
     methods: {
         init() {
-            detailsDocumentday(this.$route.query.type,{id:this.$route.query.id}).then(res => {
+            mergeDocumentday(this.$route.query.type,{mergeList:this.$route.query.mergeList}).then(res => {
                 if (res.code == 1) {
                     if (res.data.length>0) {
-                        this.title = res.data[0].content[0].documentName;
-                        this.time = res.data[0].content[0].year+'-'+res.data[0].content[0].month+'-'+res.data[0].content[0].day;
+                        if (this.$route.query.admin) {
+                            this.title = '工作总结汇总';
+                        } else {
+                            this.title = `${this.$route.query.month}月工作总结，包含：${this.$route.query.day.join('、')}日`;
+                        }
                         this.submitList = [];
                         for (let i =0;i<res.data.length;i++) {
                             this.submitList.push({
                                 systemId: res.data[i]._id.systemId,
                                 systemName: res.data[i]._id.systemName,
-                                content: res.data[i].content
+                                content: res.data[i].details
                             })
                         }
                     }
@@ -88,6 +92,7 @@ export default {
     },
     mounted() {
         this.init();
+        this.type = JSON.parse(localStorage.getItem('userInfo')).type;
     }
 }
 </script>

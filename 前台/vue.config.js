@@ -1,5 +1,4 @@
 var os = require('os');
-var lacalhost = ''
 try {
 var network = os.networkInterfaces()
 localhost = network[Object.keys(network)[0]][1].address
@@ -8,11 +7,11 @@ localhost = 'localhost';
 }
 module.exports = {
     devServer: {
-        host: lacalhost,
         overlay: {
             errors: true,
         },
-        port: 9999
+        port: 9999,
+        disableHostCheck: true
     },
     productionSourceMap: false
 }

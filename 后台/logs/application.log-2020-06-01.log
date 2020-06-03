@@ -1,0 +1,106 @@
+[2020-06-01T14:39:39.245] [ERROR] application - ReferenceError: documentId is not defined
+    at editDocumentday (D:\1\starff-working\后台\app\controllers\document_controller.js:316:34)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+[2020-06-01T15:15:44.036] [ERROR] application - { MongoError: $sort key ordering must be 1 (for ascending) or -1 (for descending)
+    at Connection.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\pool.js:450:61)
+    at Connection.emit (events.js:198:13)
+    at processMessage (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:384:10)
+    at Socket.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:553:15)
+    at Socket.emit (events.js:198:13)
+    at addChunk (_stream_readable.js:287:12)
+    at readableAddChunk (_stream_readable.js:268:11)
+    at Socket.Readable.push (_stream_readable.js:223:10)
+    at TCP.onStreamRead [as onread] (internal/stream_base_commons.js:94:17)
+  ok: 0,
+  errmsg:
+   '$sort key ordering must be 1 (for ascending) or -1 (for descending)',
+  code: 15975,
+  codeName: 'Location15975',
+  name: 'MongoError',
+  [Symbol(mongoErrorContextSymbol)]: {} }
+[2020-06-01T15:15:50.880] [ERROR] application - { MongoError: $sort key ordering must be 1 (for ascending) or -1 (for descending)
+    at Connection.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\pool.js:450:61)
+    at Connection.emit (events.js:198:13)
+    at processMessage (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:384:10)
+    at Socket.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:553:15)
+    at Socket.emit (events.js:198:13)
+    at addChunk (_stream_readable.js:287:12)
+    at readableAddChunk (_stream_readable.js:268:11)
+    at Socket.Readable.push (_stream_readable.js:223:10)
+    at TCP.onStreamRead [as onread] (internal/stream_base_commons.js:94:17)
+  ok: 0,
+  errmsg:
+   '$sort key ordering must be 1 (for ascending) or -1 (for descending)',
+  code: 15975,
+  codeName: 'Location15975',
+  name: 'MongoError',
+  [Symbol(mongoErrorContextSymbol)]: {} }
+[2020-06-01T17:41:26.669] [ERROR] application - { ValidationError: documentDay validation failed: time: Path `time` is required.
+    at ValidationError.inspect (D:\1\starff-working\后台\node_modules\_mongoose@5.9.15@mongoose\lib\error\validation.js:61:24)
+    at formatValue (internal/util/inspect.js:491:31)
+    at inspect (internal/util/inspect.js:189:10)
+    at formatWithOptions (util.js:84:12)
+    at Object.format (util.js:72:10)
+    at basicLayout (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\layouts.js:69:12)
+    at app (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\appenders\dateFile.js:30:19)
+    at categoryAppenders.forEach (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\log4js.js:42:5)
+    at Array.forEach (<anonymous>)
+    at sendLogEventToAppender (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\log4js.js:41:21)
+    at listeners.forEach.l (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\clustering.js:16:26)
+    at Array.forEach (<anonymous>)
+    at sendToListeners (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\clustering.js:16:13)
+    at Object.send (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\clustering.js:78:7)
+    at Logger._log (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\logger.js:56:16)
+    at Logger.log (D:\1\starff-working\后台\node_modules\_log4js@3.0.6@log4js\lib\logger.js:45:12)
+  errors:
+   { time:
+      { ValidatorError: Path `time` is required.
+          at new ValidatorError (D:\1\starff-working\后台\node_modules\_mongoose@5.9.15@mongoose\lib\error\validator.js:29:11)
+          at validate (D:\1\starff-working\后台\node_modules\_mongoose@5.9.15@mongoose\lib\schematype.js:1178:13)
+          at D:\1\starff-working\后台\node_modules\_mongoose@5.9.15@mongoose\lib\schematype.js:1161:7
+          at Array.forEach (<anonymous>)
+          at SchemaNumber.SchemaType.doValidate (D:\1\starff-working\后台\node_modules\_mongoose@5.9.15@mongoose\lib\schematype.js:1106:14)
+          at D:\1\starff-working\后台\node_modules\_mongoose@5.9.15@mongoose\lib\document.js:2378:18
+          at process._tickCallback (internal/process/next_tick.js:61:11)
+        message: 'Path `time` is required.',
+        name: 'ValidatorError',
+        properties: [Object],
+        kind: 'required',
+        path: 'time',
+        value: undefined,
+        reason: undefined,
+        [Symbol(mongoose:validatorError)]: true } },
+  _message: 'documentDay validation failed',
+  name: 'ValidationError' }
+[2020-06-01T18:22:29.167] [ERROR] application - { MongoError: $in needs an array
+    at Connection.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\pool.js:450:61)
+    at Connection.emit (events.js:198:13)
+    at processMessage (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:384:10)
+    at Socket.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:553:15)
+    at Socket.emit (events.js:198:13)
+    at addChunk (_stream_readable.js:287:12)
+    at readableAddChunk (_stream_readable.js:268:11)
+    at Socket.Readable.push (_stream_readable.js:223:10)
+    at TCP.onStreamRead [as onread] (internal/stream_base_commons.js:94:17)
+  ok: 0,
+  errmsg: '$in needs an array',
+  code: 2,
+  codeName: 'BadValue',
+  name: 'MongoError',
+  [Symbol(mongoErrorContextSymbol)]: {} }
+[2020-06-01T18:54:57.991] [ERROR] application - { MongoError: $in needs an array
+    at Connection.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\pool.js:450:61)
+    at Connection.emit (events.js:198:13)
+    at processMessage (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:384:10)
+    at Socket.<anonymous> (D:\1\starff-working\后台\node_modules\_mongodb@3.5.7@mongodb\lib\core\connection\connection.js:553:15)
+    at Socket.emit (events.js:198:13)
+    at addChunk (_stream_readable.js:287:12)
+    at readableAddChunk (_stream_readable.js:268:11)
+    at Socket.Readable.push (_stream_readable.js:223:10)
+    at TCP.onStreamRead [as onread] (internal/stream_base_commons.js:94:17)
+  ok: 0,
+  errmsg: '$in needs an array',
+  code: 2,
+  codeName: 'BadValue',
+  name: 'MongoError',
+  [Symbol(mongoErrorContextSymbol)]: {} }

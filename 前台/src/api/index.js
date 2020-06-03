@@ -168,9 +168,9 @@ export const getDocumentList = (params) => {
 export const getDocumentListall = (params) => {
     return getRequest('/document/listALL',params)
 }
-export const commitDocument = (params) => {
-    return postRequest('/document/commit', params)
-}
+// export const commitDocument = (params) => {
+//     return postRequest('/document/commit', params)
+// }
 export const getDocumentDetails = (ids,params) => {
     return getRequest(`/document/details/${ids}`, params)
 }
@@ -205,5 +205,37 @@ export const getTemplateListall = (params) => {
 }
 export const resetTemplate = (ids, params) => {
     return getRequest(`/template/reset/${ids}`, params)
+}
+
+//-------------------日总结--------------------------//
+export const addDocumentday = (type,params) => {
+    return postRequest(`/document/${type}/add`, params)
+}
+export const editDocumentday = (type,params) => {
+    return postRequest(`/document/${type}/edit`, params)
+}
+export const delteDocumentday = (type,params) => {
+    return postRequest(`/document/${type}/del`,params)
+}
+export const detailsDocumentday = (type,params) => {
+    return getRequest(`/document/${type}/details`, params)
+}
+export const listDocumentday = (type,params) => {
+    return getRequest(`/document/${type}/list`,params)
+}
+export const mergeDocumentday = (type,params) => {
+    return postRequest(`/document/${type}/merge`,params)
+}
+export const seachDocumentday = (params) => {
+    return postRequest(`/document/seach`,params)
+}
+export const commitDocument = (params) => {
+    return postRequest(`/document/commit`,params)
+}
+export const seachModal = (params) => {
+    return getRequest(`/modal/seach`,params)
+}
+export const addModal = (params) => {
+    return postRequest(`/modal/add`,params)
 }
 //-----------------------工作总结--------------------------------//

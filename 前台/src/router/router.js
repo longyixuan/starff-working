@@ -119,12 +119,28 @@ export const appRouter = {
             component: () => import('@/views/own-space/own-space.vue')
         },
         {
-            path: 'summary',
+            path: 'summary-day',
             meta: {
-                title: '工作总结'
+                title: '工作总结-日总结'
             },
-            name: 'summary',
-            component: () => import('@/views/document/summary.vue')
+            name: 'summary-day',
+            component: () => import('@/views/document/summary-day.vue')
+        },
+        {
+            path: 'summary-week',
+            meta: {
+                title: '工作总结-周总结'
+            },
+            name: 'summary-week',
+            component: () => import('@/views/document/summary-week.vue')
+        },
+        {
+            path: 'summary-month',
+            meta: {
+                title: '工作总结-月总结'
+            },
+            name: 'summary-month',
+            component: () => import('@/views/document/summary-month.vue')
         },
         {
             path: 'summary/seach',
@@ -135,20 +151,28 @@ export const appRouter = {
             component: () => import('@/views/document/seach.vue')
         },
         {
-            path: 'summary/edit/:id',
+            path: 'summary/edit',
             meta: {
-                title: '工作总结'
+                title: '工作总结-编辑'
             },
             name: 'summary-edit',
-            component: () => import('@/views/document/edit.vue')
+            component: () => import('@/views/document/template.vue')
         },
         {
-            path: 'summary/show/:id',
+            path: 'summary/details',
             meta: {
-                title: '工作总结'
+                title: '工作总结-查看'
             },
-            name: 'summary-show',
-            component: () => import('@/views/document/show.vue')
+            name: 'summary-details',
+            component: () => import('@/views/document/templateView.vue')
+        },
+        {
+            path: 'summary/merge',
+            meta: {
+                title: '工作总结-归档'
+            },
+            name: 'summary-merge',
+            component: () => import('@/views/document/templateMerge.vue')
         },
         {
             path: 'summary/template',
@@ -159,7 +183,7 @@ export const appRouter = {
             component: () => import('@/views/document/template.vue')
         },
         {
-            path: 'summary/template/edit/:id',
+            path: 'summary/edit/:id',
             meta: {
                 title: '工作总结'
             },

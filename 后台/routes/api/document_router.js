@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-01-10 15:27:26
+ * @Last Modified time: 2020-06-03 12:08:51
  */
 
 const Router = require('koa-router');
@@ -26,4 +26,14 @@ router.delete('/template/del/:id', document_controller.delTemplate);
 router.get('/template/listALL', document_controller.allTemplate);
 router.get('/template/reset/:id', document_controller.resetTemplate);
 
+//日总结
+router.post('/document/day/add', document_controller.addDocumentday);
+router.post('/document/day/edit', document_controller.editDocumentday);
+router.post('/document/day/del', document_controller.delteDocumentday);
+router.get('/document/day/details', document_controller.detailsDocumentday);
+router.get('/document/day/list', document_controller.listDocumentday);
+router.post('/document/day/merge', document_controller.mergeDocumentday);
+router.post('/document/seach', document_controller.seachDocumentday);
+router.get('/modal/seach', document_controller.seachModal);
+router.post('/modal/add', document_controller.addModal);
 module.exports = router;

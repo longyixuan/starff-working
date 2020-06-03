@@ -18,29 +18,31 @@
       <Layout>
         <Sider hide-trigger :style="{background: '#fff'}">
           <Menu active-name="0" theme="light" width="auto">
-            <MenuItem name="0" @click.native="toRoute('home')"><Icon type="md-home" />首页</MenuItem>
+            <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
             <Submenu name="1" v-if="type===1">
               <template slot="title">
                 <Icon type="md-settings" />系统设置
               </template>
-              <MenuItem name="1-1" @click.native="$router.push('department-manage')">部门管理</MenuItem>
-              <MenuItem name="1-2" @click.native="toRoute('user-manage')">用户管理</MenuItem>
-              <MenuItem name="1-3" @click.native="$router.push('system-manage')">系统管理</MenuItem>
+              <MenuItem name="1-1" to="/department-manage">部门管理</MenuItem>
+              <MenuItem name="1-2" to="/user-manage">用户管理</MenuItem>
+              <MenuItem name="1-3" to="/system-manage">系统管理</MenuItem>
             </Submenu>
             <Submenu name="2">
               <template slot="title">
                 <Icon type="md-calendar"/>我的工时
               </template>
-              <MenuItem name="2-1" @click.native="$router.push('work-time')">录入</MenuItem>
+              <MenuItem name="2-1" to="/work-time">录入</MenuItem>
             </Submenu>
             <Submenu name="3">
               <template slot="title">
                 <Icon type="md-document"/>工作总结
               </template>
-              <MenuItem name="3-1" @click.native="$router.push({name: 'summary'})">个人总结</MenuItem>
-              <MenuItem name="3-2" v-if="type===1" @click.native="$router.push({name: 'summary-seach'})">部门总结</MenuItem>
+              <MenuItem name="3-1" to="/summary-day">日总结</MenuItem>
+              <MenuItem name="3-2" to="/summary-week">周总结</MenuItem>
+              <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
+              <MenuItem name="3-4" to="/summary-partment">归档</MenuItem>
             </Submenu>
-            <MenuItem name="4" @click.native="toRoute('own-space')"><Icon type="md-person" />个人信息</MenuItem>
+            <MenuItem name="4" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>
         <Layout :style="{padding: '24px'}">

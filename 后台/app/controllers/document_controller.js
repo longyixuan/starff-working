@@ -2,12 +2,14 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-01-10 16:17:08
+ * @Last Modified time: 2020-06-03 16:14:31
  */
 
 const fs = require('fs');
 const Document_col = require('./../models/document');
+const Modal_col = require('./../models/modal');
 const Template_col = require('./../models/template');
+const Documentday_col = require('./../models/documentDay');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
@@ -51,11 +53,10 @@ const seachDocument = async (ctx,next) => {
 const commitDocument = async (ctx,next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    await Document_col.updateMany({
-        'userId': req.userId,
+    await Documentday_col.updateMany({
         'documentId': req.documentId
     },{
-        status: true
+        status: req.status
     });
     ctx.body = {
         code: 1,
@@ -277,6 +278,320 @@ const allTemplate = async (ctx) => {
     }
 }
 
+const addDocumentday = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const document = await Documentday_col.findOne({
+        documentName: req.summaryName,
+    });
+    const documentId = uuidv1();
+    if (document) {
+        ctx.body = {
+            code: 0,
+            msg: '本日已有记录，请勿重新添加！'
+        }
+        return;
+    }
+    for (let i = 0; i < req.list.length; i++) {
+        let modal = await Modal_col.findOne({
+            systemId: req.list[i].systemId,
+            modalName: req.list[i].contentTitle
+        });
+        if (modal) {
+            console.log('已有标签')
+        } else {
+            await Modal_col.create({
+                systemId: req.list[i].systemId,
+                modalName: req.list[i].contentTitle
+            })
+        }
+        req.list[i].documentId = documentId;
+        req.list[i].timeDate = new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day);
+    }
+    await Documentday_col.insertMany(req.list);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: req.list
+    }
+}
+
+const editDocumentday = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    if (req.documentId!='') { //删除原有数据
+        await Documentday_col.deleteMany({
+            documentName: req.summaryName
+        });
+    }
+    const documentId = uuidv1();
+    for (let i = 0; i < req.list.length; i++) {
+        let modal = await Modal_col.findOne({
+            systemId: req.list[i].systemId,
+            modalName: req.list[i].contentTitle
+        });
+        if (modal) {
+            console.log('已有标签');
+        } else {
+            await Modal_col.create({
+                systemId: req.list[i].systemId,
+                modalName: req.list[i].contentTitle
+            })
+        }
+        req.list[i].documentId = documentId;
+        req.list[i].timeDate = new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day);
+    }
+    await Documentday_col.insertMany(req.list);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const delteDocumentday = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Documentday_col.deleteMany({
+        documentId: req.documentId
+    });
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const detailsDocumentday = async (ctx) => {
+    const id = ctx.query.id;
+    const document = await Documentday_col.aggregate([
+        {
+            $match: {
+                'documentId': id
+            }
+        },
+        {
+            $sort: {
+                'order': -1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    systemId: '$systemId',
+                    systemName: '$systemName',
+                    order: '$order',
+                    time: '$time'
+                },
+                order: {
+                    $min: '$order'
+                },  
+                content: {
+                    $push: {
+                        documentId: '$documentId',
+                        documentName: '$documentName',
+                        userId: '$userId',
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        year: '$year',
+                        month: '$month',
+                        day: '$day',
+                        systemId: '$systemId',
+                        order: '$order',
+                        systemName: '$systemName',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ]);
+    ctx.status = 200;
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: document
+    }
+}
+
+const mergeDocumentday = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const list = await Documentday_col.aggregate([
+        {
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        },
+        {
+            $sort: {
+                'day': 1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    systemId: '$systemId',
+                    systemName: '$systemName',
+                },
+                details: {
+                    $push: {
+                        year: '$year',
+                        month: '$month',
+                        day: '$day',
+                        nickName: '$nickName',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ])
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list
+    }
+}
+
+const seachModal = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.query;
+    let list = [];
+    if (req.id!='') {
+        list = await Modal_col.find({
+            systemId: req.id
+        });
+    } else {
+        list = await Modal_col.find();
+    }
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list
+    }
+}
+const addModal = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let modal = await Modal_col.findOne(req);
+    if (modal) {
+        console.log('已有标签')
+    } else {
+        await Modal_col.create(req);
+    }
+    const list = await Modal_col.find({
+        systemId: req.systemId
+    })
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list
+    }
+}
+
+const seachDocumentday = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const list = await Documentday_col.aggregate([
+        {
+            $match: {
+                'userId': {
+                    '$in': req.people
+                },
+                'status': true,
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
+            }
+        },
+        {
+            $sort: {
+                'day': -1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    documentName: '$documentName',
+                    documentId: '$documentId'
+                },
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        documentName: '$documentName',
+                        userId: '$userId',
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        year: '$year',
+                        month: '$month',
+                        day: '$day',
+                        status: '$status',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list
+    }
+}
+const listDocumentday = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.query;
+    const list = await Documentday_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'year': req.year,
+                'month': req.month
+            }
+        },
+        {
+            $sort: {
+                'day': -1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    documentName: '$documentName',
+                    documentId: '$documentId'
+                },
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        documentName: '$documentName',
+                        userId: '$userId',
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        year: '$year',
+                        month: '$month',
+                        day: '$day',
+                        status: '$status',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
@@ -292,5 +607,14 @@ module.exports = {
     commitTemplate,
     allTemplate,
     resetTemplate,
-    mergeTemplate
+    mergeTemplate,
+    addDocumentday,
+    editDocumentday,
+    delteDocumentday,
+    detailsDocumentday,
+    listDocumentday,
+    mergeDocumentday,
+    seachDocumentday,
+    seachModal,
+    addModal
 }
