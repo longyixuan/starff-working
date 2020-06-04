@@ -31,7 +31,7 @@
                 </template>
             </div>
             <div class="summary-view-line"></div>
-            <div style="text-align: center;"><Button type="primary" @click="$router.go(-1)">返回</Button></div>
+            <div style="text-align: center;"><Button type="primary" @click="$Message.warning('正在开发中...')">下载</Button></div>
         </div>
     </Card>
 </template>

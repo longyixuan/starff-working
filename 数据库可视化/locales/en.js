@@ -130,5 +130,6 @@
 	"Backup": "Backup",
 	"Database successfully backed up": "Database successfully backed up",
 	"Query": "Query",
-	"Indexes": "Indexes"
+	"Indexes": "Indexes",
+	"Error updating document": "Error updating document"
 }

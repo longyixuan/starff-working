@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "pm2": "pm2 start npm -- start"
   },
   "dependencies": {
     "axios": "^0.18.0",

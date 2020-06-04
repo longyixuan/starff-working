@@ -1,0 +1,26 @@
+[2020-06-04T09:22:39.086] [ERROR] application - ReferenceError: modalList is not defined
+    at addModal (D:\1\starff-working\后台\app\controllers\document_controller.js:458:20)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:44:32)
+    at next (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:45:18)
+    at D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:346:16
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:44:32)
+    at D:\1\starff-working\后台\node_modules\_koa-compose@3.2.1@koa-compose\index.js:36:12
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:351:31)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at allowedMethods (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:407:12)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:332:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at allowedMethods (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:407:12)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-router@7.4.0@koa-router\lib\router.js:332:32)
+    at dispatch (D:\1\starff-working\后台\node_modules\_koa-compose@4.1.0@koa-compose\index.js:42:32)
+[2020-06-04T10:12:06.604] [ERROR] application - TypeError: Cannot set property 'modal' of null
+    at addModal (D:\1\starff-working\后台\app\controllers\document_controller.js:457:15)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+[2020-06-04T10:13:11.657] [ERROR] application - TypeError: Cannot set property 'modal' of null
+    at addModal (D:\1\starff-working\后台\app\controllers\document_controller.js:458:15)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+[2020-06-04T10:14:49.067] [ERROR] application - TypeError: Cannot read property 'push' of null
+    at addModal (D:\1\starff-working\后台\app\controllers\document_controller.js:461:24)
+    at process._tickCallback (internal/process/next_tick.js:68:7)

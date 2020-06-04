@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:04:00 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-12 18:16:43
+ * @Last Modified time: 2020-06-04 08:51:51
  */
 
 const mongoose = require('mongoose');
@@ -16,6 +16,7 @@ const SystemSchema = new Schema({
   },
   mainHeader: [],
   viceHeader: [],
+  modal: [],
   createBy: {
     type: String,
     default: null

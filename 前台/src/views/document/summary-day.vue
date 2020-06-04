@@ -250,7 +250,7 @@
                     commitDocument({'documentId': documentId,'status': status}).then(res => {
                         if (res.code==1) {
                             if (status) {
-                                this.list[indx].details[0].status = status;
+                                this.$set(this.list[indx].details[0],'status',status);
                                 this.$Message.success('上报成功');
                             } else {
                                 this.listPart.splice(indx, 1);
@@ -313,6 +313,10 @@
                     this.$Message.error('请选择要合并的总结');
                     return;
                 }
+                if (this.selectionListPart.length<2) {
+                    this.$Message.error('请至少选择2行内容进行合并归档');
+                    return;
+                }
                 for (let i = 0; i<this.selectionListPart.length; i++) {
                     mergeList.push(
                         this.selectionListPart[i]._id.documentId
@@ -334,7 +338,9 @@
                     month: moment(this.time).format('MM')
                 }).then(res => {
                     if (res.code==1) {
-                        this.list = res.data;
+                        this.list = _.sortBy(res.data, function(item) {
+                            return parseInt(item._id.day);
+                        });
                         this.$Message.success('查询成功');
                     }
                 })

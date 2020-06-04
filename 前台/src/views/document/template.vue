@@ -11,7 +11,7 @@
             <DatePicker v-model="time" format="yyyy年MM月dd日" @on-change="onChange" type="date" placeholder="工作总结时间"></DatePicker>
         </Card>
         <Card title="工作总结" class="marginB-20">
-            <div class="summary-template" v-for="(summary,index) in submitList" @click="getModal(index)">
+            <div class="summary-template" v-for="(summary,index) in submitList">
                 <Tag color="primary" size="large" class="summary-tag">{{index+1}}</Tag>
                 <Tag color="warning"  size="large" class="summary-tag-right" @click.native="del(index)">
                     <Icon type="md-close" />
@@ -37,7 +37,7 @@
                                     filterable
                                     placeholder="填写模块名称"
                                     style="width: 400px;">
-                                    <Option v-for="(option, index) in modalList" :value="option.modalName" :key="index">{{option.modalName}}</Option>
+                                    <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option" :key="index">{{option}}</Option>
                                 </Select>
                                 下拉选项中没有的模块，点此处<a @click="add(index)">添加</a>。
                             </div>
@@ -102,39 +102,30 @@
                     this.$Message.error('请先选择系统');
                 }
             },
+            sysFilter(value){
+                if (!!value) {
+                    return _.find(this.sysList,['id',value]).modal;
+                } else {
+                    return [];
+                }
+            },
             addModalName() {
                 if (this.value=='') {
                     this.$Message.error('请填写模块名称');
                     return; 
                 }
+                let modalList = _.find(this.sysList,['id',this.id]).modal;
+                modalList.push(this.value)
                 let postData = {
                     systemId: this.id,
-                    modalName: this.value
+                    modalList: Array.from(new Set(modalList))
                 }
                 addModal(postData).then(res => {
                     if (res.code === 1) {
                         this.$Message.success('添加成功');
-                        this.modalList = res.data;
                         this.modal = false;
-                    }
-                })
-            },
-            getModal(index) {
-                if (this.submitList[index].systemId) {
-                    let postData = {
-                        id: this.submitList[index].systemId
-                    }
-                    seachModal(postData).then(res => {
-                        if (res.code === 1) {
-                            this.modalList = res.data;
-                        }
-                    })
-                }
-            },
-            getModalAll() {
-                seachModal({id: ''}).then(res => {
-                    if (res.code === 1) {
-                        this.modalList = res.data;
+                        this.init();
+                        this.value=='';
                     }
                 })
             },
@@ -171,7 +162,7 @@
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {
-                            this.$Message.success('保存成功');
+                            // this.$Message.success('保存成功');
                             this.$router.go(-1);
                         } else {
                             this.$Message.error(res.msg);
@@ -180,7 +171,7 @@
                 } else {
                     addDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {
-                            this.$Message.success('保存成功');
+                            // this.$Message.success('保存成功');
                             this.$router.go(-1);
                         } else {
                             this.$Message.error(res.msg);
@@ -217,7 +208,6 @@
         mounted() {
             this.init();
             this.documentId = this.$route.query.id;
-            this.getModalAll();
             if (this.documentId!='') {
                 detailsDocumentday(this.$route.query.type,{id:this.$route.query.id}).then(res => {
                     if (res.data.length>0) {
