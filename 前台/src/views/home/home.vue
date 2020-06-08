@@ -443,7 +443,7 @@ export default {
           if (sendMail) {
             this.$Message.success('文件已经通过邮件形式发送');
           } else {
-            window.location.href = 'http://' + window.location.hostname + ':3333/download/all';
+            window.location.href = 'http://172.16.2.131:3333/download/all';
           }
         }
       })

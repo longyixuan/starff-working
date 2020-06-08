@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-03 12:08:51
+ * @Last Modified time: 2020-06-05 20:36:32
  */
 
 const Router = require('koa-router');
@@ -36,4 +36,13 @@ router.post('/document/day/merge', document_controller.mergeDocumentday);
 router.post('/document/seach', document_controller.seachDocumentday);
 router.get('/modal/seach', document_controller.seachModal);
 router.post('/modal/add', document_controller.addModal);
+router.post('/document/day/toweek', document_controller.toDocumentweek);
+//周总结
+router.get('/document/week/list', document_controller.listDocumentweek);
+router.post('/document/week/edit', document_controller.editDocumentweek);
+router.post('/document/week/del', document_controller.delteDocumentweek);
+router.get('/document/week/details', document_controller.detailsDocumentweek);
+router.post('/document/week/commit', document_controller.commitDocumentWeek);
+router.post('/document/week/seach', document_controller.seachDocumentweek);
+router.post('/document/week/merge', document_controller.mergeDocumentweek);
 module.exports = router;

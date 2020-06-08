@@ -2,16 +2,15 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-05-28 17:16:19
+ * @Last Modified time: 2020-06-05 17:50:43
  */
 
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
-const DocumentdaySchema = new Schema({
+const DocumentWeekSchema = new Schema({
     documentId: {
         type: String,
-        unique: true,
         required: true
     },
     documentName: {
@@ -29,35 +28,38 @@ const DocumentdaySchema = new Schema({
     nickName: {
         type: String
     },
-    status: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
     year: {
         type: String,
         required: true
     },
-    month: {
+    startDay: {
+        type: Date,
+        required: true
+    },
+    endDay: {
+        type: Date,
+        required: true
+    },
+    systemId: {
         type: String,
         required: true
     },
-    day: {
+    systemName: {
         type: String,
         required: true
     },
-    templateList: [
-        {
-            systemId: String,
-            systemName: String,
-            content: [
-                {
-                    contentTitle: String,
-                    contentDescription: String
-                }
-            ]
-        }
-    ]
-}, { collection: 'documentDay', versionKey: false});
+    contentTitle: {
+        type: String,
+        required: true
+    },
+    contentDescription: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: Boolean,
+        defaultValue: false
+    }
+}, { collection: 'documentWeek', versionKey: false});
 
-module.exports = mongoose.model('documentDay', DocumentdaySchema);
+module.exports = mongoose.model('documentWeek', DocumentWeekSchema);

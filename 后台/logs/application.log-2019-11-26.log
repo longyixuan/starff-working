@@ -1,8 +1,0 @@
-[2019-11-26T16:07:25.480] [ERROR] application - ReferenceError: logger is not defined
-    at login (D:\1\starff-working\后台\app\controllers\user_controller.js:60:5)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)
-[2019-11-26T16:07:34.832] [ERROR] application - ReferenceError: logger is not defined
-    at login (D:\1\starff-working\后台\app\controllers\user_controller.js:60:5)
-    at <anonymous>
-    at process._tickCallback (internal/process/next_tick.js:188:7)

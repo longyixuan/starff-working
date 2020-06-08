@@ -159,6 +159,14 @@ export const appRouter = {
             component: () => import('@/views/document/template.vue')
         },
         {
+            path: 'summary/editweek',
+            meta: {
+                title: '工作总结-编辑'
+            },
+            name: 'summary-editweek',
+            component: () => import('@/views/document/template-week.vue')
+        },
+        {
             path: 'summary/details',
             meta: {
                 title: '工作总结-查看'
@@ -173,6 +181,14 @@ export const appRouter = {
             },
             name: 'summary-merge',
             component: () => import('@/views/document/templateMerge.vue')
+        },
+        {
+            path: 'sys-modal',
+            meta: {
+                title: '系统模块管理'
+            },
+            name: 'summary-merge',
+            component: () => import('@/views/document/modal.vue')
         },
         {
             path: 'summary/template',

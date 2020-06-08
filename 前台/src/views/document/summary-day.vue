@@ -4,29 +4,6 @@
 <template>
     <Card title="日总结">
         <Tabs value="my" :animated="false">
-            <TabPane label="我的工时" name="my">
-                <div style="margin-bottom: 20px;">
-                    <DatePicker v-model="time" format="yyyy年MM月" type="month" placeholder="工作总结时间"></DatePicker>
-                    <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
-                    <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
-                </div>
-                <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
-                    <template slot-scope="{ row }" slot="name">
-                        <strong>{{ row._id.documentName }}</strong>
-                    </template>
-                    <template slot-scope="{ row }" slot="time">
-                        <strong>{{row.details[0].year + '-' + row.details[0].month + '-' + row.details[0].day}}</strong>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
-                        <Button type="primary" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="edit(row._id.documentId)">修改</Button>
-                        <Button type="error" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="del(index,row._id.documentId)">删除</Button>
-                        <Button type="warning" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,true)">上报</Button>
-                        <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
-                    </template>
-                </Table>
-                <Button type="warning" @click="merge">归档</Button>
-            </TabPane>
             <TabPane label="部门工时" name="part" v-if="type==1">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
@@ -41,7 +18,9 @@
                         ></Date-picker>
                     </Col>
                     <Col span="8">
-                        <Button type="primary" @click="quickTime('week')" ghost class="margin-bottom20">本周</Button>
+                        <Button type="primary" @click="quickTime('yestday')" ghost class="margin-bottom20">昨天</Button>
+                        <Button type="primary" @click="quickTime('day')" ghost style="margin-left: 10px;" class="margin-bottom20">今天</Button>
+                        <Button type="primary" @click="quickTime('week')" ghost style="margin-left: 10px;" class="margin-bottom20">本周</Button>
                         <Button
                         type="primary"
                         @click="quickTime('month')"
@@ -98,8 +77,38 @@
                 </Table>
                 <Button type="warning" @click="mergePart">归档</Button>
             </TabPane>
+            <TabPane label="我的工时" name="my">
+                <div style="margin-bottom: 20px;">
+                    <DatePicker v-model="time" format="yyyy年MM月" type="month" placeholder="工作总结时间"></DatePicker>
+                    <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
+                    <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
+                </div>
+                <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
+                    <template slot-scope="{ row }" slot="name">
+                        <strong>{{ row._id.documentName }}</strong>
+                    </template>
+                    <template slot-scope="{ row }" slot="time">
+                        <strong>{{row.details[0].year + '-' + row.details[0].month + '-' + row.details[0].day}}</strong>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="action">
+                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
+                        <Button type="primary" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="edit(row._id.documentId)">修改</Button>
+                        <Button type="error" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="del(index,row._id.documentId)">删除</Button>
+                        <Button type="warning" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,true)">上报</Button>
+                        <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
+                    </template>
+                </Table>
+                <Button type="primary" @click="merge">合并查看</Button>
+                <Button type="warning" @click="setWeek" style="margin-left: 10px;">合并生成周总结</Button>
+            </TabPane>
         </Tabs>
-        
+        <Modal v-model="modal" title="合并生成周总结">
+            <Input type="text" placeholder="请输出周总结名称" v-model="weekTitle"/>
+            <template slot="footer">
+                <Button @click="modal=false">取消</Button>
+                <Button type="primary" @click="mergeWeek" style="margin-left: 10px;">确定</Button>
+            </template>
+        </Modal>
     </Card>
 </template>
 <script>
@@ -108,7 +117,9 @@
         listDocumentday,
         seachDocumentday,
         delteDocumentday,
-        commitDocument
+        commitDocument,
+        addDocumentday,
+        toDocumentweek
     } from "@/api/index";
     import {
         getAll,
@@ -127,8 +138,10 @@
                 listPart: [],
                 showdate: [],
                 type: 0,
+                weekTitle: '设计部2020年05月25日-29日工作总结（姓名）',
                 startTime: '',
                 endTime: '',
+                modal: false,
                 selectionList: [],
                 selectionListPart: [],
                 time: new Date(),
@@ -150,7 +163,7 @@
                         slot: 'name'
                     },
                     {
-                        title: '时间',
+                        title: '日期',
                         width: 120,
                         align: 'center',
                         slot: 'time'
@@ -178,7 +191,7 @@
                         slot: 'name'
                     },
                     {
-                        title: '时间',
+                        title: '日期',
                         width: 120,
                         align: 'center',
                         slot: 'time'
@@ -227,6 +240,13 @@
             }
         },
         methods: {
+            setWeek() {
+                this.modal = true;
+                let list = _.sortBy(this.selectionList, function(item) {
+                    return parseInt(item._id.day);
+                });
+                this.weekTitle = `设计部${list[0]._id.year}年${list[0]._id.month}月${list[0]._id.day}日-${list[list.length-1]._id.day}日工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`;
+            },
             handelChange(date) {
                 this.startTime = date[0];
                 this.endTime = date[1];
@@ -262,7 +282,19 @@
                 })
             },
             quickTime(type) {
-                if (type == "week") {
+                if (type == "yestday") {
+                    this.startTime = moment().add(-1, 'days').format('YYYY-MM-DD');
+                    this.endTime = moment().add(-1, 'days').format('YYYY-MM-DD');
+                    this.showdate = [];
+                    this.showdate.push(this.startTime);
+                    this.showdate.push(this.endTime);
+                } else if(type == "day") {
+                    this.startTime = moment().format('YYYY-MM-DD');
+                    this.endTime = moment().format('YYYY-MM-DD');
+                    this.showdate = [];
+                    this.showdate.push(this.startTime);
+                    this.showdate.push(this.endTime);
+                } else if (type == "week") {
                     //周
                     this.startTime = getWeekStartDate();
                     this.endTime = getWeekEndDate();
@@ -362,10 +394,14 @@
                 })
             },
             show(id) {
-                this.$router.push({ 'name': 'summary-details', 'query': { id: id, type: 'day' }})
+                let routeData = this.$router.resolve({
+                    name: 'summary-details',
+                    query: { id: id, type: 'day' }
+                });
+                window.open(routeData.href, '_blank');
             },
             edit(id) {
-                this.$router.push({ 'name': 'summary-edit', 'query': { id: id ,type: 'day'}})
+                this.$router.push({ 'name': 'summary-edit', 'query': { id: id ,type: 'week'}});
             },
             del(idnx,id) {
                 this.confirm('确定要删除？',() => {
@@ -385,6 +421,31 @@
                         callback();
                     }
                 });
+            },
+            mergeWeek() {
+                var mergeList = [];
+                let list = _.sortBy(this.selectionList, (item) => {
+                    mergeList.push(
+                        item._id.documentId
+                    );
+                    return parseInt(item._id.day);
+                });
+                var postData = {
+                    documentName: this.weekTitle,
+                    userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+                    userName: JSON.parse(localStorage.getItem('userInfo')).userName,
+                    nickName: JSON.parse(localStorage.getItem('userInfo')).nickName,
+                    year: `${list[0]._id.year}`,
+                    startDay: `${list[0]._id.year}-${list[0]._id.month}-${list[0]._id.day}`,
+                    endDay: `${list[list.length-1]._id.year}-${list[list.length-1]._id.month}-${list[list.length-1]._id.day}`,
+                    list: mergeList
+                };
+                toDocumentweek(postData).then(res => {
+                    if (res.code === 1) {
+                        this.modal = false;
+                        this.$Message.success('生成成功，请至周总结中查看')
+                    }
+                })
             },
             addTemplate() {
                 this.$router.push({ 'name': 'summary-edit', 'query': { id: '' ,type: 'day'}})

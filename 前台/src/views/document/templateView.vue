@@ -31,8 +31,6 @@
                     </div>
                 </template>
             </div>
-            <div class="summary-view-line"></div>
-            <div style="text-align: center;"><Button type="primary" @click="$router.go(-1)">返回</Button></div>
         </div>
     </Card>
 </template>
@@ -40,6 +38,7 @@
 import {
     detailsDocumentday
 } from "@/api/index";
+import moment from "moment";
 export default {
     data() {
         return {
@@ -55,7 +54,9 @@ export default {
                 if (res.code == 1) {
                     if (res.data.length>0) {
                         this.title = res.data[0].content[0].documentName;
-                        this.time = res.data[0].content[0].year+'-'+res.data[0].content[0].month+'-'+res.data[0].content[0].day;
+                        if (this.$route.query.type=='day') {
+                            this.time = res.data[0].content[0].documentName;
+                        }
                         this.submitList = [];
                         for (let i =0;i<res.data.length;i++) {
                             this.submitList.push({
@@ -69,6 +70,15 @@ export default {
             })
         },
         toChinesNum(num){
+            let cNum = ['零','一', '二', '三', '四', '五', '六', '七', '八', '九','十',
+            '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九','二十',
+            '二十一', '二十二', '二十三', '二十四', '二十五', '二十六', '二十七', '二十八', '二十九','三十',
+            '三十一', '三十二', '三十三', '三十四', '三十五', '三十六', '三十七', '三十八', '三十九','四十',
+            '四十一', '四十二', '四十三', '四十四', '四十五', '四十六', '四十七', '四十八', '四十九','五十',
+            '五十一', '五十二', '五十三', '五十四', '五十五', '五十六', '五十七', '五十八', '五十九','六十',
+            '六十一', '六十二', '六十三', '六十四', '六十五', '六十六', '六十七', '六十八', '六十九','七十',
+            '七十一', '七十二', '七十三', '七十四', '七十五', '七十六', '七十七', '七十八', '七十九','八十'];
+            return cNum[num];
             let changeNum = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九']; //changeNum[0] = "零"
             let unit = ["", "十", "百", "千", "万"];
             num = parseInt(num);

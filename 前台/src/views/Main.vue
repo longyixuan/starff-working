@@ -40,9 +40,9 @@
               <MenuItem name="3-1" to="/summary-day">日总结</MenuItem>
               <MenuItem name="3-2" to="/summary-week">周总结</MenuItem>
               <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
-              <MenuItem name="3-4" to="/summary-partment">归档</MenuItem>
             </Submenu>
-            <MenuItem name="4" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
+            <MenuItem name="4" to="/sys-modal"><Icon type="ios-folder-open" />系统模块管理</MenuItem>
+            <MenuItem name="5" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>
         <Layout :style="{padding: '24px'}">

@@ -238,4 +238,16 @@ export const seachModal = (params) => {
 export const addModal = (params) => {
     return postRequest(`/modal/add`,params)
 }
+export const toDocumentweek = (params) => {
+    return postRequest(`/document/day/toweek`, params)
+}
+export const commitDocumentWeek = (params) => {
+    return postRequest(`/document/week/commit`,params)
+}
+export const seachDocumentweek = (params) => {
+    return postRequest(`/document/week/seach`,params)
+}
+export const downDocument = (params) => {
+    return postRequest(`/download/document`,params)
+}
 //-----------------------工作总结--------------------------------//
