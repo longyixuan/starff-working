@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-05 20:39:36
+ * @Last Modified time: 2020-06-09 12:23:32
  */
 
 const fs = require('fs');
@@ -12,6 +12,7 @@ const System_col = require('./../models/system');
 const Template_col = require('./../models/template');
 const Documentday_col = require('./../models/documentDay');
 const Documentweek_col = require('./../models/documentWeek');
+const Documentmonth_col = require('./../models/documentMonth');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
@@ -850,6 +851,244 @@ const mergeDocumentweek = async (ctx) => {
     }
 }
 
+const toDocumentmonth = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const list = await Documentweek_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'documentId': {
+                    '$in': req.list
+                }
+            }
+        },
+        {
+            $group: {
+                _id :  {
+                    systemId: '$systemId',
+                    systemName: '$systemName',
+                    contentTitle: '$contentTitle'
+                },
+                details: {
+                    $push: '$contentDescription'
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                systemId: '$_id.systemId',
+                systemName: '$_id.systemName',
+                contentTitle: '$_id.contentTitle',
+                details: '$details'
+            }
+        }
+    ]);
+    let insertList = [];
+    const documentId = uuidv1();
+    for (let i = 0; i <list.length; i++) {
+        insertList.push({
+            documentId: documentId,
+            documentName: req.documentName,
+            userId: req.userId,
+            userName: req.userName,
+            nickName: req.nickName,
+            year: req.year,
+            month: req.month,
+            systemId: list[i].systemId,
+            systemName: list[i].systemName,
+            contentTitle: list[i].contentTitle,
+            contentDescription: list[i].details.join('\n')
+        })
+    }
+    await Documentmonth_col.insertMany(insertList);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: insertList
+    }
+}
+
+const listDocumentmonth = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.query;
+    const list = await Documentmonth_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'year': req.year
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    documentName: '$documentName',
+                    documentId: '$documentId',
+                    year: '$year',
+                    month: '$month'
+                },
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        documentName: '$documentName',
+                        userId: '$userId',
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        year: '$year',
+                        month: '$month',
+                        status: '$status',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list
+    }
+}
+
+const editDocumentmonth = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    if (req.documentId!='') { //删除原有数据
+        await Documentmonth_col.deleteMany({
+            documentName: req.summaryName
+        });
+    }
+    const documentId = uuidv1();
+    for (let i = 0; i < req.list.length; i++) {
+        req.list[i].documentId = documentId;
+    }
+    await Documentmonth_col.insertMany(req.list);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const detailsDocumentmonth = async (ctx) => {
+    const id = ctx.query.id;
+    const document = await Documentmonth_col.aggregate([
+        {
+            $match: {
+                'documentId': id
+            }
+        },
+        {
+            $sort: {
+                'order': -1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    systemId: '$systemId',
+                    systemName: '$systemName'
+                },
+                content: {
+                    $push: {
+                        documentId: '$documentId',
+                        documentName: '$documentName',
+                        userId: '$userId',
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        year: '$year',
+                        month: '$month',
+                        status: '$status',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ]);
+    ctx.status = 200;
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: document
+    }
+}
+
+const commitDocumentMonth = async (ctx,next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Documentmonth_col.updateMany({
+        'documentId': req.documentId
+    },{
+        status: req.status
+    });
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const delteDocumentmonth = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Documentmonth_col.deleteMany({
+        documentId: req.documentId
+    });
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
+const seachDocumentmonth = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const list = await Documentmonth_col.aggregate([
+        {
+            $match: {
+                'userId': {
+                    '$in': req.people
+                },
+                'status': true
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    documentName: '$documentName',
+                    documentId: '$documentId'
+                },
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        documentName: '$documentName',
+                        userId: '$userId',
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        year: '$year',
+                        month: '$month',
+                        status: '$status',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
@@ -882,5 +1121,12 @@ module.exports = {
     commitDocumentWeek,
     delteDocumentweek,
     seachDocumentweek,
-    mergeDocumentweek
+    mergeDocumentweek,
+    toDocumentmonth,
+    listDocumentmonth,
+    editDocumentmonth,
+    detailsDocumentmonth,
+    commitDocumentMonth,
+    delteDocumentmonth,
+    seachDocumentmonth
 }

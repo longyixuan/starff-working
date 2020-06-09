@@ -167,6 +167,14 @@ export const appRouter = {
             component: () => import('@/views/document/template-week.vue')
         },
         {
+            path: 'summary/editmonth',
+            meta: {
+                title: '工作总结-编辑'
+            },
+            name: 'summary-editmonth',
+            component: () => import('@/views/document/template-month.vue')
+        },
+        {
             path: 'summary/details',
             meta: {
                 title: '工作总结-查看'

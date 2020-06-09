@@ -5,7 +5,7 @@
     <Card title="工作总结">
         <h1 class="summary-view-h1" slot="title">
             {{title}}
-            <div class="summary-view-time"><Icon type="md-calendar" size="26"/> {{time}}</div>
+            <div class="summary-view-time"><Icon type="md-calendar" size="26"/></div>
         </h1>
         <div style="padding: 0 20px;">
             <div class="summary-view-warp">

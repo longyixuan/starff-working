@@ -4,7 +4,7 @@
 <template>
     <Card title="周总结">
         <Tabs value="my" :animated="false">
-            <TabPane label="部门工时" name="part" v-if="type==1">
+            <TabPane label="部门总结" name="part" v-if="type==1">
                 <Row :gutter="20" style="margin-bottom: 20px;">
                     <Col span="16">
                         <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
@@ -43,7 +43,7 @@
                 </Table>
                 <Button type="warning" @click="mergePart">归档</Button>
             </TabPane>
-            <TabPane label="我的工时" name="my">
+            <TabPane label="我的总结" name="my">
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row._id.documentName }}</strong>
@@ -60,9 +60,17 @@
                     </template>
                 </Table>
                 <Button type="primary" @click="merge">合并查看</Button>
-                <Button type="warning" @click="$Message.info('正在开发中')" style="margin-left: 10px;">合并生成月总结</Button>
+                <Button type="warning" @click="modal=true" style="margin-left: 10px;">合并生成月总结</Button>
             </TabPane>
         </Tabs>
+        <Modal v-model="modal" title="合并生成月总结">
+            <Input type="text" placeholder="请输出月总结名称" v-model="monthTitle" style="margin-bottom: 20px;"/>
+            <DatePicker v-model="time" @on-change="onChange" format="yyyy年MM月" type="month" placeholder="选择年月"></DatePicker>
+            <template slot="footer">
+                <Button @click="modal=false">取消</Button>
+                <Button type="primary" @click="mergeMonth" style="margin-left: 10px;">确定</Button>
+            </template>
+        </Modal>
     </Card>
 </template>
 <script>
@@ -73,7 +81,7 @@
         delteDocumentday,
         commitDocument,
         addDocumentday,
-        toDocumentweek,
+        toDocumentmonth,
         commitDocumentWeek
     } from "@/api/index";
     import {
@@ -89,6 +97,8 @@
     export default {
         data() {
             return {
+                monthTitle: '设计部2020年05月工作总结（姓名）',
+                modal: false,
                 list: [],
                 listPart: [],
                 showdate: [],
@@ -164,6 +174,9 @@
             }
         },
         methods: {
+            onChange(val) {
+                this.monthTitle = `设计部${val}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
+            },
             handelChange(date) {
                 this.startTime = date[0];
                 this.endTime = date[1];
@@ -335,7 +348,7 @@
                     }
                 });
             },
-            mergeWeek() {
+            mergeMonth() {
                 var mergeList = [];
                 for (let i = 0; i<this.selectionList.length; i++) {
                     mergeList.push(
@@ -343,17 +356,18 @@
                     );
                 }
                 var postData = {
-                    documentName: '设计部2020年05月25日-29日工作总结（姓名）',
+                    documentName: this.monthTitle,
                     userId: JSON.parse(localStorage.getItem('userInfo')).userId,
                     userName: JSON.parse(localStorage.getItem('userInfo')).userName,
                     nickName: JSON.parse(localStorage.getItem('userInfo')).nickName,
                     year: '2020',
-                    startDay: '2020-05-25',
-                    endDay: '2020-05-29',
+                    month: '05',
                     list: mergeList
                 };
-                toDocumentweek(postData).then(res => {
-                    
+                toDocumentmonth(postData).then(res => {
+                    if (res.code === 1) {
+                        this.$Message.success('生成成功，请至月总结中查看')
+                    }
                 })
             },
             addTemplate() {
@@ -365,6 +379,7 @@
             this.getUserList();
             this.type = JSON.parse(localStorage.getItem('userInfo')).type;
             this.peopleAll();
+            this.monthTitle = `设计部${moment().format('YYYY年MM月')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
         }
     }
 </script>

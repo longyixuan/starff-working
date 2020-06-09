@@ -238,6 +238,7 @@ export const seachModal = (params) => {
 export const addModal = (params) => {
     return postRequest(`/modal/add`,params)
 }
+//------------------周总结-------------------------------//
 export const toDocumentweek = (params) => {
     return postRequest(`/document/day/toweek`, params)
 }
@@ -249,5 +250,15 @@ export const seachDocumentweek = (params) => {
 }
 export const downDocument = (params) => {
     return postRequest(`/download/document`,params)
+}
+//--------------------月总结---------------------//
+export const toDocumentmonth = (params) => {
+    return postRequest(`/document/week/tomonth`, params)
+}
+export const commitDocumentMonth = (params) => {
+    return postRequest(`/document/month/commit`,params)
+}
+export const seachDocumentmonth = (params) => {
+    return postRequest(`/document/month/seach`,params)
 }
 //-----------------------工作总结--------------------------------//

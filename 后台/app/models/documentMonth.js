@@ -2,13 +2,13 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-05 15:55:55
+ * @Last Modified time: 2020-06-09 10:40:25
  */
 
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
-const DocumentdaySchema = new Schema({
+const DocumentmonthSchema = new Schema({
     documentId: {
         type: String,
         required: true
@@ -52,15 +52,10 @@ const DocumentdaySchema = new Schema({
         type: String,
         required: true
     },
-    order: {
-        type: Number,
-        required: true,
-        defaultValue: 0
-    },
     status: {
         type: Boolean,
         defaultValue: false
     }
-}, { collection: 'documentDay', versionKey: false});
+}, { collection: 'documentMonth', versionKey: false});
 
-module.exports = mongoose.model('documentDay', DocumentdaySchema);
+module.exports = mongoose.model('documentMonth', DocumentmonthSchema);

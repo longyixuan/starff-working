@@ -4,7 +4,7 @@
 <template>
     <Card title="日总结">
         <Tabs value="my" :animated="false">
-            <TabPane label="部门工时" name="part" v-if="type==1">
+            <TabPane label="部门总结" name="part" v-if="type==1">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Date-picker
@@ -77,7 +77,7 @@
                 </Table>
                 <Button type="warning" @click="mergePart">归档</Button>
             </TabPane>
-            <TabPane label="我的工时" name="my">
+            <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">
                     <DatePicker v-model="time" format="yyyy年MM月" type="month" placeholder="工作总结时间"></DatePicker>
                     <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
@@ -401,7 +401,7 @@
                 window.open(routeData.href, '_blank');
             },
             edit(id) {
-                this.$router.push({ 'name': 'summary-edit', 'query': { id: id ,type: 'week'}});
+                this.$router.push({ 'name': 'summary-edit', 'query': { id: id ,type: 'day'}});
             },
             del(idnx,id) {
                 this.confirm('确定要删除？',() => {
