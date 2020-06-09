@@ -8,7 +8,7 @@
                 <Button type="primary" @click="$router.go(-1)" style="margin-left: 10px">返回</Button>
             </template>
             <Input v-model="title" class="summary-input marginB-20" placeholder="样例：xxxx年xx月月终工作总结（员工姓名）"/>
-            <DatePicker v-model="time" format="yyyy年MM月dd日" @on-change="onChange" type="date" placeholder="工作总结时间"></DatePicker>
+            <DatePicker v-model="time" format="yyyy年MM月" @on-change="onChange" type="month" placeholder="工作总结时间"></DatePicker>
         </Card>
         <Card title="工作总结" class="marginB-20">
             <div class="summary-template" v-for="(summary,index) in submitList">
@@ -130,6 +130,7 @@
                 })
             },
             onChange(value) {
+                alert(value)
                 this.title = `设计部${value}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
             },
             setPostData(){
@@ -145,9 +146,7 @@
                             nickName: userInfo.nickName,
                             year: moment(this.time).format('YYYY'),
                             month: moment(this.time).format('MM'),
-                            day: moment(this.time).format('DD'),
                             systemId: item.systemId,
-                            order: index,
                             time: item.time,
                             systemName: _.find(this.sysList,['id',item.systemId]).title,
                             contentTitle: item2.contentTitle,
@@ -212,7 +211,7 @@
                 detailsDocumentday(this.$route.query.type,{id:this.$route.query.id}).then(res => {
                     if (res.data.length>0) {
                         this.title = res.data[0].content[0].documentName;
-                        this.time = new Date(res.data[0].content[0].year+'-'+res.data[0].content[0].month+'-'+res.data[0].content[0].day);
+                        this.time = new Date(res.data[0].content[0].year+'-'+res.data[0].content[0].month);
                         this.submitList = [];
                         for (let i =0;i<res.data.length;i++) {
                             this.submitList.push({
@@ -225,8 +224,8 @@
                     }
                 })
             } else {
-                if (this.$route.query.type == 'day') {
-                    this.title = `设计部${moment().format('YYYY年MM月DD日')}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
+                if (this.$route.query.type == 'month') {
+                    this.title = `设计部${moment().format('YYYY年MM月DD日')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
                 }
             }
         }

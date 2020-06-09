@@ -360,13 +360,14 @@
                     userId: JSON.parse(localStorage.getItem('userInfo')).userId,
                     userName: JSON.parse(localStorage.getItem('userInfo')).userName,
                     nickName: JSON.parse(localStorage.getItem('userInfo')).nickName,
-                    year: '2020',
-                    month: '05',
+                    year: moment(this.time).format('YYYY'),
+                    month: moment(this.time).format('MM'),
                     list: mergeList
                 };
                 toDocumentmonth(postData).then(res => {
                     if (res.code === 1) {
                         this.$Message.success('生成成功，请至月总结中查看')
+                        this.modal = false;
                     }
                 })
             },
