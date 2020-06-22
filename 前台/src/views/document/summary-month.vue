@@ -5,7 +5,23 @@
     <Card title="月总结">
         <Tabs value="my" :animated="false">
             <TabPane label="部门总结" name="part" v-if="type==1">
-                <Row :gutter="20" style="margin-bottom: 20px;">
+                <Row :gutter="20" style="margin-bottom: 10px;">
+                    <Col span="16">
+                        <Date-picker
+                        v-model="month"
+                        style="width: 100%;"
+                        type="month"
+                        class="margin-bottom20"
+                        confirm
+                        placeholder="选择日期"
+                        ></Date-picker>
+                    </Col>
+                    <Col span="8">
+                        <Button type="primary" @click="quickTime('cur')" ghost style="margin-left: 10px;" class="margin-bottom20">本月</Button>
+                        <Button type="primary" @click="quickTime('pre')" ghost style="margin-left: 10px;" class="margin-bottom20">上月</Button>
+                    </Col>
+                </Row>
+                <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
                         <Option
@@ -24,10 +40,9 @@
                         class="margin-bottom20"
                         style="margin-left: 10px;"
                         >选择全部</Button>
-                        <Button type="primary" class="margin-bottom20" @click="seach" style="margin-left: 10px;">查询</Button>
                     </Col>
                 </Row>
-                
+                <Button type="primary" @click="seach" style="margin-bottom: 20px;">查询</Button>
                 <Table border :columns="columnPart" :data="listPart" style="margin-bottom:20px" @on-selection-change="selectionChangePart">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row._id.documentName }}</strong>
@@ -41,7 +56,7 @@
                         <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
                     </template>
                 </Table>
-                <Button type="warning" @click="mergePart">归档</Button>
+                <Button type="primary" @click="mergePart">合并查看</Button>
             </TabPane>
             <TabPane label="我的总结" name="my">
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
@@ -90,7 +105,7 @@
             return {
                 list: [],
                 listPart: [],
-                showdate: [],
+                month: new Date(),
                 type: 0,
                 startTime: '',
                 endTime: '',
@@ -201,6 +216,7 @@
                 getAllUserData().then(res => {
                     if (res.code === 1) {
                         this.peopleList = res.data;
+                        this.peopleAll();
                     }
                 });
             },
@@ -226,7 +242,7 @@
                     return;
                 }
                 if (this.selectionListPart.length<2) {
-                    this.$Message.error('请至少选择2行内容进行合并归档');
+                    this.$Message.error('请至少选择2行内容进行合并查看');
                     return;
                 }
                 for (let i = 0; i<this.selectionListPart.length; i++) {
@@ -256,6 +272,8 @@
             },
             seach() {
                 let postData = {
+                    year: moment(this.month).format('YYYY'),
+                    month: moment(this.month).format('MM'),
                     people: this.people,
                     system: this.system
                 };
@@ -297,29 +315,15 @@
                     }
                 });
             },
-            mergeWeek() {
-                var mergeList = [];
-                for (let i = 0; i<this.selectionList.length; i++) {
-                    mergeList.push(
-                        this.selectionList[i]._id.documentId
-                    );
-                }
-                var postData = {
-                    documentName: '设计部2020年05月25日-29日工作总结（姓名）',
-                    userId: JSON.parse(localStorage.getItem('userInfo')).userId,
-                    userName: JSON.parse(localStorage.getItem('userInfo')).userName,
-                    nickName: JSON.parse(localStorage.getItem('userInfo')).nickName,
-                    year: '2020',
-                    startDay: '2020-05-25',
-                    endDay: '2020-05-29',
-                    list: mergeList
-                };
-                toDocumentweek(postData).then(res => {
-                    
-                })
-            },
             addTemplate() {
                 this.$router.push({ 'name': 'summary-edit', 'query': { id: '' ,type: 'day'}})
+            },
+            quickTime(type) {
+                if (type == 'pre') {
+                    this.month = new Date(moment().add(-1, 'month').format('YYYY-MM-DD'));
+                } else {
+                    this.month = new Date();
+                }
             }
         },
         mounted() {

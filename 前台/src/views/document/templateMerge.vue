@@ -86,7 +86,7 @@ export default {
                 userId: JSON.parse(localStorage.getItem('userInfo')).userId,
                 time: moment().format('YYYY-MM-DD'),
                 doctitle: this.doctitle,
-                list: this.submitList
+                list: JSON.stringify(this.submitList)
             }
             downDocument(postData).then(res => {
                 if (res.code === 1) {

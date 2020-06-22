@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-11-20 09:27:16 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-08 10:22:07
+ * @Last Modified time: 2020-06-15 11:20:04
  */
 const fs = require('fs');
 const send = require('koa-send');
@@ -26,24 +26,21 @@ const downloadMarkdown = async (ctx, next) => {
 const downloadDocument = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    fs.writeFile('data/document/' + req.doctitle + '.md', writeTemplate(req), function (err) {})
+    let text = '# ' + req.doctitle;
+    const data = JSON.parse(req.list)
+    for(let i = 0; i <data.length; i++) { //本月总结
+        text += '\n';
+        text += '## ' + toChinesNum(i+1) +'、' + data[i].systemName;
+        for(let j = 0; j <data[i].content.length; j++) {
+            text += '\n';
+            text += '- **' + (j+1) + '、' + data[i].content[j].contentTitle + '：**' + data[i].content[j].contentDescription;
+        }
+    }
+    fs.writeFile('data/document/' + req.doctitle + '.md', text, function (err) {})
     ctx.body = {
         code: 1,
         msg: '生成成功'
     }
-}
-
-const writeTemplate = (data) => {
-    let text = '# ' + data.doctitle;
-    for(let i = 0; i <data.list.length; i++) { //本月总结
-        text += '\n';
-        text += '## ' + toChinesNum(i+1) +'、' + data.list[i].systemName;
-        for(let j = 0; j <data.list[i].content.length; j++) {
-            text += '\n';
-            text += '- **' + (j+1) + '、' + data.list[i].content[j].contentTitle + '：**' + data.list[i].content[j].contentDescription;
-        }
-    }
-    return text;
 }
 
 module.exports = {

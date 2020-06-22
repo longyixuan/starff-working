@@ -75,7 +75,7 @@
                         <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
                     </template>
                 </Table>
-                <Button type="warning" @click="mergePart">归档</Button>
+                <Button type="primary" @click="mergePart">合并查看</Button>
             </TabPane>
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">
@@ -321,6 +321,7 @@
                 getAllUserData().then(res => {
                     if (res.code === 1) {
                         this.peopleList = res.data;
+                        this.peopleAll();
                     }
                 });
             },
@@ -346,7 +347,7 @@
                     return;
                 }
                 if (this.selectionListPart.length<2) {
-                    this.$Message.error('请至少选择2行内容进行合并归档');
+                    this.$Message.error('请至少选择2行内容进行合并查看');
                     return;
                 }
                 for (let i = 0; i<this.selectionListPart.length; i++) {

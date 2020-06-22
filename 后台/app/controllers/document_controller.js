@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-09 12:23:32
+ * @Last Modified time: 2020-06-15 11:34:38
  */
 
 const fs = require('fs');
@@ -778,7 +778,13 @@ const seachDocumentweek = async (ctx) => {
                 'userId': {
                     '$in': req.people
                 },
-                'status': true
+                'status': true,
+                'startDay': {
+                    $gte: new Date(req.startTime)
+                },
+                'endDay': {
+                    $lte: new Date(req.endTime)
+                }
             }
         },
         {
@@ -1054,6 +1060,8 @@ const seachDocumentmonth = async (ctx) => {
                 'userId': {
                     '$in': req.people
                 },
+                'year': req.year,
+                'month': req.month,
                 'status': true
             }
         },

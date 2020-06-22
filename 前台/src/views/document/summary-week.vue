@@ -5,7 +5,24 @@
     <Card title="周总结">
         <Tabs value="my" :animated="false">
             <TabPane label="部门总结" name="part" v-if="type==1">
-                <Row :gutter="20" style="margin-bottom: 20px;">
+                <Row :gutter="20" style="margin-bottom: 10px;">
+                    <Col span="16">
+                        <Date-picker
+                        :value="showdate"
+                        @on-change="handelChange"
+                        style="width: 100%;"
+                        type="daterange"
+                        class="margin-bottom20"
+                        confirm
+                        placeholder="选择日期"
+                        ></Date-picker>
+                    </Col>
+                    <Col span="8">
+                        <Button type="primary" @click="quickTime('week')" ghost style="margin-left: 10px;" class="margin-bottom20">本周</Button>
+                        <Button type="primary" @click="quickTime('preweek')" ghost style="margin-left: 10px;" class="margin-bottom20">上周</Button>
+                    </Col>
+                </Row>
+                <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
                         <Option
@@ -24,10 +41,9 @@
                         class="margin-bottom20"
                         style="margin-left: 10px;"
                         >选择全部</Button>
-                        <Button type="primary" class="margin-bottom20" @click="seach" style="margin-left: 10px;">查询</Button>
                     </Col>
                 </Row>
-                
+                <Button type="primary" style="margin-bottom: 20px;" @click="seach">查询</Button>
                 <Table border :columns="columnPart" :data="listPart" style="margin-bottom:20px" @on-selection-change="selectionChangePart">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row._id.documentName }}</strong>
@@ -41,7 +57,7 @@
                         <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
                     </template>
                 </Table>
-                <Button type="warning" @click="mergePart">归档</Button>
+                <Button type="primary" @click="mergePart">合并查看</Button>
             </TabPane>
             <TabPane label="我的总结" name="my">
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
@@ -88,6 +104,8 @@
         getAll,
         getWeekStartDate,
         getWeekEndDate,
+        getPreWeekStartDate,
+        getPreWeekEndDate,
         getMonthStartDate,
         getMonthEndDate,
         getLastMonthStartDate,
@@ -231,6 +249,12 @@
                     this.showdate = [];
                     this.showdate.push(this.startTime);
                     this.showdate.push(this.endTime);
+                } else if (type == "preweek") {
+                    this.startTime = getPreWeekStartDate();
+                    this.endTime = getPreWeekEndDate();
+                    this.showdate = [];
+                    this.showdate.push(this.startTime);
+                    this.showdate.push(this.endTime);
                 } else if (type == "month") {
                     //月
                     this.startTime = getMonthStartDate();
@@ -251,6 +275,7 @@
                 getAllUserData().then(res => {
                     if (res.code === 1) {
                         this.peopleList = res.data;
+                        this.peopleAll();
                     }
                 });
             },
@@ -276,7 +301,7 @@
                     return;
                 }
                 if (this.selectionListPart.length<2) {
-                    this.$Message.error('请至少选择2行内容进行合并归档');
+                    this.$Message.error('请至少选择2行内容进行合并查看');
                     return;
                 }
                 for (let i = 0; i<this.selectionListPart.length; i++) {
@@ -307,6 +332,8 @@
             },
             seach() {
                 let postData = {
+                    startTime: this.startTime,
+                    endTime: this.endTime,
                     people: this.people,
                     system: this.system
                 };

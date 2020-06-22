@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 09:14:22 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-08-13 15:01:46
+ * @Last Modified time: 2020-06-10 14:11:52
  */
 Date.prototype.format = function () {
         let s = '';
@@ -86,6 +86,18 @@ if(nowMonth>8){
 quarterStartMonth = 9; 
 } 
 return quarterStartMonth; 
+} 
+
+//获得上周的开始日期 
+export function getPreWeekStartDate() {
+    var weekStartDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek + 1 - 7); 
+    return formatDate(weekStartDate); 
+    } 
+    
+//获得上周的结束日期 
+export function getPreWeekEndDate() { 
+var weekEndDate = new Date(nowYear, nowMonth, nowDay + (6 - nowDayOfWeek) + 1 - 7);
+return formatDate(weekEndDate); 
 } 
 
 //获得本周的开始日期 

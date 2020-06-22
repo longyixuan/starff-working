@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-11-26 16:33:40
+ * @Last Modified time: 2020-06-10 09:10:10
  */
 
 const config = require('./../../config');
@@ -202,9 +202,12 @@ const unLock = async (ctx,next) => {
 }
 // 获取用户列表
 const getAllUser = async (ctx, next) => {
-  const req = ctx.request.body;
   // 获取用户的 userId
-  const result = await User_col.find();
+  const result = await User_col.find({
+    userName: {
+      '$ne': 'admin'
+    }
+  });
 
   ctx.status = 200;
   ctx.body = {
