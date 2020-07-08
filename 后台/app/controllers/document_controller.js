@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-15 11:34:38
+ * @Last Modified time: 2020-06-30 20:20:57
  */
 
 const fs = require('fs');
@@ -968,10 +968,12 @@ const editDocumentmonth = async (ctx) => {
             documentName: req.summaryName
         });
     }
+    console.log(req.list);
     const documentId = uuidv1();
     for (let i = 0; i < req.list.length; i++) {
         req.list[i].documentId = documentId;
     }
+    console.log(req.list)
     await Documentmonth_col.insertMany(req.list);
     ctx.body = {
         code: 1,

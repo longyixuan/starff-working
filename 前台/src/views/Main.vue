@@ -53,8 +53,13 @@
       </Layout>
     </Layout>
     <Back-top :right="10"></Back-top>
-    <Modal v-model="modal" @on-ok="editPassword" title="修改密码">
+    <Modal v-model="modal" title="修改密码">
+      <Alert type="warning" show-icon style="margin-bottom:10px;">输入6位以上密码</Alert>
       <Input v-model="value" placeholder="输入新密码"/>
+      <div slot="footer">
+        <Button @click="modal=false">取消</Button>
+        <Button type="primary" @click="editPassword" :disabled="value.length<6">确认修改</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -94,6 +99,7 @@ export default {
     editPassword() {
       editPassword({ userId: JSON.parse(localStorage.getItem('userInfo')).userId, password: this.value}).then(res =>{
         if (res.code === 1) {
+          this.modal = false;
           this.$Message.success("密码修改成功");
         } else {
           this.$Message.success(res.msg);
