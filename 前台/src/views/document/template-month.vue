@@ -54,6 +54,9 @@
                 <Icon type="md-add" size="120" color="#999"/>
             </div>
         </Card>
+        <Card class="marginB-20" title="工作计划">
+            <Input class="marginB-20" type="textarea" :rows="6" placeholder="填写工作计划" v-model="gzjh"></Input>
+        </Card>
         <Row>
             <Button type="primary" size="large" long @click="submit">提交</Button>
         </Row>
@@ -80,6 +83,7 @@
         data() {
             return {
                 title: '',
+                gzjh: '',
                 modalTitle: '',
                 value: '',
                 id: '',
@@ -157,7 +161,7 @@
                 return result;
             },
             submit() {
-                var postData = {summaryName: this.title,list: this.setPostData()};
+                var postData = {summaryName: this.title,list: this.setPostData(),gzjh: this.gzjh};
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {
@@ -222,6 +226,7 @@
                             })
                         }
                     }
+                    this.gzjh = res.gzjh[0].gzjh;
                 })
             } else {
                 if (this.$route.query.type == 'month') {

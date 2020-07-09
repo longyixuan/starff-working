@@ -30,6 +30,23 @@
                         </table>
                     </div>
                 </template>
+                <h2 class="summary-view-h2">工作计划</h2>
+                <div class="summary-view-content">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th>计划事项</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in gzjhList">
+                                <td>
+                                    <div style=" white-space: pre-line;">{{item.gzjh}}</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </Card>
@@ -45,7 +62,8 @@ export default {
             templateId: this.$route.query.id,
             title: '',
             time: '',
-            submitList: []
+            submitList: [],
+            gzjhList: []
         }
     },
     methods: {
@@ -66,6 +84,7 @@ export default {
                             })
                         }
                     }
+                    this.gzjhList = res.gzjh;
                 }
             })
         },

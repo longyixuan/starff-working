@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-30 20:20:57
+ * @Last Modified time: 2020-07-09 17:43:30
  */
 
 const fs = require('fs');
@@ -13,6 +13,7 @@ const Template_col = require('./../models/template');
 const Documentday_col = require('./../models/documentDay');
 const Documentweek_col = require('./../models/documentWeek');
 const Documentmonth_col = require('./../models/documentMonth');
+const Documentnext_col = require('./../models/documentNext');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
@@ -300,6 +301,13 @@ const addDocumentday = async (ctx) => {
         req.list[i].timeDate = new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day);
     }
     await Documentday_col.insertMany(req.list);
+    await Documentnext_col.create({
+        documentId: documentId,
+        gzjh: req.gzjh,
+        userId: req.list[0].userId,
+        userName: req.list[0].userName,
+        nickName: req.list[0].nickName
+    })
     ctx.body = {
         code: 1,
         msg: '请求成功',
@@ -314,6 +322,9 @@ const editDocumentday = async (ctx) => {
         await Documentday_col.deleteMany({
             documentName: req.summaryName
         });
+        await Documentnext_col.deleteMany({
+            documentId: req.documentId
+        });
     }
     const documentId = uuidv1();
     for (let i = 0; i < req.list.length; i++) {
@@ -321,6 +332,13 @@ const editDocumentday = async (ctx) => {
         req.list[i].timeDate = new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day);
     }
     await Documentday_col.insertMany(req.list);
+    await Documentnext_col.create({
+        documentId: documentId,
+        gzjh: req.gzjh,
+        userId: req.list[0].userId,
+        userName: req.list[0].userName,
+        nickName: req.list[0].nickName
+    })
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -333,6 +351,9 @@ const delteDocumentday = async (ctx) => {
     await Documentday_col.deleteMany({
         documentId: req.documentId
     });
+    await Documentnext_col.deleteMany({
+        documentId: req.documentId
+    });
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -341,6 +362,9 @@ const delteDocumentday = async (ctx) => {
 
 const detailsDocumentday = async (ctx) => {
     const id = ctx.query.id;
+    const gzjh = await Documentnext_col.find({
+        'documentId': id
+    });
     const document = await Documentday_col.aggregate([
         {
             $match: {
@@ -387,13 +411,23 @@ const detailsDocumentday = async (ctx) => {
     ctx.body = {
         code: 1,
         msg: '请求成功',
-        data: document
+        data: document,
+        gzjh: gzjh
     }
 }
 
 const mergeDocumentday = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const gzjh = await Documentnext_col.aggregate([
+        {
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        }
+    ])
     const list = await Documentday_col.aggregate([
         {
             $match: {
@@ -429,7 +463,8 @@ const mergeDocumentday = async (ctx) => {
     ctx.body = {
         code: 1,
         msg: '请求成功',
-        data: list
+        data: list,
+        gzjh: gzjh
     }
 }
 
@@ -684,12 +719,22 @@ const editDocumentweek = async (ctx) => {
         await Documentweek_col.deleteMany({
             documentName: req.summaryName
         });
+        await Documentnext_col.deleteMany({
+            documentId: req.documentId
+        });
     }
     const documentId = uuidv1();
     for (let i = 0; i < req.list.length; i++) {
         req.list[i].documentId = documentId;
     }
     await Documentweek_col.insertMany(req.list);
+    await Documentnext_col.create({
+        documentId: documentId,
+        gzjh: req.gzjh,
+        userId: req.list[0].userId,
+        userName: req.list[0].userName,
+        nickName: req.list[0].nickName
+    })
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -698,6 +743,9 @@ const editDocumentweek = async (ctx) => {
 
 const detailsDocumentweek = async (ctx) => {
     const id = ctx.query.id;
+    const gzjh = await Documentnext_col.find({
+        'documentId': id
+    });
     const document = await Documentweek_col.aggregate([
         {
             $match: {
@@ -739,7 +787,8 @@ const detailsDocumentweek = async (ctx) => {
     ctx.body = {
         code: 1,
         msg: '请求成功',
-        data: document
+        data: document,
+        gzjh: gzjh
     }
 }
 
@@ -761,6 +810,9 @@ const delteDocumentweek = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
     await Documentweek_col.deleteMany({
+        documentId: req.documentId
+    });
+    await Documentnext_col.deleteMany({
         documentId: req.documentId
     });
     ctx.body = {
@@ -967,14 +1019,22 @@ const editDocumentmonth = async (ctx) => {
         await Documentmonth_col.deleteMany({
             documentName: req.summaryName
         });
+        await Documentnext_col.deleteMany({
+            documentId: req.documentId
+        });
     }
-    console.log(req.list);
     const documentId = uuidv1();
     for (let i = 0; i < req.list.length; i++) {
         req.list[i].documentId = documentId;
     }
-    console.log(req.list)
     await Documentmonth_col.insertMany(req.list);
+    await Documentnext_col.create({
+        documentId: documentId,
+        gzjh: req.gzjh,
+        userId: req.list[0].userId,
+        userName: req.list[0].userName,
+        nickName: req.list[0].nickName
+    })
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -983,6 +1043,9 @@ const editDocumentmonth = async (ctx) => {
 
 const detailsDocumentmonth = async (ctx) => {
     const id = ctx.query.id;
+    const gzjh = await Documentnext_col.find({
+        'documentId': id
+    });
     const document = await Documentmonth_col.aggregate([
         {
             $match: {
@@ -1023,7 +1086,8 @@ const detailsDocumentmonth = async (ctx) => {
     ctx.body = {
         code: 1,
         msg: '请求成功',
-        data: document
+        data: document,
+        gzjh: gzjh
     }
 }
 
@@ -1045,6 +1109,9 @@ const delteDocumentmonth = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
     await Documentmonth_col.deleteMany({
+        documentId: req.documentId
+    });
+    await Documentnext_col.deleteMany({
         documentId: req.documentId
     });
     ctx.body = {

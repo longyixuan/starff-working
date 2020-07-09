@@ -37,6 +37,23 @@
                         </tbody>
                     </table>
                 </template>
+                <h2 class="summary-view-h2">工作计划</h2>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>计划事项</th>
+                            <th width="120" v-if="$route.query.admin">姓名</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in gzjhList">
+                            <td>
+                                <div style="white-space: pre-line;">{{item.gzjh}}</div>
+                            </td>
+                            <td v-if="$route.query.admin">{{item.nickName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="summary-view-line"></div>
             <div style="text-align: center;">
@@ -71,7 +88,8 @@ export default {
             modal: false,
             disabled: true,
             doctitle: '',
-            submitList: []
+            submitList: [],
+            gzjhList: []
         }
     },
     filters: {
@@ -86,7 +104,8 @@ export default {
                 userId: JSON.parse(localStorage.getItem('userInfo')).userId,
                 time: moment().format('YYYY-MM-DD'),
                 doctitle: this.doctitle,
-                list: JSON.stringify(this.submitList)
+                list: JSON.stringify(this.submitList),
+                gzjh: JSON.stringify(this.gzjhList),
             }
             downDocument(postData).then(res => {
                 if (res.code === 1) {
@@ -113,6 +132,7 @@ export default {
                             })
                         }
                     }
+                    this.gzjhList = res.gzjh;
                 }
             })
         },
