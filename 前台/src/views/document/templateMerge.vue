@@ -24,7 +24,7 @@
                                 <td>
                                     <div style=" white-space: pre-line;">{{item2.contentDescription}}</div>
                                 </td>
-                                <td>
+                                <td v-if="$route.query.type == 'day' || $route.query.type == 'week'">
                                     <template v-if="$route.query.type == 'day'">
                                         {{`${item2.year}-${item2.month}-${item2.day}`}}
                                     </template>
