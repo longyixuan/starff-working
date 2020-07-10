@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-07-09 17:43:30
+ * @Last Modified time: 2020-07-10 21:21:09
  */
 
 const fs = require('fs');
@@ -875,6 +875,13 @@ const seachDocumentweek = async (ctx) => {
 const mergeDocumentweek = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const gzjh = await Documentnext_col.aggregate([{
+        $match: {
+            'documentId': {
+                '$in': req.mergeList
+            }
+        }
+    }])
     const list = await Documentweek_col.aggregate([
         {
             $match: {
@@ -905,7 +912,8 @@ const mergeDocumentweek = async (ctx) => {
     ctx.body = {
         code: 1,
         msg: '请求成功',
-        data: list
+        data: list,
+        gzjh: gzjh
     }
 }
 
@@ -1166,6 +1174,50 @@ const seachDocumentmonth = async (ctx) => {
     }
 }
 
+const mergeDocumentmonth = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const gzjh = await Documentnext_col.aggregate([{
+        $match: {
+            'documentId': {
+                '$in': req.mergeList
+            }
+        }
+    }])
+    const list = await Documentmonth_col.aggregate([{
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    systemId: '$systemId',
+                    systemName: '$systemName',
+                },
+                details: {
+                    $push: {
+                        year: '$year',
+                        nickName: '$nickName',
+                        startDay: '$startDay',
+                        endDay: '$endDay',
+                        contentTitle: '$contentTitle',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ])
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: list,
+        gzjh: gzjh
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
@@ -1205,5 +1257,6 @@ module.exports = {
     detailsDocumentmonth,
     commitDocumentMonth,
     delteDocumentmonth,
-    seachDocumentmonth
+    seachDocumentmonth,
+    mergeDocumentmonth,
 }

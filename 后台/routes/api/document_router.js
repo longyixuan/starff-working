@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-06-09 11:19:25
+ * @Last Modified time: 2020-07-10 21:32:27
  */
 
 const Router = require('koa-router');
@@ -53,4 +53,6 @@ router.post('/document/month/del', document_controller.delteDocumentmonth);
 router.get('/document/month/details', document_controller.detailsDocumentmonth);
 router.post('/document/month/commit', document_controller.commitDocumentMonth);
 router.post('/document/month/seach', document_controller.seachDocumentmonth);
+router.post('/document/month/merge', document_controller.mergeDocumentmonth);
+
 module.exports = router;
