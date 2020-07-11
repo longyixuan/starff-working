@@ -80,6 +80,7 @@
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">
                     <DatePicker v-model="time" format="yyyy年MM月" type="month" placeholder="工作总结时间"></DatePicker>
+                    <Checkbox v-model="bhsy" style="margin-left: 10px;">含上月数据</Checkbox>
                     <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
                     <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
                 </div>
@@ -134,6 +135,7 @@
     export default {
         data() {
             return {
+                bhsy: false,
                 list: [],
                 listPart: [],
                 showdate: [],
@@ -368,12 +370,17 @@
                 listDocumentday('day',{
                     userId: JSON.parse(localStorage.getItem('userInfo')).userId,
                     year: moment(this.time).format('YYYY'),
-                    month: moment(this.time).format('MM')
+                    month: moment(this.time).format('MM'),
+                    premonth: this.bhsy?moment(this.time).add(-1, 'month').format('MM'):'',
                 }).then(res => {
                     if (res.code==1) {
+                        var list = _.sortBy(res.prelist, function(item) {
+                            return parseInt(item._id.day);
+                        });
                         this.list = _.sortBy(res.data, function(item) {
                             return parseInt(item._id.day);
                         });
+                        this.list = [...list,...this.list];
                         this.$Message.success('查询成功');
                     }
                 })

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-07-10 21:21:09
+ * @Last Modified time: 2020-07-11 11:59:46
  */
 
 const fs = require('fs');
@@ -557,6 +557,7 @@ const seachDocumentday = async (ctx) => {
 const listDocumentday = async (ctx) => {
     ctx.status = 200;
     const req = ctx.query;
+    let prelist = [];
     const list = await Documentday_col.aggregate([
         {
             $match: {
@@ -599,10 +600,55 @@ const listDocumentday = async (ctx) => {
             }
         }
     ]);
+    if (req.premonth!='') {
+        prelist = await Documentday_col.aggregate([
+            {
+                $match: {
+                    'userId': req.userId,
+                    'year': req.year,
+                    'month': req.premonth
+                }
+            },
+            {
+                $sort: {
+                    'day': -1
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        documentName: '$documentName',
+                        documentId: '$documentId',
+                        year: '$year',
+                        month: '$month',
+                        day: '$day'
+                    },
+                    details: {
+                        $push: {
+                            documentId: '$documentId',
+                            documentName: '$documentName',
+                            userId: '$userId',
+                            userName: '$userName',
+                            nickName: '$nickName',
+                            year: '$year',
+                            month: '$month',
+                            day: '$day',
+                            status: '$status',
+                            systemId: '$systemId',
+                            systemName: '$systemName',
+                            contentTitle: '$contentTitle',
+                            contentDescription: '$contentDescription'
+                        }
+                    }
+                }
+            }
+        ]);
+    }
     ctx.body = {
         code: 1,
         msg: '请求成功',
-        data: list
+        data: list,
+        prelist: prelist
     }
 }
 
