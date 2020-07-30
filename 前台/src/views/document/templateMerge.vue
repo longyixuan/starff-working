@@ -4,7 +4,11 @@
 <template>
     <Card title="工作总结">
         <div style="padding: 0 20px;">
-            <div class="summary-view-label">{{title}}</div>
+            <div class="summary-view-label">
+                {{title}}
+                <Input style="width: 200px;margin-left: 10px" type="text" v-model="keyword" placeholder="输入关键字筛选"></Input>
+                <Button type="primary" style="margin-left: 10px" @click="init">筛选</Button>
+            </div>
             <div class="summary-view-warp">
                 <template v-for="(item,num) in submitList">
                     <h2 class="summary-view-h2">{{toChinesNum(num+1)}}、{{item.systemName}}</h2>
@@ -20,9 +24,9 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item2,index) in item.content">
-                                <td>{{item2.contentTitle}}</td>
+                                <td v-html="linght(item2.contentTitle)"></td>
                                 <td>
-                                    <div style=" white-space: pre-line;">{{item2.contentDescription}}</div>
+                                    <div style=" white-space: pre-line;" v-html="linght(item2.contentDescription)"></div>
                                 </td>
                                 <td v-if="$route.query.type == 'day' || $route.query.type == 'week'">
                                     <template v-if="$route.query.type == 'day'">
@@ -48,7 +52,7 @@
                     <tbody>
                         <tr v-for="item in gzjhList">
                             <td>
-                                <div style="white-space: pre-line;">{{item.gzjh}}</div>
+                                <div style="white-space: pre-line;" v-html="linght(item.gzjh)"></div>
                             </td>
                             <td v-if="$route.query.admin">{{item.nickName}}</td>
                         </tr>
@@ -83,13 +87,14 @@ export default {
             templateId: this.$route.query.id,
             modalWeek: false,
             title: '',
+            keyword: '',
             time: '',
             type: 0,
             modal: false,
             disabled: true,
             doctitle: '',
             submitList: [],
-            gzjhList: []
+            gzjhList: [],
         }
     },
     filters: {
@@ -98,6 +103,23 @@ export default {
         }
     },
     methods: {
+        linght(val){
+            if (this.keyword.length > 0) {
+                let keywordArr = this.keyword.split("");
+                val = val + "";
+                keywordArr.forEach(item => {
+                if (val.indexOf(item) !== -1 && item !== "") {
+                    val = val.replace(
+                    new RegExp(item,'g'),
+                    '<font color="#f75353">' + item + "</font>"
+                    );
+                }
+                });
+                return val;
+            } else {
+                return val;
+            }
+        },
         onOk() {
             var postData = {
                 nickName: JSON.parse(localStorage.getItem('userInfo')).nickName,
@@ -119,8 +141,9 @@ export default {
             window.location.href = 'http://172.16.2.131:3333/download/markdown?fileName='+fileName;
         },
         init() {
-            mergeDocumentday(this.$route.query.type,{mergeList:this.$route.query.mergeList}).then(res => {
+            mergeDocumentday(this.$route.query.type,{mergeList:this.$route.query.mergeList,keyword: this.keyword}).then(res => {
                 if (res.code == 1) {
+                    this.$Message.success('查询成功');
                     if (res.data.length>0) {
                         this.title = '工作总结汇总';
                         this.submitList = [];

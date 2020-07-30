@@ -17,16 +17,16 @@
                     <Icon type="md-close" />
                 </Tag>
                 <Row class="marginB-20" :gutter="20">
-                    <Col span="24">
+                    <Col span="20">
                         <Select placeholder="选择系统" v-model="summary.systemId" filterable>
                             <template v-for="item in sysList">
                                 <Option :value="item.id" v-show="systems.includes(item.id)">{{item.title}}</Option>)
                             </template>
                         </Select>
                     </Col>
-                    <!-- <Col span="4">
+                    <Col span="4">
                         <Input v-model="summary.time" placeholder="工时"/>
-                    </Col> -->
+                    </Col>
                 </Row>
                 <Row :gutter="16">
                     <Col span="24" class="marginB-20" v-for="(modalItem,index2) in summary.content">

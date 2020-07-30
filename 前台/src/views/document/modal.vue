@@ -3,29 +3,41 @@
 </style>
 <template>
     <Card title="各系统模块管理">
-        <Alert show-icon type="warning">删除模块时请确认该模块未被使用。</Alert>
-        <Form ref="formInline" inline>
-            <FormItem>
-                <Select placeholder="选择系统" v-model="systemId" clearable filterable @on-change="onChange">
-                    <template v-for="item in sysList">
-                        <Option :value="item.id" :key="item.id">{{item.title}}</Option>)
+        <Tabs value="canvas" :animated="false">
+            <TabPane label="全部" name="canvas">
+                <Table border :columns="columns1" :data="sysList">
+                    <template slot-scope="{ row, index }" slot="modal">
+                        <Tag color="blue" v-for="item in row.modal">{{item}}</Tag>
                     </template>
-                </Select>
-            </FormItem>
-        </Form>
-        <Table border :columns="columns" :data="modalList">
-            <template slot-scope="{ row, index }" slot="action">
-                <!-- <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index,row.sysId)">修改</Button> -->
-                <Button type="error" size="small" style="margin-right: 5px" @click="del(index,row.sysId)">删除</Button>
-            </template>
-        </Table>
-        <Modal v-model="modal" title="修改模块">
-            <Input v-model="value" placeholder="输入模块名称"/>
-            <template slot="footer">
-                <Button @click="modal=false">取消</Button>
-                <Button type="primary" @click="editModalName">修改模块</Button>
-            </template>
-        </Modal>
+                </Table>
+            </TabPane>
+            <TabPane label="查询" name="table">
+                <Alert show-icon type="warning">删除模块时请确认该模块未被使用。</Alert>
+                <Form ref="formInline" inline>
+                    <FormItem>
+                        <Select placeholder="选择系统" v-model="systemId" clearable filterable @on-change="onChange">
+                            <template v-for="item in sysList">
+                                <Option :value="item.id" :key="item.id">{{item.title}}</Option>)
+                            </template>
+                        </Select>
+                    </FormItem>
+                </Form>
+                <Table border :columns="columns" :data="modalList">
+                    <template slot-scope="{ row, index }" slot="action">
+                        <!-- <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index,row.sysId)">修改</Button> -->
+                        <Button type="error" size="small" style="margin-right: 5px" @click="del(index,row.sysId)">删除</Button>
+                    </template>
+                </Table>
+                <Modal v-model="modal" title="修改模块">
+                    <Input v-model="value" placeholder="输入模块名称"/>
+                    <template slot="footer">
+                        <Button @click="modal=false">取消</Button>
+                        <Button type="primary" @click="editModalName">修改模块</Button>
+                    </template>
+                </Modal>
+            </TabPane>
+        </Tabs>
+        
     </Card>
 </template>
 <script>
@@ -42,6 +54,22 @@ export default {
             systemId: '',
             value: '',
             modalList: [],
+            columns1: [
+                {
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                },
+                {
+                    title: '系统名称',
+                    key: 'title',
+                    width: 300
+                },
+                {
+                    title: '模块',
+                    slot: 'modal'
+                },
+            ],
             columns: [
                 {
                     type: 'index',
@@ -50,7 +78,7 @@ export default {
                 },
                 {
                     title: '名称',
-                    key: 'name'
+                    key: 'name',
                 },
                 {
                     title: '操作',
@@ -127,6 +155,7 @@ export default {
     },
     mounted() {
         this.init();
+        this.getData();
     }
 }
 </script>

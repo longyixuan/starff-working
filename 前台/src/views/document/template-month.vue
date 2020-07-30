@@ -161,7 +161,7 @@
                 return result;
             },
             submit() {
-                var postData = {summaryName: this.title,list: this.setPostData(),gzjh: this.gzjh};
+                var postData = {summaryName: this.title,list: JSON.stringify(this.setPostData()),gzjh: this.gzjh};
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {

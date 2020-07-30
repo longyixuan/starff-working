@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-07-11 11:59:46
+ * @Last Modified time: 2020-07-29 20:18:31
  */
 
 const fs = require('fs');
@@ -14,6 +14,7 @@ const Documentday_col = require('./../models/documentDay');
 const Documentweek_col = require('./../models/documentWeek');
 const Documentmonth_col = require('./../models/documentMonth');
 const Documentnext_col = require('./../models/documentNext');
+const WorkTime_col = require('./../models/workTime');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
@@ -299,6 +300,39 @@ const addDocumentday = async (ctx) => {
     for (let i = 0; i < req.list.length; i++) {
         req.list[i].documentId = documentId;
         req.list[i].timeDate = new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day);
+        if (req.list[i].time) {
+            let time = await WorkTime_col.findOne({
+                'systemId': req.list[i].systemId,
+                'userId': req.list[i].userId,
+                'year': parseInt(req.list[i].year),
+                'month': parseInt(req.list[i].month),
+                'day': parseInt(req.list[i].day)
+            });
+            if (time) { //更新
+                await WorkTime_col.updateOne({
+                    'systemId': req.list[i].systemId,
+                    'userId': req.list[i].userId,
+                    'year': parseInt(req.list[i].year),
+                    'month': parseInt(req.list[i].month),
+                    'day': parseInt(req.list[i].day)
+                }, {
+                    time: parseFloat(req.list[i].time)
+                });
+            } else { //新增加
+                await WorkTime_col.create({
+                    systemId: req.list[i].systemId,
+                    systemName: req.list[i].systemName,
+                    userId: req.list[i].userId,
+                    userName: req.list[i].userName,
+                    year: parseInt(req.list[i].year),
+                    month: parseInt(req.list[i].month),
+                    day: parseInt(req.list[i].day),
+                    time: parseFloat(req.list[i].time),
+                    id: uuidv1(),
+                    timeDate: new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day)
+                });
+            }
+        }
     }
     await Documentday_col.insertMany(req.list);
     await Documentnext_col.create({
@@ -330,6 +364,39 @@ const editDocumentday = async (ctx) => {
     for (let i = 0; i < req.list.length; i++) {
         req.list[i].documentId = documentId;
         req.list[i].timeDate = new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day);
+        if (req.list[i].time) {
+            let time = await WorkTime_col.findOne({
+                'systemId': req.list[i].systemId,
+                'userId': req.list[i].userId,
+                'year': parseInt(req.list[i].year),
+                'month': parseInt(req.list[i].month),
+                'day': parseInt(req.list[i].day)
+            });
+            if (time) { //更新
+                await WorkTime_col.updateOne({
+                    'systemId': req.list[i].systemId,
+                    'userId': req.list[i].userId,
+                    'year': parseInt(req.list[i].year),
+                    'month': parseInt(req.list[i].month),
+                    'day': parseInt(req.list[i].day)
+                }, {
+                    time: parseFloat(req.list[i].time)
+                });
+            } else { //新增加
+                await WorkTime_col.create({
+                    systemId: req.list[i].systemId,
+                    systemName: req.list[i].systemName,
+                    userId: req.list[i].userId,
+                    userName: req.list[i].userName,
+                    year: parseInt(req.list[i].year),
+                    month: parseInt(req.list[i].month),
+                    day: parseInt(req.list[i].day),
+                    time: parseFloat(req.list[i].time),
+                    id: uuidv1(),
+                    timeDate: new Date(req.list[i].year + '-' + req.list[i].month + '-' + req.list[i].day)
+                });
+            }
+        }
     }
     await Documentday_col.insertMany(req.list);
     await Documentnext_col.create({
@@ -419,6 +486,7 @@ const detailsDocumentday = async (ctx) => {
 const mergeDocumentday = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const reg = new RegExp(req.keyword, 'i');
     const gzjh = await Documentnext_col.aggregate([
         {
             $match: {
@@ -433,7 +501,11 @@ const mergeDocumentday = async (ctx) => {
             $match: {
                 'documentId': {
                     '$in': req.mergeList
-                }
+                },
+                $or: [
+                    {'contentTitle': {$regex : reg}},
+                    {'contentDescription': {$regex : reg}}
+                ]
             }
         },
         {
@@ -723,6 +795,12 @@ const listDocumentweek = async (ctx) => {
             }
         },
         {
+            $sort: {
+                'startDay': -1,
+                'endDay': -1
+            }
+        },
+        {
             $group: {
                 _id: {
                     documentName: '$documentName',
@@ -761,6 +839,7 @@ const listDocumentweek = async (ctx) => {
 const editDocumentweek = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    req.list = JSON.parse(req.list);
     if (req.documentId!='') { //删除原有数据
         await Documentweek_col.deleteMany({
             documentName: req.summaryName
@@ -921,11 +1000,16 @@ const seachDocumentweek = async (ctx) => {
 const mergeDocumentweek = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const reg = new RegExp(req.keyword, 'i');
     const gzjh = await Documentnext_col.aggregate([{
         $match: {
             'documentId': {
                 '$in': req.mergeList
-            }
+            },
+            $or: [
+                {'contentTitle': {$regex : reg}},
+                {'contentDescription': {$regex : reg}}
+            ]
         }
     }])
     const list = await Documentweek_col.aggregate([
@@ -1069,6 +1153,7 @@ const listDocumentmonth = async (ctx) => {
 const editDocumentmonth = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    req.list = JSON.parse(req.list);
     if (req.documentId!='') { //删除原有数据
         await Documentmonth_col.deleteMany({
             documentName: req.summaryName
@@ -1223,11 +1308,16 @@ const seachDocumentmonth = async (ctx) => {
 const mergeDocumentmonth = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const reg = new RegExp(req.keyword, 'i');
     const gzjh = await Documentnext_col.aggregate([{
         $match: {
             'documentId': {
                 '$in': req.mergeList
-            }
+            },
+            $or: [
+                {'contentTitle': {$regex : reg}},
+                {'contentDescription': {$regex : reg}}
+            ]
         }
     }])
     const list = await Documentmonth_col.aggregate([{

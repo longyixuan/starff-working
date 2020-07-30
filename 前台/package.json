@@ -1,6 +1,6 @@
 {
   "name": "yinxl-client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "工时系统",
   "author": "yinxl",
   "private": true,
@@ -10,6 +10,7 @@
     "pm2": "pm2 start npm -- start"
   },
   "dependencies": {
+    "@antv/g6": "^3.5.11",
     "axios": "^0.18.0",
     "countup": "^1.8.2",
     "date-fns": "^1.30.1",
@@ -24,6 +25,7 @@
     "vue-router": "^3.0.1",
     "vue-simplemde": "^1.0.3",
     "vue-template-compiler": "^2.6.10",
+    "vue-text-highlight": "^2.0.10",
     "vue-wechat-title": "^2.0.5",
     "vuex": "^3.0.1"
   },

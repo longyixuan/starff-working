@@ -72,7 +72,6 @@
                     <template slot-scope="{ row }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
                         <Button type="warning" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
-                        <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
                     </template>
                 </Table>
                 <Button type="primary" @click="mergePart">合并查看</Button>
@@ -247,7 +246,7 @@
                 let list = _.sortBy(this.selectionList, function(item) {
                     return parseInt(item._id.day);
                 });
-                this.weekTitle = `设计部${list[0]._id.year}年${list[0]._id.month}月${list[0]._id.day}日-${list[list.length-1]._id.day}日工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`;
+                this.weekTitle = `设计部${list[0]._id.year}年${list[0]._id.month}月${list[0]._id.day}日-${list[list.length-1]._id.month}月${list[list.length-1]._id.day}日工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`;
             },
             handelChange(date) {
                 this.startTime = date[0];
