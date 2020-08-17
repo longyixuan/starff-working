@@ -18,8 +18,8 @@
                                 <th width="140">模块</th>
                                 <th>工作内容</th>
                                 <th width="120" v-if="$route.query.type == 'day'">日期</th>
-                                <th width="250" v-if="$route.query.type == 'week'">日期</th>
-                                <th width="120" v-if="$route.query.admin">姓名</th>
+                                <th width="270" v-if="$route.query.type == 'week'">日期</th>
+                                <th width="100" v-if="$route.query.admin">姓名</th>
                             </tr>
                         </thead>
                         <tbody>

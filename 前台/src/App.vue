@@ -1,10 +1,21 @@
 <template>
     <div id="main" class="app-main">
+        
         <router-view v-wechat-title="$route.meta.title"></router-view>
     </div>
 </template>
-
 <script>
+(function (f) {
+    var e = f.sessionStorage;
+    if (e) {
+      e.CUSTOMER_WEB_MONITOR_ID = "webfunny_269";
+      var d = document.createElement("script");
+      d.async = 1;
+      d.src = "//t4.chei.com.cn/common/fed/monitor.min.js";
+      var g = document.getElementsByTagName("script")[0];
+      g.parentNode.insertBefore(d, g)
+    }
+  })(window);
 export default {
   data() {
     return {

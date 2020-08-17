@@ -325,7 +325,9 @@
                     month: moment(this.time).format('MM')
                 }).then(res => {
                     if (res.code==1) {
-                        this.list = res.data;
+                        this.list =  _.sortBy(res.data,'_id',function(o){
+                            return (new Date(o._id.startDay)).getTime();
+                        });
                         this.$Message.success('查询成功');
                     }
                 })
