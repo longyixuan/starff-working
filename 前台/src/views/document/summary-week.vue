@@ -51,9 +51,9 @@
                     <template slot-scope="{ row }" slot="people">
                         <strong>{{row.details[0].nickName}}</strong>
                     </template>
-                    <template slot-scope="{ row }" slot="action">
+                    <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
-                        <Button type="warning" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
+                        <Button type="warning" :disabled="!row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
                         <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
                     </template>
                 </Table>
@@ -152,7 +152,7 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 240,
+                        width: 260,
                         align: 'center'
                     }
                 ],
@@ -180,7 +180,7 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 140,
+                        width: 160,
                         align: 'center'
                     }
                 ]
@@ -221,7 +221,8 @@
                                 this.$set(this.list[indx].details[0],'status',status);
                                 this.$Message.success('上报成功');
                             } else {
-                                this.listPart.splice(indx, 1);
+                                // this.listPart.splice(indx, 1);
+                                this.$set(this.listPart[indx].details[0],'status',status);
                                 this.$Message.success('退回成功');
                             }
                             

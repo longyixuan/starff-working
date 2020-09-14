@@ -114,7 +114,7 @@
                 this.endTime = date[1];
                 this.showdate.push(this.startTime);
                 this.showdate.push(this.endTime);
-                this.title = `设计部${moment(date[0]).format('YYYY')}年${moment(date[0]).format('MM')}月${moment(date[0]).format('DD')}日-${moment(date[1]).format('MM')}${moment(date[1]).format('DD')}日工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`;
+                this.title = `设计部${moment(date[0]).format('YYYY')}年${moment(date[0]).format('MM')}月${moment(date[0]).format('DD')}日-${moment(date[1]).format('MM')}月${moment(date[1]).format('DD')}日工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`;
             },
             add(index) {
                 if (this.submitList[index].systemId) {

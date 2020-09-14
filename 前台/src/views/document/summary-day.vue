@@ -69,9 +69,9 @@
                     <template slot-scope="{ row }" slot="people">
                         <strong>{{row.details[0].nickName}}</strong>
                     </template>
-                    <template slot-scope="{ row }" slot="action">
+                    <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
-                        <Button type="warning" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
+                        <Button type="warning" :disabled="!row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
                     </template>
                 </Table>
                 <Button type="primary" @click="mergePart">合并查看</Button>
@@ -172,7 +172,7 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 200,
+                        width: 220,
                         align: 'center'
                     }
                 ],
@@ -200,7 +200,7 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 240,
+                        width: 260,
                         align: 'center'
                     }
                 ],
@@ -234,7 +234,7 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 140,
+                        width: 160,
                         align: 'center'
                     }
                 ]
@@ -244,7 +244,7 @@
             setWeek() {
                 this.modal = true;
                 let list = _.sortBy(this.selectionList, function(item) {
-                    return parseInt(item._id.day);
+                    return (new Date(item._id.year+'-'+item._id.month+'-'+item._id.day)).getTime();
                 });
                 this.weekTitle = `设计部${list[0]._id.year}年${list[0]._id.month}月${list[0]._id.day}日-${list[list.length-1]._id.month}月${list[list.length-1]._id.day}日工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`;
             },
@@ -274,7 +274,8 @@
                                 this.$set(this.list[indx].details[0],'status',status);
                                 this.$Message.success('上报成功');
                             } else {
-                                this.listPart.splice(indx, 1);
+                                // this.listPart.splice(indx, 1);
+                                this.$set(this.listPart[indx].details[0],'status',status);
                                 this.$Message.success('退回成功');
                             }
                             
@@ -435,7 +436,7 @@
                     mergeList.push(
                         item._id.documentId
                     );
-                    return parseInt(item._id.day);
+                    return (new Date(item._id.year+'-'+item._id.month+'-'+item._id.day)).getTime();
                 });
                 var postData = {
                     documentName: this.weekTitle,
