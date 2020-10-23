@@ -267,6 +267,9 @@
                 }).then(res => {
                     if (res.code==1) {
                         this.list = res.data;
+                        this.list =  _.sortBy(res.data,'_id',function(o){
+                            return parseInt(o._id.month);
+                        });
                         this.$Message.success('查询成功');
                     }
                 })

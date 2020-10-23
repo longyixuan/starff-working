@@ -1,5 +1,8 @@
 <style lang="less" scoped>
 @import "./summary.less";
+.ivu-tabs-tabpane {
+    min-height: 300px; 
+}
 </style>
 <template>
     <Card title="日总结">
