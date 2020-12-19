@@ -5,7 +5,7 @@ export const excelRouter = {
     path: '/excel',
     name: 'excel',
     meta: {
-        title: 'excel转json'
+        title: 'WEB前端工具箱'
     },
     component: () => import('@/views/excel.vue')
 };

@@ -8,6 +8,13 @@
     }
     .layout-logo{
         width: 500px;
+        font-weight: 700;
+        color: #daf6ff;
+        -webkit-animation-timing-function:ease-in-out;
+        -webkit-animation-name:breathe;
+        -webkit-animation-duration:2700ms;
+        -webkit-animation-iteration-count:infinite;
+        -webkit-animation-direction:alternate;
     }
     .layout-nav{
         width: 420px;
@@ -21,6 +28,16 @@
         height: 430px;
         overflow: auto;
     }
+    @-webkit-keyframes breathe {
+        0% {
+            opacity:.8;
+            box-shadow:0 1px 2px rgba(255,255,255,0.1);
+        }
+        100% {
+            opacity:1;
+            text-shadow: 0 0 20px #0aafe6, 0 0 20px rgba(10, 175, 230, 0);
+        }
+    }
 </style>
 <template>
     <Layout>
@@ -31,6 +48,7 @@
             <Sider hide-trigger :style="{background: '#fff'}">
                 <Menu active-name="1" theme="light" width="auto" :open-names="['1']">
                     <MenuItem name="1">Excel转JSON</MenuItem>
+                    <MenuItem name="2" target="_blank" to="https://lanhuapp.com/">蓝湖</MenuItem>
                 </Menu>
             </Sider>
             <Content :style="{margin: '20px 20px 0'}">
@@ -41,6 +59,9 @@
                         </TabPane>
                         <TabPane label="表格显示" name="name1">
                             <Table border stripe :columns="columns" :data="data" v-if="columns.length>0"></Table>
+                        </TabPane>
+                        <TabPane label="翻牌器" name="name3">
+                            <FlipClock></FlipClock>
                         </TabPane>
                     </Tabs>
                 </Card>
@@ -56,12 +77,16 @@
 </template>
 <script>
     import XLSX from 'xlsx';
+    import FlipClock from './my-components/FlipClock.vue'
     export default {
         data() {
             return {
                 columns: [],
                 data: []
             }
+        },
+        components: {
+            FlipClock
         },
         methods: {
             doCopy(e) {
