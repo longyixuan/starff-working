@@ -66,6 +66,7 @@
 
 <script>
 import { editPassword } from "@/api/index";
+import XLSX from 'xlsx';
 export default {
   data() {
     return {

@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import ViewUI from 'view-design';
 import VueWechatTitle from 'vue-wechat-title'
+import VueClipBoard from 'vue-clipboard2';
+Vue.use(VueClipBoard);
 import App from './App'
 import {
     router
