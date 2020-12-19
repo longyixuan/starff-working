@@ -17,34 +17,41 @@
     .layout-footer-center{
         text-align: center;
     }
-    .ivu-card-body {
-        height: 600px !important;
-        overflow: 'auto' !important;
+    .ivu-tabs-tabpane {
+        height: 430px;
+        overflow: auto;
     }
 </style>
 <template>
     <Layout>
         <Header :style="{width: '100%'}">
-            <div class="layout-logo">Excel转Json</div>
+            <div class="layout-logo">WEB前端工具箱</div>
         </Header>
-        <Content :style="{margin: '20px 20px 0'}">
-            <Card>
-                <Tabs value="name2">
-                    <TabPane label="JSON显示" name="name2">
-                        <Input :rows="20" :value="JSON.stringify(data)" type="textarea" placeholder="数据" />
-                    </TabPane>
-                    <TabPane label="表格显示" name="name1">
-                        <Table border stripe :columns="columns" :data="data" v-if="columns.length>0"></Table>
-                    </TabPane>
-                </Tabs>
-            </Card>
-            <div style="margin-top: 20px;text-align: center;">
-                <Upload action="/" :before-upload="handleUpload" style="display: inline-block;margin-right: 20px;">
-                    <Button type="primary" size="large" icon="ios-cloud-upload-outline">上传excel文件</Button>
-                </Upload>
-                <Button type="warning" size="large" v-clipboard:copy="JSON.stringify(data)" v-clipboard:success="doCopy">复制Json到剪贴板</Button>
-            </div>
-        </Content>
+        <Layout>
+            <Sider hide-trigger :style="{background: '#fff'}">
+                <Menu active-name="1" theme="light" width="auto" :open-names="['1']">
+                    <MenuItem name="1">Excel转JSON</MenuItem>
+                </Menu>
+            </Sider>
+            <Content :style="{margin: '20px 20px 0'}">
+                <Card>
+                    <Tabs value="name2">
+                        <TabPane label="JSON显示" name="name2">
+                            <Input :rows="20" :value="JSON.stringify(data)" type="textarea" placeholder="数据" />
+                        </TabPane>
+                        <TabPane label="表格显示" name="name1">
+                            <Table border stripe :columns="columns" :data="data" v-if="columns.length>0"></Table>
+                        </TabPane>
+                    </Tabs>
+                </Card>
+                <div style="margin-top: 20px;text-align: center;">
+                    <Upload action="/" :before-upload="handleUpload" style="display: inline-block;margin-right: 20px;">
+                        <Button type="primary" size="large" icon="md-cloud-upload">上传Excel文件</Button>
+                    </Upload>
+                    <Button type="warning" size="large" icon="md-copy" v-clipboard:copy="JSON.stringify(data)" v-clipboard:success="doCopy">复制JSON到剪贴板</Button>
+                </div>
+            </Content>
+        </Layout>
     </Layout>
 </template>
 <script>
@@ -58,7 +65,7 @@
         },
         methods: {
             doCopy(e) {
-                this.$Message.success(e.text);
+                this.$Message.success('复制成功');
             },
             handleUpload(file) {
                 //拿到所导入文件的名字
