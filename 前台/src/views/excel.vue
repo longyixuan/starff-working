@@ -34,7 +34,8 @@
             <Sider hide-trigger :style="{background: '#fff'}">
                 <Menu active-name="1" theme="light" width="auto" :open-names="['1']">
                     <MenuItem name="1">Excel转JSON</MenuItem>
-                    <MenuItem name="2" target="_blank" to="https://lanhuapp.com/">蓝湖</MenuItem>
+                    <MenuItem name="2" to="/txt">文本转JSON</MenuItem>
+                    <MenuItem name="3" target="_blank" to="https://lanhuapp.com/">蓝湖</MenuItem>
                 </Menu>
             </Sider>
             <Content :style="{margin: '20px 20px 0'}">

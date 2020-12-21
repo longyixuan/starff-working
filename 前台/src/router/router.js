@@ -9,6 +9,14 @@ export const excelRouter = {
     },
     component: () => import('@/views/excel.vue')
 };
+export const txtRouter = {
+    path: '/txt',
+    name: 'txt',
+    meta: {
+        title: 'WEB前端工具箱'
+    },
+    component: () => import('@/views/txt.vue')
+};
 export const loginRouter = {
     path: '/login',
     name: 'login',
@@ -235,6 +243,7 @@ export const appRouter = {
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
+    txtRouter,
     excelRouter,
     loginRouter,
     registRouter,
