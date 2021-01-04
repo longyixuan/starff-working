@@ -644,3 +644,7 @@ export default {
   }
 };
 </script>
+var result = [];
+for (var i = 0; i < data.length; i++) {
+  result.push(data._id.systemName+' '+data.time)
+}

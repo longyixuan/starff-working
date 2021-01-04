@@ -59,6 +59,10 @@
                 <Button type="primary" @click="mergePart">合并查看</Button>
             </TabPane>
             <TabPane label="我的总结" name="my">
+                <div style="margin-bottom: 20px;">
+                    <DatePicker v-model="time" format="yyyy年" type="year" placeholder="工作总结时间"></DatePicker>
+                    <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
+                </div>
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row._id.documentName }}</strong>

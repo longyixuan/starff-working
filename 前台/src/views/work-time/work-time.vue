@@ -6,7 +6,7 @@
         <DatePicker :value="curYear" @on-change="changeYear" format="yyyy年" type="year" placeholder="年份" style="width: 140px;margin-bottom:15px;"></DatePicker>
         <Tabs type="card" :value="curMonth" @on-click="changeMonth">
             <template v-for="item in 12">
-                <TabPane :label="item+ '月'" :name="item.toString()" :key="item"></TabPane>
+                <TabPane style="min-height: auto;" :label="item+ '月'" :name="item.toString()" :key="item"></TabPane>
             </template>
         </Tabs>
         <Table border :columns="columns" :data="tempList" stripe ref="table" :loading="loading">

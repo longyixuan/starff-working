@@ -237,7 +237,15 @@ export const appRouter = {
             },
             name: 'template-view',
             component: () => import('@/views/document/templateView.vue')
-        }
+        },
+        { 
+            path: 'time-line',
+            meta: {
+                title: '时间轴'
+            }, 
+            name: 'time-line', 
+            component: () => import('@/views/timeline/time-line.vue')
+        },
     ]
 };
 
