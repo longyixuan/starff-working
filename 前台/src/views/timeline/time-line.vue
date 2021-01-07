@@ -7,43 +7,27 @@
     <Card>
         <Tabs value="name1">
             <TabPane label="表格显示" name="name1">
-                <div style="text-align: right;margin-bottom: 20px;">
-                    <Button type="primary">新增时间线</Button>
-                </div>
-                <div style="margin-bottom: 20px;border: 1px solid #dcdee2;padding: 20px 0;">
-                    <Form :label-width="80">
-                        <FormItem label="时间：" style="margin-bottom: 10px;">
-                            <DatePicker style="width: 400px" type="datetimerange" placeholder="请选择时间"></DatePicker>
-                        </FormItem>
-                        <FormItem label="系统：" style="margin-bottom: 10px;">
-                            <Select style="width: 400px" multiple v-model="system" placeholder="请选择系统">
-                                <Option v-for="item in systemList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                            </Select>
-                        </FormItem>
-                        <FormItem label="标签：" style="margin-bottom: 10px;">
-                            <Select style="width: 400px" multiple v-model="system" placeholder="请选择系统">
-                                <Option v-for="item in systemList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                            </Select>
-                        </FormItem>
-                        <FormItem style="margin-bottom: 0;">
-                            <Button type="primary" style="margin-right: 10px;">查询</Button>
-                        </FormItem>
-                    </Form>
+                <div style="margin-bottom: 20px;">
+                    <DatePicker v-model="timeDate" style="width: 200px;margin-right:10px;" type="daterange" placeholder="请选择时间"></DatePicker>
+                    <Select clearable style="width: 400px;margin-right:10px;" multiple v-model="system" placeholder="请选择系统">
+                      <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
+                    </Select>
+                    <!-- <Select style="width: 200px;margin-right:10px;" multiple v-model="model" placeholder="请选择系统">
+                      <Option :value="item" v-for="item in modelList">{{item}}</Option>
+                    </Select> -->
+                    <Select clearable style="width: 200px;margin-right:10px;" v-model="tag" placeholder="请选择标签">
+                        <Option v-for="item in tags" :value="item">{{ item }}</Option>
+                    </Select>
+                    <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
+                    <Button style="float: right;" target="_blank" type="primary" to="/time-line/add">新增时间线</Button>
                 </div>
                 <Table border :columns="columns" :data="data">
-                    <template slot-scope="{ row, index }" slot="tags">
-                        <div v-for="(item,itemIndex) in row.tags" :key="'tags-'+itemIndex">
-                            <Tag type="dot" color="warning">{{item}}</Tag>
-                        </div>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="updateContent">
-                        <div v-for="(item,itemIndex) in row.updateContent" :key="'data-'+itemIndex">
-                            {{itemIndex+1}}、{{item}}
-                        </div>
+                    <template slot-scope="{ row }" slot="model">
+                        <Tag v-for="item in row.model">{{item}}</Tag>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px">编辑</Button>
-                        <Button type="error" size="small">删除</Button>
+                        <Button type="primary" size="small" style="margin-right: 5px" @click=updateTimeline(row,index)>编辑</Button>
+                        <Button type="error" size="small" @click=deleteTimeline(index)>删除</Button>
                     </template>
                 </Table>
             </TabPane>
@@ -91,35 +75,15 @@
             </TabPane>
         </Tabs>
     </Card>
-    <Modal v-model="modal" title="添加时间线">
-        <Form :label-width="80">
-            <FormItem label="时间：" style="margin-bottom: 10px;">
-                <DatePicker style="width: 400px" type="datetimerange" placeholder="请选择时间"></DatePicker>
-            </FormItem>
-            <FormItem label="系统：" style="margin-bottom: 10px;">
-                <Select style="width: 400px;" v-model="system" placeholder="请选择系统">
-                    <Option v-for="item in systemList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select>
-            </FormItem>
-            <FormItem label="模块：" style="margin-bottom: 10px;">
-                <Select style="width: 400px;" multiple v-model="system" placeholder="请选择模块">
-                    <Option v-for="item in systemList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select>
-            </FormItem>
-            <FormItem label="标签：" style="margin-bottom: 10px;">
-                <Select style="width: 400px" multiple v-model="system" placeholder="请选择标签">
-                    <Option v-for="item in systemList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select>
-            </FormItem>
-            <FormItem label="备注：" style="margin-bottom: 10px;">
-                <Input type="textarea" :rows="5"/>
-            </FormItem>
-        </Form>
-    </Modal>
   </div>
 </template>
 
 <script>
+import {
+    getSystemList,
+    getTimelineList
+} from "@/api/index";
+import moment from "moment";
 export default {
   name: "timeline",
   data() {
@@ -127,22 +91,16 @@ export default {
         modal: true,
         timeDate: [],
         system: [],
-        systemList: [],
-        data: [
-            {
-                time: '2020-02-20',
-                system: '强基计划',
-                updateContent: [
-                    '上线',
-                    '上线',
-                    '上线'
-                ],
-                tags: [
-                    '上线',
-                    '更新'
-                ]
-            }
+        sysList: [],
+        tag: '',
+        model: [],
+        modelList: [],
+        tags: [
+          '发布',
+          '系统开通',
+          '系统关闭'
         ],
+        data: [],
         columns: [
             {
                 title: '时间',
@@ -152,17 +110,27 @@ export default {
             },
             {
                 title: '系统',
-                key: 'system',
+                key: 'systemName',
                 width: 200
             },
             {
-                title: '标签',
-                slot: 'tags',
-                width: 200
+                title: '模块',
+                slot: 'model',
+                width: 300
             },
             {
                 title: '备注',
-                slot: 'updateContent'
+                key: 'description'
+            },
+            {
+                title: '标签',
+                key: 'tag',
+                width: 120
+            },
+            {
+                title: '最后更新人',
+                key: 'userName',
+                width: 120,
             },
             {
                 title: '操作',
@@ -183,8 +151,26 @@ export default {
       deleteTimeline() { //删除
 
       },
+      seach() {
+          this.getlist();
+      },
       getlist() { //获取列表
-
+        let params = {
+            startTime: this.timeDate[0]>0?moment(this.timeDate[0]).format('YYYY-MM-DD'):'',
+            endTime: this.timeDate[1]>0?moment(this.timeDate[1]).format('YYYY-MM-DD'):'',
+            tag: this.tag,
+            system: this.system
+        }
+        getTimelineList(params).then(res => {
+            if (res.code === 1) {
+                this.data = res.data;
+            }
+        })
+      },
+      init() {
+          getSystemList().then(res => {
+              this.sysList = res.data;
+          })
       },
       exportExcel() { //导出
 
@@ -192,6 +178,7 @@ export default {
   },
   mounted() {
       this.getlist();
+      this.init();
   },
 };
 </script>

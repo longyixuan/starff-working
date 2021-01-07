@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-04 15:33:14
+ * @Last Modified time: 2021-01-07 18:59:40
  */
 
 const mongoose = require('mongoose');
@@ -17,6 +17,10 @@ const TimelineSchema = new Schema({
         type: String,
         required: true
     },
+    timeStamp: {
+        type: Date,
+        required: true
+    },
     systemId: {
         type: String,
         required: true
@@ -25,16 +29,22 @@ const TimelineSchema = new Schema({
         type: String,
         required: true
     },
+    model: {
+        type: Array,
+        required: true,
+        default: []
+    },
     description: {
         type: String,
         default: ''
     },
-    updateBy: {
-
+    userName: {
+        type: String,
+        default: ''
     },
-    tags: {
-        type: Array,
-        default: []
+    tag: {
+        type: String,
+        default: ''
     }
 }, { collection: 'timeline', versionKey: false});
 

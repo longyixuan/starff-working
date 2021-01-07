@@ -246,6 +246,14 @@ export const appRouter = {
             name: 'time-line', 
             component: () => import('@/views/timeline/time-line.vue')
         },
+        { 
+            path: 'time-line/add',
+            meta: {
+                title: '时间轴'
+            }, 
+            name: 'time-line-add', 
+            component: () => import('@/views/timeline/add.vue')
+        }
     ]
 };
 

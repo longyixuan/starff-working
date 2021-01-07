@@ -262,3 +262,14 @@ export const seachDocumentmonth = (params) => {
     return postRequest(`/document/month/seach`,params)
 }
 //-----------------------工作总结--------------------------------//
+
+//-----------------------系统时间线--------------------------------//
+export const addTimeline = (params) => {
+    return postRequest(`/timeline/add`,params)
+}
+
+export const getTimelineList = (params) => {
+    return postRequest(`/timeline/list`,params)
+}
+
+//-----------------------系统时间线--------------------------------//
