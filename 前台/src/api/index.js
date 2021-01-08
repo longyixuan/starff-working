@@ -284,4 +284,8 @@ export const delTimeline = (params) => {
     return postRequest(`/timeline/delete`,params)
 }
 
+export const lockTimeline = (params) => {
+    return postRequest(`/timeline/lock`,params)
+}
+
 //-----------------------系统时间线--------------------------------//

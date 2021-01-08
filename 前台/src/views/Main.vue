@@ -42,8 +42,8 @@
               <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
             </Submenu>
             <MenuItem name="4" to="/sys-modal"><Icon type="ios-folder-open" />系统模块管理</MenuItem>
-            <MenuItem name="5" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
-            <MenuItem name="6" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>
+            <MenuItem name="5" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>
+            <MenuItem name="6" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>
         <Layout :style="{padding: '24px'}">

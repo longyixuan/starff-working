@@ -20,11 +20,11 @@
                     </Select>
                     <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
                     <div style="float: right;">
-                        <Button type="primary" style="margin-right: 10px;">导出Excel</Button>
+                        <Button type="primary" style="margin-right: 10px;" @click="exportExcel">导出Excel</Button>
                         <Button type="primary" to="/time-line/add">新增时间线</Button>
                     </div>
                 </div>
-                <Table border :columns="columns" :data="data">
+                <Table border :columns="columns" :data="data" ref="table">
                     <template slot-scope="{ row }" slot="model">
                         <Tag v-for="item in row.model">{{item}}</Tag>
                     </template>
@@ -105,6 +105,7 @@ export default {
           '系统关闭'
         ],
         data: [],
+        exportData: [],
         columns: [
             {
                 title: '时间',
@@ -119,6 +120,7 @@ export default {
             },
             {
                 title: '模块',
+                key: 'model',
                 slot: 'model',
                 width: 300
             },
@@ -139,7 +141,7 @@ export default {
             {
                 title: '操作',
                 slot: 'action',
-                width: 160,
+                width: 140,
                 align: 'center'
             }
         ]
@@ -180,7 +182,54 @@ export default {
           })
       },
       exportExcel() { //导出
-
+        for (var i = 0; i < this.data.length; i++) {
+            this.exportData.push({
+                description: this.data[i].description,
+                model: this.data[i].model.join('、'),
+                systemName: this.data[i].systemName,
+                tag: this.data[i].tag,
+                time: this.data[i].time,
+                timelineId: this.data[i].timelineId,
+                userName: this.data[i].userName
+            })
+        }
+        console.log(this.exportData)
+        this.$refs.table.exportCsv({
+            filename: '系统时间线',
+            columns: [
+                {
+                    title: '时间',
+                    key: 'time',
+                    width: 120,
+                    align: 'center'
+                },
+                {
+                    title: '系统',
+                    key: 'systemName',
+                    width: 200
+                },
+                {
+                    title: '模块',
+                    key: 'model',
+                    width: 300
+                },
+                {
+                    title: '备注',
+                    key: 'description'
+                },
+                {
+                    title: '标签',
+                    key: 'tag',
+                    width: 120
+                },
+                {
+                    title: '最后更新人',
+                    key: 'userName',
+                    width: 120,
+                }
+            ],
+            data: this.exportData
+        });
       }
   },
   mounted() {
