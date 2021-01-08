@@ -189,8 +189,7 @@ export default {
                 systemName: this.data[i].systemName,
                 tag: this.data[i].tag,
                 time: this.data[i].time,
-                timelineId: this.data[i].timelineId,
-                userName: this.data[i].userName
+                timelineId: this.data[i].timelineId
             })
         }
         console.log(this.exportData)
@@ -221,11 +220,6 @@ export default {
                     title: '标签',
                     key: 'tag',
                     width: 120
-                },
-                {
-                    title: '最后更新人',
-                    key: 'userName',
-                    width: 120,
                 }
             ],
             data: this.exportData

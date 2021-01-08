@@ -2,10 +2,11 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-08 11:38:53
+ * @Last Modified time: 2021-01-08 17:23:19
  */
 
 const Timeline_col = require('./../models/timeline');
+const Tag_col = require('./../models/tag');
 const uuidv1 = require('uuid/v1');
 const add = async (ctx, next) => {
     ctx.status = 200;
@@ -104,6 +105,55 @@ const getDetail = async (ctx, next) => {
     };
 }
 
+const addTag = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    req.id = uuidv1();
+    await Tag_col.create(req);
+    ctx.body = {
+        code: 1,
+        msg: '新增成功'
+    };
+}
+
+const updateTag = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Tag_col.updateOne({
+        id: req.id
+    }, req);
+    const result = await Tag_col.findOne({
+        id: req.id
+    });
+    ctx.body = {
+        code: 1,
+        msg: '修改成功',
+        data: result
+    };
+}
+
+const removeTag = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Tag_col.deleteMany({
+        id: req.id
+    });
+    ctx.body = {
+        code: 1,
+        msg: '删除成功'
+    };
+}
+
+const listTag = async (ctx, next) => {
+    ctx.status = 200;
+    let result = await Tag_col.find({});
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: result
+    };
+}
+
 module.exports = {
     add,
     remove,
@@ -111,5 +161,9 @@ module.exports = {
     getList,
     exportExcel,
     lock,
-    getDetail
+    getDetail,
+    addTag,
+    updateTag,
+    removeTag,
+    listTag
 }

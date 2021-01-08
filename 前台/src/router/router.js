@@ -261,6 +261,14 @@ export const appRouter = {
             }, 
             name: 'time-line-edit', 
             component: () => import('@/views/timeline/add.vue')
+        },
+        { 
+            path: 'time-line/tag',
+            meta: {
+                title: '标签管理'
+            }, 
+            name: 'tag', 
+            component: () => import('@/views/timeline/tag.vue')
         }
     ]
 };

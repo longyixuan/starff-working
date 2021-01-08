@@ -289,3 +289,21 @@ export const lockTimeline = (params) => {
 }
 
 //-----------------------系统时间线--------------------------------//
+
+//-----------------------标签--------------------------------//
+export const addTag = (params) => {
+    return postRequest(`/tag/add`,params)
+}
+
+export const editTag = (params) => {
+    return postRequest(`/tag/update`,params)
+}
+
+export const getTagList = (params) => {
+    return postRequest(`/tag/list`,params)
+}
+
+export const delTag = (params) => {
+    return postRequest(`/tag/delete`,params)
+}
+//-----------------------标签--------------------------------//
