@@ -9,7 +9,7 @@
             <TabPane label="表格显示" name="name1">
                 <div style="margin-bottom: 20px;">
                     <DatePicker v-model="timeDate" style="width: 200px;margin-right:10px;" type="daterange" placeholder="请选择时间"></DatePicker>
-                    <Select clearable style="width: 400px;margin-right:10px;" multiple v-model="system" placeholder="请选择系统">
+                    <Select clearable filterable style="width: 400px;margin-right:10px;" multiple v-model="system" placeholder="请选择系统">
                       <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
                     </Select>
                     <!-- <Select style="width: 200px;margin-right:10px;" multiple v-model="model" placeholder="请选择系统">
@@ -19,15 +19,18 @@
                         <Option v-for="item in tags" :value="item">{{ item }}</Option>
                     </Select>
                     <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
-                    <Button style="float: right;" target="_blank" type="primary" to="/time-line/add">新增时间线</Button>
+                    <div style="float: right;">
+                        <Button type="primary" style="margin-right: 10px;">导出Excel</Button>
+                        <Button type="primary" to="/time-line/add">新增时间线</Button>
+                    </div>
                 </div>
                 <Table border :columns="columns" :data="data">
                     <template slot-scope="{ row }" slot="model">
                         <Tag v-for="item in row.model">{{item}}</Tag>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click=updateTimeline(row,index)>编辑</Button>
-                        <Button type="error" size="small" @click=deleteTimeline(index)>删除</Button>
+                        <Button type="primary" size="small" style="margin-right: 5px" @click=updateTimeline(row.timelineId,index)>编辑</Button>
+                        <Button type="error" size="small" @click=deleteTimeline(row.timelineId,index)>删除</Button>
                     </template>
                 </Table>
             </TabPane>
@@ -81,7 +84,8 @@
 <script>
 import {
     getSystemList,
-    getTimelineList
+    getTimelineList,
+    delTimeline
 } from "@/api/index";
 import moment from "moment";
 export default {
@@ -145,11 +149,14 @@ export default {
       addTimeline() { //添加
 
       },
-      updateTimeline() { //修改
-
+      updateTimeline(id,index) { //修改
+         this.$router.push({ 'name': 'time-line-edit', 'query': { id: id}});
       },
-      deleteTimeline() { //删除
-
+      deleteTimeline(id,index) { //删除
+        delTimeline({id: id}).then(res=> {
+            this.data.splice(index,1);
+            this.$Message.success('删除成功');
+        });
       },
       seach() {
           this.getlist();

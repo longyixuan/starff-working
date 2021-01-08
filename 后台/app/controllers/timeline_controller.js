@@ -2,11 +2,10 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-07 21:02:01
+ * @Last Modified time: 2021-01-08 11:38:53
  */
 
 const Timeline_col = require('./../models/timeline');
-const System_col = require('./../models/system');
 const uuidv1 = require('uuid/v1');
 const add = async (ctx, next) => {
     ctx.status = 200;
@@ -22,59 +21,50 @@ const add = async (ctx, next) => {
 const remove = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    await Timeline_col.remove({
+        timelineId: req.id
+    });
     ctx.body = {
         code: 1,
-        msg: '新增成功',
-        data: seachList
+        msg: '删除成功'
     };
 }
 const update = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    req.timeStamp = new Date(req.time);
+    await Timeline_col.updateOne({
+        timelineId: req.id
+    }, req);
+    const result = await Timeline_col.findOne({
+        timelineId: req.id
+    });
     ctx.body = {
         code: 1,
-        msg: '新增成功',
-        data: seachList
+        msg: '修改成功',
+        data: result
     };
 }
 const getList = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    if (!req.system) {
-        req.system = [];
-        let systemList = await System_col.find();
-        systemList.forEach((item) => {
-            req.system.push(item.id)
-        })
+    var seachConfig = {};
+    if (req.system) {
+        seachConfig.systemId = {
+            '$in': req.system
+        }
     }
-    if (!req.tag) {
-        req.tag = [
-            '发布',
-            '系统开通',
-            '系统关闭'
-        ]
-    }else {
-        req.tag = [req.tag];
+    if (req.tag) {
+        seachConfig.tag = req.tag
     }
-    if (!req.startTime) {
-        req.startTime = '1900-01-01'
-    }
-    if (!req.endTime) {
-        req.endTime = '3000-01-01'
+    if (req.startTime && req.endTime) {
+        seachConfig.timeStamp = {
+            '$gte': new Date(req.startTime),
+            '$lte': new Date(req.endTime)
+        }
     }
     let result = await Timeline_col.aggregate([{
-        $match: {
-            'systemId': {
-                '$in': req.system
-            },
-            'tag': {
-                '$in': req.tag
-            },
-            'timeStamp': {
-                $gte: new Date(req.startTime),
-                $lte: new Date(req.endTime)
-            }
-        }
+        $match: seachConfig
     }]);
     ctx.body = {
         code: 1,
@@ -93,10 +83,33 @@ const exportExcel = async (ctx, next) => {
     };
 }
 
+const lock = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    ctx.body = {
+        code: 1,
+        msg: '新增成功',
+        data: seachList
+    };
+}
+
+const getDetail = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const result = await Timeline_col.findOne({'timelineId':req.id});
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: result
+    };
+}
+
 module.exports = {
     add,
     remove,
     update,
     getList,
-    exportExcel
+    exportExcel,
+    lock,
+    getDetail
 }

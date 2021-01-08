@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-07 18:59:40
+ * @Last Modified time: 2021-01-08 09:03:42
  */
 
 const mongoose = require('mongoose');
@@ -45,6 +45,10 @@ const TimelineSchema = new Schema({
     tag: {
         type: String,
         default: ''
+    },
+    islock: {
+        type: Boolean,
+        default: false
     }
 }, { collection: 'timeline', versionKey: false});
 

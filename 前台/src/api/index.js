@@ -268,8 +268,20 @@ export const addTimeline = (params) => {
     return postRequest(`/timeline/add`,params)
 }
 
+export const editTimeline = (params) => {
+    return postRequest(`/timeline/update`,params)
+}
+
 export const getTimelineList = (params) => {
     return postRequest(`/timeline/list`,params)
+}
+
+export const getTimelineDetail = (params) => {
+    return postRequest(`/timeline/detail`,params)
+}
+
+export const delTimeline = (params) => {
+    return postRequest(`/timeline/delete`,params)
 }
 
 //-----------------------系统时间线--------------------------------//

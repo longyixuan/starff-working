@@ -39,7 +39,9 @@
 import {
     getSystemList,
     addTimeline,
-    getTimelineList
+    getTimelineList,
+    editTimeline,
+    getTimelineDetail
 } from "@/api/index";
 import moment from "moment";
 export default {
@@ -52,6 +54,7 @@ export default {
         sysList: [],
         modelList: [],
         description: '',
+        id: '',
         tags: [
           '发布',
           '系统开通',
@@ -63,6 +66,7 @@ export default {
   methods: {
       add() { //添加
         const postData = {
+          id: this.id,
           userName: JSON.parse(localStorage.getItem('userInfo')).nickName,
           systemId: this.system,
           systemName: _.find(this.sysList,['id',this.system]).title,
@@ -71,9 +75,15 @@ export default {
           time: moment(this.time).format('YYYY-MM-DD'),
           model: this.model
         }
-        addTimeline(postData).then((res) =>{
-
-        })
+        if (this.id) {
+          editTimeline(postData).then((res) =>{
+            this.$router.push({ 'name': 'time-line'});
+          })
+        } else {
+          addTimeline(postData).then((res) =>{
+            this.$router.push({ 'name': 'time-line'});
+          })
+        }
       },
       updateTimeline() { //修改
 
@@ -103,10 +113,20 @@ export default {
       init() {
           getSystemList().then(res => {
               this.sysList = res.data;
+              this.id = this.$route.query.id;
+              if (this.$route.query.id) {
+                getTimelineDetail({'id': this.$route.query.id}).then(res => {
+                  this.model = res.data.model;
+                  this.time = res.data.time;
+                  this.system = res.data.systemId;
+                  this.description = res.data.description;
+                  this.tag = res.data.tag;
+                  this.modelList = _.find(this.sysList,['id',res.data.systemId]).modal;
+                });
+              }
           })
       },
       selectModel(id) {
-        console.log(_.find(this.sysList,['id',id]))
         this.modelList = _.find(this.sysList,['id',id]).modal;
       }
   },
