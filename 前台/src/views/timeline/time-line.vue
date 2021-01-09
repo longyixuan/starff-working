@@ -194,7 +194,7 @@ export default {
                 description: this.data[i].description,
                 model: this.data[i].model.join('、'),
                 systemName: this.data[i].systemName,
-                tag: this.data[i].tag,
+                tag: _.find(this.tags,['id',this.data[i].tag]).name,
                 time: this.data[i].time,
                 timelineId: this.data[i].timelineId
             })
