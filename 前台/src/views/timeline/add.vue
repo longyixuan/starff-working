@@ -24,7 +24,7 @@
             </FormItem>
             <FormItem label="标签：">
                 <RadioGroup v-model="tag">
-                  <Radio :label="tag" v-for="tag in tags"></Radio>
+                  <Radio :label="tag.id" :key="tag.id" v-for="tag in tags">{{tag.name}}</Radio>
               </RadioGroup>
             </FormItem>
             <FormItem>
@@ -41,7 +41,8 @@ import {
     addTimeline,
     getTimelineList,
     editTimeline,
-    getTimelineDetail
+    getTimelineDetail,
+    getTagList
 } from "@/api/index";
 import moment from "moment";
 export default {
@@ -55,11 +56,7 @@ export default {
         modelList: [],
         description: '',
         id: '',
-        tags: [
-          '发布',
-          '系统开通',
-          '系统关闭'
-        ],
+        tags: [],
         tag: ''
     };
   },
@@ -128,11 +125,15 @@ export default {
       },
       selectModel(id) {
         this.modelList = _.find(this.sysList,['id',id]).modal;
+        this.model = [];
       }
   },
   mounted() {
       this.init();
-      this.getlist();
+      getTagList().then(res => {
+        this.tags = res.data;
+        this.getlist();
+      })
   },
 };
 </script>

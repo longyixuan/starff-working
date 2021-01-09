@@ -16,7 +16,7 @@
                       <Option :value="item" v-for="item in modelList">{{item}}</Option>
                     </Select> -->
                     <Select clearable style="width: 200px;margin-right:10px;" v-model="tag" placeholder="请选择标签">
-                        <Option v-for="item in tags" :value="item">{{ item }}</Option>
+                        <Option v-for="item in tags" :value="item.id" :key="item.id">{{ item.name }}</Option>
                     </Select>
                     <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
                     <div style="float: right;">
@@ -26,7 +26,10 @@
                 </div>
                 <Table border :columns="columns" :data="data" ref="table">
                     <template slot-scope="{ row }" slot="model">
-                        <Tag v-for="item in row.model">{{item}}</Tag>
+                        <Tag v-for="item in row.model" :key="item">{{item}}</Tag>
+                    </template>
+                    <template slot-scope="{ row }" slot="tag">
+                        {{row.tag | tagFilter(tags)}}
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click=updateTimeline(row.timelineId,index)>编辑</Button>
@@ -85,7 +88,8 @@
 import {
     getSystemList,
     getTimelineList,
-    delTimeline
+    delTimeline,
+    getTagList
 } from "@/api/index";
 import moment from "moment";
 export default {
@@ -99,11 +103,7 @@ export default {
         tag: '',
         model: [],
         modelList: [],
-        tags: [
-          '发布',
-          '系统开通',
-          '系统关闭'
-        ],
+        tags: [],
         data: [],
         exportData: [],
         columns: [
@@ -130,7 +130,7 @@ export default {
             },
             {
                 title: '标签',
-                key: 'tag',
+                slot: 'tag',
                 width: 120
             },
             {
@@ -147,10 +147,17 @@ export default {
         ]
     };
   },
+  created() {
+    getTagList().then(res => {
+        this.tags = res.data;
+    })
+  },
+  filters: {
+      tagFilter: function(value,data) {
+          return _.find(data,['id',value]).name;
+      }
+  },
   methods: {
-      addTimeline() { //添加
-
-      },
       updateTimeline(id,index) { //修改
          this.$router.push({ 'name': 'time-line-edit', 'query': { id: id}});
       },
@@ -192,7 +199,6 @@ export default {
                 timelineId: this.data[i].timelineId
             })
         }
-        console.log(this.exportData)
         this.$refs.table.exportCsv({
             filename: '系统时间线',
             columns: [
