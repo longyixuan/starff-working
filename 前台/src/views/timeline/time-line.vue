@@ -126,7 +126,12 @@ export default {
             },
             {
                 title: '备注',
-                key: 'description'
+                key: 'description',
+                render(h,params) {
+                    return h('div',{
+                        'class': 'pre-div'
+                    },params.row.description)
+                }
             },
             {
                 title: '标签',

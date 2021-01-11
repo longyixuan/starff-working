@@ -3,58 +3,44 @@
 </style>
 <template>
     <Card title="各系统模块管理">
-        <Tabs value="canvas" :animated="false">
-            <TabPane label="全部" name="canvas">
-                <Table border :columns="columns1" :data="sysList">
-                    <template slot-scope="{ row, index }" slot="modal">
-                        <Tag color="blue" v-for="item in row.modal">{{item}}</Tag>
-                    </template>
-                </Table>
-            </TabPane>
-            <TabPane label="查询" name="table">
-                <Alert show-icon type="warning">删除模块时请确认该模块未被使用。</Alert>
-                <Form ref="formInline" inline>
-                    <FormItem>
-                        <Select placeholder="选择系统" v-model="systemId" clearable filterable @on-change="onChange">
-                            <template v-for="item in sysList">
-                                <Option :value="item.id" :key="item.id">{{item.title}}</Option>)
-                            </template>
-                        </Select>
-                    </FormItem>
-                </Form>
-                <Table border :columns="columns" :data="modalList">
-                    <template slot-scope="{ row, index }" slot="action">
-                        <!-- <Button type="primary" size="small" style="margin-right: 5px" @click="edit(index,row.sysId)">修改</Button> -->
-                        <Button type="error" size="small" style="margin-right: 5px" @click="del(index,row.sysId)">删除</Button>
-                    </template>
-                </Table>
-                <Modal v-model="modal" title="修改模块">
-                    <Input v-model="value" placeholder="输入模块名称"/>
-                    <template slot="footer">
-                        <Button @click="modal=false">取消</Button>
-                        <Button type="primary" @click="editModalName">修改模块</Button>
-                    </template>
-                </Modal>
-            </TabPane>
-        </Tabs>
-        
+        <Table border :columns="columns" :data="sysList">
+            <template slot-scope="{ row }" slot="modal">
+                <Tag style="cursor: pointer;" closable :name="item.modelId" v-for="item in filterModal(row.id)" @click.native="editModal(row.id,item)" @on-close="deleteModal">{{item.modelName}}</Tag>
+                <Button icon="ios-add" type="dashed" size="small" @click="updateModal(row.id)">添加</Button>
+            </template>
+        </Table>
+        <Modal v-model="modal" @on-ok="add" title="编辑模块">
+            <Form :label-width="80">
+                <FormItem label="系统名称">
+                    <Select placeholder="选择系统" disabled v-model="systemId" filterable>
+                        <Option v-for="item in sysList" :value="item.id" :key="item.id">{{item.title}}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="模块名称">
+                    <Input v-model="model" placeholder="填写模块名称"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
     </Card>
 </template>
 <script>
 import {
-    addModal,
+    addModel,
+    updateModel,
     getSystemList,
-    getDocumentDetails
+    deleteModel,
+    listModel
 } from "@/api/index";
 export default {
     data() {
         return{
-            sysList: [],
             modal: false,
+            sysList: [],
             systemId: '',
-            value: '',
-            modalList: [],
-            columns1: [
+            model: '',
+            modelId: '',
+            modelList: [],
+            columns: [
                 {
                     type: 'index',
                     width: 60,
@@ -68,94 +54,60 @@ export default {
                 {
                     title: '模块',
                     slot: 'modal'
-                },
-            ],
-            columns: [
-                {
-                    type: 'index',
-                    width: 60,
-                    align: 'center'
-                },
-                {
-                    title: '名称',
-                    key: 'name',
-                },
-                {
-                    title: '操作',
-                    slot: 'action',
-                    width: 80,
-                    align: 'center'
                 }
             ]
         }
     },
     methods: {
-        onChange(val) {
-            this.modalList = [];
-            let list =  _.find(this.sysList,['id',val]).modal;
-            for(let i = 0; i < list.length; i++) {
-                this.modalList.push({
-                    sysId: val,
-                    name: list[i]
-                });
-            }
+        filterModal(id) {
+            return _.filter(this.modelList,['systemId', id]);
         },
-        addModal(postData) {
-            addModal(postData).then(res => {
-                if (res.code === 1) {
-                    this.$Message.success('删除成功');
-                    this.modal = false;
-                }
-            })
-        },
-        editModalName() {
-            var modalList = [];
-            for(let i = 0; i < this.modalList.length; i++) {
-                modalList.push(this.modalList[i].name);
-            }
-            let postData = {
-                systemId: this.id,
-                modalList: Array.from(new Set(modalList))
-            }
-            this.addModal(postData);
-        },
-        init() {
-            getSystemList().then(res => {
-                this.sysList = res.data;
-            })
-        },
-        edit(index,id) {
-            this.value = this.modalList[index].name;
-            this.id = id;
+        updateModal(id) {
+            this.systemId = id;
             this.modal = true;
         },
-        confirm(tip,callback) {
-            this.$Modal.confirm({
-                title: "提示",
-                content: tip,
-                onOk: () => {
-                    callback();
-                }
-            });
+        editModal(id,obj) {
+            this.systemId = id;
+            this.modelId = obj.modelId;
+            this.model = obj.modelName;
+            this.modal = true;
         },
-        del(index,id) {
-            this.confirm('请确认该模块未被使用，删除之后关联数据将被删除',() => {
-                this.modalList.splice(index,1);
-                let modalList = [];
-                for(let i = 0; i < this.modalList.length; i++) {
-                    modalList.push(this.modalList[i].name);
-                }
-                let postData = {
-                    systemId: id,
-                    modalList: Array.from(new Set(modalList))
-                }
-                this.addModal(postData)
+        deleteModal(event,name) {
+            deleteModel({id: name}).then( res=> {
+                this.$Message.success('删除成功');
+                this.init();
+            })
+        },
+        add() {
+            if (this.modelId) {
+                this.edit();
+            } else {
+                addModel({systemId: this.systemId, modelName: this.model}).then(res=>{
+                    this.modal = false;
+                    this.$Message.success('添加成功');
+                    this.init();
+                })
+            }
+        },
+        init() {
+            listModel().then(res => {
+                this.modelList = res.data;
+            })
+        },
+        edit() {
+            updateModel({systemId: this.systemId, modelName: this.model,id: this.modelId}).then(res=>{
+                this.modal = false;
+                this.$Message.success('修改成功');
             })
         }
     },
     mounted() {
-        this.init();
-        this.getData();
+        listModel().then(res => {
+            this.modelList = res.data;
+            getSystemList().then(res => {
+                this.sysList = res.data;
+            })
+        })
     }
 }
 </script>

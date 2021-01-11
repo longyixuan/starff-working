@@ -307,3 +307,20 @@ export const delTag = (params) => {
     return postRequest(`/tag/delete`,params)
 }
 //-----------------------标签--------------------------------//
+
+
+//-----------------------模块--------------------------------//
+export const addModel = (params) => {
+    return postRequest(`/sysmodel/add`,params)
+}
+export const updateModel = (params) => {
+    return postRequest(`/sysmodel/update`,params)
+}
+export const deleteModel = (params) => {
+    return postRequest(`/sysmodel/delete`,params)
+}
+
+export const listModel = (params) => {
+    return postRequest(`/sysmodel/list`,params)
+}
+//-----------------------模块--------------------------------//

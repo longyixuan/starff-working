@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-04 16:29:26
+ * @Last Modified time: 2021-01-11 08:54:58
  */
 
 
@@ -79,6 +79,7 @@ const download_router = require('./routes/api/download_router');
 const upload_router = require('./routes/api/upload_router');
 const document_router = require('./routes/api/document_router');
 const timeline_router = require('./routes/api/timeline_router');
+const model_router = require('./routes/api/model_router');
 
 app.use(user_router.routes()).use(user_router.allowedMethods());
 app.use(system_router.routes()).use(system_router.allowedMethods());
@@ -90,5 +91,6 @@ app.use(download_router.routes()).use(download_router.allowedMethods());
 app.use(upload_router.routes()).use(upload_router.allowedMethods());
 app.use(document_router.routes()).use(document_router.allowedMethods());
 app.use(timeline_router.routes()).use(timeline_router.allowedMethods());
+app.use(model_router.routes()).use(model_router.allowedMethods());
 
 app.listen(config.port);
