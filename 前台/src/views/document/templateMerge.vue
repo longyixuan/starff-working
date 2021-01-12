@@ -24,7 +24,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item2,index) in item.content">
-                                <td v-html="linght(item2.contentTitle)"></td>
+                                <td v-html="linght(filterTitle(item2.contentTitle))"></td>
                                 <td>
                                     <div style=" white-space: pre-line;" v-html="linght(item2.contentDescription)"></div>
                                 </td>
@@ -78,6 +78,7 @@
 import {
     detailsDocumentday,
     mergeDocumentday,
+    listModel,
     downDocument
 } from "@/api/index";
 import moment from "moment";
@@ -103,6 +104,9 @@ export default {
         }
     },
     methods: {
+        filterTitle: function(value) {
+            return _.find(this.modelList,['modelId', value]).modelName;
+        },
         linght(val){
             if (this.keyword.length > 0) {
                 let keywordArr = this.keyword.split("");
@@ -187,7 +191,10 @@ export default {
         }
     },
     mounted() {
-        this.init();
+        listModel().then(res => {
+            this.modelList = res.data;
+            this.init();
+        })
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
     }
 }

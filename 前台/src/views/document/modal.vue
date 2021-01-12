@@ -3,6 +3,9 @@
 </style>
 <template>
     <Card title="各系统模块管理">
+        <div style="text-align:right;margin-bottom: 20px;">
+            <Button type="warning" @click="refresh">更新工作总结旧数据</Button>
+        </div>
         <Table border :columns="columns" :data="sysList">
             <template slot-scope="{ row }" slot="modal">
                 <Tag style="cursor: pointer;" closable :name="item.modelId" v-for="item in filterModal(row.id)" @click.native="editModal(row.id,item)" @on-close="deleteModal">{{item.modelName}}</Tag>
@@ -29,6 +32,7 @@ import {
     updateModel,
     getSystemList,
     deleteModel,
+    refreshModel,
     listModel
 } from "@/api/index";
 export default {
@@ -59,6 +63,13 @@ export default {
         }
     },
     methods: {
+        refresh() {
+            refreshModel().then(res=>{
+                if (res.code === 1) {
+                    this.$Message.success('数据更新成功');
+                }
+            });
+        },
         filterModal(id) {
             return _.filter(this.modelList,['systemId', id]);
         },

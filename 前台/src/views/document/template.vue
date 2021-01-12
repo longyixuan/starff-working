@@ -37,7 +37,7 @@
                                     filterable
                                     placeholder="填写模块名称"
                                     style="width: 400px;">
-                                    <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option" :key="index">{{option}}</Option>
+                                    <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option.modelId" :key="index">{{option.modelName}}</Option>
                                 </Select>
                                 下拉选项中没有的模块，点此处<a @click="add(index)">添加</a>。
                             </div>
@@ -76,7 +76,8 @@
         detailsDocumentday,
         editDocumentday,
         seachModal,
-        addModal
+        addModal,
+        listModel
     } from "@/api/index";
     import moment from "moment";
     export default {
@@ -85,6 +86,7 @@
                 gzjh: '',
                 title: '',
                 modalTitle: '',
+                modelList: [],
                 value: '',
                 id: '',
                 modal: false,
@@ -106,12 +108,8 @@
                     this.$Message.error('请先选择系统');
                 }
             },
-            sysFilter(value){
-                if (!!value) {
-                    return _.find(this.sysList,['id',value]).modal;
-                } else {
-                    return [];
-                }
+            sysFilter(id){
+                return _.filter(this.modelList,['systemId', id]);
             },
             addModalName() {
                 if (this.value=='') {
@@ -184,8 +182,11 @@
                 }
             },
             init() {
-                getSystemList().then(res => {
-                    this.sysList = res.data;
+                listModel().then(res => {
+                    this.modelList = res.data;
+                    getSystemList().then(res => {
+                        this.sysList = res.data;
+                    })
                 })
             },
             addModal(index) {

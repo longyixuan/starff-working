@@ -2,11 +2,12 @@
  * @Author: yinxl 
  * @Date: 2019-11-20 09:27:16 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-11-09 17:33:25
+ * @Last Modified time: 2021-01-12 17:18:03
  */
 const fs = require('fs');
 const send = require('koa-send');
 const toChinesNum = require('./../utils/formatNum');
+const Model_col = require('./../models/model');
 const downloadAll = async (ctx) => {
     const fileName = 'worktimeCopy.zip';
     ctx.attachment(fileName);
@@ -23,6 +24,16 @@ const downloadMarkdown = async (ctx, next) => {
     });
 }
 
+const seachModel = (list,value) => {
+    var str = '';
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].modelId == value) {
+            str = list[i].modelName;
+        }
+    }
+    return str;
+}
+
 const downloadDocument = async (ctx, next) => {
     console.log(ctx)
     ctx.status = 200;
@@ -30,12 +41,13 @@ const downloadDocument = async (ctx, next) => {
     let text = '# ' + req.doctitle;
     const data = JSON.parse(req.list)
     const gzjh = JSON.parse(req.gzjh)
+    const ModelResult = await Model_col.find();
     for(let i = 0; i <data.length; i++) { //本月总结
         text += '\n';
         text += '## ' + toChinesNum(i+1) +'、' + data[i].systemName;
         for(let j = 0; j <data[i].content.length; j++) {
             text += '\n';
-            text += '- **' + (j+1) + '、' + data[i].content[j].contentTitle + '：**' + data[i].content[j].contentDescription;
+            text += '- **' + (j+1) + '、' + seachModel(ModelResult,data[i].content[j].contentTitle) + '：**' + data[i].content[j].contentDescription;
         }
     }
     text += '\n';

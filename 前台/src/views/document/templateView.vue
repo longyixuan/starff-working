@@ -21,7 +21,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item2,index) in item.content">
-                                    <td>{{item2.contentTitle}}</td>
+                                    <td>{{filterTitle(item2.contentTitle)}}</td>
                                     <td>
                                         <div style=" white-space: pre-line;">{{item2.contentDescription}}</div>
                                     </td>
@@ -53,7 +53,8 @@
 </template>
 <script>
 import {
-    detailsDocumentday
+    detailsDocumentday,
+    listModel
 } from "@/api/index";
 import moment from "moment";
 export default {
@@ -63,10 +64,14 @@ export default {
             title: '',
             time: '',
             submitList: [],
+            modelList: [],
             gzjhList: []
         }
     },
     methods: {
+        filterTitle: function(value) {
+            return _.find(this.modelList,['modelId', value]).modelName;
+        },
         init() {
             detailsDocumentday(this.$route.query.type,{id:this.$route.query.id}).then(res => {
                 if (res.code == 1) {
@@ -116,7 +121,10 @@ export default {
         }
     },
     mounted() {
-        this.init();
+        listModel().then(res => {
+            this.modelList = res.data;
+            this.init();
+        })
     }
 }
 </script>

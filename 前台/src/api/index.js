@@ -323,4 +323,8 @@ export const deleteModel = (params) => {
 export const listModel = (params) => {
     return postRequest(`/sysmodel/list`,params)
 }
+
+export const refreshModel = (params) => {
+    return postRequest(`/sysmodel/refresh`,params)
+}
 //-----------------------模块--------------------------------//
