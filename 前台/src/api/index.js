@@ -157,6 +157,10 @@ export const exportTime = (params) => {
 export const installTime = (params) => {
     return getRequest('/installTime', params)
 }
+
+export const checkTime = (params) => {
+    return postRequest('/time/check', params)
+}
 //-----------------------工时管理--------------------------------//
 //-----------------------工作总结--------------------------------//
 export const addDocument = (params) => {

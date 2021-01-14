@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-08 17:23:19
+ * @Last Modified time: 2021-01-14 17:43:25
  */
 
 const Timeline_col = require('./../models/timeline');
@@ -49,7 +49,26 @@ const update = async (ctx, next) => {
 const getList = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    var seachConfig = {};
+    let seachConfig = {};
+    let groupConfig = {
+        _id: {
+            timeStamp: '$timeStamp',
+            time: '$time'
+        },
+        details: {
+            $push: {
+                model: '$model',
+                description: '$description',
+                userName: '$userName',
+                tag: '$tag',
+                systemId: '$systemId',
+                systemName: '$systemName',
+                timelineId: '$timelineId',
+                timeStamp: '$timeStamp',
+                time: '$time'
+            }
+        }
+    };;
     if (req.system) {
         seachConfig.systemId = {
             '$in': req.system
@@ -67,10 +86,17 @@ const getList = async (ctx, next) => {
     let result = await Timeline_col.aggregate([{
         $match: seachConfig
     }]);
+    console.log(groupConfig)
+    let result2 = await Timeline_col.aggregate([{
+        $match: seachConfig
+    },{
+        $group: groupConfig
+    }]);
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: result,
+        timeSys: result2
     };
 }
 

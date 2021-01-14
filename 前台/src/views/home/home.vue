@@ -130,6 +130,7 @@
               <!-- <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(true)">邮件备份</Button> -->
               <Button type="warning" ghost v-if="isReset === 'admin'" @click="inportTime">上传备份</Button>
               <Button type="error" ghost v-if="isReset === 'admin'" @click="installTime">恢复备份</Button>
+              <Button type="error" ghost v-if="isReset === 'admin'" @click="checkTimeFn">查漏</Button>
             </ButtonGroup>
           </Card>
         </Col>
@@ -243,8 +244,10 @@ import {
   resetTime,
   exportTime,
   uploadFile,
-  installTime
+  installTime,
+  checkTime
 } from "@/api/index";
+import moment from "moment";
 import {
   getAll,
   getWeekStartDate,
@@ -421,6 +424,28 @@ export default {
     }
   },
   methods: {
+    checkTimeFn() {
+      checkTime().then(res=> {
+        var list = [];
+        var userList = ['yinxl','weij','mayx','hanwm','jiaxd','wangly','sunl','lugp','cuiyh','guoxq'];
+         for (let i = 0;i< res.data.length; i++) {
+           if (res.data[i].details.length < 10 && res.data[i].details.length > 7) {
+             for (let k = 0; k < userList.length; k++) {
+               if (!_.find(res.data[i].details,['userName',userList[k]])) {
+                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')};工时：未录;员工：${userList[k]}`)
+               }
+             }
+           } else {
+             for (let j = 0; j < res.data[i].details.length;j++) {
+               if (res.data[i].details[j].timeCount<7) {
+                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')};工时：${res.data[i].details[j].timeCount};员工：${res.data[i].details[j].userName}`)
+               }
+             }
+           }
+         }
+         console.log(JSON.stringify(list))
+      });
+    },
     installTime () {
       this.$Modal.confirm({
         title: "提示",

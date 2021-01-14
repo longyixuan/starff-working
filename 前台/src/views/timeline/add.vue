@@ -10,13 +10,13 @@
                 <DatePicker v-model="time" type="date" placeholder="选择时间" style="width: 300px"></DatePicker>
             </FormItem>
             <FormItem label="系统：">
-                <Select filterable clearable style="width: 300px" v-model="system" @on-change="selectModel">
+                <Select filterable clearable style="width: 300px" v-model="system" @on-change="model=[]">
                   <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
                 </Select>
             </FormItem>
             <FormItem label="模块：">
-              <CheckboxGroup v-model="model">
-                <Checkbox style="margin-bottom: 10px;" :label="item" v-for="item in modelList"></Checkbox>
+              <CheckboxGroup v-model="model" v-if="modelList.length > 0">
+                <Checkbox style="margin-bottom: 10px;" :key="item.modelId" :label="item.modelId" v-for="item in filterModal(system)">{{item.modelName}}</Checkbox>
               </CheckboxGroup>
             </FormItem>
             <FormItem label="备注：">
@@ -42,7 +42,8 @@ import {
     getTimelineList,
     editTimeline,
     getTimelineDetail,
-    getTagList
+    getTagList,
+    listModel
 } from "@/api/index";
 import moment from "moment";
 export default {
@@ -61,6 +62,9 @@ export default {
     };
   },
   methods: {
+      filterModal(id) {
+          return _.filter(this.modelList,['systemId', id]);
+      },
       add() { //添加
         const postData = {
           id: this.id,
@@ -118,14 +122,9 @@ export default {
                   this.system = res.data.systemId;
                   this.description = res.data.description;
                   this.tag = res.data.tag;
-                  this.modelList = _.find(this.sysList,['id',res.data.systemId]).modal;
                 });
               }
           })
-      },
-      selectModel(id) {
-        this.modelList = _.find(this.sysList,['id',id]).modal;
-        this.model = [];
       }
   },
   mounted() {
@@ -133,6 +132,9 @@ export default {
       getTagList().then(res => {
         this.tags = res.data;
         this.getlist();
+      })
+      listModel().then(res => {
+          this.modelList = res.data;
       })
   },
 };

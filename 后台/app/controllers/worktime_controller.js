@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-07 18:29:28
+ * @Last Modified time: 2021-01-14 08:47:25
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -12,6 +12,7 @@ const Role_col = require('./../models/role');
 const Menu_col = require('./../models/menu');
 const Department_col = require('./../models/department');
 const Passport_col = require('./../models/password');
+const Documentday_col = require('./../models/documentDay');
 const uuidv1 = require('uuid/v1');
 const getAll = require('./../middleware/timeHelp');
 const qs = require('qs');
@@ -343,6 +344,98 @@ const exportTime = async (ctx, next) => {
         msg: zipName + '压缩成功'
     }
 }
+
+//------------------------------
+
+const checkTime = async (ctx, next) => {
+    ctx.status = 200;
+    // const req = ctx.request.body;
+    // let seachList = await Documentday_col.find();
+    let worktime = await WorkTime_col.aggregate([
+        {
+            $match: {
+                'userName': {
+                    $in: ['yinxl','weij','mayx','hanwm','jiaxd','wangly','sunl','lugp','cuiyh','guoxq','changxq']
+                },
+                'timeDate': {
+                    $gte: new Date('2021-01-01'),
+                    $lte: new Date('2021-12-31')
+                }
+            }
+        },
+        {
+            $group: {
+              _id: {
+                  timeDate: '$timeDate',
+                  userName: '$userName'
+              },
+              timeCount: {
+                $sum: '$time'
+              }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                timeDate: '$_id.timeDate',
+                userName: '$_id.userName',
+                timeCount: '$timeCount'
+            }
+        },
+        {
+            $sort: {
+                'timeDate': 1
+            }
+        },
+        {
+            $group: {
+              _id: {
+                  timeDate: '$timeDate',
+              },
+              details: {
+                $push: {
+                    userName: '$userName',
+                    timeCount: '$timeCount'
+                }
+              }
+            }
+        },
+        // {
+        //     $match: {
+        //         timeCount: {
+        //             $lt: 8
+        //         }
+        //     }
+        // }
+    ]);
+    // for (let i = 0; i < seachList.length;i++) {
+    //     await Documentday_col.updateMany({
+    //         'documentId': seachList[i].documentId
+    //     },{
+    //         'timeDate': new Date(seachList[i].timeDate)
+    //     })
+    // }
+    // let userList = ['王利英','尹晓龙','韩文明','贾晓东','孙玲','马艳雄','卫杰','郭晓琼','崔永辉','路国平'];
+    // let dayDoc = await Documentday_col.find({
+    //     'userName': 'yinxl',
+    //     'timeDate': {
+    //         $gte: new Date('2020-01-01'),
+    //         $lte: new Date('2020-12-31')
+    //     }
+    // }).sort({'timeDate': 1});
+    // console.log(dayDoc)
+    //TODO 
+    /*
+        条件：时间、人员
+        方法：有日总结的工时不满的记录
+    */
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: worktime
+    };
+}
+
 module.exports = {
     getTimeList,
     postTime,
@@ -350,5 +443,6 @@ module.exports = {
     workTimeSeach,
     getMapTime,
     resetTime,
-    exportTime
+    exportTime,
+    checkTime
 }

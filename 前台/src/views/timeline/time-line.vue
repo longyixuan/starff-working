@@ -4,29 +4,32 @@
 
 <template>
   <div>
-    <Card>
-        <Tabs value="name1">
+    <Card title="系统时间线">
+        <div style="margin-bottom: 20px;">
+            <DatePicker v-model="timeDate" style="width: 200px;margin-right:10px;" type="daterange" placeholder="请选择时间"></DatePicker>
+            <Select clearable filterable style="width: 400px;margin-right:10px;" multiple v-model="system" placeholder="请选择系统">
+                <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
+            </Select>
+            <!-- <Select style="width: 200px;margin-right:10px;" multiple v-model="model" placeholder="请选择系统">
+                <Option :value="item" v-for="item in modelList">{{item}}</Option>
+            </Select> -->
+            <Select clearable style="width: 200px;margin-right:10px;" v-model="tag" placeholder="请选择标签">
+                <Option v-for="item in tags" :value="item.id" :key="item.id">{{ item.name }}</Option>
+            </Select>
+            <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
+            <div style="float: right;">
+                <Button type="primary" style="margin-right: 10px;" @click="exportExcel">导出Excel</Button>
+                <Button type="primary" to="/time-line/add">新增时间线</Button>
+            </div>
+        </div>
+        <Tabs value="name1" type="card">
             <TabPane label="表格显示" name="name1">
-                <div style="margin-bottom: 20px;">
-                    <DatePicker v-model="timeDate" style="width: 200px;margin-right:10px;" type="daterange" placeholder="请选择时间"></DatePicker>
-                    <Select clearable filterable style="width: 400px;margin-right:10px;" multiple v-model="system" placeholder="请选择系统">
-                      <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
-                    </Select>
-                    <!-- <Select style="width: 200px;margin-right:10px;" multiple v-model="model" placeholder="请选择系统">
-                      <Option :value="item" v-for="item in modelList">{{item}}</Option>
-                    </Select> -->
-                    <Select clearable style="width: 200px;margin-right:10px;" v-model="tag" placeholder="请选择标签">
-                        <Option v-for="item in tags" :value="item.id" :key="item.id">{{ item.name }}</Option>
-                    </Select>
-                    <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
-                    <div style="float: right;">
-                        <Button type="primary" style="margin-right: 10px;" @click="exportExcel">导出Excel</Button>
-                        <Button type="primary" to="/time-line/add">新增时间线</Button>
-                    </div>
-                </div>
+                
                 <Table border :columns="columns" :data="data" ref="table">
                     <template slot-scope="{ row }" slot="model">
-                        <Tag v-for="item in row.model" :key="item">{{item}}</Tag>
+                        <template v-if="modelList.length > 0">
+                            <Tag v-for="item in row.model" :key="item">{{item | modelFilter(modelList)}}</Tag>
+                        </template>
                     </template>
                     <template slot-scope="{ row }" slot="tag">
                         {{row.tag | tagFilter(tags)}}
@@ -39,43 +42,20 @@
             </TabPane>
             <TabPane label="时间线显示" name="name2">
                 <ul class="timeline">
-                    <li class="timeline-item">
-                    <div class="timeline-time">
-                        <span>2020年05月14日</span>
-                    </div>
-                    <div class="timeline-icon"></div>
-                    <div class="timeline-label">
-                        <div style="margin-bottom: 20px;">
-                            <h2>强基计划</h2>
-                            <p>
-                                1、学生端上线 <br>
-                                2、管理后台上线
-                            </p>
+                    <li class="timeline-item" v-for="item in lineDate">
+                        <div class="timeline-time">
+                            <span>{{item._id.time}}</span>
                         </div>
-                        <div>
-                            <h2>学职平台</h2>
-                            <p>
-                                1、综合报告上线<br>
-                                2、移动端测评报告上线<br>
-                                3、测评后台上线
-                            </p>
+                        <div class="timeline-icon"></div>
+                        <div class="timeline-label">
+                            <div style="margin-bottom: 20px;" v-for="item2 in item.details">
+                                <h2>{{item2.systemName}}<Tag color="warning">{{item2.tag | tagFilter(tags)}}</Tag></h2>
+                                <div style="margin-bottom: 10px;">
+                                    <Tag type="dot" color="success" v-for="item3 in item2.model" :key="item3">{{item3 | modelFilter(modelList)}}</Tag>
+                                </div>
+                                <div v-html="item2.description" style="white-space: pre-line;font-size: 14px;line-height: 1.5;"></div>
+                            </div>
                         </div>
-                    </div>
-                    </li>
-                    <li class="timeline-item">
-                    <div class="timeline-time">
-                        <span>2020年05月14日</span>
-                    </div>
-                    <div class="timeline-icon"></div>
-                    <div class="timeline-label">
-                        <div style="margin-bottom: 20px;">
-                            <h2>强基计划</h2>
-                            <p>
-                                1、学生端上线 <br>
-                                2、管理后台上线
-                            </p>
-                        </div>
-                    </div>
                     </li>
                 </ul>
             </TabPane>
@@ -89,7 +69,8 @@ import {
     getSystemList,
     getTimelineList,
     delTimeline,
-    getTagList
+    getTagList,
+    listModel
 } from "@/api/index";
 import moment from "moment";
 export default {
@@ -105,6 +86,7 @@ export default {
         modelList: [],
         tags: [],
         data: [],
+        lineDate: [],
         exportData: [],
         columns: [
             {
@@ -160,6 +142,9 @@ export default {
   filters: {
       tagFilter: function(value,data) {
           return _.find(data,['id',value]).name;
+      },
+      modelFilter: function(value,data) {
+          return _.find(data,['modelId',value]).modelName;
       }
   },
   methods: {
@@ -185,6 +170,7 @@ export default {
         getTimelineList(params).then(res => {
             if (res.code === 1) {
                 this.data = res.data;
+                this.lineDate = res.timeSys;
             }
         })
       },
@@ -193,11 +179,18 @@ export default {
               this.sysList = res.data;
           })
       },
+      modelStr: function(list) {
+          var str = [];
+          for (var i = 0; i < list.length; i++) {
+            str.push(_.find(this.modelList,['modelId',list[i]]).modelName);
+          }
+          return str.join('、');
+      },
       exportExcel() { //导出
         for (var i = 0; i < this.data.length; i++) {
             this.exportData.push({
-                description: this.data[i].description,
-                model: this.data[i].model.join('、'),
+                description: this.data[i].description.replaceAll('\n',''),
+                model: this.modelStr(this.data[i].model),
                 systemName: this.data[i].systemName,
                 tag: _.find(this.tags,['id',this.data[i].tag]).name,
                 time: this.data[i].time,
@@ -240,6 +233,9 @@ export default {
   mounted() {
       this.getlist();
       this.init();
+      listModel().then(res => {
+          this.modelList = res.data;
+      })
   },
 };
 </script>
