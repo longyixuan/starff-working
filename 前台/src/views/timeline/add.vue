@@ -18,6 +18,7 @@
               <CheckboxGroup v-model="model" v-if="modelList.length > 0">
                 <Checkbox style="margin-bottom: 10px;" :key="item.modelId" :label="item.modelId" v-for="item in filterModal(system)">{{item.modelName}}</Checkbox>
               </CheckboxGroup>
+              <span style="color: #999">选择系统后显示</span>
             </FormItem>
             <FormItem label="备注：">
                 <Input type="textarea" :rows="4" v-model="description"></Input>
@@ -29,6 +30,7 @@
             </FormItem>
             <FormItem>
               <Button type="primary" @click="add">确定</Button>
+              <Button type="default" to="/time-line" style="margin-left: 20px">返回</Button>
             </FormItem>
         </Form>
     </Card>

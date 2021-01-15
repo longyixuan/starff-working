@@ -7,7 +7,7 @@ import { Message } from 'view-design';
 // let base = 'http://172.16.2.131:3333';
 let base = 'http://localhost:3333';
 // 超时设定
-axios.defaults.timeout = 15000;
+axios.defaults.timeout = 50000;
 
 axios.interceptors.request.use(config => {
     return config;

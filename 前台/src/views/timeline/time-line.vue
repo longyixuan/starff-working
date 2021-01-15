@@ -144,7 +144,11 @@ export default {
           return _.find(data,['id',value]).name;
       },
       modelFilter: function(value,data) {
-          return _.find(data,['modelId',value]).modelName;
+          if (_.find(data,['modelId',value])) {
+              return _.find(data,['modelId',value]).modelName;
+          } else {
+              return '';
+          }
       }
   },
   methods: {

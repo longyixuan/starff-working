@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 16:39:06
+ * @Last Modified time: 2021-01-15 20:03:54
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -18,6 +18,9 @@ const qs = require('qs');
 const fs = require('fs');
 const JSZip = require('jszip');
 const { out } = require('../../logger');
+const Documentday_col = require('./../models/documentDay');
+const Documentweek_col = require('./../models/documentWeek');
+const Documentmonth_col = require('./../models/documentMonth');
 // const sendMail = require('../../mailer')
 
 const getTimeList = async (ctx, next) => {
@@ -62,6 +65,8 @@ const getTimeList = async (ctx, next) => {
 const resetTime = async(ctx, next) => {
     ctx.status = 200;
     const list = await WorkTime_col.find();
+    const day = await Documentday_col.find();
+    const week = await Documentweek_col.find();
     out.info('重置工时');
     for (let i = 0; i < list.length; i++) {
         if (list[i].time===0 || list[i].time===null) {
@@ -75,6 +80,21 @@ const resetTime = async(ctx, next) => {
                 timeDate: new Date(list[i].timeDate)
             });
         }
+    }
+    for (let j = 0; j < day.length; j++) {
+        await Documentday_col.updateMany({
+            'documentId': day[j].documentId
+        }, {
+            timeDate: new Date(day[j].timeDate)
+        });
+    }
+    for (let k = 0; k < week.length; k++) {
+        await Documentweek_col.updateMany({
+            'documentId': week[k].documentId
+        }, {
+            startDay: new Date(week[k].startDay),
+            endDay: new Date(week[k].endDay)
+        });
     }
     ctx.body = {
         code: 1,
@@ -396,14 +416,7 @@ const checkTime = async (ctx, next) => {
                 }
               }
             }
-        },
-        // {
-        //     $match: {
-        //         timeCount: {
-        //             $lt: 8
-        //         }
-        //     }
-        // }
+        }
     ]);
     ctx.body = {
         code: 1,
