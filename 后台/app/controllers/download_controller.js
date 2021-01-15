@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-11-20 09:27:16 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-12 17:18:03
+ * @Last Modified time: 2021-01-15 16:38:06
  */
 const fs = require('fs');
 const send = require('koa-send');
@@ -35,7 +35,6 @@ const seachModel = (list,value) => {
 }
 
 const downloadDocument = async (ctx, next) => {
-    console.log(ctx)
     ctx.status = 200;
     const req = ctx.request.body;
     let text = '# ' + req.doctitle;

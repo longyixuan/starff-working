@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 15:09:49
+ * @Last Modified time: 2021-01-15 16:39:06
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -348,8 +348,6 @@ const exportTime = async (ctx, next) => {
 
 const checkTime = async (ctx, next) => {
     ctx.status = 200;
-    // const req = ctx.request.body;
-    // let seachList = await Documentday_col.find();
     let worktime = await WorkTime_col.aggregate([
         {
             $match: {
@@ -407,22 +405,6 @@ const checkTime = async (ctx, next) => {
         //     }
         // }
     ]);
-    // for (let i = 0; i < seachList.length;i++) {
-    //     await Documentday_col.updateMany({
-    //         'documentId': seachList[i].documentId
-    //     },{
-    //         'timeDate': new Date(seachList[i].timeDate)
-    //     })
-    // }
-    // let userList = ['王利英','尹晓龙','韩文明','贾晓东','孙玲','马艳雄','卫杰','郭晓琼','崔永辉','路国平'];
-    // let dayDoc = await Documentday_col.find({
-    //     'userName': 'yinxl',
-    //     'timeDate': {
-    //         $gte: new Date('2020-01-01'),
-    //         $lte: new Date('2020-12-31')
-    //     }
-    // }).sort({'timeDate': 1});
-    // console.log(dayDoc)
     ctx.body = {
         code: 1,
         msg: '查询成功',

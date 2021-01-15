@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-17 14:38:07
+ * @Last Modified time: 2021-01-15 16:38:11
  */
 
 const uuidv1 = require('uuid/v1');
@@ -69,7 +69,6 @@ const delmenu = async (ctx, next) => {
             $in: req.id.split(',')
         }
     })
-    console.log(req.id.split(','))
     ctx.body = {
         code: 1,
         msg: '删除成功'
