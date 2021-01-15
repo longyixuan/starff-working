@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 20:03:54
+ * @Last Modified time: 2021-01-15 20:11:59
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -368,15 +368,17 @@ const exportTime = async (ctx, next) => {
 
 const checkTime = async (ctx, next) => {
     ctx.status = 200;
+    const req = ctx.request.body;
+    console.log(req)
     let worktime = await WorkTime_col.aggregate([
         {
             $match: {
                 'userName': {
-                    $in: ['yinxl','weij','mayx','hanwm','jiaxd','wangly','sunl','lugp','cuiyh','guoxq','changxq']
+                    $in: req.userList
                 },
                 'timeDate': {
-                    $gte: new Date('2021-01-01'),
-                    $lte: new Date('2021-12-31')
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
                 }
             }
         },

@@ -425,9 +425,14 @@ export default {
   },
   methods: {
     checkTimeFn() {
-      checkTime().then(res=> {
+      var userList = ['yinxl','weij','mayx','hanwm','jiaxd','wangly','sunl','lugp','cuiyh','guoxq','changxq'];
+      checkTime({
+        userList: userList,
+        startTime: this.startTime,
+        endTime: this.endTime,
+      }).then(res=> {
         var list = [];
-        var userList = ['yinxl','weij','mayx','hanwm','jiaxd','wangly','sunl','lugp','cuiyh','guoxq'];
+        
          for (let i = 0;i< res.data.length; i++) {
            if (res.data[i].details.length < 10 && res.data[i].details.length > 7) {
              for (let k = 0; k < userList.length; k++) {
@@ -669,7 +674,3 @@ export default {
   }
 };
 </script>
-var result = [];
-for (var i = 0; i < data.length; i++) {
-  result.push(data._id.systemName+' '+data.time)
-}
