@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-14 08:47:25
+ * @Last Modified time: 2021-01-15 11:29:10
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -12,7 +12,6 @@ const Role_col = require('./../models/role');
 const Menu_col = require('./../models/menu');
 const Department_col = require('./../models/department');
 const Passport_col = require('./../models/password');
-const Documentday_col = require('./../models/documentDay');
 const uuidv1 = require('uuid/v1');
 const getAll = require('./../middleware/timeHelp');
 const qs = require('qs');
@@ -424,11 +423,6 @@ const checkTime = async (ctx, next) => {
     //     }
     // }).sort({'timeDate': 1});
     // console.log(dayDoc)
-    //TODO 
-    /*
-        条件：时间、人员
-        方法：有日总结的工时不满的记录
-    */
     ctx.body = {
         code: 1,
         msg: '查询成功',

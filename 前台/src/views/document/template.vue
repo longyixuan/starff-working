@@ -39,7 +39,7 @@
                                     style="width: 400px;">
                                     <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option.modelId" :key="index">{{option.modelName}}</Option>
                                 </Select>
-                                下拉选项中没有的模块，点此处<a @click="add(index)">添加</a>。
+                                <!-- 下拉选项中没有的模块，点此处<a href="/sys-modal">添加</a>。 -->
                             </div>
                             <Input class="marginB-20" type="textarea" :rows="4" placeholder="填写工作内容" v-model="modalItem.contentDescription"></Input>
                             <Button type="error" @click="delList(index,index2)">删除当前记录</Button>
@@ -159,8 +159,22 @@
                 })
                 return result;
             },
-            submit() {
-                var postData = {summaryName: this.title,list: this.setPostData(),gzjh: this.gzjh};
+            checkForm(list) {
+                let flag = true;
+                let num = 0;
+                list.forEach(item => {
+                    if (!item.time) {
+                        flag = false;
+                    } else {
+                        num+=item.time;
+                    }
+                })
+                if (num < 7) {
+                    flag = false;
+                }
+                return flag;
+            },
+            submitGo(postData) {
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {
@@ -179,6 +193,20 @@
                             this.$Message.error(res.msg);
                         }
                     })
+                }
+            },
+            submit() {
+                var postData = {summaryName: this.title,list: this.setPostData(),gzjh: this.gzjh};
+                if (this.checkForm(postData.list)) {
+                    this.submitGo(postData);
+                } else {
+                    this.$Modal.confirm({
+                        title: '提示',
+                        content: '该天存在工时遗漏填写或填写时间不足情况，是否继续提交？提交后可在工时模块中补齐',
+                        onOk: () => {
+                            this.submitGo(postData);
+                        }
+                    });
                 }
             },
             init() {

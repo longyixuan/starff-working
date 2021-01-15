@@ -101,13 +101,24 @@ const update = async (ctx, next) => {
 const del = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    await Model_col.deleteMany({
-        modelId: req.id
-    });
-    ctx.body = {
-        code: 1,
-        msg: '删除成功'
-    };
+    var dayDoc = await Documentday_col.findOne({
+        contentTitle: req.id 
+    })
+    if (!dayDoc) {
+        await Model_col.deleteMany({
+            modelId: req.id
+        });
+        ctx.body = {
+            code: 1,
+            msg: '删除成功'
+        };
+    } else {
+        ctx.body = {
+            code: 0,
+            msg: '已在工作总结中使用，不可删除'
+        };
+    }
+    
 }
 const getlist = async (ctx, next) => {
     ctx.status = 200;

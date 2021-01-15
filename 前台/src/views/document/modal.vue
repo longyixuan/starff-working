@@ -3,7 +3,7 @@
 </style>
 <template>
     <Card title="各系统模块管理">
-        <div style="text-align:right;margin-bottom: 20px;">
+        <div style="text-align:right;margin-bottom: 20px;" v-if="isReset === 'admin'">
             <Button type="warning" @click="refresh">更新工作总结旧数据</Button>
         </div>
         <Table border :columns="columns" :data="sysList">
@@ -39,6 +39,7 @@ export default {
     data() {
         return{
             modal: false,
+            isReset: JSON.parse(localStorage.getItem('userInfo')).userName,
             sysList: [],
             systemId: '',
             model: '',
@@ -84,10 +85,21 @@ export default {
             this.modal = true;
         },
         deleteModal(event,name) {
-            deleteModel({id: name}).then( res=> {
-                this.$Message.success('删除成功');
-                this.init();
-            })
+            this.$Modal.confirm({
+            title: '提示',
+            content: '确定要删除吗？',
+            onOk: () => {
+                deleteModel({id: name}).then( res=> {
+                    if (res.code === 1) {
+                        this.$Message.success('删除成功');
+                        this.init();
+                    } else {
+                        this.$Message.error(res.msg);
+                    }
+                })
+            }
+        });
+            
         },
         add() {
             if (this.modelId) {

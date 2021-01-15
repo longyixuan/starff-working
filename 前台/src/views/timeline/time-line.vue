@@ -51,7 +51,7 @@
                             <div style="margin-bottom: 20px;" v-for="item2 in item.details">
                                 <h2>{{item2.systemName}}<Tag color="warning">{{item2.tag | tagFilter(tags)}}</Tag></h2>
                                 <div style="margin-bottom: 10px;">
-                                    <Tag type="dot" color="success" v-for="item3 in item2.model" :key="item3">{{item3 | modelFilter(modelList)}}</Tag>
+                                    <Tag style="font-weight: bold" type="dot" color="primary" v-for="item3 in item2.model" :key="item3">{{item3 | modelFilter(modelList)}}</Tag>
                                 </div>
                                 <div v-html="item2.description" style="white-space: pre-line;font-size: 14px;line-height: 1.5;"></div>
                             </div>
@@ -152,9 +152,15 @@ export default {
          this.$router.push({ 'name': 'time-line-edit', 'query': { id: id}});
       },
       deleteTimeline(id,index) { //删除
-        delTimeline({id: id}).then(res=> {
-            this.data.splice(index,1);
-            this.$Message.success('删除成功');
+        this.$Modal.confirm({
+            title: '提示',
+            content: '确定要删除吗？',
+            onOk: () => {
+                delTimeline({id: id}).then(res=> {
+                    this.data.splice(index,1);
+                    this.$Message.success('删除成功');
+                });
+            }
         });
       },
       seach() {
@@ -169,8 +175,12 @@ export default {
         }
         getTimelineList(params).then(res => {
             if (res.code === 1) {
-                this.data = res.data;
-                this.lineDate = res.timeSys;
+                this.data = _.sortBy(res.data, function(item) {
+                    return (new Date(item.time)).getTime();
+                });
+                this.lineDate = _.sortBy(res.timeSys, function(item) {
+                    return (new Date(item._id.time)).getTime();
+                });;
             }
         })
       },

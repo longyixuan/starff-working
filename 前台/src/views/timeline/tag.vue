@@ -73,12 +73,22 @@ export default {
           this.modal = true;
       },
       deleteTag(id,index) {
-        delTag({
-            id: id
-        }).then(res=> {
-            this.data.splice(index,1);
-            this.$Message.success('删除成功');
-        })
+        this.$Modal.confirm({
+            title: '提示',
+            content: '确定要删除吗？',
+            onOk: () => {
+                delTag({
+                    id: id
+                }).then(res=> {
+                    if (res.code === 1) {
+                        this.data.splice(index,1);
+                        this.$Message.success('删除成功');
+                    } else {
+                        this.$Message.success(res.msg);
+                    }
+                })
+            }
+        });
       },
       init() {
         getTagList().then(res => {
