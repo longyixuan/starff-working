@@ -32,7 +32,7 @@
                         </template>
                     </template>
                     <template slot-scope="{ row }" slot="tag">
-                        {{row.tag | tagFilter(tags)}}
+                        <Tag type="border" color="warning" >{{row.tag | tagFilter(tags)}}</Tag>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click=updateTimeline(row.timelineId,index)>编辑</Button>

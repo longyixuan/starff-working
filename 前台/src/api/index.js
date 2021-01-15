@@ -161,6 +161,11 @@ export const installTime = (params) => {
 export const checkTime = (params) => {
     return postRequest('/time/check', params)
 }
+
+export const checkWeekTime = (params) => {
+    return postRequest('/time/weekcheck', params)
+}
+
 //-----------------------工时管理--------------------------------//
 //-----------------------工作总结--------------------------------//
 export const addDocument = (params) => {

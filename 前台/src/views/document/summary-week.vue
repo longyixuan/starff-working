@@ -102,7 +102,8 @@
         commitDocument,
         addDocumentday,
         toDocumentmonth,
-        commitDocumentWeek
+        commitDocumentWeek,
+        checkWeekTime
     } from "@/api/index";
     import {
         getAll,
@@ -407,6 +408,23 @@
             },
             addTemplate() {
                 this.$router.push({ 'name': 'summary-edit', 'query': { id: '' ,type: 'day'}})
+            },
+            checkTime() {
+                checkWeekTime({
+                    startTime: getWeekStartDate(),
+                    endTime: getWeekEndDate(),
+                    userId: JSON.parse(localStorage.getItem('userInfo')).userId
+                }).then(res=> {
+                    if (res.data.length > 0) {
+                        if (res.data[0].timeCount < 35) {
+                            this.$Notice.warning({
+                                duration: 0,
+                                title: '提醒',
+                                desc: '系统检测本周工时有遗漏，请核查后补充'
+                            });
+                        }
+                    }
+                })
             }
         },
         mounted() {
@@ -415,6 +433,7 @@
             this.type = JSON.parse(localStorage.getItem('userInfo')).type;
             this.peopleAll();
             this.monthTitle = `设计部${moment().format('YYYY年MM月')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
+            this.checkTime();
         }
     }
 </script>
