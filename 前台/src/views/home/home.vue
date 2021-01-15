@@ -425,29 +425,36 @@ export default {
   },
   methods: {
     checkTimeFn() {
-      var userList = ['yinxl','weij','mayx','hanwm','jiaxd','wangly','sunl','lugp','cuiyh','guoxq','changxq'];
+      console.log(this.people)
+      var userList = [];
+      this.people.forEach(item => {
+        userList.push(_.find(this.peopleList,['userId',item]).userName);
+      })
       checkTime({
         userList: userList,
         startTime: this.startTime,
         endTime: this.endTime,
       }).then(res=> {
         var list = [];
-        
          for (let i = 0;i< res.data.length; i++) {
            if (res.data[i].details.length < 10 && res.data[i].details.length > 7) {
              for (let k = 0; k < userList.length; k++) {
                if (!_.find(res.data[i].details,['userName',userList[k]])) {
-                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')};工时：未录;员工：${userList[k]}`)
+                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')}；工时：<span style="color: #c30">未录</span>；员工：${_.find(this.peopleList,['userName',userList[k]]).nickName}`)
                }
              }
            } else {
              for (let j = 0; j < res.data[i].details.length;j++) {
                if (res.data[i].details[j].timeCount<7) {
-                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')};工时：${res.data[i].details[j].timeCount};员工：${res.data[i].details[j].userName}`)
+                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')}；工时：${res.data[i].details[j].timeCount}；员工：${_.find(this.peopleList,['userName',res.data[i].details[j].userName]).nickName}`)
                }
              }
            }
          }
+         this.$Modal.info({
+           title: '遗漏工时',
+           content: list.join('<br>')
+         })
          console.log(JSON.stringify(list))
       });
     },

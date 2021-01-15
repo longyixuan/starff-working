@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 20:11:59
+ * @Last Modified time: 2021-01-15 20:22:13
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -369,7 +369,6 @@ const exportTime = async (ctx, next) => {
 const checkTime = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    console.log(req)
     let worktime = await WorkTime_col.aggregate([
         {
             $match: {
