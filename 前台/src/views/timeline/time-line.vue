@@ -49,7 +49,7 @@
                         <div class="timeline-icon"></div>
                         <div class="timeline-label">
                             <div style="margin-bottom: 20px;" v-for="item2 in item.details">
-                                <h2>{{item2.systemName}}<Tag color="warning">{{item2.tag | tagFilter(tags)}}</Tag></h2>
+                                <h2>{{item2.systemName}}<Tag color="warning" style="margin-left: 10px;">{{item2.tag | tagFilter(tags)}}</Tag></h2>
                                 <div style="margin-bottom: 10px;">
                                     <Tag style="font-weight: bold" type="dot" color="primary" v-for="item3 in item2.model" :key="item3">{{item3 | modelFilter(modelList)}}</Tag>
                                 </div>
