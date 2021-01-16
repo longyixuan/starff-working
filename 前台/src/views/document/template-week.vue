@@ -47,7 +47,7 @@
                                     style="width: 400px;">
                                     <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option.modelId" :key="index">{{option.modelName}}</Option>
                                 </Select>
-                                <!-- 下拉选项中没有的模块，点此处<a @click="add(index)">添加</a>。 -->
+                                下拉选项中没有的模块，请在系统模块管理中添加。
                             </div>
                             <Input class="marginB-20" type="textarea" :rows="4" placeholder="填写工作内容" v-model="modalItem.contentDescription"></Input>
                             <Button type="error" @click="delList(index,index2)">删除当前记录</Button>
@@ -243,7 +243,9 @@
                             })
                         }
                     }
-                    this.gzjh = res.gzjh[0].gzjh;
+                    if (res.gzjh.length>0) {
+                        this.gzjh = res.gzjh[0].gzjh;
+                    }
                 })
             } else {
                 if (this.$route.query.type == 'week') {
