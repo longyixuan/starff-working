@@ -45,9 +45,9 @@
                                     filterable
                                     placeholder="填写模块名称"
                                     style="width: 400px;">
-                                    <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option" :key="index">{{option}}</Option>
+                                    <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option.modelId" :key="index">{{option.modelName}}</Option>
                                 </Select>
-                                下拉选项中没有的模块，点此处<a @click="add(index)">添加</a>。
+                                <!-- 下拉选项中没有的模块，点此处<a @click="add(index)">添加</a>。 -->
                             </div>
                             <Input class="marginB-20" type="textarea" :rows="4" placeholder="填写工作内容" v-model="modalItem.contentDescription"></Input>
                             <Button type="error" @click="delList(index,index2)">删除当前记录</Button>
@@ -84,7 +84,8 @@
         detailsDocumentday,
         editDocumentday,
         seachModal,
-        addModal
+        addModal,
+        listModel
     } from "@/api/index";
     import moment from "moment";
     export default {
@@ -93,6 +94,7 @@
                 gzjh: '',
                 title: '',
                 modalTitle: '',
+                modelList: [],
                 value: '',
                 id: '',
                 modal: false,
@@ -108,6 +110,9 @@
             }
         },
         methods: {
+            sysFilter(id){
+                return _.filter(this.modelList,['systemId', id]);
+            },
             handelChange(date) {
                 this.showdate = [];
                 this.startTime = date[0];
@@ -123,15 +128,6 @@
                     this.modal = true;
                 } else {
                     this.$Message.error('请先选择系统');
-                }
-            },
-            sysFilter(value){
-                if (this.sysList.length>0) {
-                    if (!!value) {
-                        return _.find(this.sysList,['id',value]).modal;
-                    } else {
-                        return [];
-                    }
                 }
             },
             addModalName() {
@@ -200,8 +196,11 @@
                 }
             },
             init() {
-                getSystemList().then(res => {
-                    this.sysList = res.data;
+                listModel().then(res => {
+                    this.modelList = res.data;
+                    getSystemList().then(res => {
+                        this.sysList = res.data;
+                    })
                 })
             },
             addModal(index) {
