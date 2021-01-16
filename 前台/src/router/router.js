@@ -1,22 +1,6 @@
 import Main from '@/views/Main.vue';
 
 // 不作为Main组件的子页面展示的页面单独写，如下
-export const excelRouter = {
-    path: '/excel',
-    name: 'excel',
-    meta: {
-        title: 'WEB前端工具箱'
-    },
-    component: () => import('@/views/excel.vue')
-};
-export const txtRouter = {
-    path: '/txt',
-    name: 'txt',
-    meta: {
-        title: 'WEB前端工具箱'
-    },
-    component: () => import('@/views/txt.vue')
-};
 export const loginRouter = {
     path: '/login',
     name: 'login',
@@ -275,8 +259,6 @@ export const appRouter = {
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
-    txtRouter,
-    excelRouter,
     loginRouter,
     registRouter,
     registResult,
