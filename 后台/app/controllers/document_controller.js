@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-11 08:41:16
+ * @Last Modified time: 2021-01-16 11:07:24
  */
 
 const fs = require('fs');
@@ -486,6 +486,7 @@ const detailsDocumentday = async (ctx) => {
 const mergeDocumentday = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    req.mergeList = JSON.parse(req.mergeList);
     const reg = new RegExp(req.keyword, 'i');
     const gzjh = await Documentnext_col.aggregate([
         {
@@ -1000,6 +1001,7 @@ const seachDocumentweek = async (ctx) => {
 const mergeDocumentweek = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    req.mergeList = JSON.parse(req.mergeList);
     const reg = new RegExp(req.keyword, 'i');
     const gzjh = await Documentnext_col.aggregate([{
         $match: {
@@ -1308,6 +1310,7 @@ const seachDocumentmonth = async (ctx) => {
 const mergeDocumentmonth = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    req.mergeList = JSON.parse(req.mergeList);
     const reg = new RegExp(req.keyword, 'i');
     const gzjh = await Documentnext_col.aggregate([{
         $match: {

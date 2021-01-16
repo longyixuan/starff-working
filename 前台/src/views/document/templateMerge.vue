@@ -145,7 +145,7 @@ export default {
             window.location.href = 'http://172.16.2.131:3333/download/markdown?fileName='+fileName;
         },
         init() {
-            mergeDocumentday(this.$route.query.type,{mergeList:this.$route.query.mergeList,keyword: this.keyword}).then(res => {
+            mergeDocumentday(this.$route.query.type,{mergeList: JSON.stringify(this.$route.query.mergeList),keyword: this.keyword}).then(res => {
                 if (res.code == 1) {
                     this.$Message.success('查询成功');
                     if (res.data.length>0) {

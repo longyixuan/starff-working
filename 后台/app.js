@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-11 08:54:58
+ * @Last Modified time: 2021-01-16 10:59:05
  */
 
 
@@ -38,10 +38,10 @@ app.use(cors());
 app.use(koaBody({
     multipart: true,
     patchKoa: true,
-    formLimit:"50mb",
-    jsonLimit:"50mb",
+    formLimit:"500mb",
+    jsonLimit:"500mb",
     formidable: {
-        maxFileSize: 1000*1024*1024    // 设置上传文件大小最大限制，默认2M
+        maxFileSize: 10000*1024*1024    // 设置上传文件大小最大限制，默认2M
     }
 }));
 
