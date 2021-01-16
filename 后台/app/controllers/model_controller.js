@@ -76,12 +76,23 @@ const refresh = async (ctx, next) => {
 const add = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    req.modelId = uuidv1();
-    await Model_col.create(insertList);
-    ctx.body = {
-        code: 1,
-        msg: '新增成功'
-    };
+    const result = await Model_col.findOne({
+        systemId: req.systemId,
+        modelName: req.modelName
+    });
+    if (!result) {
+        req.modelId = uuidv1();
+        await Model_col.create(req);
+        ctx.body = {
+            code: 1,
+            msg: '新增成功'
+        };
+    } else {
+        ctx.body = {
+            code: 0,
+            msg: '模块名称重复'
+        };
+    }
 }
 const update = async (ctx, next) => {
     ctx.status = 200;
@@ -102,7 +113,8 @@ const del = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
     var dayDoc = await Documentday_col.findOne({
-        contentTitle: req.id 
+        contentTitle: req.id,
+        systemId: req.sysId
     })
     if (!dayDoc) {
         await Model_col.deleteMany({

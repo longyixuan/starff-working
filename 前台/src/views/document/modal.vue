@@ -6,10 +6,10 @@
         <div style="text-align:right;margin-bottom: 20px;" v-if="isReset === 'admin'">
             <Button type="warning" @click="refresh">更新工作总结旧数据</Button>
         </div>
-        <Alert type="info" show-icon>点击标签名称可修改</Alert>
+        <Alert type="warning" show-icon>点击模块名称可修改模块名称</Alert>
         <Table border :columns="columns" :data="sysList">
             <template slot-scope="{ row }" slot="modal">
-                <Tag style="cursor: pointer;" type="border" color="primary" closable :name="item.modelId" v-for="item in filterModal(row.id)" @click.native="editModal(row.id,item)" @on-close="deleteModal">{{item.modelName}}</Tag>
+                <Tag style="cursor: pointer;" type="border" :key="item.modelId" closable :name="item.modelId+'|'+row.id" v-for="item in filterModal(row.id)" @click.native="editModal(row.id,item)" @on-close="deleteModal">{{item.modelName}}</Tag>
             </template>
             <template slot-scope="{ row }" slot="action">
                 <Button type="primary" size="small" @click="updateModal(row.id)">添加</Button>
@@ -98,7 +98,7 @@ export default {
             title: '提示',
             content: '确定要删除吗？',
             onOk: () => {
-                deleteModel({id: name}).then( res=> {
+                deleteModel({id: name.split('|')[0], sysId: name.split('|')[1]}).then( res=> {
                     if (res.code === 1) {
                         this.$Message.success('删除成功');
                         this.init();
@@ -115,9 +115,13 @@ export default {
                 this.edit();
             } else {
                 addModel({systemId: this.systemId, modelName: this.model}).then(res=>{
-                    this.modal = false;
-                    this.$Message.success('添加成功');
-                    this.init();
+                    if (res.code === 1) {
+                        this.modal = false;
+                        this.$Message.success('添加成功');
+                        this.init();
+                    } else {
+                        this.$Message.error(res.msg);
+                    }
                 })
             }
         },
