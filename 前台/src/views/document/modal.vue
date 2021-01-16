@@ -10,7 +10,9 @@
         <Table border :columns="columns" :data="sysList">
             <template slot-scope="{ row }" slot="modal">
                 <Tag style="cursor: pointer;" type="border" color="primary" closable :name="item.modelId" v-for="item in filterModal(row.id)" @click.native="editModal(row.id,item)" @on-close="deleteModal">{{item.modelName}}</Tag>
-                <Button type="warning" size="small" @click="updateModal(row.id)">添加</Button>
+            </template>
+            <template slot-scope="{ row }" slot="action">
+                <Button type="primary" size="small" @click="updateModal(row.id)">添加</Button>
             </template>
         </Table>
         <Modal v-model="modal" @on-ok="add" title="编辑模块">
@@ -60,6 +62,12 @@ export default {
                 {
                     title: '模块',
                     slot: 'modal'
+                },
+                {
+                    title: '操作',
+                    slot: 'action',
+                    width: 100,
+                    align: 'center'
                 }
             ]
         }
