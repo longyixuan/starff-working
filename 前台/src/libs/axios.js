@@ -4,8 +4,8 @@ import { getStore, setStore } from './storage';
 import { router } from '../router/index';
 import { Message } from 'view-design';
 // 统一请求路径前缀
-let base = 'http://172.16.2.131:3333';
-// let base = 'http://localhost:3333';
+// let base = 'http://172.16.2.131:3333';
+let base = 'http://localhost:3333';
 // 超时设定
 axios.defaults.timeout = 50000;
 

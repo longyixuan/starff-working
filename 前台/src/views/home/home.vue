@@ -6,7 +6,7 @@
 <template>
   <div class="home-main">
     <template v-if="type===1">
-      <Row :gutter="10" :style="{marginBottom: '15px'}">
+      <Row :gutter="20" :style="{marginBottom: '15px'}">
         <Col span="6">
           <infor-card
             id-name="user_created_count"
@@ -212,7 +212,70 @@
       </Row>
     </template>
     <template v-else>
-      <Alert show-icon>欢迎使用工时系统</Alert>
+      <!-- <Alert show-icon>欢迎使用工时系统</Alert> -->
+      <Row :gutter="20" :style="{marginBottom: '20px'}">
+        <Col span="6">
+          <infor-card
+            id-name="transfer_count"
+            :end-val="personalData.sysNum"
+            iconType="md-desktop"
+            color="#2d8cf0"
+            intro-text="负责系统总数"
+          ></infor-card>
+        </Col>
+        <Col span="6">
+          <infor-card
+            id-name="user_created_count"
+            :end-val="personalData.weekSysNum"
+            iconType="md-shuffle"
+            color="#64d572"
+            intro-text="本周参与系统数"
+          ></infor-card>
+        </Col>
+        <Col span="6">
+          <infor-card
+            id-name="visit_count"
+            :end-val="personalData.timeNum"
+            iconType="ios-eye"
+            color="#ffd572"
+            intro-text="本周累计工时"
+          ></infor-card>
+        </Col>
+        <Col span="6">
+          <infor-card
+            id-name="collection_count"
+            :end-val="personalData.docNum"
+            iconType="ios-time"
+            color="#f25e43"
+            intro-text="本周上报总结数"
+          ></infor-card>
+        </Col>
+        
+      </Row>
+      <Row :gutter="20">
+        <Col span="8">
+          <Card title="昨日工时分布">
+            <div class="data-source-row" style="width:100%;height:500px;">
+              <div style="width:100%;height:100%;" id="data_source_person1"></div>
+            </div>
+          </Card>
+        </Col>
+        <Col span="8">
+          <Card  title="本周工时分布">
+            <div class="data-source-row" style="width:100%;height:500px;">
+              <div style="width:100%;height:100%;" id="data_source_person2"></div>
+            </div>
+          </Card>
+        </Col>
+        <Col span="8">
+          <Card title="本周工作计划" style="margin-bottom: 20px;">
+            <div style="white-space: pre-line;" v-html="personalData.plan"></div>
+          </Card>
+          <!-- <Card title="本日工作计划">
+            
+          </Card> -->
+        </Col>
+      </Row>
     </template>
     <Modal v-model="show" title="上传文件（工时备份）">
       <Upload
@@ -233,6 +296,7 @@
 
 <script>
 import {
+  personalCount,
   workTimeCount,
   getCountTime,
   getMapTime,
@@ -254,6 +318,8 @@ import {
   getWeekEndDate,
   getMonthStartDate,
   getMonthEndDate,
+  getPreWeekStartDate,
+  getPreWeekEndDate,
   getLastMonthStartDate,
   getLastMonthEndDate
 } from "@/libs/timeHelp";
@@ -263,6 +329,13 @@ export default {
   name: "home",
   data() {
     return {
+      personalData: {
+        weekSysNum: 1,
+        timeNum: 2,
+        docNum: 3,
+        sysNum: 4,
+        plan: ''
+      },
       show: false,
       action: '',
       isReset: JSON.parse(localStorage.getItem('userInfo')).userName,
@@ -288,6 +361,8 @@ export default {
       selectAllFlag: false,
       visiteVolume: null,
       dataSourcePie: null,
+      personalMap1: null,
+      personalMap2: null,
       option: {
         tooltip: {
           trigger: "axis",
@@ -659,12 +734,148 @@ export default {
           this.systemList = res.data;
         }
       });
+    },
+    renderPerson1: function(list) {
+      var legendData = [];
+      for (let i = 0; i < list.length; i++) {
+        legendData.push(list[i].name)
+      }
+      var option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+            left: 'center',
+            data: legendData
+        },
+        color: [
+          "#87cefa",
+          "#ff7f50",
+          "#da70d6",
+          "#32cd32",
+          "#6495ed",
+          "#ff69b4",
+          "#ba55d3",
+          "#cd5c5c",
+          "#ffa500",
+          "#40e0d0",
+          "#1e90ff",
+          "#ff6347",
+          "#7b68ee",
+          "#00fa9a",
+          "#ffd700",
+          "#6699FF",
+          "#ff6666",
+          "#3cb371",
+          "#b8860b",
+          "#30e0e0"
+        ],
+        series: [
+            {
+                name: '工时占比',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '50%'],
+                data: list,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+      };
+      this.personalMap1.setOption(option);
+    },
+    renderPerson2: function(list) {
+      var legendData = [];
+      for (let i = 0; i < list.length; i++) {
+        legendData.push(list[i].name)
+      }
+      var option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+            left: 'center',
+            data: legendData
+        },
+        color: [
+          "#87cefa",
+          "#ff7f50",
+          "#da70d6",
+          "#32cd32",
+          "#6495ed",
+          "#ff69b4",
+          "#ba55d3",
+          "#cd5c5c",
+          "#ffa500",
+          "#40e0d0",
+          "#1e90ff",
+          "#ff6347",
+          "#7b68ee",
+          "#00fa9a",
+          "#ffd700",
+          "#6699FF",
+          "#ff6666",
+          "#3cb371",
+          "#b8860b",
+          "#30e0e0"
+        ],
+        series: [
+            {
+                name: '工时占比',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '50%'],
+                data: list,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+      };
+      this.personalMap2.setOption(option);
     }
   },
   mounted() {
     this.action = 'http://'+window.location.hostname+':3333'+uploadFile;
     this.type = JSON.parse(localStorage.getItem('userInfo')).type;
     if (this.type!==1) {
+      personalCount(
+        {
+          userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+          startTime: getWeekStartDate(),
+          endTime: getWeekEndDate(),
+          startTime2: getPreWeekStartDate(),
+          endTime2: getPreWeekEndDate(),
+          yestday: moment().add(-1, 'days').format('YYYY-MM-DD')
+        }
+      ).then(res => {
+        this.personalData.sysNum = res.data.sysNum;
+        this.personalData.docNum = res.data.docNum;
+        this.personalData.timeNum = res.data.timeNum;
+        this.personalData.weekSysNum = res.data.weekSysNum;
+        this.personalData.plan = res.data.plan;
+        this.renderPerson2(res.data.timeMap);
+        this.renderPerson1(res.data.timeMap2);
+      });
+      this.$nextTick(() => {
+        this.personalMap1 = echarts.init(
+          document.getElementById("data_source_person1")
+        );
+        this.personalMap2 = echarts.init(
+          document.getElementById("data_source_person2")
+        );
+      })
       return;
     }
     this.init();

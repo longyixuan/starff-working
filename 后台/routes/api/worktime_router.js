@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-03-19 22:02:29 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 14:43:03
+ * @Last Modified time: 2021-01-18 16:32:56
  */
 
 const Router = require('koa-router');
@@ -18,5 +18,6 @@ router.get('/time/resetTime', worktime_controller.resetTime);
 router.get('/exportTime', worktime_controller.exportTime);
 router.post('/time/check', worktime_controller.checkTime);
 router.post('/time/weekcheck', worktime_controller.checkWeekTime);
+router.post('/personal/console', worktime_controller.personalCount);
 
 module.exports = router;

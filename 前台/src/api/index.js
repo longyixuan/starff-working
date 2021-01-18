@@ -337,3 +337,11 @@ export const refreshModel = (params) => {
     return postRequest(`/sysmodel/refresh`,params)
 }
 //-----------------------模块--------------------------------//
+
+//-----------------------个人工时控制台--------------------------------//
+
+export const personalCount = (params) => {
+    return postRequest(`/personal/console`,params)
+}
+
+//-----------------------个人工时控制台--------------------------------//

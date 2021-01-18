@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 20:22:13
+ * @Last Modified time: 2021-01-18 17:57:31
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -20,7 +20,7 @@ const JSZip = require('jszip');
 const { out } = require('../../logger');
 const Documentday_col = require('./../models/documentDay');
 const Documentweek_col = require('./../models/documentWeek');
-const Documentmonth_col = require('./../models/documentMonth');
+const Documentnext_col = require('./../models/documentNext');
 // const sendMail = require('../../mailer')
 
 const getTimeList = async (ctx, next) => {
@@ -460,6 +460,140 @@ const checkWeekTime = async (ctx, next) => {
     };
 }
 
+const personalCount = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const user = await User_col.findOne({'userId': req.userId});
+    const time = await WorkTime_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
+            }
+        },
+        {
+            $group: {
+                _id :  null,
+                time : { $sum : "$time" }
+            }
+        },
+    ]);
+    const timeMap = await WorkTime_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
+            }
+        },
+        {
+            $group: {
+                _id :  {
+                    systemId: '$systemId',
+                    systemName: '$systemName'
+                },
+                time : { $sum : "$time" }
+            }
+        },
+        {
+            $project: {
+                name: '$_id.systemName',
+                value:'$time',
+                _id:0 
+            }
+        }
+    ]);
+    const timeMap2 = await WorkTime_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'timeDate': new Date(req.yestday)
+            }
+        },
+        {
+            $group: {
+                _id :  {
+                    systemId: '$systemId',
+                    systemName: '$systemName'
+                },
+                time : { $sum : "$time" }
+            }
+        },
+        {
+            $project: {
+                name: '$_id.systemName',
+                value:'$time',
+                _id:0 
+            }
+        }
+    ]);
+    const day = await Documentday_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'status': true,
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
+            }
+        },
+        {
+            $group: {
+              _id: '$documentId'
+            }
+        }
+    ]);
+    const weekSysNum = await Documentday_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'status': true,
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
+            }
+        },
+        {
+            $group: {
+              _id: '$systemId'
+            }
+        }
+    ]);
+    const document = await Documentweek_col.findOne({
+        'userId': req.userId,
+        'status': true,
+        'startDay': {
+            $gte: new Date(req.startTime2)
+        },
+        'endDay': {
+            $lte: new Date(req.endTime2)
+        }
+    });
+    const plan = await Documentnext_col.findOne({
+        documentId: document.documentId
+    })
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: {
+            sysNum: user.systems.length,
+            docNum: day.length,
+            timeNum: time.length>0?time[0].time:0,
+            weekSysNum: weekSysNum.length,
+            plan: plan?plan.gzjh:'',
+            timeMap: timeMap,
+            timeMap2: timeMap2
+        }
+    };
+}
+
 module.exports = {
     getTimeList,
     postTime,
@@ -469,5 +603,6 @@ module.exports = {
     resetTime,
     exportTime,
     checkTime,
-    checkWeekTime
+    checkWeekTime,
+    personalCount
 }
