@@ -269,7 +269,7 @@
         </Col>
         <Col span="8">
           <Card title="本周工作计划" style="margin-bottom: 20px;">
-            <div style="white-space: pre-line;" v-html="personalData.plan"></div>
+            <div style="white-space: pre-line;height:500px;" v-html="personalData.plan"></div>
           </Card>
           <!-- <Card title="本日工作计划">
             
@@ -330,10 +330,10 @@ export default {
   data() {
     return {
       personalData: {
-        weekSysNum: 1,
-        timeNum: 2,
-        docNum: 3,
-        sysNum: 4,
+        weekSysNum: 0,
+        timeNum: 0,
+        docNum: 0,
+        sysNum: 0,
         plan: ''
       },
       show: false,
