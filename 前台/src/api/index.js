@@ -344,4 +344,8 @@ export const personalCount = (params) => {
     return postRequest(`/personal/console`,params)
 }
 
+export const workingCheck = (params) => {
+    return postRequest(`/working/check`,params)
+}
+
 //-----------------------个人工时控制台--------------------------------//

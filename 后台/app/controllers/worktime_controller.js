@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-18 17:57:31
+ * @Last Modified time: 2021-01-19 17:04:37
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -594,6 +594,33 @@ const personalCount = async (ctx, next) => {
     };
 }
 
+const workingCheck = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let worktime = await WorkTime_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'timeDate': {
+                    $gte: new Date(req.startTime),
+                    $lte: new Date(req.endTime)
+                }
+            }
+        },
+        {
+            $group: {
+              _id: '$timeDate',
+              time : { $sum : "$time" }
+            }
+        }
+    ])
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: worktime
+    };
+}
+
 module.exports = {
     getTimeList,
     postTime,
@@ -604,5 +631,6 @@ module.exports = {
     exportTime,
     checkTime,
     checkWeekTime,
-    personalCount
+    personalCount,
+    workingCheck
 }

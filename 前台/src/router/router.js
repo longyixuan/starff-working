@@ -253,6 +253,14 @@ export const appRouter = {
             }, 
             name: 'tag', 
             component: () => import('@/views/timeline/tag.vue')
+        },
+        { 
+            path: 'work-time-count',
+            meta: {
+                title: ''
+            }, 
+            name: 'work-time-count', 
+            component: () => import('@/views/home/personal.vue')
         }
     ]
 };
