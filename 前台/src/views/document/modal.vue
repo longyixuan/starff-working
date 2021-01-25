@@ -94,21 +94,14 @@ export default {
             this.modal = true;
         },
         deleteModal(event,name) {
-            this.$Modal.confirm({
-            title: '提示',
-            content: '确定要删除吗？',
-            onOk: () => {
-                deleteModel({id: name.split('|')[0], sysId: name.split('|')[1]}).then( res=> {
-                    if (res.code === 1) {
-                        this.$Message.success('删除成功');
-                        this.init();
-                    } else {
-                        this.$Message.error(res.msg);
-                    }
-                })
-            }
-        });
-            
+            deleteModel({id: name.split('|')[0], sysId: name.split('|')[1]}).then( res=> {
+                if (res.code === 1) {
+                    this.$Message.success('删除成功');
+                    this.init();
+                } else {
+                    this.$Message.error(res.msg);
+                }
+            })
         },
         add() {
             if (this.modelId) {

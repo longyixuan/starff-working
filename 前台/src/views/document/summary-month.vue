@@ -273,7 +273,7 @@
                         this.list = res.data;
                         this.list =  _.sortBy(res.data,'_id',function(o){
                             return parseInt(o._id.month);
-                        });
+                        }).reverse();
                         this.$Message.success('查询成功');
                     }
                 })

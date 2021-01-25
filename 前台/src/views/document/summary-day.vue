@@ -383,7 +383,7 @@
                         this.list = _.sortBy(res.data, function(item) {
                             return parseInt(item._id.day);
                         });
-                        this.list = [...list,...this.list];
+                        this.list = [...list,...this.list].reverse();
                         this.$Message.success('查询成功');
                     }
                 })

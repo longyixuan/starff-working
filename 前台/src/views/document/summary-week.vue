@@ -333,7 +333,7 @@
                     if (res.code==1) {
                         this.list =  _.sortBy(res.data,'_id',function(o){
                             return (new Date(o._id.startDay)).getTime();
-                        });
+                        }).reverse();
                         this.$Message.success('查询成功');
                     }
                 })

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-19 17:04:37
+ * @Last Modified time: 2021-01-22 09:08:58
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -479,7 +479,7 @@ const personalCount = async (ctx, next) => {
                 _id :  null,
                 time : { $sum : "$time" }
             }
-        },
+        }
     ]);
     const timeMap = await WorkTime_col.aggregate([
         {
@@ -498,6 +498,11 @@ const personalCount = async (ctx, next) => {
                     systemName: '$systemName'
                 },
                 time : { $sum : "$time" }
+            }
+        },
+        {
+            $sort: {
+                time: -1
             }
         },
         {
@@ -522,6 +527,11 @@ const personalCount = async (ctx, next) => {
                     systemName: '$systemName'
                 },
                 time : { $sum : "$time" }
+            }
+        },
+        {
+            $sort: {
+                time: -1
             }
         },
         {

@@ -181,10 +181,10 @@ export default {
             if (res.code === 1) {
                 this.data = _.sortBy(res.data, function(item) {
                     return (new Date(item.time)).getTime();
-                });
+                }).reverse();
                 this.lineDate = _.sortBy(res.timeSys, function(item) {
                     return (new Date(item._id.time)).getTime();
-                });;
+                }).reverse();
             }
         })
       },
