@@ -51,7 +51,7 @@ export default {
             columns: [
                 {
                     type: 'index',
-                    width: 60,
+                    width: 80,
                     align: 'center'
                 },
                 {

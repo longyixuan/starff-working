@@ -158,6 +158,10 @@
                 return result;
             },
             submit() {
+                if (!this.gzjh) {
+                    this.$Message.error('请填写工作计划');
+                    return;
+                }
                 var postData = {summaryName: this.title,list: JSON.stringify(this.setPostData()),gzjh: this.gzjh};
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {

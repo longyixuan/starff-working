@@ -53,7 +53,7 @@
               </Poptip>
             </FormItem>
             <FormItem label="系统名称" prop="title">
-              <Input v-model="form.title" style="width:400px"/>
+              <Input v-model.trim="form.title" style="width:400px"/>
             </FormItem>
             <FormItem label="系统负责人" prop="mainHeader">
               <Select
@@ -103,7 +103,7 @@
           <FormItem label="上级系统：">{{form.title}}</FormItem>
         </div>
         <FormItem label="系统名称" prop="title">
-          <Input v-model="formAdd.title"/>
+          <Input v-model.trim="formAdd.title"/>
         </FormItem>
         <FormItem label="排序值" prop="sortOrder">
           <InputNumber :max="1000" :min="0" v-model="formAdd.sortOrder"></InputNumber>

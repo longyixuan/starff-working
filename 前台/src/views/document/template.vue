@@ -196,6 +196,10 @@
                 }
             },
             submit() {
+                if (!this.gzjh) {
+                    this.$Message.error('请填写工作计划');
+                    return;
+                }
                 var postData = {summaryName: this.title,list: this.setPostData(),gzjh: this.gzjh};
                 if (this.checkForm(postData.list)) {
                     this.submitGo(postData);

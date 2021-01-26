@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-11 18:26:08
+ * @Last Modified time: 2021-01-26 16:00:35
  */
 
 const System_col = require('./../models/system');
@@ -100,6 +100,7 @@ const updateSystem = async (ctx, next) => {
 const editSystem = async (ctx, next) => {
   const req = ctx.request.body;
   ctx.status = 200;
+  delete req._id;
   await System_col.updateOne({
     id: req.id
   }, req);
@@ -159,7 +160,7 @@ const getDFSTree = function(data, parentId) {
 }
 const getAllList = async (ctx,next) => { //获取系统树
   ctx.status = 200;
-  const system = await System_col.find().ne('parentId', '0');
+  const system = await System_col.find().ne('parentId', '0').sort({ title: 1 }).collation({ locale: 'zh' });
   ctx.body = {
     code: 1,
     data: system,
