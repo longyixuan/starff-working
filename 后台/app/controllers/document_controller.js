@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-16 11:07:24
+ * @Last Modified time: 2021-01-29 11:30:28
  */
 
 const fs = require('fs');
@@ -335,13 +335,19 @@ const addDocumentday = async (ctx) => {
         }
     }
     await Documentday_col.insertMany(req.list);
-    await Documentnext_col.create({
-        documentId: documentId,
-        gzjh: req.gzjh,
-        userId: req.list[0].userId,
-        userName: req.list[0].userName,
-        nickName: req.list[0].nickName
-    })
+    var gzjh = [];
+    req.gzjh.forEach(item=> {
+        gzjh.push({
+            documentId: documentId,
+            gzjh: item.gzjh,
+            systemId: item.systemId,
+            systemName: item.systemName,
+            userId: req.list[0].userId,
+            userName: req.list[0].userName,
+            nickName: req.list[0].nickName
+        });
+    });
+    await Documentnext_col.insertMany(gzjh)
     ctx.body = {
         code: 1,
         msg: '请求成功',
@@ -399,13 +405,19 @@ const editDocumentday = async (ctx) => {
         }
     }
     await Documentday_col.insertMany(req.list);
-    await Documentnext_col.create({
-        documentId: documentId,
-        gzjh: req.gzjh,
-        userId: req.list[0].userId,
-        userName: req.list[0].userName,
-        nickName: req.list[0].nickName
-    })
+    var gzjh = [];
+    req.gzjh.forEach(item=> {
+        gzjh.push({
+            documentId: documentId,
+            gzjh: item.gzjh,
+            systemId: item.systemId,
+            systemName: item.systemName,
+            userId: req.list[0].userId,
+            userName: req.list[0].userName,
+            nickName: req.list[0].nickName
+        });
+    });
+    await Documentnext_col.insertMany(gzjh)
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -495,7 +507,24 @@ const mergeDocumentday = async (ctx) => {
                     '$in': req.mergeList
                 }
             }
+        },
+        {
+            $group: {
+                _id : { userId: '$userId', userName: '$userName'},
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        gzjh: '$gzjh',
+                        nickName: '$nickName',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        userId: '$userId',
+                        userName: '$userName'
+                    }
+                }
+            }
         }
+        
     ])
     const list = await Documentday_col.aggregate([
         {
@@ -854,13 +883,19 @@ const editDocumentweek = async (ctx) => {
         req.list[i].documentId = documentId;
     }
     await Documentweek_col.insertMany(req.list);
-    await Documentnext_col.create({
-        documentId: documentId,
-        gzjh: req.gzjh,
-        userId: req.list[0].userId,
-        userName: req.list[0].userName,
-        nickName: req.list[0].nickName
-    })
+    var gzjh = [];
+    req.gzjh.forEach(item=> {
+        gzjh.push({
+            documentId: documentId,
+            gzjh: item.gzjh,
+            systemId: item.systemId,
+            systemName: item.systemName,
+            userId: req.list[0].userId,
+            userName: req.list[0].userName,
+            nickName: req.list[0].nickName
+        });
+    });
+    await Documentnext_col.insertMany(gzjh)
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -1169,13 +1204,19 @@ const editDocumentmonth = async (ctx) => {
         req.list[i].documentId = documentId;
     }
     await Documentmonth_col.insertMany(req.list);
-    await Documentnext_col.create({
-        documentId: documentId,
-        gzjh: req.gzjh,
-        userId: req.list[0].userId,
-        userName: req.list[0].userName,
-        nickName: req.list[0].nickName
-    })
+    var gzjh = [];
+    req.gzjh.forEach(item=> {
+        gzjh.push({
+            documentId: documentId,
+            gzjh: item.gzjh,
+            systemId: item.systemId,
+            systemName: item.systemName,
+            userId: req.list[0].userId,
+            userName: req.list[0].userName,
+            nickName: req.list[0].nickName
+        });
+    });
+    await Documentnext_col.insertMany(gzjh)
     ctx.body = {
         code: 1,
         msg: '请求成功'

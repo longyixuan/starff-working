@@ -15,7 +15,7 @@
                     <table class="summary-table">
                         <thead>
                             <tr>
-                                <th width="140">模块</th>
+                                <th width="180">模块</th>
                                 <th>工作内容</th>
                                 <th width="120" v-if="$route.query.type == 'day'">日期</th>
                                 <th width="270" v-if="$route.query.type == 'week'">日期</th>
@@ -45,17 +45,39 @@
                 <table class="summary-table">
                     <thead>
                         <tr>
-                            <th>计划事项</th>
-                            <th width="120" v-if="$route.query.admin">姓名</th>
+                            <th width="180">系统</th>
+                            <th>工作计划内容</th>
+                            <th width="100" v-if="$route.query.admin">姓名</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr v-for="item in gzjhList">
-                            <td>
-                                <div style="white-space: pre-line;" v-html="linght(item.gzjh)"></div>
-                            </td>
-                            <td v-if="$route.query.admin">{{item.nickName}}</td>
-                        </tr>
+                    <tbody v-if="$route.query.admin">
+                        <template v-for="item in gzjhList">
+                            <tr v-for="(item2,index) in item.details">
+                                <template v-if="index==0">
+                                    <td>{{item2.systemName}}</td>
+                                    <td>
+                                        <div style="white-space: pre-line;" v-html="linght(item2.gzjh)"></div>
+                                    </td>
+                                    <td :rowspan="item.details.length">{{item2.nickName}}</td>
+                                </template>
+                                <template v-else>
+                                    <td>{{item2.systemName}}</td>
+                                    <td>
+                                        <div style="white-space: pre-line;" v-html="linght(item2.gzjh)"></div>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                    <tbody v-else>
+                        <template v-for="item in gzjhList">
+                            <tr v-for="(item2,index) in item.details">
+                                <td>{{item2.systemName}}</td>
+                                <td>
+                                    <div style="white-space: pre-line;" v-html="linght(item2.gzjh)"></div>
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </div>

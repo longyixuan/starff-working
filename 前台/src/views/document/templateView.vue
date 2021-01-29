@@ -15,7 +15,7 @@
                         <table class="summary-table">
                             <thead>
                                 <tr>
-                                    <th width="140">模块</th>
+                                    <th width="180">模块</th>
                                     <th>工作内容</th>
                                 </tr>
                             </thead>
@@ -35,11 +35,15 @@
                     <table class="summary-table">
                         <thead>
                             <tr>
-                                <th>计划事项</th>
+                                <th width="180">系统</th>
+                                <th>工作计划内容</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in gzjhList">
+                                <td>
+                                    {{item.systemName}}
+                                </td>
                                 <td>
                                     <div style=" white-space: pre-line;">{{item.gzjh}}</div>
                                 </td>

@@ -127,9 +127,9 @@
             <ButtonGroup style="margin-left: 10px">
               <Button type="info" ghost v-if="isReset === 'admin'" @click="resetTime" >重置工时</Button>
               <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(false)">生成备份</Button>
-              <!-- <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(true)">邮件备份</Button> -->
               <Button type="warning" ghost v-if="isReset === 'admin'" @click="inportTime">上传备份</Button>
               <Button type="error" ghost v-if="isReset === 'admin'" @click="installTime">恢复备份</Button>
+              <Button type="error" ghost v-if="isReset === 'admin'" @click="checkTimeFn">查漏</Button>
             </ButtonGroup>
           </Card>
         </Col>
@@ -243,8 +243,10 @@ import {
   resetTime,
   exportTime,
   uploadFile,
-  installTime
+  installTime,
+  checkTime
 } from "@/api/index";
+import moment from "moment";
 import {
   getAll,
   getWeekStartDate,
@@ -257,6 +259,7 @@ import {
 import echarts from "echarts";
 import inforCard from "./components/inforCard.vue";
 import personal from "./personal.vue";
+
 export default {
   name: "home",
   data() {
@@ -423,6 +426,39 @@ export default {
     }
   },
   methods: {
+    checkTimeFn() {
+      var userList = [];
+      this.people.forEach(item => {
+        userList.push(_.find(this.peopleList,['userId',item]).userName);
+      })
+      checkTime({
+        userList: userList,
+        startTime: this.startTime,
+        endTime: this.endTime,
+      }).then(res=> {
+        var list = [];
+         for (let i = 0;i< res.data.length; i++) {
+           if (res.data[i].details.length < 10 && res.data[i].details.length > 7) {
+             for (let k = 0; k < userList.length; k++) {
+               if (!_.find(res.data[i].details,['userName',userList[k]])) {
+                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')}；工时：<span style="color: #c30">未录</span>；员工：${_.find(this.peopleList,['userName',userList[k]]).nickName}`)
+               }
+             }
+           } else {
+             for (let j = 0; j < res.data[i].details.length;j++) {
+               if (res.data[i].details[j].timeCount<7) {
+                 list.push(`时间：${moment(res.data[i]._id.timeDate).format('YYYY-MM-DD')}；工时：${res.data[i].details[j].timeCount}；员工：${_.find(this.peopleList,['userName',res.data[i].details[j].userName]).nickName}`)
+               }
+             }
+           }
+         }
+         this.$Modal.info({
+           title: '遗漏工时',
+           content: list.join('<br>')
+         })
+         console.log(JSON.stringify(list))
+      });
+    },
     installTime () {
       this.$Modal.confirm({
         title: "提示",

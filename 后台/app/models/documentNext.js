@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2020-07-09 16:33:02
+ * @Last Modified time: 2021-01-29 10:30:04
  */
 
 const mongoose = require('mongoose');
@@ -24,8 +24,17 @@ const DocumentnextSchema = new Schema({
     nickName: {
         type: String
     },
+    systemName: {
+        type: String,
+        required: true
+    },
+    systemId: {
+        type: String,
+        required: true
+    },
     gzjh: {
-        type: String
+        type: String,
+        required: true
     }
 }, {
     collection: 'documentNext',

@@ -55,7 +55,27 @@
             </div>
         </Card>
         <Card class="marginB-20" title="工作计划">
-            <Input class="marginB-20" type="textarea" :rows="6" placeholder="填写工作计划" v-model="gzjh"></Input>
+            <div class="summary-template" v-for="(summary,index) in gzjh">
+                <Tag color="primary" size="large" class="summary-tag">{{index+1}}</Tag>
+                <Tag color="warning"  size="large" class="summary-tag-right" @click.native="delGzjh(index)">
+                    <Icon type="md-close" />
+                </Tag>
+                <Row :gutter="20">
+                    <Col class="marginB-20" span="24">
+                        <Select placeholder="选择系统" v-model="summary.systemId" filterable>
+                            <template v-for="item in sysList">
+                                <Option :value="item.id" v-show="systems.includes(item.id)">{{item.title}}</Option>
+                            </template>
+                        </Select>
+                    </Col>
+                    <Col span="24">
+                        <Input v-model="summary.gzjh" class="marginB-20" type="textarea" :rows="6" placeholder="填写工作内容"></Input>
+                    </Col>
+                </Row>
+            </div>
+            <div class="summary-template-add marginB-20" @click="addGzjh">
+                <Icon type="md-add" size="120" color="#999"/>
+            </div>
         </Card>
         <Row>
             <Button type="primary" size="large" long @click="submit">提交</Button>
@@ -84,7 +104,7 @@
         data() {
             return {
                 title: '',
-                gzjh: '',
+                gzjh: [],
                 modalTitle: '',
                 value: '',
                 id: '',
@@ -157,12 +177,23 @@
                 })
                 return result;
             },
+            setGzjh(){
+                var result = [];
+                this.gzjh.forEach((item,index) => {
+                    result.push({
+                        systemId: item.systemId,
+                        systemName: _.find(this.sysList,['id',item.systemId]).title,
+                        gzjh: item.gzjh
+                    })
+                })
+                return result;
+            },
             submit() {
-                if (!this.gzjh) {
+                if (this.gzjh.length==0) {
                     this.$Message.error('请填写工作计划');
                     return;
                 }
-                var postData = {summaryName: this.title,list: JSON.stringify(this.setPostData()),gzjh: this.gzjh};
+                var postData = {summaryName: this.title,list: JSON.stringify(this.setPostData()),gzjh: this.setGzjh()};
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {
@@ -205,6 +236,17 @@
                     }
                 )
             },
+            addGzjh() {
+                this.gzjh.push(
+                    {
+                        systemId: '',
+                        gzjh: ''
+                    }
+                )
+            },
+            delGzjh(index) {
+                this.gzjh.splice(index,1);
+            },
             del(index) {
                 this.submitList.splice(index,1);
             },
@@ -231,7 +273,7 @@
                         }
                     }
                     if (res.gzjh.length>0) {
-                        this.gzjh = res.gzjh[0].gzjh;
+                        this.gzjh = res.gzjh;
                     }
                 })
             } else {
