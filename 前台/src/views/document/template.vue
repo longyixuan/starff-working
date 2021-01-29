@@ -194,6 +194,15 @@
                 }
                 return flag;
             },
+            checkNum(list) {
+                let num = 0;
+                list.forEach(item => {
+                    if (item.time) {
+                        num+=item.time;
+                    }
+                })
+                return num;
+            },
             submitGo(postData) {
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
@@ -232,6 +241,10 @@
                     return;
                 }
                 var postData = {summaryName: this.title,list: this.setPostData(),gzjh: this.setGzjh()};
+                if (this.checkNum(postData.list)==0) {
+                    this.$Message.error('请添加工时');
+                    return;
+                }
                 if (this.checkForm(postData.list)) {
                     this.submitGo(postData);
                 } else {
