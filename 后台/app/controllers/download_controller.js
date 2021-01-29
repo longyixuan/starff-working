@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-11-20 09:27:16 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 16:38:06
+ * @Last Modified time: 2021-01-29 12:04:33
  */
 const fs = require('fs');
 const send = require('koa-send');
@@ -40,6 +40,7 @@ const downloadDocument = async (ctx, next) => {
     let text = '# ' + req.doctitle;
     const data = JSON.parse(req.list)
     const gzjh = JSON.parse(req.gzjh)
+    console.log(gzjh)
     const ModelResult = await Model_col.find();
     for(let i = 0; i <data.length; i++) { //本月总结
         text += '\n';
@@ -51,9 +52,14 @@ const downloadDocument = async (ctx, next) => {
     }
     text += '\n';
     text += '## 工作计划';
+    var gzjhArr = [];
     for (let i = 0; i < gzjh.length; i++) { //下月总结
+        gzjhArr = [...gzjhArr,...gzjh[i].details];
+    }
+    console.log(gzjhArr)
+    for (let i = 0; i < gzjhArr.length; i++) { //下月总结
         text += '\n';
-        text += '- '+gzjh[i].gzjh;
+        text += '- **'+gzjhArr[i].systemName+'：**'+'\n'+gzjhArr[i].gzjh;
     }
     fs.writeFile('data/document/' + req.doctitle + '.md', text, function (err) {})
     ctx.body = {

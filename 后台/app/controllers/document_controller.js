@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-29 11:30:28
+ * @Last Modified time: 2021-01-29 11:40:40
  */
 
 const fs = require('fs');
@@ -1038,13 +1038,31 @@ const mergeDocumentweek = async (ctx) => {
     const req = ctx.request.body;
     req.mergeList = JSON.parse(req.mergeList);
     const reg = new RegExp(req.keyword, 'i');
-    const gzjh = await Documentnext_col.aggregate([{
-        $match: {
-            'documentId': {
-                '$in': req.mergeList
+    const gzjh = await Documentnext_col.aggregate([
+        {
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        },
+        {
+            $group: {
+                _id : { userId: '$userId', userName: '$userName'},
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        gzjh: '$gzjh',
+                        nickName: '$nickName',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        userId: '$userId',
+                        userName: '$userName'
+                    }
+                }
             }
         }
-    }])
+    ])
     const list = await Documentweek_col.aggregate([
         {
             $match: {
@@ -1353,13 +1371,31 @@ const mergeDocumentmonth = async (ctx) => {
     const req = ctx.request.body;
     req.mergeList = JSON.parse(req.mergeList);
     const reg = new RegExp(req.keyword, 'i');
-    const gzjh = await Documentnext_col.aggregate([{
-        $match: {
-            'documentId': {
-                '$in': req.mergeList
+    const gzjh = await Documentnext_col.aggregate([
+        {
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        },
+        {
+            $group: {
+                _id : { userId: '$userId', userName: '$userName'},
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        gzjh: '$gzjh',
+                        nickName: '$nickName',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        userId: '$userId',
+                        userName: '$userName'
+                    }
+                }
             }
         }
-    }])
+    ])
     const list = await Documentmonth_col.aggregate([{
             $match: {
                 'documentId': {
