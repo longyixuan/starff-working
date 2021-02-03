@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-29 11:46:46 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-22 09:08:58
+ * @Last Modified time: 2021-02-03 16:37:55
  */
 
 const WorkTime_col = require('./../models/workTime');
@@ -586,9 +586,14 @@ const personalCount = async (ctx, next) => {
             $lte: new Date(req.endTime2)
         }
     });
-    const plan = await Documentnext_col.findOne({
-        documentId: document.documentId
-    })
+    let plan;
+    if (document) {
+        plan = await Documentnext_col.find({
+            documentId: document.documentId
+        })
+    } else {
+        plan = []
+    }
     ctx.body = {
         code: 1,
         msg: '查询成功',
@@ -597,7 +602,7 @@ const personalCount = async (ctx, next) => {
             docNum: day.length,
             timeNum: time.length>0?time[0].time:0,
             weekSysNum: weekSysNum.length,
-            plan: plan?plan.gzjh:'',
+            plan: plan,
             timeMap: timeMap,
             timeMap2: timeMap2
         }
@@ -631,6 +636,30 @@ const workingCheck = async (ctx, next) => {
     };
 }
 
+const todayTime = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let worktime = await WorkTime_col.aggregate([
+        {
+            $match: {
+                'userId': req.userId,
+                'timeDate': new Date(req.date)
+            }
+        },
+        {
+            $group: {
+              _id: '$timeDate',
+              time : { $sum : "$time" }
+            }
+        }
+    ])
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: worktime.length==0?0:worktime[0].time
+    };
+}
+
 module.exports = {
     getTimeList,
     postTime,
@@ -640,6 +669,7 @@ module.exports = {
     resetTime,
     exportTime,
     checkTime,
+    todayTime,
     checkWeekTime,
     personalCount,
     workingCheck

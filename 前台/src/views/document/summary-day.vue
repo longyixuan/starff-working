@@ -97,7 +97,7 @@
                         <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
                         <Button type="primary" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="edit(row._id.documentId)">修改</Button>
                         <Button type="error" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="del(index,row._id.documentId)">删除</Button>
-                        <Button type="warning" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,true)">上报</Button>
+                        <Button type="warning" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="getTodayTime(index,row._id.documentId,true)">上报</Button>
                         <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
                     </template>
                 </Table>
@@ -122,6 +122,7 @@
         delteDocumentday,
         commitDocument,
         addDocumentday,
+        todayTime,
         toDocumentweek
     } from "@/api/index";
     import {
@@ -244,6 +245,18 @@
             }
         },
         methods: {
+            getTodayTime(indx,documentId,status) {
+                return todayTime({
+                    userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+                    date: this.list[indx].details[0].year+'-'+this.list[indx].details[0].month+'-'+this.list[indx].details[0].day
+                }).then(res => {
+                    if (res.data!=0) {
+                        this.commit(indx,documentId,status);
+                    } else {
+                        this.$Message.error('本日工时未添加，请添加后上报')
+                    }
+                })
+            },
             setWeek() {
                 this.modal = true;
                 let list = _.sortBy(this.selectionList, function(item) {

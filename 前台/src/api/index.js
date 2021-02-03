@@ -348,4 +348,8 @@ export const workingCheck = (params) => {
     return postRequest(`/working/check`,params)
 }
 
+export const todayTime = (params) => {
+    return postRequest(`/time/today`,params)
+}
+
 //-----------------------个人工时控制台--------------------------------//

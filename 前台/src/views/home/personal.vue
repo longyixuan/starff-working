@@ -1,6 +1,21 @@
 <style lang="less">
 @import "./home.less";
 @import "../../styles/common.less";
+.summary-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+    td,th {
+        border: 1px solid #e8eaec;
+        text-align: left;
+        line-height:1.5;
+        padding: 8px 12px;
+    }
+    th {
+        background: #f8f8f9;
+    }
+}
 </style>
 <template>
     <div>
@@ -45,7 +60,27 @@
             <Row :gutter="20">
               <Col>
                 <Card title="本周工作计划" style="margin-bottom: 20px;">
-                  <div style="white-space: pre-line;" v-html="personalData.plan"></div>
+                    <table class="summary-table" v-if="personalData.plan.length>0">
+                        <thead>
+                            <tr>
+                                <th width="180">系统</th>
+                                <th>工作计划内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in personalData.plan">
+                                <td>
+                                    {{item.systemName}}
+                                </td>
+                                <td>
+                                    <div style=" white-space: pre-line;">{{item.gzjh}}</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div v-else style="color: #c30;font-weight: bold">
+                        未添加本周计划，请在上周工作总结中补充。
+                    </div>
                 </Card>
               </Col>
             </Row>

@@ -96,6 +96,7 @@
         detailsDocumentday,
         editDocumentday,
         seachModal,
+        todayTime,
         addModal,
         listModel
     } from "@/api/index";
@@ -103,6 +104,7 @@
     export default {
         data() {
             return {
+                todayTimeCount: 0,
                 gzjh: [],
                 title: '',
                 modalTitle: '',
@@ -127,6 +129,14 @@
                 } else {
                     this.$Message.error('请先选择系统');
                 }
+            },
+            getTodayTime() {
+                todayTime({
+                    userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+                    date: moment(this.time).format('YYYY-MM-DD')
+                }).then(res => {
+                    this.todayTimeCount = res.data;
+                })
             },
             sysFilter(id){
                 return _.filter(this.modelList,['systemId', id]);
@@ -241,7 +251,7 @@
                     return;
                 }
                 var postData = {summaryName: this.title,list: this.setPostData(),gzjh: this.setGzjh()};
-                if (this.checkNum(postData.list)==0) {
+                if (this.checkNum(postData.list)==0 && this.todayTimeCount == 0) {
                     this.$Message.error('请添加工时');
                     return;
                 }
@@ -299,6 +309,7 @@
         },
         mounted() {
             this.init();
+            this.getTodayTime();
             this.documentId = this.$route.query.id;
             if (this.documentId!='') {
                 detailsDocumentday(this.$route.query.type,{id:this.$route.query.id}).then(res => {
