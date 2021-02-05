@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-16 10:59:05
+ * @Last Modified time: 2021-02-04 08:59:20
  */
 
 
@@ -22,14 +22,30 @@ const jwtKoa = require('koa-jwt'); // 用于路由权限控制
 const app = new Koa();
 
 const {  accessLogger,logger } = require('./logger');
-
+function consolelog(color) {
+    console.log(color,[
+        ".----------------.  .----------------.  .----------------.  .----------------. ",
+        "| .--------------. || .--------------. || .--------------. || .--------------. |",
+        "| |     ______   | || |  ____  ____  | || |    _______   | || |     _____    | |",
+        "| |   .' ___  |  | || | |_   ||   _| | || |   /  ___  |  | || |    |_   _|   | |",
+        "| |  / .'   \_|  | || |   | |__| |   | || |  |  (__ \_|  | || |      | |     | |",
+        "| |  | |         | || |   |  __  |   | || |   '.___`-.   | || |      | |     | |",
+        "| |  \ `.___.'\  | || |  _| |  | |_  | || |  |`\____) |  | || |     _| |_    | |",
+        "| |   `._____.'  | || | |____||____| | || |  |_______.'  | || |    |_____|   | |",
+        "| |              | || |              | || |              | || |              | |",
+        "| '--------------' || '--------------' || '--------------' || '--------------' |",
+        "'----------------'  '----------------'  '----------------'  '----------------'" 
+    ].join('\n'))
+}
 mongoose.connect(config.db, {
     useNewUrlParser: true
 }, (err) => {
     if (err) {
-        console.error('fail');
+        consolelog('\x1B[31m%s\x1b[0m');
+        console.error('\x1B[31m%s\x1b[0m','fail')
     } else {
-        console.log('success');
+        consolelog('\x1B[32m%s\x1b[0m');
+        console.log('\x1B[32m%s\x1b[0m','success')
     }
 });
 app.use(accessLogger());
