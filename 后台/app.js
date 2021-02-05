@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-02-04 08:59:20
+ * @Last Modified time: 2021-02-05 16:59:50
  */
 
 
@@ -11,6 +11,7 @@ const config = require('./config');
 
 // https://www.npmjs.com/package/koa2-cors
 const cors = require('koa2-cors');
+const path = require('path');
 
 const koaBody = require('koa-body');
 
@@ -18,8 +19,12 @@ const koaBody = require('koa-body');
 const mongoose = require('mongoose');
 
 const jwtKoa = require('koa-jwt'); // 用于路由权限控制
+const static = require('koa-static');
 
 const app = new Koa();
+app.use(static(
+    path.join(__dirname, './images')
+))
 
 const {  accessLogger,logger } = require('./logger');
 function consolelog(color) {

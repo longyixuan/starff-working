@@ -33,5 +33,7 @@
     "unzip": "^0.1.11",
     "uuid": "^3.3.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "koa-static": "^5.0.0"
+  }
 }

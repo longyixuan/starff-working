@@ -63,6 +63,14 @@ export const appRouter = {
     component: Main,
     children: [
         { 
+            path: 'image',
+            meta: {
+                title: '图片管理'
+            }, 
+            name: 'image_index', 
+            component: () => import('@/views/image/add.vue')
+        },
+        { 
             path: 'home',
             meta: {
                 title: '首页'

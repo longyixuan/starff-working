@@ -9,6 +9,12 @@ import {
 // 文件上传接口
 export const uploadFile = "/upload/file"
 
+export const uploadImage = "/upload/image"
+
+export const imageList = (params) => {
+    return postRequest(`/upload/imagelist`,params)
+}
+
 // 登陆
 export const login = (params) => {
     return postRequest('/login', params)
