@@ -75,6 +75,8 @@ export default {
                 mergeList: this.mergeList
             }).then(res => {
                 this.$Message.success('操作成功');
+                this.init();
+                this.$forceUpdate();
             })
         },
         filterModal(id) {
