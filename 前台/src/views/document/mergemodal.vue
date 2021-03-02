@@ -8,7 +8,9 @@
                 <Input v-model="title" placeholder="合并后模块名称"></Input>
             </template>
             <template slot-scope="{ row }" slot="modal">
-                <Tag :checked="false" style="cursor: pointer;" color="primary" checkable :key="item.modelId" :name="item.modelId" v-for="item in filterModal(row.id)" @on-change="onChange">{{item.modelName}}</Tag>
+                <CheckboxGroup v-model="mergeList">
+                    <Checkbox :key="item.modelId" :label="item.modelId" v-for="item in filterModal(row.id)">{{item.modelName}}</Checkbox>
+                </CheckboxGroup>
             </template>
             <template slot-scope="{ row }" slot="action">
                 <Button type="primary" size="small" @click="merge(row)">合并</Button>
@@ -60,14 +62,6 @@ export default {
         }
     },
     methods: {
-        onChange(checked, name) {
-            if (checked) {
-                this.mergeList.push(name);
-            } else {
-                this.mergeList.splice(this.mergeList.findIndex(item => item === name), 1)
-            }
-            console.log(this.mergeList)
-        },
         merge(row) {
             mergeModel({
                 title: this.title,
@@ -76,6 +70,7 @@ export default {
             }).then(res => {
                 this.$Message.success('操作成功');
                 this.init();
+                this.mergeList = [];
                 this.$forceUpdate();
             })
         },
