@@ -72,6 +72,7 @@ export default {
                 this.init();
                 this.mergeList = [];
                 this.$forceUpdate();
+                this.title = '';
             })
         },
         filterModal(id) {
