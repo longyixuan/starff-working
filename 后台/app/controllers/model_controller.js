@@ -193,22 +193,26 @@ const merge = async (ctx, next) => {
         }
     });
     
-    const timeline = await Timeline_col.findOne({
+    const timeline = await Timeline_col.find({
         systemId: req.system
     });
-    for (let i = 0; i < timeline.model.length; i++) {
-        if (req.mergeList.includes(timeline.model[i])) {
-            timeline.model[i] = req.mergeList[0]
+    if (timeline.length>0) {
+        for (let i = 0; i < timeline.length; i++) { 
+            for (let j = 0; j < timeline[i].model.length; j++) {
+                if (req.mergeList.includes(timeline[i].model[j])) {
+                    timeline[i].model[j] = req.mergeList[0]
+                }
+            }
+            await Timeline_col.updateMany({
+                systemId: req.system,
+                timelineId: timeline[i].timelineId
+            },{
+                $set: {
+                    model: unique(timeline[i].model)
+                }
+            });
         }
     }
-    console.log(timeline.model)
-    await Timeline_col.updateMany({
-        systemId: req.system
-    },{
-        $set: {
-            model: unique(timeline.model)
-        }
-    });
     ctx.body = {
         code: 1,
         msg: '合并成功'

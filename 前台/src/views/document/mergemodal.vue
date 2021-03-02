@@ -3,8 +3,10 @@
 </style>
 <template>
     <Card title="各系统模块管理">
-        <Input style="margin-bottom: 20px;width: 300px;" v-model="title" placeholder="合并后模块名称"></Input>
         <Table border :columns="columns" :data="sysList">
+            <template slot="input">
+                <Input v-model="title" placeholder="合并后模块名称"></Input>
+            </template>
             <template slot-scope="{ row }" slot="modal">
                 <Tag :checked="false" style="cursor: pointer;" color="primary" checkable :key="item.modelId" :name="item.modelId" v-for="item in filterModal(row.id)" @on-change="onChange">{{item.modelName}}</Tag>
             </template>
@@ -42,6 +44,11 @@ export default {
                 {
                     title: '模块',
                     slot: 'modal'
+                },
+                {
+                    title: '更新后模块名称',
+                    width: 200,
+                    slot: 'input'
                 },
                 {
                     title: '操作',
