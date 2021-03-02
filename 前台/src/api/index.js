@@ -342,6 +342,11 @@ export const listModel = (params) => {
 export const refreshModel = (params) => {
     return postRequest(`/sysmodel/refresh`,params)
 }
+
+export const mergeModel = (params) => {
+    return postRequest(`/sysmodel/merge`,params)
+}
+
 //-----------------------模块--------------------------------//
 
 //-----------------------个人工时控制台--------------------------------//

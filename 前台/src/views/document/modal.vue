@@ -3,8 +3,9 @@
 </style>
 <template>
     <Card title="各系统模块管理">
-        <div style="text-align:right;margin-bottom: 20px;" v-if="isReset === 'admin'">
-            <Button type="warning" @click="refresh">更新工作总结旧数据</Button>
+        <div style="text-align:right;margin-bottom: 20px;" v-if="isReset !== 'admin'">
+            <Button type="warning" @click="refresh" style="margin-right: 20px;">更新工作总结旧数据</Button>
+            <Button type="primary" @click="mergeModal">合并模块</Button>
         </div>
         <Alert type="warning" show-icon>点击模块名称可修改模块名称</Alert>
         <Table border :columns="columns" :data="sysList">
@@ -73,6 +74,9 @@ export default {
         }
     },
     methods: {
+        mergeModal() {
+            this.$router.push({ 'path': '/sys-modal-merge'})
+        },
         refresh() {
             refreshModel().then(res=>{
                 if (res.code === 1) {

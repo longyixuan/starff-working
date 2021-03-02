@@ -211,8 +211,16 @@ export const appRouter = {
             meta: {
                 title: '系统模块管理'
             },
-            name: 'summary-merge',
+            name: 'summary-manage',
             component: () => import('@/views/document/modal.vue')
+        },
+        {
+            path: 'sys-modal-merge',
+            meta: {
+                title: '系统模块管理-合并'
+            },
+            name: 'summary-manage-merge',
+            component: () => import('@/views/document/mergemodal.vue')
         },
         {
             path: 'summary/template',

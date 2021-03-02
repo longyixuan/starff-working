@@ -3,6 +3,7 @@ const System_col = require('./../models/system');
 const Documentday_col = require('./../models/documentDay');
 const Documentweek_col = require('./../models/documentWeek');
 const Documentmonth_col = require('./../models/documentMonth');
+const Timeline_col = require('./../models/timeline');
 
 const uuidv1 = require('uuid/v1');
 
@@ -142,10 +143,92 @@ const getlist = async (ctx, next) => {
     };
 }
 
+const merge = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Model_col.updateMany({ //更新模块名称
+        systemId: req.system,
+        modelId:{
+            $in: req.mergeList
+        }
+    },{
+        $set: {
+            modelName: req.title
+        }
+    });
+    await Model_col.deleteMany({ //更新模块名称
+        systemId: req.system,
+        modelId:{
+            $in: req.mergeList.slice(1,req.mergeList.length)
+        }
+    });
+    await Documentday_col.updateMany({
+        systemId: req.system,
+        contentTitle: {
+            $in: req.mergeList
+        }
+    },{
+        $set: {
+            contentTitle: req.mergeList[0]
+        }
+    });
+    await Documentweek_col.updateMany({
+        systemId: req.system,
+        contentTitle: {
+            $in: req.mergeList
+        }
+    },{
+        $set: {
+            contentTitle: req.mergeList[0]
+        }
+    });;
+    await Documentmonth_col.updateMany({
+        systemId: req.system,
+        contentTitle: {
+            $in: req.mergeList
+        }
+    },{
+        $set: {
+            contentTitle: req.mergeList[0]
+        }
+    });
+    
+    const timeline = await Timeline_col.findOne({
+        systemId: req.system
+    });
+    for (let i = 0; i < timeline.model.length; i++) {
+        if (req.mergeList.includes(timeline.model[i])) {
+            timeline.model[i] = req.mergeList[0]
+        }
+    }
+    console.log(timeline.model)
+    await Timeline_col.updateMany({
+        systemId: req.system
+    },{
+        $set: {
+            model: unique(timeline.model)
+        }
+    });
+    ctx.body = {
+        code: 1,
+        msg: '合并成功'
+    }
+}
+
+function unique(arr) {
+    var hash=[];
+    for (var i = 0; i < arr.length; i++) {
+        if(hash.indexOf(arr[i])==-1){
+        hash.push(arr[i]);
+        }
+    }
+    return hash;
+}
 module.exports = {
     add,
     update,
     del,
     getlist,
-    refresh
+    refresh,
+    merge
 }
