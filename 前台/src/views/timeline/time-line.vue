@@ -25,7 +25,7 @@
         <Tabs value="name1" type="card">
             <TabPane label="表格显示" name="name1">
                 
-                <Table border :columns="columns" :data="data" :span-method="handleSpan" ref="table">
+                <Table border :columns="columns" :data="data" ref="table">
                     <template slot-scope="{ row }" slot="model">
                         <template v-if="modelList.length > 0">
                             <Tag v-for="item in row.model" :key="item">{{item | modelFilter(modelList)}}</Tag>
@@ -152,9 +152,6 @@ export default {
       }
   },
   methods: {
-      handleSpan({row, column, rowIndex, columnIndex}) {
-          console.log(row, column, rowIndex, columnIndex)
-      },
       updateTimeline(id,index) { //修改
          this.$router.push({ 'name': 'time-line-edit', 'query': { id: id}});
       },
