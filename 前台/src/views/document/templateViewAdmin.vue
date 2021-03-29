@@ -23,7 +23,7 @@
                                 <tr v-for="(item2,index) in item.content">
                                     <td>{{filterTitle(item2.contentTitle)}}</td>
                                     <td>
-                                        <div style="white-space: pre-line;">{{item2.contentDescription}}</div>
+                                        <div style=" white-space: pre-line;">{{item2.contentDescription}}</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -45,18 +45,17 @@
                                     {{item.systemName}}
                                 </td>
                                 <td>
-                                    <div style="white-space: pre-line;">{{item.gzjh}}</div>
+                                    <div style=" white-space: pre-line;">{{item.gzjh}}</div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <template v-if="reason!=''">
-                    <h2 class="summary-view-h2">退回修改</h2>
-                    <div class="summary-view-content">
-                        <div style="white-space: pre-line;font-size:14px;border: 1px solid #ffb08f;padding: 12px;background:#ffefe6" v-html="reason"></div>
-                    </div>
-                </template>
+                <h2 class="summary-view-h2">退回修改</h2>
+                <div class="summary-view-content">
+                    <Input v-model="reason" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
+                    <Button type="warning" @click="callBackFn">退回</Button>
+                </div>
             </div>
         </div>
     </Card>
@@ -137,19 +136,31 @@ export default {
             if (noWan.toString().length < 4) noWan = "0" + noWan;
             return overWan ? getWan(overWan) + "万" + getWan(noWan) : getWan(num);
         },
-        callBackFn() {
-            callbackDocument({
-                documentId: this.$route.query.id,
-                userId: this.commentId,
-                commentId: this.commentId,
-                reason: this.reason,
-                type: this.$route.query.type
-            }).then(res=>{
-                if (res.code===1) {
-                    this.$Message.success('退回成功');
-                } else {
-                    this.$Message.error('退回失败');
+        confirm(tip,callback) {
+            this.$Modal.confirm({
+                title: "提示",
+                content: tip,
+                onOk: () => {
+                    callback();
                 }
+            });
+        },
+        callBackFn() {
+            let title = '退回之后不可查看，是否要退回？';
+            this.confirm(title,() => {
+                callbackDocument({
+                    documentId: this.$route.query.id,
+                    userId: this.commentId,
+                    commentId: this.commentId,
+                    reason: this.reason,
+                    type: this.$route.query.type
+                }).then(res=>{
+                    if (res.code===1) {
+                        this.$Message.success('退回成功');
+                    } else {
+                        this.$Message.error('退回失败');
+                    }
+                })
             })
         }
     },

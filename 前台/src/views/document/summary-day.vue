@@ -73,7 +73,7 @@
                         <strong>{{row.details[0].nickName}}</strong>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
+                        <Button type="primary" size="small" style="margin-right: 5px" @click="adminshow(row._id.documentId)">查看</Button>
                         <Button type="warning" :disabled="!row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
                     </template>
                 </Table>
@@ -416,6 +416,13 @@
                     this.listPart = res.data;
                     this.$Message.success('查询成功');
                 })
+            },
+            adminshow(id) {
+                let routeData = this.$router.resolve({
+                    name: 'summary-admindetails',
+                    query: { id: id, type: 'day' }
+                });
+                window.open(routeData.href, '_blank');
             },
             show(id) {
                 let routeData = this.$router.resolve({

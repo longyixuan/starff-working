@@ -1,8 +1,8 @@
 /*
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
- * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-29 11:40:40
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2021-03-29 14:32:50
  */
 
 const fs = require('fs');
@@ -14,6 +14,7 @@ const Documentday_col = require('./../models/documentDay');
 const Documentweek_col = require('./../models/documentWeek');
 const Documentmonth_col = require('./../models/documentMonth');
 const Documentnext_col = require('./../models/documentNext');
+const Callback_col = require('./../models/callback');
 const WorkTime_col = require('./../models/workTime');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
@@ -444,6 +445,9 @@ const detailsDocumentday = async (ctx) => {
     const gzjh = await Documentnext_col.find({
         'documentId': id
     });
+    const thyy = await Callback_col.findOne({
+        'documentId': id
+    });
     const document = await Documentday_col.aggregate([
         {
             $match: {
@@ -491,7 +495,8 @@ const detailsDocumentday = async (ctx) => {
         code: 1,
         msg: '请求成功',
         data: document,
-        gzjh: gzjh
+        gzjh: gzjh,
+        thyy: thyy
     }
 }
 
@@ -907,6 +912,9 @@ const detailsDocumentweek = async (ctx) => {
     const gzjh = await Documentnext_col.find({
         'documentId': id
     });
+    const thyy = await Callback_col.findOne({
+        'documentId': id
+    });
     const document = await Documentweek_col.aggregate([
         {
             $match: {
@@ -949,7 +957,8 @@ const detailsDocumentweek = async (ctx) => {
         code: 1,
         msg: '请求成功',
         data: document,
-        gzjh: gzjh
+        gzjh: gzjh,
+        thyy: thyy
     }
 }
 
@@ -1246,6 +1255,9 @@ const detailsDocumentmonth = async (ctx) => {
     const gzjh = await Documentnext_col.find({
         'documentId': id
     });
+    const thyy = await Callback_col.findOne({
+        'documentId': id
+    });
     const document = await Documentmonth_col.aggregate([
         {
             $match: {
@@ -1287,7 +1299,8 @@ const detailsDocumentmonth = async (ctx) => {
         code: 1,
         msg: '请求成功',
         data: document,
-        gzjh: gzjh
+        gzjh: gzjh,
+        thyy: thyy
     }
 }
 
@@ -1434,6 +1447,54 @@ const mergeDocumentmonth = async (ctx) => {
     }
 }
 
+const callbackDocument = async (ctx) => { //
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const result = await Callback_col.findOne({
+        documentId: req.documentId
+    });
+    if (!result) { //新加
+        await Callback_col.create({
+            documentId: req.documentId,
+            userId: req.userId,
+            commentId: req.commentId,
+            reason: req.reason
+        });
+    } else { //替换
+        await Callback_col.updateOne({
+            documentId: req.documentId
+        },{
+            documentId: req.documentId,
+            userId: req.userId,
+            commentId: req.commentId,
+            reason: req.reason
+        });
+    }
+    if (req.type =='day') {
+        await Documentday_col.updateMany({
+            'documentId': req.documentId
+        },{
+            status: false
+        });
+    } else if (req.type == 'week') {
+        await Documentweek_col.updateMany({
+            'documentId': req.documentId
+        },{
+            status: false
+        });
+    } else { //month
+        await Documentmonth_col.updateMany({
+            'documentId': req.documentId
+        },{
+            status: false
+        });
+    }
+    ctx.body = {
+        code: 1,
+        msg: '请求成功'
+    }
+}
+
 module.exports = {
     addDocument,
     seachDocument,
@@ -1475,4 +1536,5 @@ module.exports = {
     delteDocumentmonth,
     seachDocumentmonth,
     mergeDocumentmonth,
+    callbackDocument
 }

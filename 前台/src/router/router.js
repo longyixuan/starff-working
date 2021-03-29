@@ -63,22 +63,6 @@ export const appRouter = {
     component: Main,
     children: [
         { 
-            path: 'image',
-            meta: {
-                title: '图片管理'
-            }, 
-            name: 'image_index', 
-            component: () => import('@/views/image/add.vue')
-        },
-        { 
-            path: 'imagelist',
-            meta: {
-                title: '图片管理'
-            }, 
-            name: 'imagelist', 
-            component: () => import('@/views/image/list.vue')
-        },
-        { 
             path: 'home',
             meta: {
                 title: '首页'
@@ -197,6 +181,14 @@ export const appRouter = {
             },
             name: 'summary-details',
             component: () => import('@/views/document/templateView.vue')
+        },
+        {
+            path: 'summary/admindetails',
+            meta: {
+                title: '工作总结-查看'
+            },
+            name: 'summary-admindetails',
+            component: () => import('@/views/document/templateViewAdmin.vue')
         },
         {
             path: 'summary/merge',
