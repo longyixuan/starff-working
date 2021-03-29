@@ -1,8 +1,8 @@
 /*
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-03-29 14:32:50
+ * @Last Modified by: yinxl
+ * @Last Modified time: 2021-03-29 19:07:03
  */
 
 const fs = require('fs');
@@ -16,6 +16,7 @@ const Documentmonth_col = require('./../models/documentMonth');
 const Documentnext_col = require('./../models/documentNext');
 const Callback_col = require('./../models/callback');
 const WorkTime_col = require('./../models/workTime');
+const Status_col = require('./../models/status');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
@@ -64,6 +65,33 @@ const commitDocument = async (ctx,next) => {
     },{
         status: req.status
     });
+    let result = await Status_col.findOne({
+        'documentId': req.documentId
+    });
+    
+    if (req.status=='true') { //提交
+        if (result) { //提交修改状态
+            await Status_col.updateMany({
+                'documentId': req.documentId
+            },{
+                status: '1'
+            });
+        }
+    } else { //退回
+        if(result) {//标记退回，修改状态
+            await Status_col.updateMany({
+                'documentId': req.documentId
+            },{
+                status: '0'
+            });
+        } else { //标记退回，增加状态
+            await Status_col.create({
+                'documentId': req.documentId,
+                'status': '0',
+                'type': 'day'
+            });
+        }
+    }
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -450,6 +478,14 @@ const detailsDocumentday = async (ctx) => {
     });
     const document = await Documentday_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'documentId': id
             }
@@ -465,7 +501,8 @@ const detailsDocumentday = async (ctx) => {
                     systemId: '$systemId',
                     systemName: '$systemName',
                     order: '$order',
-                    time: '$time'
+                    time: '$time',
+                    status_info: '$status_info'
                 },
                 order: {
                     $min: '$order'
@@ -613,11 +650,18 @@ const seachDocumentday = async (ctx) => {
     const req = ctx.request.body;
     const list = await Documentday_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'userId': {
                     '$in': req.people
                 },
-                'status': true,
                 'timeDate': {
                     $gte: new Date(req.startTime),
                     $lte: new Date(req.endTime)
@@ -633,7 +677,8 @@ const seachDocumentday = async (ctx) => {
             $group: {
                 _id: {
                     documentName: '$documentName',
-                    documentId: '$documentId'
+                    documentId: '$documentId',
+                    status_info: '$status_info'
                 },
                 details: {
                     $push: {
@@ -667,6 +712,14 @@ const listDocumentday = async (ctx) => {
     let prelist = [];
     const list = await Documentday_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'userId': req.userId,
                 'year': req.year,
@@ -685,7 +738,8 @@ const listDocumentday = async (ctx) => {
                     documentId: '$documentId',
                     year: '$year',
                     month: '$month',
-                    day: '$day'
+                    day: '$day',
+                    status_info: '$status_info',
                 },
                 details: {
                     $push: {
@@ -824,6 +878,14 @@ const listDocumentweek = async (ctx) => {
     const req = ctx.query;
     const list = await Documentweek_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'userId': req.userId,
                 'year': req.year
@@ -843,6 +905,7 @@ const listDocumentweek = async (ctx) => {
                     year: '$year',
                     startDay: '$startDay',
                     endDay: '$endDay',
+                    status_info: '$status_info'
                 },
                 details: {
                     $push: {
@@ -917,6 +980,14 @@ const detailsDocumentweek = async (ctx) => {
     });
     const document = await Documentweek_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'documentId': id
             }
@@ -930,7 +1001,8 @@ const detailsDocumentweek = async (ctx) => {
             $group: {
                 _id: {
                     systemId: '$systemId',
-                    systemName: '$systemName'
+                    systemName: '$systemName',
+                    status_info: '$status_info'
                 },
                 content: {
                     $push: {
@@ -970,6 +1042,33 @@ const commitDocumentWeek = async (ctx,next) => {
     },{
         status: req.status
     });
+    let result = await Status_col.findOne({
+        'documentId': req.documentId
+    });
+    
+    if (req.status=='true') { //提交
+        if (result) { //提交修改状态
+            await Status_col.updateMany({
+                'documentId': req.documentId
+            },{
+                status: '1'
+            });
+        }
+    } else { //退回
+        if(result) {//标记退回，修改状态
+            await Status_col.updateMany({
+                'documentId': req.documentId
+            },{
+                status: '0'
+            });
+        } else { //标记退回，增加状态
+            await Status_col.create({
+                'documentId': req.documentId,
+                'status': '0',
+                'type': 'week'
+            });
+        }
+    }
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -996,11 +1095,18 @@ const seachDocumentweek = async (ctx) => {
     const req = ctx.request.body;
     const list = await Documentweek_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'userId': {
                     '$in': req.people
                 },
-                'status': true,
                 'startDay': {
                     $gte: new Date(req.startTime)
                 },
@@ -1013,7 +1119,8 @@ const seachDocumentweek = async (ctx) => {
             $group: {
                 _id: {
                     documentName: '$documentName',
-                    documentId: '$documentId'
+                    documentId: '$documentId',
+                    status_info: '$status_info'
                 },
                 details: {
                     $push: {
@@ -1175,6 +1282,14 @@ const listDocumentmonth = async (ctx) => {
     const req = ctx.query;
     const list = await Documentmonth_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'userId': req.userId,
                 'year': req.year
@@ -1186,7 +1301,8 @@ const listDocumentmonth = async (ctx) => {
                     documentName: '$documentName',
                     documentId: '$documentId',
                     year: '$year',
-                    month: '$month'
+                    month: '$month',
+                    status_info: '$status_info'
                 },
                 details: {
                     $push: {
@@ -1260,6 +1376,14 @@ const detailsDocumentmonth = async (ctx) => {
     });
     const document = await Documentmonth_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'documentId': id
             }
@@ -1273,7 +1397,8 @@ const detailsDocumentmonth = async (ctx) => {
             $group: {
                 _id: {
                     systemId: '$systemId',
-                    systemName: '$systemName'
+                    systemName: '$systemName',
+                    status_info: '$status_info'
                 },
                 content: {
                     $push: {
@@ -1312,6 +1437,33 @@ const commitDocumentMonth = async (ctx,next) => {
     },{
         status: req.status
     });
+    let result = await Status_col.findOne({
+        'documentId': req.documentId
+    });
+    
+    if (req.status=='true') { //提交
+        if (result) { //提交修改状态
+            await Status_col.updateMany({
+                'documentId': req.documentId
+            },{
+                status: '1'
+            });
+        }
+    } else { //退回
+        if(result) {//标记退回，修改状态
+            await Status_col.updateMany({
+                'documentId': req.documentId
+            },{
+                status: '0'
+            });
+        } else { //标记退回，增加状态
+            await Status_col.create({
+                'documentId': req.documentId,
+                'status': '0',
+                'type': 'month'
+            });
+        }
+    }
     ctx.body = {
         code: 1,
         msg: '请求成功'
@@ -1338,20 +1490,28 @@ const seachDocumentmonth = async (ctx) => {
     const req = ctx.request.body;
     const list = await Documentmonth_col.aggregate([
         {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
             $match: {
                 'userId': {
                     '$in': req.people
                 },
                 'year': req.year,
-                'month': req.month,
-                'status': true
+                'month': req.month
             }
         },
         {
             $group: {
                 _id: {
                     documentName: '$documentName',
-                    documentId: '$documentId'
+                    documentId: '$documentId',
+                    status_info: '$status_info'
                 },
                 details: {
                     $push: {
@@ -1487,6 +1647,22 @@ const callbackDocument = async (ctx) => { //
             'documentId': req.documentId
         },{
             status: false
+        });
+    }
+    let result2 = await Status_col.findOne({
+        'documentId': req.documentId
+    });
+    if(result2) {//标记退回，修改状态
+        await Status_col.updateMany({
+            'documentId': req.documentId
+        },{
+            status: '0'
+        });
+    } else { //标记退回，增加状态
+        await Status_col.create({
+            'documentId': req.documentId,
+            'status': '0',
+            'type': 'day'
         });
     }
     ctx.body = {

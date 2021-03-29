@@ -65,6 +65,10 @@
                 <Table border :columns="columnPart" :data="listPart" style="margin-bottom:20px" @on-selection-change="selectionChangePart">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row._id.documentName }}</strong>
+                        <template v-if="row._id.status_info.length>0">
+                            <Tag color="red" v-if="row._id.status_info[0].status=='0'">已退回</Tag>
+                            <Tag color="green" v-if="row._id.status_info[0].status=='1'">已修正</Tag>
+                        </template>
                     </template>
                     <template slot-scope="{ row }" slot="time">
                         <strong>{{row.details[0].year + '-' + row.details[0].month + '-' + row.details[0].day}}</strong>
@@ -89,6 +93,10 @@
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row._id.documentName }}</strong>
+                        <template v-if="row._id.status_info.length>0">
+                            <Tag color="red" v-if="row._id.status_info[0].status=='0'">已退回</Tag>
+                            <Tag color="green" v-if="row._id.status_info[0].status=='1'">已修正</Tag>
+                        </template>
                     </template>
                     <template slot-scope="{ row }" slot="time">
                         <strong>{{row.details[0].year + '-' + row.details[0].month + '-' + row.details[0].day}}</strong>
@@ -121,7 +129,6 @@
         seachDocumentday,
         delteDocumentday,
         commitDocument,
-        addDocumentday,
         todayTime,
         toDocumentweek
     } from "@/api/index";
@@ -413,7 +420,9 @@
                     return;
                 }
                 seachDocumentday(postData).then((res)=>{
-                    this.listPart = res.data;
+                    this.listPart = res.data.filter(function(item){
+                        return (item._id.status_info.length>0 || item.details[0].status);
+                    });
                     this.$Message.success('查询成功');
                 })
             },

@@ -53,8 +53,8 @@
                 </div>
                 <h2 class="summary-view-h2">退回修改</h2>
                 <div class="summary-view-content">
-                    <Input v-model="reason" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
-                    <Button type="warning" @click="callBackFn">退回</Button>
+                    <Input :disabled="disabled" v-model="reason" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
+                    <Button :disabled="disabled" type="warning" @click="callBackFn">退回</Button>
                 </div>
             </div>
         </div>
@@ -71,6 +71,7 @@ export default {
     data() {
         return {
             templateId: this.$route.query.id,
+            disabled: false,
             title: '',
             time: '',
             userId: '',
@@ -93,6 +94,9 @@ export default {
                         this.userId = res.data[0].content[0].userId;
                         if (this.$route.query.type=='day') {
                             this.time = res.data[0].content[0].documentName;
+                        }
+                        if (res.data[0]._id.status_info.length>0&&res.data[0]._id.status_info[0].status=='0') {
+                            this.disabled = true;
                         }
                         this.submitList = [];
                         for (let i =0;i<res.data.length;i++) {
@@ -146,7 +150,7 @@ export default {
             });
         },
         callBackFn() {
-            let title = '退回之后不可查看，是否要退回？';
+            let title = '确定要退回吗？';
             this.confirm(title,() => {
                 callbackDocument({
                     documentId: this.$route.query.id,
@@ -157,6 +161,7 @@ export default {
                 }).then(res=>{
                     if (res.code===1) {
                         this.$Message.success('退回成功');
+                        this.disabled = true;
                     } else {
                         this.$Message.error('退回失败');
                     }
