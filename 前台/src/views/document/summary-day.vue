@@ -289,7 +289,7 @@
                 }
             },
             commit(indx,documentId,status) {
-                let title = status?'上报之后不可修改和删除，是否要上报？':'退回之后不可查看，是否要退回？'
+                let title = status?'上报之后不可修改和删除，是否要上报？':'确定要退回吗？'
                 this.confirm(title,() => {
                     commitDocument({'documentId': documentId,'status': status}).then(res => {
                         if (res.code==1) {
