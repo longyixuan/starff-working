@@ -78,7 +78,7 @@
             </div>
         </Card>
         <Row>
-            <Button type="primary" size="large" long @click="submit">提交</Button>
+            <Button type="primary" size="large" long @click="submit">保存</Button>
         </Row>
         <Modal v-model="modal" :title="modalTitle">
             <Input v-model="value" placeholder="输入模块名称"/>
@@ -151,7 +151,6 @@
                 })
             },
             onChange(value) {
-                alert(value)
                 this.title = `设计部${value}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
             },
             setPostData(){
@@ -278,7 +277,7 @@
                 })
             } else {
                 if (this.$route.query.type == 'month') {
-                    this.title = `设计部${moment().format('YYYY年MM月DD日')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
+                    this.title = `设计部${moment().format('YYYY年MM月')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
                 }
             }
         }

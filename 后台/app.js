@@ -2,12 +2,14 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-02-05 16:59:50
+ * @Last Modified time: 2021-03-30 12:40:07
  */
 
 
 const Koa = require('koa');
 const config = require('./config');
+const WebSocket = require('ws');
+const http = require('http');
 
 // https://www.npmjs.com/package/koa2-cors
 const cors = require('koa2-cors');
@@ -20,6 +22,7 @@ const mongoose = require('mongoose');
 
 const jwtKoa = require('koa-jwt'); // 用于路由权限控制
 const static = require('koa-static');
+const WebSocketApi = require('./app/utils/ws');//引入封装的ws模块
 
 const app = new Koa();
 app.use(static(
@@ -114,4 +117,13 @@ app.use(document_router.routes()).use(document_router.allowedMethods());
 app.use(timeline_router.routes()).use(timeline_router.allowedMethods());
 app.use(model_router.routes()).use(model_router.allowedMethods());
 
-app.listen(config.port);
+//websockt
+const server = http.createServer(app.callback())
+
+const wss = new WebSocket.Server({// 同一个端口监听不同的服务
+    server
+});
+
+WebSocketApi(wss)
+
+server.listen(config.port);

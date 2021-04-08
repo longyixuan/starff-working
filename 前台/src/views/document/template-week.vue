@@ -86,7 +86,7 @@
             </div>
         </Card>
         <Row>
-            <Button type="primary" size="large" long @click="submit">提交</Button>
+            <Button type="primary" size="large" long @click="submit">保存</Button>
         </Row>
         <Modal v-model="modal" :title="modalTitle">
             <Input v-model="value" placeholder="输入模块名称"/>
@@ -107,6 +107,10 @@
         addModal,
         listModel
     } from "@/api/index";
+    import {
+        getWeekStartDate,
+        getWeekEndDate,
+    } from "@/libs/timeHelp";
     import moment from "moment";
     export default {
         data() {
@@ -295,7 +299,7 @@
                 })
             } else {
                 if (this.$route.query.type == 'week') {
-                    this.title = `设计部${moment().format('YYYY年MM月DD日')}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
+                    this.title = `设计部${moment(getWeekStartDate()).format('YYYY年MM月DD日')}-${moment(getWeekEndDate()).format('MM月DD日')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
                 }
             }
         }

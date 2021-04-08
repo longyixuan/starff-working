@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-03-29 19:07:03
+ * @Last Modified time: 2021-04-01 08:39:21
  */
 
 const fs = require('fs');
@@ -764,6 +764,14 @@ const listDocumentday = async (ctx) => {
     if (req.premonth!='') {
         prelist = await Documentday_col.aggregate([
             {
+                $lookup: {
+                    from: "status",
+                    localField: "documentId",
+                    foreignField: "documentId",
+                    as: "status_info"
+                }
+            },
+            {
                 $match: {
                     'userId': req.userId,
                     'year': req.year,
@@ -782,7 +790,8 @@ const listDocumentday = async (ctx) => {
                         documentId: '$documentId',
                         year: '$year',
                         month: '$month',
-                        day: '$day'
+                        day: '$day',
+                        status_info: '$status_info',
                     },
                     details: {
                         $push: {

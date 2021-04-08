@@ -4,7 +4,7 @@
 <template>
     <Card title="周总结">
         <Tabs value="my" :animated="false">
-            <TabPane label="部门总结" name="part" v-if="type==1">
+            <TabPane label="部门总结" name="part">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Date-picker
@@ -67,6 +67,7 @@
                 <div style="margin-bottom: 20px;">
                     <DatePicker v-model="time" format="yyyy年" type="year" placeholder="工作总结时间"></DatePicker>
                     <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
+                    <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
                 </div>
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
                     <template slot-scope="{ row }" slot="name">
@@ -424,7 +425,7 @@
                 })
             },
             addTemplate() {
-                this.$router.push({ 'name': 'summary-edit', 'query': { id: '' ,type: 'day'}})
+                this.$router.push({ 'name': 'summary-editweek', 'query': { id: '' ,type: 'week'}})
             },
             checkTime() {
                 checkWeekTime({

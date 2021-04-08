@@ -78,7 +78,7 @@
             </div>
         </Card>
         <Row>
-            <Button type="primary" size="large" long @click="submit">提交</Button>
+            <Button type="primary" size="large" long @click="submit">保存</Button>
         </Row>
         <Modal v-model="modal" :title="modalTitle">
             <Input v-model="value" placeholder="输入模块名称"/>

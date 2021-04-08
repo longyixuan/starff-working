@@ -7,7 +7,7 @@
 <template>
     <Card title="日总结">
         <Tabs value="my" :animated="false">
-            <TabPane label="部门总结" name="part" v-if="type==1">
+            <TabPane label="部门总结" name="part">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Date-picker
