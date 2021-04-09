@@ -1,8 +1,8 @@
 /*
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-03-29 13:24:41
+ * @Last Modified by: yinxl
+ * @Last Modified time: 2021-04-09 16:17:31
  */
 
 const Router = require('koa-router');
@@ -39,6 +39,7 @@ router.post('/modal/add', document_controller.addModal);
 router.post('/document/day/toweek', document_controller.toDocumentweek);
 //周总结
 router.get('/document/week/list', document_controller.listDocumentweek);
+router.post('/document/week/add', document_controller.addDocumentweek);
 router.post('/document/week/edit', document_controller.editDocumentweek);
 router.post('/document/week/del', document_controller.delteDocumentweek);
 router.get('/document/week/details', document_controller.detailsDocumentweek);
@@ -48,6 +49,7 @@ router.post('/document/week/merge', document_controller.mergeDocumentweek);
 router.post('/document/week/tomonth', document_controller.toDocumentmonth);
 //月总结
 router.get('/document/month/list', document_controller.listDocumentmonth);
+router.post('/document/month/add', document_controller.addDocumentmonth);
 router.post('/document/month/edit', document_controller.editDocumentmonth);
 router.post('/document/month/del', document_controller.delteDocumentmonth);
 router.get('/document/month/details', document_controller.detailsDocumentmonth);

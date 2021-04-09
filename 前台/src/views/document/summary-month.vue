@@ -4,6 +4,33 @@
 <template>
     <Card title="月总结">
         <Tabs value="my" :animated="false">
+            <TabPane label="我的总结" name="my">
+                <div style="margin-bottom: 20px;">
+                    <DatePicker v-model="time" format="yyyy年" type="year" placeholder="工作总结时间"></DatePicker>
+                    <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
+                    <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
+                </div>
+                <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
+                    <template slot-scope="{ row }" slot="name">
+                        <strong>{{ row._id.documentName }}</strong>
+                        <template v-if="row._id.status_info.length>0">
+                            <Tag color="red" v-if="row._id.status_info[0].status=='0'">已退回</Tag>
+                            <Tag color="green" v-if="row._id.status_info[0].status=='1'">已修正</Tag>
+                        </template>
+                    </template>
+                    <template slot-scope="{ row }" slot="time">
+                        <strong>{{row._id.year}}-{{row._id.month}}</strong>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="action">
+                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
+                        <Button type="primary" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="edit(row._id.documentId)">修改</Button>
+                        <Button type="error" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="del(index,row._id.documentId)">删除</Button>
+                        <Button type="warning" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,true)">上报</Button>
+                        <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
+                    </template>
+                </Table>
+                <Button type="primary" @click="merge">合并查看</Button>
+            </TabPane>
             <TabPane label="部门总结" name="part">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
@@ -61,33 +88,6 @@
                     </template>
                 </Table>
                 <Button type="primary" @click="mergePart">合并查看</Button>
-            </TabPane>
-            <TabPane label="我的总结" name="my">
-                <div style="margin-bottom: 20px;">
-                    <DatePicker v-model="time" format="yyyy年" type="year" placeholder="工作总结时间"></DatePicker>
-                    <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
-                    <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
-                </div>
-                <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
-                    <template slot-scope="{ row }" slot="name">
-                        <strong>{{ row._id.documentName }}</strong>
-                        <template v-if="row._id.status_info.length>0">
-                            <Tag color="red" v-if="row._id.status_info[0].status=='0'">已退回</Tag>
-                            <Tag color="green" v-if="row._id.status_info[0].status=='1'">已修正</Tag>
-                        </template>
-                    </template>
-                    <template slot-scope="{ row }" slot="time">
-                        <strong>{{row._id.year}}-{{row._id.month}}</strong>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(row._id.documentId)">查看</Button>
-                        <Button type="primary" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="edit(row._id.documentId)">修改</Button>
-                        <Button type="error" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="del(index,row._id.documentId)">删除</Button>
-                        <Button type="warning" :disabled="row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,true)">上报</Button>
-                        <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
-                    </template>
-                </Table>
-                <Button type="primary" @click="merge">合并查看</Button>
             </TabPane>
         </Tabs>
     </Card>

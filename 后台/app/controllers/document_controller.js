@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-04-01 08:39:21
+ * @Last Modified time: 2021-04-09 09:24:35
  */
 
 const fs = require('fs');
@@ -942,7 +942,44 @@ const listDocumentweek = async (ctx) => {
         data: list
     }
 }
-
+const addDocumentweek = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    req.list = JSON.parse(req.list);
+    const document = await Documentweek_col.findOne({
+        documentName: req.summaryName,
+    });
+    if (document) {
+        ctx.body = {
+            code: 0,
+            msg: '本周已有记录，请勿重新添加！'
+        }
+        return;
+    }
+    const documentId = uuidv1();
+    for (let i = 0; i < req.list.length; i++) {
+        req.list[i].documentId = documentId;
+    }
+    await Documentweek_col.insertMany(req.list);
+    var gzjh = [];
+    req.gzjh.forEach(item=> {
+        gzjh.push({
+            documentId: documentId,
+            gzjh: item.gzjh,
+            systemId: item.systemId,
+            systemName: item.systemName,
+            userId: req.list[0].userId,
+            userName: req.list[0].userName,
+            nickName: req.list[0].nickName
+        });
+    });
+    await Documentnext_col.insertMany(gzjh)
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: req.list
+    }
+}
 const editDocumentweek = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
@@ -1338,7 +1375,44 @@ const listDocumentmonth = async (ctx) => {
         data: list
     }
 }
-
+const addDocumentmonth = async (ctx) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    req.list = JSON.parse(req.list);
+    const document = await Documentmonth_col.findOne({
+        documentName: req.summaryName,
+    });
+    if (document) {
+        ctx.body = {
+            code: 0,
+            msg: '本月已有记录，请勿重新添加！'
+        }
+        return;
+    }
+    const documentId = uuidv1();
+    for (let i = 0; i < req.list.length; i++) {
+        req.list[i].documentId = documentId;
+    }
+    await Documentmonth_col.insertMany(req.list);
+    var gzjh = [];
+    req.gzjh.forEach(item=> {
+        gzjh.push({
+            documentId: documentId,
+            gzjh: item.gzjh,
+            systemId: item.systemId,
+            systemName: item.systemName,
+            userId: req.list[0].userId,
+            userName: req.list[0].userName,
+            nickName: req.list[0].nickName
+        });
+    });
+    await Documentnext_col.insertMany(gzjh)
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: req.list
+    }
+}
 const editDocumentmonth = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
@@ -1708,6 +1782,7 @@ module.exports = {
     toDocumentweek,
     listDocumentweek,
     editDocumentweek,
+    addDocumentweek,
     detailsDocumentweek,
     commitDocumentWeek,
     delteDocumentweek,
@@ -1716,6 +1791,7 @@ module.exports = {
     toDocumentmonth,
     listDocumentmonth,
     editDocumentmonth,
+    addDocumentmonth,
     detailsDocumentmonth,
     commitDocumentMonth,
     delteDocumentmonth,
