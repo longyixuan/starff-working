@@ -2,13 +2,15 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-26 16:00:35
+ * @Last Modified time: 2021-08-31 09:29:25
  */
 
 const System_col = require('./../models/system');
 const User_col = require('./../models/user');
-const Model_col = require('./../models/model');
 const WorkTime_col = require('./../models/workTime');
+const Documentday_col = require('./../models/documentDay');
+const Documentweek_col = require('./../models/documentWeek');
+const Documentmonth_col = require('./../models/documentMonth');
 const uuidv1 = require('uuid/v1');
 const _ = require('lodash');
 
@@ -105,6 +107,15 @@ const editSystem = async (ctx, next) => {
     id: req.id
   }, req);
   await WorkTime_col.updateMany({
+    systemId: req.id
+  }, {systemName: req.title});
+  await Documentday_col.updateMany({
+    systemId: req.id
+  }, {systemName: req.title});
+  await Documentweek_col.updateMany({
+    systemId: req.id
+  }, {systemName: req.title});
+  await Documentmonth_col.updateMany({
     systemId: req.id
   }, {systemName: req.title});
   const system = await System_col.findOne({

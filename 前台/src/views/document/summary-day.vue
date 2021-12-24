@@ -107,7 +107,7 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="adminshow(row._id.documentId)">查看</Button>
-                        <Button type="warning" :disabled="!row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
+                        <Button v-if="type===1" type="warning" :disabled="!row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
                     </template>
                 </Table>
                 <Button type="primary" @click="mergePart">合并查看</Button>
@@ -495,6 +495,9 @@
             this.initList();
             this.getUserList();
             this.type = JSON.parse(localStorage.getItem('userInfo')).type;
+            if (this.type===0) {
+                this.columnPart[this.columnPart.length-1].width = 100;
+            }
         }
     }
 </script>

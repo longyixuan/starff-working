@@ -23,7 +23,7 @@
                                 <tr v-for="(item2,index) in item.content">
                                     <td>{{filterTitle(item2.contentTitle)}}</td>
                                     <td>
-                                        <div style=" white-space: pre-line;">{{item2.contentDescription}}</div>
+                                        <div style=" white-space: pre-line;word-break: break-all;">{{item2.contentDescription}}</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -45,19 +45,29 @@
                                     {{item.systemName}}
                                 </td>
                                 <td>
-                                    <div style=" white-space: pre-line;">{{item.gzjh}}</div>
+                                    <div style=" white-space: pre-line;word-break: break-all;">{{item.gzjh}}</div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <h2 class="summary-view-h2">退回修改</h2>
-                <div class="summary-view-content">
+                <h2 class="summary-view-h2" v-if="type===1">退回修改</h2>
+                <div class="summary-view-content" v-if="type===1">
                     <Input :disabled="disabled" v-model="reason" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
                     <Button :disabled="disabled" type="warning" @click="callBackFn">退回</Button>
                 </div>
+                <div v-if="type===1" style="margin-top: 20px">
+                    <Button type="warning" style="margin-right: 20px;" @click="tuihui">退回</Button>
+                    <Button type="warning" @click="huifu">回复</Button>
+                </div>
             </div>
         </div>
+        <Modal v-model="tModal" title="退回" @on-ok="onOkT">
+            <Input v-model="tdes" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
+        </Modal>
+        <Modal v-model="hModal" title="回复" @on-ok="onOkH">
+            <Input v-model="hdes" class="marginB-20" type="textarea" :rows="6" placeholder="请填写回复内容"></Input>
+        </Modal>
     </Card>
 </template>
 <script>
@@ -73,16 +83,33 @@ export default {
             templateId: this.$route.query.id,
             disabled: false,
             title: '',
+            type: 0,
             time: '',
             userId: '',
             commentId: '',
             reason: '',
+            tModal: false,
+            hModal: false,
+            hdes: '',
+            tdes: '',
             submitList: [],
             modelList: [],
             gzjhList: []
         }
     },
     methods: {
+        tuihui() {
+            this.tModal = true;
+        },
+        huifu() {
+            this.hModal = true;
+        },
+        onOkT() {
+            
+        },
+        onOkH() {
+
+        },
         filterTitle: function(value) {
             return _.find(this.modelList,['modelId', value]).modelName;
         },
@@ -174,6 +201,7 @@ export default {
             this.modelList = res.data;
             this.init();
         })
+        this.type = JSON.parse(localStorage.getItem('userInfo')).type;
         this.commentId = JSON.parse(localStorage.getItem('userInfo')).userId;
     }
 }

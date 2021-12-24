@@ -277,6 +277,14 @@ export const appRouter = {
             }, 
             name: 'work-time-count', 
             component: () => import('@/views/home/personal.vue')
+        },
+        { 
+            path: 'link-search',
+            meta: {
+                title: ''
+            }, 
+            name: 'link-search', 
+            component: () => import('@/views/link/search.vue')
         }
     ]
 };

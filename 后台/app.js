@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-03-30 12:40:07
+ * @Last Modified time: 2021-12-24 09:41:15
  */
 
 
@@ -22,13 +22,12 @@ const mongoose = require('mongoose');
 
 const jwtKoa = require('koa-jwt'); // 用于路由权限控制
 const static = require('koa-static');
-const WebSocketApi = require('./app/utils/ws');//引入封装的ws模块
+// const WebSocketApi = require('./app/utils/ws');//引入封装的ws模块
 
 const app = new Koa();
 app.use(static(
-    path.join(__dirname, './images')
+    path.join(__dirname, './dist')
 ))
-
 const {  accessLogger,logger } = require('./logger');
 function consolelog(color) {
     console.log(color,[
@@ -117,13 +116,19 @@ app.use(document_router.routes()).use(document_router.allowedMethods());
 app.use(timeline_router.routes()).use(timeline_router.allowedMethods());
 app.use(model_router.routes()).use(model_router.allowedMethods());
 
+// const return_router = require('./routes/api/return_router');
+// app.use(return_router.routes()).use(return_router.allowedMethods());
+
+// const replay_router = require('./routes/api/replay_router');
+// app.use(replay_router.routes()).use(replay_router.allowedMethods());
+
 //websockt
-const server = http.createServer(app.callback())
+// const server = http.createServer(app.callback())
 
-const wss = new WebSocket.Server({// 同一个端口监听不同的服务
-    server
-});
+// const wss = new WebSocket.Server({// 同一个端口监听不同的服务
+//     server
+// });
 
-WebSocketApi(wss)
+// WebSocketApi(wss)
 
-server.listen(config.port);
+app.listen(config.port);

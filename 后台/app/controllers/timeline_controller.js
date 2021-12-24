@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-15 16:38:14
+ * @Last Modified time: 2021-12-24 10:10:10
  */
 
 const Timeline_col = require('./../models/timeline');
@@ -22,8 +22,10 @@ const add = async (ctx, next) => {
 const remove = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    await Timeline_col.remove({
+    await Timeline_col.updateOne({
         timelineId: req.id
+    },{
+        islock: true
     });
     ctx.body = {
         code: 1,
@@ -49,7 +51,9 @@ const update = async (ctx, next) => {
 const getList = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    let seachConfig = {};
+    let seachConfig = {
+        islock: false
+    };
     let groupConfig = {
         _id: {
             timeStamp: '$timeStamp',
@@ -68,7 +72,7 @@ const getList = async (ctx, next) => {
                 time: '$time'
             }
         }
-    };;
+    };
     if (req.system) {
         seachConfig.systemId = {
             '$in': req.system
@@ -77,10 +81,9 @@ const getList = async (ctx, next) => {
     if (req.tag) {
         seachConfig.tag = req.tag
     }
-    if (req.startTime && req.endTime) {
-        seachConfig.timeStamp = {
-            '$gte': new Date(req.startTime),
-            '$lte': new Date(req.endTime)
+    if (req.year) {
+        seachConfig.time = {
+            "$regex": req.year
         }
     }
     let result = await Timeline_col.aggregate([{

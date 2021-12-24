@@ -73,7 +73,7 @@
                                     {{item.systemName}}
                                 </td>
                                 <td>
-                                    <div style=" white-space: pre-line;">{{item.gzjh}}</div>
+                                    <div style=" white-space: pre-line;word-break: break-all;">{{item.gzjh}}</div>
                                 </td>
                             </tr>
                         </tbody>

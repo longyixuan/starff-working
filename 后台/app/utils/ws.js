@@ -1,4 +1,5 @@
 const { logger } = require('../../logger');
+const { checking } = require('../../app/controllers/image_controller');
 module.exports = wss => {
     //广播
     wss.broadcast = function broadcast(ws) {
@@ -8,11 +9,12 @@ module.exports = wss => {
     };
     wss.on('connection', function connection(ws) {
         ws.on('message', function incoming(message) {
-            console.log('received: %s', message);
+            // console.log('received: %s', message);
             wss.broadcast(message);
+            checking(JSON.parse(message),ws);
             logger.info(message);
         });
-        ws.send('欢迎');
+        console.log('wss链接已建立');
         // 退出聊天
         ws.on('close', function(close) {
             try{

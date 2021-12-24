@@ -85,7 +85,7 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="adminshow(row._id.documentId)">查看</Button>
-                        <Button type="warning" :disabled="!row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
+                        <Button v-if="type===1" type="warning" :disabled="!row.details[0].status" size="small" style="margin-right: 5px" @click="commit(index,row._id.documentId,false)">退回</Button>
                         <!-- <Button type="info" size="small" @click="download(row.documentName)">下载</Button> -->
                     </template>
                 </Table>
@@ -451,7 +451,10 @@
             this.type = JSON.parse(localStorage.getItem('userInfo')).type;
             this.peopleAll();
             this.monthTitle = `设计部${moment().format('YYYY年MM月')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
-            this.checkTime();
+            // this.checkTime();
+            if (this.type===0) {
+                this.columnPart[this.columnPart.length-1].width = 100;
+            }
         }
     }
 </script>

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-11-20 09:27:16 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-29 12:04:33
+ * @Last Modified time: 2021-08-09 09:47:07
  */
 const fs = require('fs');
 const send = require('koa-send');
@@ -40,14 +40,15 @@ const downloadDocument = async (ctx, next) => {
     let text = '# ' + req.doctitle;
     const data = JSON.parse(req.list)
     const gzjh = JSON.parse(req.gzjh)
-    console.log(gzjh)
     const ModelResult = await Model_col.find();
     for(let i = 0; i <data.length; i++) { //本月总结
         text += '\n';
         text += '## ' + toChinesNum(i+1) +'、' + data[i].systemName;
-        for(let j = 0; j <data[i].content.length; j++) {
-            text += '\n';
-            text += '- **' + (j+1) + '、' + seachModel(ModelResult,data[i].content[j].contentTitle) + '：**' + data[i].content[j].contentDescription;
+        for(let kk in data[i].content) {
+            for(let j = 0; j <data[i].content[kk].length; j++) {
+                text += '\n';
+                text += '- **' + (j+1) + '、' + seachModel(ModelResult,data[i].content[kk][j].contentTitle) + '：**' + data[i].content[kk][j].contentDescription;
+            }
         }
     }
     text += '\n';
@@ -56,7 +57,6 @@ const downloadDocument = async (ctx, next) => {
     for (let i = 0; i < gzjh.length; i++) { //下月总结
         gzjhArr = [...gzjhArr,...gzjh[i].details];
     }
-    console.log(gzjhArr)
     for (let i = 0; i < gzjhArr.length; i++) { //下月总结
         text += '\n';
         text += '- **'+gzjhArr[i].systemName+'：**'+'\n'+gzjhArr[i].gzjh;

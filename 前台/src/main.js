@@ -4,6 +4,7 @@ import Vue from 'vue'
 import ViewUI from 'view-design';
 import VueWechatTitle from 'vue-wechat-title'
 import App from './App'
+import dataV from '@jiaminghi/data-view'
 import {
     router
 } from './router/index'
@@ -24,6 +25,7 @@ import {
 import '@babel/polyfill'
 Vue.config.productionTip = false
 Vue.use(ViewUI);
+Vue.use(dataV);
 
 Vue.use(VueWechatTitle);
 // 挂载全局使用的方法

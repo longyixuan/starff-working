@@ -23,63 +23,125 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item2,index) in item.content">
-                                <td v-html="linght(filterTitle(item2.contentTitle))"></td>
-                                <td>
-                                    <div style=" white-space: pre-line;" v-html="linght(item2.contentDescription)"></div>
-                                </td>
-                                <td v-if="$route.query.type == 'day' || $route.query.type == 'week'">
-                                    <template v-if="$route.query.type == 'day'">
-                                        {{`${item2.year}-${item2.month}-${item2.day}`}}
-                                    </template>
-                                    <template v-if="$route.query.type == 'week'">
-                                        {{item2.startDay|timeFilter}} - {{item2.endDay|timeFilter}}
-                                    </template>
-                                </td>
-                                <td v-if="$route.query.admin">{{item2.nickName}}</td>
-                            </tr>
+                            <template v-for="(item2,key,index) in item.content">
+                                <template v-for="(item3,index3) in item2">
+                                    <tr v-if="index3==0">
+                                        <td :rowspan="item2.length" v-html="linght(filterTitle(key))"></td>
+                                        <td>
+                                            <div style=" white-space: pre-line;word-break: break-all;" v-html="linght(item3.contentDescription)"></div>
+                                        </td>
+                                        <td v-if="$route.query.type == 'day' || $route.query.type == 'week'">
+                                            <template v-if="$route.query.type == 'day'">
+                                                {{`${item3.year}-${item3.month}-${item3.day}`}}
+                                            </template>
+                                            <template v-if="$route.query.type == 'week'">
+                                                {{item3.startDay|timeFilter}} - {{item3.endDay|timeFilter}}
+                                            </template>
+                                        </td>
+                                        <td v-if="$route.query.admin">{{item3.nickName}}</td>
+                                    </tr>
+                                    <tr v-else>
+                                        <td>
+                                            <div style=" white-space: pre-line;word-break: break-all;" v-html="linght(item3.contentDescription)"></div>
+                                        </td>
+                                        <td v-if="$route.query.type == 'day' || $route.query.type == 'week'">
+                                            <template v-if="$route.query.type == 'day'">
+                                                {{`${item3.year}-${item3.month}-${item3.day}`}}
+                                            </template>
+                                            <template v-if="$route.query.type == 'week'">
+                                                {{item3.startDay|timeFilter}} - {{item3.endDay|timeFilter}}
+                                            </template>
+                                        </td>
+                                        <td v-if="$route.query.admin">{{item3.nickName}}</td>
+                                    </tr>
+                                </template>
+                            </template>
                         </tbody>
                     </table>
                 </template>
                 <h2 class="summary-view-h2">工作计划</h2>
-                <table class="summary-table">
-                    <thead>
-                        <tr>
-                            <th width="180">系统</th>
-                            <th>工作计划内容</th>
-                            <th width="100" v-if="$route.query.admin">姓名</th>
-                        </tr>
-                    </thead>
-                    <tbody v-if="$route.query.admin">
-                        <template v-for="item in gzjhList">
-                            <tr v-for="(item2,index) in item.details">
-                                <template v-if="index==0">
-                                    <td>{{item2.systemName}}</td>
-                                    <td>
-                                        <div style="white-space: pre-line;" v-html="linght(item2.gzjh)"></div>
-                                    </td>
-                                    <td :rowspan="item.details.length">{{item2.nickName}}</td>
+                <Tabs type="card">
+                    <TabPane label="按人查看">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th width="180">系统</th>
+                                    <th>工作计划内容</th>
+                                    <th width="100" v-if="$route.query.admin">姓名</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="$route.query.admin">
+                                <template v-for="item in gzjhList">
+                                    <tr v-for="(item2,index) in item.details">
+                                        <template v-if="index==0">
+                                            <td>{{item2.systemName}}</td>
+                                            <td>
+                                                <div style="white-space: pre-line;word-break: break-all;" v-html="linght(item2.gzjh)"></div>
+                                            </td>
+                                            <td :rowspan="item.details.length">{{item2.nickName}}</td>
+                                        </template>
+                                        <template v-else>
+                                            <td>{{item2.systemName}}</td>
+                                            <td>
+                                                <div style="white-space: pre-line;word-break: break-all;" v-html="linght(item2.gzjh)"></div>
+                                            </td>
+                                        </template>
+                                    </tr>
                                 </template>
-                                <template v-else>
-                                    <td>{{item2.systemName}}</td>
-                                    <td>
-                                        <div style="white-space: pre-line;" v-html="linght(item2.gzjh)"></div>
-                                    </td>
+                            </tbody>
+                            <tbody v-else>
+                                <template v-for="item in gzjhList">
+                                    <tr v-for="(item2,index) in item.details">
+                                        <td>{{item2.systemName}}</td>
+                                        <td>
+                                            <div style="white-space: pre-line;word-break: break-all;" v-html="linght(item2.gzjh)"></div>
+                                        </td>
+                                    </tr>
                                 </template>
-                            </tr>
-                        </template>
-                    </tbody>
-                    <tbody v-else>
-                        <template v-for="item in gzjhList">
-                            <tr v-for="(item2,index) in item.details">
-                                <td>{{item2.systemName}}</td>
-                                <td>
-                                    <div style="white-space: pre-line;" v-html="linght(item2.gzjh)"></div>
-                                </td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </TabPane>
+                    <TabPane label="按系统查看">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th width="180">系统</th>
+                                    <th>工作计划内容</th>
+                                    <th width="100" v-if="$route.query.admin">姓名</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="$route.query.admin">
+                                <template v-for="item in gzjhList2">
+                                    <tr v-for="(item2,index) in item.details">
+                                        <template v-if="index==0">
+                                            <td :rowspan="item.details.length">{{item2.systemName}}</td>
+                                            <td>
+                                                <div style="white-space: pre-line;word-break: break-all;" v-html="linght(item2.gzjh)"></div>
+                                            </td>
+                                            <td>{{item2.nickName}}</td>
+                                        </template>
+                                        <template v-else>
+                                            <td>
+                                                <div style="white-space: pre-line;word-break: break-all;" v-html="linght(item2.gzjh)"></div>
+                                            </td>
+                                            <td>{{item2.nickName}}</td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </tbody>
+                            <tbody v-else>
+                                <template v-for="item in gzjhList">
+                                    <tr v-for="(item2,index) in item.details">
+                                        <td>{{item2.systemName}}</td>
+                                        <td>
+                                            <div style="white-space: pre-line;word-break: break-all;" v-html="linght(item2.gzjh)"></div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </TabPane>
+                </Tabs>
             </div>
             <div class="summary-view-line"></div>
             <div style="text-align: center;">
@@ -118,6 +180,7 @@ export default {
             doctitle: '',
             submitList: [],
             gzjhList: [],
+            gzjhList2: []
         }
     },
     filters: {
@@ -155,6 +218,7 @@ export default {
                 list: JSON.stringify(this.submitList),
                 gzjh: JSON.stringify(this.gzjhList),
             }
+            console.log(this.submitList)
             downDocument(postData).then(res => {
                 if (res.code === 1) {
                     this.modal = false;
@@ -177,11 +241,12 @@ export default {
                             this.submitList.push({
                                 systemId: res.data[i]._id.systemId,
                                 systemName: res.data[i]._id.systemName,
-                                content: res.data[i].details
+                                content: _.groupBy(res.data[i].details,'contentTitle')
                             })
                         }
                     }
                     this.gzjhList = res.gzjh;
+                    this.gzjhList2 = res.gzjh2;
                 }
             })
         },

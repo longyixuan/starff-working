@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-04-09 09:24:35
+ * @Last Modified time: 2021-10-20 10:04:34
  */
 
 const fs = require('fs');
@@ -568,6 +568,32 @@ const mergeDocumentday = async (ctx) => {
         }
         
     ])
+    const gzjh2 = await Documentnext_col.aggregate([
+        {
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        },
+        {
+            $group: {
+                _id : { systemId: '$systemId', systemName: '$systemName'},
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        gzjh: '$gzjh',
+                        nickName: '$nickName',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        userId: '$userId',
+                        userName: '$userName'
+                    }
+                }
+            }
+        }
+        
+    ])
     const list = await Documentday_col.aggregate([
         {
             $match: {
@@ -589,7 +615,7 @@ const mergeDocumentday = async (ctx) => {
             $group: {
                 _id: {
                     systemId: '$systemId',
-                    systemName: '$systemName',
+                    systemName: '$systemName'
                 },
                 details: {
                     $push: {
@@ -608,7 +634,8 @@ const mergeDocumentday = async (ctx) => {
         code: 1,
         msg: '请求成功',
         data: list,
-        gzjh: gzjh
+        gzjh: gzjh,
+        gzjh2: gzjh2
     }
 }
 
@@ -1200,6 +1227,31 @@ const mergeDocumentweek = async (ctx) => {
     const req = ctx.request.body;
     req.mergeList = JSON.parse(req.mergeList);
     const reg = new RegExp(req.keyword, 'i');
+    const gzjh2 = await Documentnext_col.aggregate([
+        {
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        },
+        {
+            $group: {
+                _id : { systemId: '$systemId', systemName: '$systemName'},
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        gzjh: '$gzjh',
+                        nickName: '$nickName',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        userId: '$userId',
+                        userName: '$userName'
+                    }
+                }
+            }
+        }
+    ])
     const gzjh = await Documentnext_col.aggregate([
         {
             $match: {
@@ -1260,7 +1312,8 @@ const mergeDocumentweek = async (ctx) => {
         code: 1,
         msg: '请求成功',
         data: list,
-        gzjh: gzjh
+        gzjh: gzjh,
+        gzjh2: gzjh2
     }
 }
 
@@ -1627,6 +1680,31 @@ const mergeDocumentmonth = async (ctx) => {
     const req = ctx.request.body;
     req.mergeList = JSON.parse(req.mergeList);
     const reg = new RegExp(req.keyword, 'i');
+    const gzjh2 = await Documentnext_col.aggregate([
+        {
+            $match: {
+                'documentId': {
+                    '$in': req.mergeList
+                }
+            }
+        },
+        {
+            $group: {
+                _id : { systemId: '$systemId', systemName: '$systemName'},
+                details: {
+                    $push: {
+                        documentId: '$documentId',
+                        gzjh: '$gzjh',
+                        nickName: '$nickName',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        userId: '$userId',
+                        userName: '$userName'
+                    }
+                }
+            }
+        }
+    ])
     const gzjh = await Documentnext_col.aggregate([
         {
             $match: {
@@ -1686,7 +1764,8 @@ const mergeDocumentmonth = async (ctx) => {
         code: 1,
         msg: '请求成功',
         data: list,
-        gzjh: gzjh
+        gzjh: gzjh,
+        gzjh2: gzjh2
     }
 }
 

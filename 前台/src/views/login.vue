@@ -9,6 +9,7 @@
     <Col :xs="{span:22}" style="width: 368px;">
       <Row class="header">
         <img src="../assets/xboot.png" width="360px;">
+        <clock class="my-clock"/>
       </Row>
       <Alert type="error" show-icon v-if="error">{{errorMsg}}</Alert>
       <Row class="login-form">
@@ -62,6 +63,7 @@
 
 <script>
 import { login, userInfo, getJWT } from "@/api/index";
+import clock from "../views/my-components/clock.vue";
 export default {
   data() {
     return {
@@ -90,6 +92,9 @@ export default {
         ]
       }
     };
+  },
+  components: {
+    clock
   },
   methods: {
     showErrorMsg(msg) {

@@ -6,25 +6,22 @@
   <div>
     <Card title="系统时间线">
         <div style="margin-bottom: 20px;">
-            <DatePicker v-model="timeDate" style="width: 200px;margin-right:10px;" type="daterange" placeholder="请选择时间"></DatePicker>
+            <DatePicker v-model="year" style="width: 120px;margin-right:10px;" type="year" placeholder="请选择年份"></DatePicker>
             <Select clearable filterable style="width: 400px;margin-right:10px;" multiple v-model="system" placeholder="请选择系统">
                 <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
             </Select>
-            <!-- <Select style="width: 200px;margin-right:10px;" multiple v-model="model" placeholder="请选择系统">
-                <Option :value="item" v-for="item in modelList">{{item}}</Option>
-            </Select> -->
             <Select clearable style="width: 200px;margin-right:10px;" v-model="tag" placeholder="请选择标签">
                 <Option v-for="item in tags" :value="item.id" :key="item.id">{{ item.name }}</Option>
             </Select>
+            <Input v-model="keyword" style="width: 200px;margin-right:10px;" clearable placeholder="请输入关键字" autocomplete="off"/>
             <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
             <div style="float: right;">
                 <Button type="primary" style="margin-right: 10px;" @click="exportExcel">导出Excel</Button>
                 <Button type="primary" to="/time-line/add">新增时间线</Button>
             </div>
         </div>
-        <Tabs value="name1" type="card">
+        <Tabs v-model="tabName" type="card">
             <TabPane label="表格显示" name="name1">
-                
                 <Table border :columns="columns" :data="data" ref="table">
                     <template slot-scope="{ row }" slot="model">
                         <template v-if="modelList.length > 0">
@@ -41,7 +38,7 @@
                 </Table>
             </TabPane>
             <TabPane label="时间线显示" name="name2">
-                <ul class="timeline">
+                <ul class="timeline" v-if="tabName=='name2'">
                     <li class="timeline-item" v-for="item in lineDate">
                         <div class="timeline-time">
                             <span>{{item._id.time}}</span>
@@ -53,7 +50,7 @@
                                 <div style="margin-bottom: 10px;">
                                     <Tag style="font-weight: bold" type="dot" color="primary" v-for="item3 in item2.model" :key="item3">{{item3 | modelFilter(modelList)}}</Tag>
                                 </div>
-                                <div v-html="item2.description" style="white-space: pre-line;font-size: 14px;line-height: 1.5;"></div>
+                                <div v-html="item2.description" style="white-space: pre-line;word-break: break-all;font-size: 14px;line-height: 1.5;"></div>
                             </div>
                         </div>
                     </li>
@@ -78,11 +75,13 @@ export default {
   data() {
     return {
         modal: true,
-        timeDate: [],
+        year: new Date(),
         system: [],
         sysList: [],
         tag: '',
+        keyword: '',
         model: [],
+        tabName: 'name1',
         modelList: [],
         tags: [],
         data: [],
@@ -172,11 +171,11 @@ export default {
       },
       getlist() { //获取列表
         let params = {
-            startTime: this.timeDate[0]>0?moment(this.timeDate[0]).format('YYYY-MM-DD'):'',
-            endTime: this.timeDate[1]>0?moment(this.timeDate[1]).format('YYYY-MM-DD'):'',
+            year: moment(this.year).format('YYYY'),
             tag: this.tag,
             system: this.system
         }
+
         getTimelineList(params).then(res => {
             if (res.code === 1) {
                 this.data = _.sortBy(res.data, function(item) {

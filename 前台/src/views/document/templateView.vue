@@ -23,7 +23,7 @@
                                 <tr v-for="(item2,index) in item.content">
                                     <td>{{filterTitle(item2.contentTitle)}}</td>
                                     <td>
-                                        <div style="white-space: pre-line;">{{item2.contentDescription}}</div>
+                                        <div style="white-space: pre-line;word-break: break-all;">{{item2.contentDescription}}</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -45,7 +45,7 @@
                                     {{item.systemName}}
                                 </td>
                                 <td>
-                                    <div style="white-space: pre-line;">{{item.gzjh}}</div>
+                                    <div style="white-space: pre-line;word-break: break-all;">{{item.gzjh}}</div>
                                 </td>
                             </tr>
                         </tbody>
@@ -54,7 +54,7 @@
                 <template v-if="reason!=''">
                     <h2 class="summary-view-h2">退回修改</h2>
                     <div class="summary-view-content">
-                        <div style="white-space: pre-line;font-size:14px;border: 1px solid #ffb08f;padding: 12px;background:#ffefe6" v-html="reason"></div>
+                        <div style="white-space: pre-line;word-break: break-all;font-size:14px;border: 1px solid #ffb08f;padding: 12px;background:#ffefe6" v-html="reason"></div>
                     </div>
                 </template>
             </div>
