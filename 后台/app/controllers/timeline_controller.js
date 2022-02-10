@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-12-24 10:10:10
+ * @Last Modified time: 2022-01-26 14:28:18
  */
 
 const Timeline_col = require('./../models/timeline');
@@ -84,6 +84,12 @@ const getList = async (ctx, next) => {
     if (req.year) {
         seachConfig.time = {
             "$regex": req.year
+        }
+    }
+    if (req.keyword) {
+        let regexp=new RegExp(req.keyword,'i')
+        seachConfig.description = {
+            "$regex": regexp
         }
     }
     let result = await Timeline_col.aggregate([{

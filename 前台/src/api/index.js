@@ -276,9 +276,25 @@ export const commitDocumentMonth = (params) => {
 export const seachDocumentmonth = (params) => {
     return postRequest(`/document/month/seach`,params)
 }
+
+//--------------------回复---------------------//
+export const replayAdd = (params) => {
+    return postRequest(`/replay/add`,params)
+}
+export const replayUpdate = (params) => {
+    return postRequest(`/replay/update`,params)
+}
+export const replayList = (params) => {
+    return postRequest(`/replay/getList`,params)
+}
+
+
 //--------------------退回---------------------//
 export const callbackDocument = (params) => {
     return postRequest(`/document/callback`,params)
+}
+export const returnDocument = (params) => {
+    return postRequest(`/return/add`,params)
 }
 //-----------------------工作总结--------------------------------//
 

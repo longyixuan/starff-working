@@ -10,11 +10,19 @@
           <div class="layout-logo">员工工时管理系统</div>
           <div class="layout-right">
               {{username}}
+              <span><a href='/msg' style="color: #fff">消息中心</a></span>
               <span @click="modal=true">修改密码</span>
               <span @click="logout">退出</span>
           </div>
         </Menu>
       </Header>
+      <Layout v-if="msgList.length>0">
+        <Alert style="margin-bottom: 0;" type="warning">
+          <div style="display: flex;line-height: 24px;align-items: center;color: #fa795e" v-for="item in msgList" :key="item.id">
+            你有未读消息（发送时间：{{item.replayTime}}，发送人：{{item.fsr}}），<a :href="'/summary/admindetails?id='+item.documentId+'&type='+item.type" @click="readMsg(item.id)">查看</a>。
+          </div>
+        </Alert>
+      </Layout>
       <Layout>
         <Sider hide-trigger :style="{background: '#fff'}">
           <Menu active-name="0" theme="light" width="auto">
@@ -45,13 +53,13 @@
             <MenuItem name="5" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
-            <MenuItem name="8" to="/link-search"><Icon type="md-search" />异常链接排查</MenuItem>
+            <!-- <MenuItem name="8" to="/link-search"><Icon type="md-search" />异常链接排查</MenuItem> -->
             <!-- <MenuItem name="8" to="/imagelist"><Icon type="md-images" />截图管理</MenuItem> -->
           </Menu>
         </Sider>
         <Layout :style="{padding: '24px'}">
           <Content :style="{minHeight: '280px'}">
-              <router-view></router-view>
+            <router-view></router-view>
           </Content>
         </Layout>
       </Layout>
@@ -69,7 +77,11 @@
 </template>
 
 <script>
-import { editPassword } from "@/api/index";
+import {
+  editPassword,
+  replayList,
+  replayUpdate
+} from "@/api/index";
 export default {
   data() {
     return {
@@ -89,6 +101,9 @@ export default {
     },
     menuTheme() {
       return this.$store.state.app.menuTheme;
+    },
+    msgList() {
+      return this.$store.state.msg.wdxx;
     }
   },
   methods: {
@@ -109,11 +124,15 @@ export default {
           this.$Message.success(res.msg);
         }
       })
+    },
+    readMsg: function(id) {
+      this.$store.dispatch('replayUpdateMsg',{id});
     }
   },
   mounted() {
     this.username = JSON.parse(localStorage.getItem('userInfo')).userName;
     this.type = JSON.parse(localStorage.getItem('userInfo')).type;
+    this.$store.dispatch('getMsgList');
   }
 };
 </script>

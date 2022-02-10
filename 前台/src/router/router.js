@@ -70,6 +70,14 @@ export const appRouter = {
             name: 'home_index', 
             component: () => import('@/views/home/home.vue')
         },
+        { 
+            path: 'msg',
+            meta: {
+                title: '消息中心'
+            }, 
+            name: 'msg', 
+            component: () => import('@/views/msg/msg-list.vue')
+        },
         {
             path: 'department-manage',
             meta: {

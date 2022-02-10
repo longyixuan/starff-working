@@ -51,6 +51,29 @@
                         </tbody>
                     </table>
                 </div>
+                <template v-if="hf.length>0">
+                    <h2 class="summary-view-h2">回复</h2>
+                    <div class="summary-view-content">
+                        <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th>内容</th>
+                                <th width="160">时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in hf">
+                                <td>
+                                    {{item.replayDes}}
+                                </td>
+                                <td>
+                                    {{item.replayTime}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </template>
                 <template v-if="reason!=''">
                     <h2 class="summary-view-h2">退回修改</h2>
                     <div class="summary-view-content">
@@ -79,7 +102,8 @@ export default {
             reason: '',
             submitList: [],
             modelList: [],
-            gzjhList: []
+            gzjhList: [],
+            hf: []
         }
     },
     methods: {
@@ -105,6 +129,7 @@ export default {
                         }
                     }
                     this.gzjhList = res.gzjh;
+                    this.hf = res.hf;
                     if (res.thyy) {
                         this.reason = res.thyy.reason
                     }

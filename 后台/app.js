@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-12-24 09:41:15
+ * @Last Modified time: 2022-02-09 10:40:17
  */
 
 
@@ -103,6 +103,8 @@ const upload_router = require('./routes/api/upload_router');
 const document_router = require('./routes/api/document_router');
 const timeline_router = require('./routes/api/timeline_router');
 const model_router = require('./routes/api/model_router');
+const replay_router = require('./routes/api/replay_router');
+const return_router = require('./routes/api/return_router');
 
 app.use(user_router.routes()).use(user_router.allowedMethods());
 app.use(system_router.routes()).use(system_router.allowedMethods());
@@ -115,12 +117,8 @@ app.use(upload_router.routes()).use(upload_router.allowedMethods());
 app.use(document_router.routes()).use(document_router.allowedMethods());
 app.use(timeline_router.routes()).use(timeline_router.allowedMethods());
 app.use(model_router.routes()).use(model_router.allowedMethods());
-
-// const return_router = require('./routes/api/return_router');
-// app.use(return_router.routes()).use(return_router.allowedMethods());
-
-// const replay_router = require('./routes/api/replay_router');
-// app.use(replay_router.routes()).use(replay_router.allowedMethods());
+app.use(replay_router.routes()).use(replay_router.allowedMethods());
+app.use(return_router.routes()).use(return_router.allowedMethods());
 
 //websockt
 // const server = http.createServer(app.callback())

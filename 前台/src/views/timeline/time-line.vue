@@ -173,7 +173,8 @@ export default {
         let params = {
             year: moment(this.year).format('YYYY'),
             tag: this.tag,
-            system: this.system
+            system: this.system,
+            keyword: this.keyword
         }
 
         getTimelineList(params).then(res => {

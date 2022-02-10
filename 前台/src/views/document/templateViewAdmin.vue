@@ -51,22 +51,59 @@
                         </tbody>
                     </table>
                 </div>
-                <h2 class="summary-view-h2" v-if="type===1">退回修改</h2>
-                <div class="summary-view-content" v-if="type===1">
-                    <Input :disabled="disabled" v-model="reason" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
-                    <Button :disabled="disabled" type="warning" @click="callBackFn">退回</Button>
+                <template v-if="hf.length>0">
+                    <h2 class="summary-view-h2">回复</h2>
+                    <div class="summary-view-content">
+                        <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th>内容</th>
+                                <th width="160">时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in hf">
+                                <td>
+                                    {{item.replayDes}}
+                                </td>
+                                <td>
+                                    {{item.replayTime}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </template>
+                <h2 class="summary-view-h2">退回修改</h2>
+                <div class="summary-view-content">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th width="180">原因</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{reason}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div v-if="type===1" style="margin-top: 20px">
+                <div v-if="type===1" style="margin-top: 20px;text-align: center;">
                     <Button type="warning" style="margin-right: 20px;" @click="tuihui">退回</Button>
-                    <Button type="warning" @click="huifu">回复</Button>
+                    <Button type="warning" ghost @click="huifu">回复</Button>
                 </div>
             </div>
         </div>
         <Modal v-model="tModal" title="退回" @on-ok="onOkT">
-            <Input v-model="tdes" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
+            <Input v-model="reason" class="marginB-20" type="textarea" :rows="6" placeholder="请填写退回原因"></Input>
         </Modal>
         <Modal v-model="hModal" title="回复" @on-ok="onOkH">
             <Input v-model="hdes" class="marginB-20" type="textarea" :rows="6" placeholder="请填写回复内容"></Input>
+            <div slot="footer">
+                <Button type="text" @click="hModal=false">取消</Button>
+                <Button type="primary" @click="onOkH" :disabled="hdes==''">确定</Button>
+            </div>
         </Modal>
     </Card>
 </template>
@@ -74,9 +111,10 @@
 import {
     detailsDocumentday,
     listModel,
-    callbackDocument
+    callbackDocument,
+    replayAdd,
+    returnDocument
 } from "@/api/index";
-import moment from "moment";
 export default {
     data() {
         return {
@@ -94,7 +132,8 @@ export default {
             tdes: '',
             submitList: [],
             modelList: [],
-            gzjhList: []
+            gzjhList: [],
+            hf: []
         }
     },
     methods: {
@@ -105,10 +144,33 @@ export default {
             this.hModal = true;
         },
         onOkT() {
-            
+            callbackDocument({
+                documentId: this.$route.query.id,
+                userId: this.commentId,
+                commentId: this.commentId,
+                reason: this.reason,
+                type: this.$route.query.type
+            }).then(res=>{
+                if (res.code===1) {
+                    this.$Message.success('退回成功');
+                    this.disabled = true;
+                } else {
+                    this.$Message.error('退回失败');
+                }
+            })
         },
         onOkH() {
-
+            replayAdd({
+                documentId: this.$route.query.id,
+                fsrId: this.commentId,
+                sjrId: this.userId,
+                replayDes: this.hdes,
+                type: this.$route.query.type
+            }).then(res => {
+                if (res.code == 1) {
+                    this.hModal = false;
+                }
+            });
         },
         filterTitle: function(value) {
             return _.find(this.modelList,['modelId', value]).modelName;
@@ -135,6 +197,7 @@ export default {
                         }
                     }
                     this.gzjhList = res.gzjh;
+                    this.hf = res.hf;
                     if (res.thyy) {
                         this.reason = res.thyy.reason
                     }

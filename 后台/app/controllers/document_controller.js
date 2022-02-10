@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-10-20 10:04:34
+ * @Last Modified time: 2022-02-10 09:00:48
  */
 
 const fs = require('fs');
@@ -17,6 +17,7 @@ const Documentnext_col = require('./../models/documentNext');
 const Callback_col = require('./../models/callback');
 const WorkTime_col = require('./../models/workTime');
 const Status_col = require('./../models/status');
+const Replay_col = require('./../models/replay');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
@@ -476,6 +477,9 @@ const detailsDocumentday = async (ctx) => {
     const thyy = await Callback_col.findOne({
         'documentId': id
     });
+    const hf = await Replay_col.find({
+        'documentId': id
+    });
     const document = await Documentday_col.aggregate([
         {
             $lookup: {
@@ -506,7 +510,7 @@ const detailsDocumentday = async (ctx) => {
                 },
                 order: {
                     $min: '$order'
-                },  
+                },
                 content: {
                     $push: {
                         documentId: '$documentId',
@@ -533,7 +537,8 @@ const detailsDocumentday = async (ctx) => {
         msg: '请求成功',
         data: document,
         gzjh: gzjh,
-        thyy: thyy
+        thyy: thyy,
+        hf: hf
     }
 }
 
