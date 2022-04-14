@@ -4,3 +4,4 @@
 - 进入目录：cd /sjb/worktime/
 - 启动前台服务（npm start &），如遇到端口占用先杀死端口再启动（查看占用情况lsof -i:3333，杀死进程kill -9 pid）
 - 启动后台服务（pm2 start app.js），如遇到端口占用（查看占用情况lsof -i:3333，杀死进程kill -9 pid）
+- mongodump -h localhost:27017 -d worktime -o /opt/sjb/worktime/server/data/

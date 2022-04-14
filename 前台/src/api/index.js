@@ -325,6 +325,42 @@ export const lockTimeline = (params) => {
 
 //-----------------------系统时间线--------------------------------//
 
+//-----------------------系统同步时间线--------------------------------//
+export const addSysTimeline = (params) => {
+    return postRequest(`/systimeline/add`,params)
+}
+
+export const editSysTimeline = (params) => {
+    return postRequest(`/systimeline/update`,params)
+}
+
+export const getSysTimelineList = (params) => {
+    return postRequest(`/systimeline/list`,params)
+}
+
+export const getSysTimelineDetail = (params) => {
+    return postRequest(`/systimeline/detail`,params)
+}
+
+export const delSysTimeline = (params) => {
+    return postRequest(`/systimeline/delete`,params)
+}
+
+export const backSysTimeline = (params) => { //退回
+    return postRequest(`/systimeline/back`,params)
+}
+
+export const commitSysTimeline = (params) => { //提交
+    return postRequest(`/systimeline/commit`,params)
+}
+
+export const applySysTimeline = (params) => { //同意
+    return postRequest(`/systimeline/apply`,params)
+}
+
+
+//-----------------------系统同步时间线--------------------------------//
+
 //-----------------------标签--------------------------------//
 export const addTag = (params) => {
     return postRequest(`/tag/add`,params)

@@ -7,7 +7,7 @@
     <Layout>
       <Header>
         <Menu mode="horizontal" theme="dark" active-name="1">
-          <div class="layout-logo">员工工时管理系统</div>
+          <div class="layout-logo">设计部工作管理系统</div>
           <div class="layout-right">
               {{username}}
               <span><a href='/msg' style="color: #fff">消息中心</a></span>
@@ -51,6 +51,7 @@
             </Submenu>
             <MenuItem name="4" to="/sys-modal" v-if="type===1"><Icon type="ios-folder-open" />系统模块管理</MenuItem>
             <MenuItem name="5" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>
+            <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem>
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
             <!-- <MenuItem name="8" to="/link-search"><Icon type="md-search" />异常链接排查</MenuItem> -->

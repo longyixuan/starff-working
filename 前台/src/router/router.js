@@ -249,7 +249,7 @@ export const appRouter = {
         { 
             path: 'time-line',
             meta: {
-                title: '时间轴'
+                title: '系统时间线'
             }, 
             name: 'time-line', 
             component: () => import('@/views/timeline/time-line.vue')
@@ -257,7 +257,7 @@ export const appRouter = {
         { 
             path: 'time-line/add',
             meta: {
-                title: '时间轴'
+                title: '系统时间线'
             }, 
             name: 'time-line-add', 
             component: () => import('@/views/timeline/add.vue')
@@ -265,10 +265,34 @@ export const appRouter = {
         { 
             path: 'time-line/edit',
             meta: {
-                title: '时间轴'
+                title: '系统时间线'
             }, 
             name: 'time-line-edit', 
             component: () => import('@/views/timeline/add.vue')
+        },
+        { 
+            path: 'sys-time-line',
+            meta: {
+                title: '系统同步记录'
+            }, 
+            name: 'sys-time-line', 
+            component: () => import('@/views/systimeline/time-line.vue')
+        },
+        { 
+            path: 'sys-time-line/add',
+            meta: {
+                title: '系统同步记录'
+            }, 
+            name: 'sys-time-line-add', 
+            component: () => import('@/views/systimeline/add.vue')
+        },
+        { 
+            path: 'sys-time-line/edit',
+            meta: {
+                title: '系统同步记录'
+            }, 
+            name: 'sys-time-line-edit', 
+            component: () => import('@/views/systimeline/add.vue')
         },
         { 
             path: 'time-line/tag',

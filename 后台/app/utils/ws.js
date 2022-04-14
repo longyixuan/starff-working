@@ -9,10 +9,9 @@ module.exports = wss => {
     };
     wss.on('connection', function connection(ws) {
         ws.on('message', function incoming(message) {
-            // console.log('received: %s', message);
+            ws.send(111111);
             wss.broadcast(message);
-            checking(JSON.parse(message),ws);
-            logger.info(message);
+            console.log('received: %s', message);
         });
         console.log('wss链接已建立');
         // 退出聊天
