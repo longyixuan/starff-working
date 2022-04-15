@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-04-13 12:14:18
+ * @Last Modified time: 2022-04-14 17:17:07
  */
 
 const sysTimeline_col = require('./../models/systimeline');
@@ -119,7 +119,7 @@ const getList = async (ctx, next) => {
         }
     }
     if (req.time) {
-        seachConfig.time = req.time;
+        seachConfig.publishTime = req.time;
     }
     if (req.jira) {
         seachConfig.jira = req.jira;
