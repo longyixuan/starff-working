@@ -361,6 +361,30 @@ export const applySysTimeline = (params) => { //同意
 
 //-----------------------系统同步时间线--------------------------------//
 
+//-----------------------jira完成情况--------------------------------//
+export const addJira = (params) => {
+    return postRequest(`/jira/add`,params)
+}
+
+export const editJira = (params) => {
+    return postRequest(`/jira/update`,params)
+}
+
+export const getJiraList = (params) => {
+    return postRequest(`/jira/list`,params)
+}
+
+export const getJiraDetail = (type,params) => {
+    return postRequest(`/jira/detail/${type}`,params)
+}
+
+
+export const delJira = (params) => {
+    return postRequest(`/jira/delete`,params)
+}
+
+//-----------------------jira完成情况--------------------------------//
+
 //-----------------------标签--------------------------------//
 export const addTag = (params) => {
     return postRequest(`/tag/add`,params)

@@ -61,6 +61,7 @@ export default {
           systemName: _.find(this.sysList,['id',this.system]).title,
           jira: this.jira,
           bz: this.bz,
+          sqsj: moment().format('YYYY-MM-DD'),
           publishTime: this.publishTime?moment(this.publishTime).format('YYYY-MM-DD'):''
         }
         if (this.id) {

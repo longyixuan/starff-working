@@ -70,6 +70,7 @@ export const appRouter = {
             name: 'home_index', 
             component: () => import('@/views/home/home.vue')
         },
+        /*
         { 
             path: 'msg',
             meta: {
@@ -78,6 +79,7 @@ export const appRouter = {
             name: 'msg', 
             component: () => import('@/views/msg/msg-list.vue')
         },
+        */
         {
             path: 'department-manage',
             meta: {
@@ -295,6 +297,22 @@ export const appRouter = {
             component: () => import('@/views/systimeline/add.vue')
         },
         { 
+            path: 'jira-list',
+            meta: {
+                title: 'jira完成情况'
+            }, 
+            name: 'jira', 
+            component: () => import('@/views/jira/list.vue')
+        },
+        { 
+            path: 'jira-count',
+            meta: {
+                title: 'jira完成情况'
+            }, 
+            name: 'jira', 
+            component: () => import('@/views/jira/count.vue')
+        },
+        { 
             path: 'time-line/tag',
             meta: {
                 title: '标签管理'
@@ -310,6 +328,7 @@ export const appRouter = {
             name: 'work-time-count', 
             component: () => import('@/views/home/personal.vue')
         },
+        /*
         { 
             path: 'link-search',
             meta: {
@@ -318,6 +337,7 @@ export const appRouter = {
             name: 'link-search', 
             component: () => import('@/views/link/search.vue')
         }
+        */
     ]
 };
 

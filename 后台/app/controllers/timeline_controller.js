@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-01-26 14:28:18
+ * @Last Modified time: 2022-04-22 16:35:22
  */
 
 const Timeline_col = require('./../models/timeline');
@@ -54,6 +54,9 @@ const getList = async (ctx, next) => {
     let seachConfig = {
         islock: false
     };
+    if (req.userType == '0') {
+        seachConfig.userName = req.userName;
+    }
     let groupConfig = {
         _id: {
             timeStamp: '$timeStamp',

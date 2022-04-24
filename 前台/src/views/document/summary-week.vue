@@ -32,7 +32,7 @@
                 <Button type="primary" @click="merge">合并查看</Button>
                 <Button type="warning" @click="modal=true" style="margin-left: 10px;">合并生成月总结</Button>
             </TabPane>
-            <TabPane label="部门总结" name="part">
+            <TabPane label="部门总结" name="part" v-if="type==1">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Date-picker

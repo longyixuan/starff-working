@@ -16,13 +16,13 @@
           </div>
         </Menu>
       </Header>
-      <Layout v-if="msgList.length>0">
+      <!-- <Layout v-if="msgList.length>0">
         <Alert style="margin-bottom: 0;" type="warning">
           <div style="display: flex;line-height: 24px;align-items: center;color: #fa795e" v-for="item in msgList" :key="item.id">
             你有未读消息（发送时间：{{item.replayTime}}，发送人：{{item.fsr}}），<a :href="'/summary/admindetails?id='+item.documentId+'&type='+item.type" @click="readMsg(item.id)">查看</a>。
           </div>
         </Alert>
-      </Layout>
+      </Layout> -->
       <Layout>
         <Sider hide-trigger :style="{background: '#fff'}">
           <Menu active-name="0" theme="light" width="auto">
@@ -49,13 +49,18 @@
               <MenuItem name="3-2" to="/summary-week">周总结</MenuItem>
               <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
             </Submenu>
+            <Submenu name="9" v-if="type===1">
+              <template slot="title">
+                <Icon type="md-pie"/>jira完成情况
+              </template>
+              <MenuItem name="9-1" to="/jira-list">录入</MenuItem>
+              <MenuItem name="9-2" to="/jira-count">查看</MenuItem>
+            </Submenu>
             <MenuItem name="4" to="/sys-modal" v-if="type===1"><Icon type="ios-folder-open" />系统模块管理</MenuItem>
             <MenuItem name="5" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>
             <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem>
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
-            <!-- <MenuItem name="8" to="/link-search"><Icon type="md-search" />异常链接排查</MenuItem> -->
-            <!-- <MenuItem name="8" to="/imagelist"><Icon type="md-images" />截图管理</MenuItem> -->
           </Menu>
         </Sider>
         <Layout :style="{padding: '24px'}">
@@ -103,9 +108,9 @@ export default {
     menuTheme() {
       return this.$store.state.app.menuTheme;
     },
-    msgList() {
-      return this.$store.state.msg.wdxx;
-    }
+    // msgList() {
+    //   return this.$store.state.msg.wdxx;
+    // }
   },
   methods: {
     toRoute(name) {
@@ -133,7 +138,7 @@ export default {
   mounted() {
     this.username = JSON.parse(localStorage.getItem('userInfo')).userName;
     this.type = JSON.parse(localStorage.getItem('userInfo')).type;
-    this.$store.dispatch('getMsgList');
+    // this.$store.dispatch('getMsgList');
   }
 };
 </script>

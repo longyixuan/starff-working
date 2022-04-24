@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-04-13 11:40:41
+ * @Last Modified time: 2022-04-18 16:34:17
  */
 
 const mongoose = require('mongoose');
@@ -12,6 +12,14 @@ const SysTimelineSchema = new Schema({
     timelineId: {
         type: String,
         required: true
+    },
+    sqsj: {
+        type: String,
+        required: false
+    },
+    sqsjStamp: {
+        type: Date,
+        required: false
     },
     publishTime: { //同步时间
         type: String,

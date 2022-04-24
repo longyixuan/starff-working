@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-04-14 17:17:07
+ * @Last Modified time: 2022-04-22 16:29:57
  */
 
 const sysTimeline_col = require('./../models/systimeline');
@@ -11,6 +11,9 @@ const add = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
     req.timelineId = uuidv1();
+    if (req.sqsj) {
+        req.sqsjStamp = new Date(req.sqsj);
+    }
     await sysTimeline_col.create(req);
     ctx.body = {
         code: 1,
@@ -79,12 +82,19 @@ const apply = async (ctx, next) => {
 const update = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    let query = {
+        jira: req.jira,
+        systemId: req.systemId,
+        systemName: req.systemName,
+        bz: req.bz
+    }
     if (req.publishTime) {
-        req.publishTimeStamp = new Date(req.publishTime);
+        query.publishTime = req.publishTime;
+        query.publishTimeStamp = new Date(req.publishTime);
     }
     await sysTimeline_col.updateOne({
         timelineId: req.id
-    }, req);
+    }, query);
     const result = await sysTimeline_col.findOne({
         timelineId: req.id
     });
@@ -113,6 +123,9 @@ const getList = async (ctx, next) => {
         islock: false,
         applyStatus: true
     };
+    if (req.userType == '0') {
+        seachConfig.userName = req.userName;
+    }
     if (req.system) {
         seachConfig.systemId = {
             '$in': req.system
@@ -124,14 +137,30 @@ const getList = async (ctx, next) => {
     if (req.jira) {
         seachConfig.jira = req.jira;
     }
-    let result = await sysTimeline_col.find(seachConfig).skip((parseInt(req.current) - 1)*20).sort({publishTimeStamp: -1}).limit(20);
-    let dsh = await sysTimeline_col.find(
-        {
-            islock: false,
-            applyStatus: false
-        }
-    );
-    const total = await sysTimeline_col.find().count();
+    let result = await sysTimeline_col.find(seachConfig).sort({publishTimeStamp: -1}).skip((parseInt(req.current) - 1)*20).limit(20);
+    let dsh = [];
+    if (req.userType == '0') {
+        dsh = await sysTimeline_col.find(
+            {
+                islock: false,
+                applyStatus: false,
+                userName: req.userName
+            }
+        ).sort({sqsjStamp: -1});
+    } else {
+        dsh = await sysTimeline_col.find(
+            {
+                islock: false,
+                applyStatus: false
+            }
+        ).sort({sqsjStamp: -1});
+    }
+    let total = 0;
+    if (req.userType == '0') {
+        total = await sysTimeline_col.find({islock: false,applyStatus: true, userName: req.userName}).count();
+    } else {
+        total = await sysTimeline_col.find({islock: false,applyStatus: true}).count();
+    }
     seachConfig.publishTime = '';
     let dbc = await sysTimeline_col.find(seachConfig); //没补充发布时间
     ctx.body = {
@@ -140,7 +169,8 @@ const getList = async (ctx, next) => {
         data: result,
         dsh: dsh,
         dbc: dbc,
-        total: total
+        total: total,
+        seachConfig: seachConfig
     };
 }
 

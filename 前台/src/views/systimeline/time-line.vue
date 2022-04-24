@@ -56,7 +56,7 @@
                         <div v-html="row.bz" style="white-space: pre-line;word-break: break-all;font-size: 14px;line-height: 1.5;"></div>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="updateTimeline(row.timelineId,index)">编辑</Button>
+                        <Button :disabled="row.publishTime!=''" type="primary" size="small" style="margin-right: 5px" @click="updateTimeline(row.timelineId,index)">编辑</Button>
                     </template>
                 </Table>
                 <Row type="flex" justify="end" class="page" style="margin-top: 10px;">
@@ -123,6 +123,12 @@ export default {
                 align: 'center'
             },
             {
+                title: '申请时间',
+                key: 'sqsj',
+                width: 150,
+                align: 'center'
+            },
+            {
                 title: '已上报',
                 slot: 'commitStatus',
                 width: 80,
@@ -131,7 +137,7 @@ export default {
             {
                 title: '上报时间',
                 key: 'commitTime',
-                width: 140,
+                width: 150,
                 align: 'center'
             },
             {
@@ -212,6 +218,8 @@ export default {
             time: this.time?moment(this.time).format('YYYY-MM-DD'):'',
             system: this.system,
             jira: this.jira,
+            userType: JSON.parse(localStorage.getItem('userInfo')).type,
+            userName: JSON.parse(localStorage.getItem('userInfo')).nickName,
             current: this.current
         }
 

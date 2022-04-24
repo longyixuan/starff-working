@@ -31,7 +31,7 @@
                 </Table>
                 <Button type="primary" @click="merge">合并查看</Button>
             </TabPane>
-            <TabPane label="部门总结" name="part">
+            <TabPane label="部门总结" name="part" v-if="type==1">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Date-picker

@@ -172,6 +172,8 @@ export default {
       getlist() { //获取列表
         let params = {
             year: moment(this.year).format('YYYY'),
+            userType: JSON.parse(localStorage.getItem('userInfo')).type,
+            userName: JSON.parse(localStorage.getItem('userInfo')).nickName,
             tag: this.tag,
             system: this.system,
             keyword: this.keyword
