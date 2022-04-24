@@ -1,5 +1,8 @@
 <style lang="less">
 @import "./list.less";
+.error {
+    color: #ed4014;
+}
 </style>
 
 <template>
@@ -31,11 +34,11 @@
                 </template>
                 <template slot-scope="{ row, index }" slot="bug">
                     <Input placeholder="bug数(已完成)" type="text" number v-model="data[index].bug" v-if="editStatus"/>
-                    <span v-else>{{row.bug}}</span>
+                    <span v-else :class="{'error': row.bug>row.total}">{{row.bug}}</span>
                 </template>
                 <template slot-scope="{ row, index }" slot="total1">
                     <Input placeholder="jira总数(未完成)" type="text" number v-model="data[index].total1" v-if="editStatus"/>
-                    <span v-else>{{row.total1}}</span>
+                    <span v-else :class="{'error': row.bug1>row.total1}">{{row.total1}}</span>
                 </template>
                 <template slot-scope="{ row, index }" slot="bug1">
                     <Input placeholder="bug数(未完成)" type="text" number v-model="data[index].bug1" v-if="editStatus"/>
@@ -265,8 +268,10 @@
                                 )
                             }
                         }
-                        this.data = data;
-                        this.$Message.success('查询成功');
+                        this.data = _.sortBy(data, function (o) {
+                            return -o.total;
+                        });
+                        this.$Message.success('查询成功')
                     }
                 });
             }

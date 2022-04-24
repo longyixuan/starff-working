@@ -10,7 +10,20 @@
                 jira完成情况
             </template>
             <Tabs type="card" value="name1">
-                <TabPane label="按人查看" name="name1">
+                <TabPane label="按月查看" name="name1">
+                    <div style="margin-bottom: 20px;" class="clearfix">
+                        <Select filterable v-model="searchData.month" style="width: 160px;margin-right:10px;" placeholder="请选择月份">
+                            <Option value="全年">全年</Option>
+                            <Option :value="item" :key="item" v-for="item in monthList">{{parseInt(item)}}月</Option>
+                        </Select>
+                        <Button type="primary" style="margin-right: 10px;" @click="searchM">查询</Button>
+                    </div>
+                    <Divider>已完成</Divider>
+                    <div class="map" id="map-finshed-m"></div>
+                    <Divider>未完成</Divider>
+                    <div class="map" id="map-unfinsed-m"></div>
+                </TabPane>
+                <TabPane label="按人查看" name="name2">
                     <div style="margin-bottom: 20px;" class="clearfix">
                         <Select filterable clearable v-model="searchData.userName" style="width: 160px;margin-right:10px;" placeholder="请选择姓名">
                             <Option :value="item.userName" :key="item.userName" v-for="item in userList">{{item.nickName}}</Option>
@@ -21,18 +34,6 @@
                     <div class="map" id="map-finshed"></div>
                     <Divider>未完成</Divider>
                     <div class="map" id="map-unfinsed"></div>
-                </TabPane>
-                <TabPane label="按月查看" name="name2">
-                    <div style="margin-bottom: 20px;" class="clearfix">
-                        <Select filterable clearable v-model="searchData.month" style="width: 160px;margin-right:10px;" placeholder="请选择月份">
-                            <Option :value="item" :key="item" v-for="item in monthList">{{parseInt(item)}}月</Option>
-                        </Select>
-                        <Button type="primary" style="margin-right: 10px;" @click="searchM">查询</Button>
-                    </div>
-                    <Divider>已完成</Divider>
-                    <div class="map" id="map-finshed-m"></div>
-                    <Divider>未完成</Divider>
-                    <div class="map" id="map-unfinsed-m"></div>
                 </TabPane>
             </Tabs>
         </Card>
@@ -67,7 +68,7 @@
                 editIndex: -1,
                 searchData: {
                     userName: '',
-                    month: '',
+                    month: '全年',
                     isFinshed: true
                 },
                 columns: [
@@ -248,7 +249,7 @@
             },
             searchM() {
                 let searchData = {
-                    month: this.searchData.month,
+                    month: this.searchData.month==='全年'?'':this.searchData.month,
                     year: this.year
                 };
                 this.option.series[0].data = [];
@@ -285,6 +286,7 @@
                 setStore('year', moment().format('YYYY'));
             }
             this.getUserList();
+            this.searchM();
         }
     }
 </script>
