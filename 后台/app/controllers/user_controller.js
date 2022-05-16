@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-09-02 09:09:41
+ * @Last Modified time: 2022-05-16 19:06:04
  */
 
 const config = require('./../../config');
@@ -62,7 +62,10 @@ const login = async (ctx, next) => {
       msg: '登录成功',
       data: user,
       token: jsonwebtoken.sign({
-          data: user,
+          data: {
+            userId: user.userId,
+            userName: user.userName
+          },
           // 设置 token 过期时间
           exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24), // 60 seconds * 60 minutes = 1 hour
         }, jwtSecret)

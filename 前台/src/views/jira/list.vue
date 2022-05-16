@@ -13,10 +13,9 @@
                 jira完成情况
             </template>
             <div style="margin-bottom: 20px;" class="clearfix">
-                <Select filterable v-model="searchData.month" style="width: 120px;margin-right:10px;" placeholder="请选择月份">
+                <Select filterable v-model="searchData.month" style="width: 120px;margin-right:10px;" placeholder="请选择月份" @on-change="seach">
                     <Option :value="item" :key="item" v-for="item in monthList">{{parseInt(item)}}月</Option>
                 </Select>
-                <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
                 <Button type="primary" @click="submit" style="float: right;" v-if="editStatus">保存</Button>
                 <Button type="primary" @click="editStatus = !editStatus" style="float: right;" v-else>编辑</Button>
                 <!-- <Button type="primary" @click="add" style="float: right;">新增</Button> -->
@@ -156,10 +155,24 @@
             getNickName(userName) {
                 return this.userList.length===0?'':_.find(this.userList, ['userName', userName]).nickName;
             },
+            valid() {
+                let flag = false;
+                for (let i = 0; i< this.data.length;i++) {
+                    if (this.data[i].bug>this.data[i].total || this.data[i].bug1>this.data[i].total1) {
+                        flag = true;
+                        break;
+                    }
+                }
+                return flag;
+            },
             submit() {
+                if (this.valid()) {
+                    this.$Message.error('数据中存在bug数大于jira总数');
+                    return;
+                }
                 addJira({
                     year: moment(this.date).format('YYYY'),
-                    month: moment(this.date).format('MM'),
+                    month: this.searchData.month,
                     list: this.data
                 }).then(res => {
                     if (res.code === 1) {
@@ -167,31 +180,6 @@
                         this.editStatus = false;
                     }
                 });
-                // let postData = {
-                //     userName: this.userName,
-                //     year: moment(this.date).format('YYYY'),
-                //     month: moment(this.date).format('MM'),
-                //     isFinshed: this.isFinshed,
-                //     total: this.total,
-                //     bug: this.bug,
-                //     task: this.task,
-                // }
-                // if (this.editIndex === -1) {
-                //     addJira(postData).then(res => {
-                //         if (res.code === 1) {
-                //             this.$Message.success('操作成功');
-                //             this.modal = false;
-                //         }
-                //     });
-                // } else {
-                //     postData.jiraId = this.jiraId;
-                //     editJira(postData).then(res => {
-                //         if (res.code === 1) {
-                //             this.$Message.success('操作成功');
-                //             this.modal = false;
-                //         }
-                //     });
-                // }
             },
             getUserList() {
                 var _this =this;
@@ -268,9 +256,7 @@
                                 )
                             }
                         }
-                        this.data = _.sortBy(data, function (o) {
-                            return -o.total;
-                        });
+                        this.data = data;
                         this.$Message.success('查询成功')
                     }
                 });

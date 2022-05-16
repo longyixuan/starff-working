@@ -1,21 +1,23 @@
 <template>
+<div class="regist">
+  <div class="login-warp">
+    <div class="login-left"></div>
+    <div class="login-right">
   <Row
     type="flex"
     justify="center"
     align="middle"
-    class="regist"
     @keydown.enter.native="submitRegist"
   >
-    <Col :xs="{span:22}" style="width: 368px;">
+    <Col style="width: 368px;">
       <Row class="header">
-        <img src="../assets/xboot.png" width="360px">
+        设计部工作管理系统
       </Row>
 
       <Alert type="error" show-icon v-if="error">{{errorMsg}}</Alert>
 
       <Row class="regist-form">
         <Form ref="registForm" :model="form" :rules="rules" class="form">
-          <span class="regist-title">注册</span>
           <FormItem prop="userName">
             <Input
               v-model="form.userName"
@@ -73,6 +75,9 @@
       </Row>
     </Col>
   </Row>
+  </div>
+  </div>
+  </div>
 </template>
 
 <script>

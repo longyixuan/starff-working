@@ -1,8 +1,12 @@
 <template>
-    <Row type="flex" justify="center" align="middle" class="regist" @keydown.enter="submitRegist">
+<div class="regist">
+  <div class="login-warp">
+    <div class="login-left"></div>
+    <div class="login-right">
+    <Row type="flex" justify="center" align="middle" @keydown.enter="submitRegist">
         <Col :xs="{span:22}" style="width: 368px;">
         <Row class="header">
-            <img src="../assets/xboot.png" width="360px" />
+            设计部工作管理系统
         </Row>
     
         <Row class="success">
@@ -19,6 +23,9 @@
         </Row>
         </Col>
     </Row>
+    </div>
+  </div>
+  </div>
 </template>
 
 <script>

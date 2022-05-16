@@ -58,7 +58,7 @@
             </Submenu>
             <MenuItem name="4" to="/sys-modal" v-if="type===1"><Icon type="ios-folder-open" />系统模块管理</MenuItem>
             <MenuItem name="5" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>
-            <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem>
+            <!-- <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem> -->
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>

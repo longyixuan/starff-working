@@ -1,21 +1,41 @@
+.login-warp{
+    margin: 0 auto;
+    display: flex;
+    width: 1180px;
+    height: 588px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    .login-left {
+        width: 590px;
+        height: 588px;
+        background: url('../assets/bg2.jpg') center center no-repeat;
+    }
+    .login-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
 .regist {
     height: 100vh;
     background: url('../assets/bg.jpg');
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    background: url('../assets/bg.jpg');
     .header {
-        margin-top: 5vh;
-        margin-bottom: 4vh;
         text-align: center;
-        .description {
-            font-size: 14px;
-            color: rgba(0, 0, 0, .45);
-            margin-top: 1vh;
-        }
+        margin-bottom: 56px;
+        font-size: 32px;
+        font-weight: 700;
+        color: #000000;
+        line-height: 45px;
     }
     .regist-form {
-        margin-bottom: 6vh;
     }
     .form {
-        padding-top: 1vh;
         .regist-title {
             display: block;
             font-size: 16px;

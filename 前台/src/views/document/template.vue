@@ -9,6 +9,9 @@
             </template>
             <Input v-model="title" class="summary-input marginB-20" placeholder="样例：xxxx年xx月月终工作总结（员工姓名）"/>
             <DatePicker v-model="time" format="yyyy年MM月dd日" @on-change="onChange" type="date" placeholder="工作总结时间"></DatePicker>
+            <Select v-if="loginName=='admin'" @on-change="onChangeUser" filterable clearable v-model="userName" style="width: 160px;margin-left:10px;" placeholder="请选择姓名">
+                <Option :value="item.userName" :key="item.userName" v-for="item in userList">{{item.nickName}}</Option>
+            </Select>
         </Card>
         <Card title="工作总结" class="marginB-20">
             <div class="summary-template" v-for="(summary,index) in submitList">
@@ -91,6 +94,7 @@
 </template>
 <script>
     import {
+        getAllUserData,
         getSystemList,
         addDocumentday,
         detailsDocumentday,
@@ -117,7 +121,12 @@
                 time: new Date(),
                 modalList: [],
                 systems: JSON.parse(localStorage.getItem('userInfo')).systems,
-                submitList: []
+                submitList: [],
+                userList: [],
+                loginName: '',
+                userName: '',
+                userId: '',
+                nickName: ''
             }
         },
         methods: {
@@ -144,7 +153,7 @@
             addModalName() {
                 if (this.value=='') {
                     this.$Message.error('请填写模块名称');
-                    return; 
+                    return;
                 }
                 let modalList = _.find(this.sysList,['id',this.id]).modal;
                 modalList.push(this.value)
@@ -164,6 +173,11 @@
             onChange(value) {
                 this.title = `设计部${value}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
             },
+            onChangeUser(value) {
+                this.userId = _.find(this.userList,['userName',value]).userId;
+                this.nickName = _.find(this.userList,['userName',value]).nickName;
+                this.title = `设计部${moment(this.time).format('YYYY年MM月DD日')}工作小结（${this.nickName}）`
+            },
             setPostData(){
                 var result = [];
                 var userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -172,9 +186,9 @@
                         result.push({
                             documentId: this.documentId,
                             documentName: this.title,
-                            userId: userInfo.userId,
-                            userName: userInfo.userName,
-                            nickName: userInfo.nickName,
+                            userId: this.loginName=='admin'?this.userId:userInfo.userId,
+                            userName: this.loginName=='admin'?this.userName:userInfo.userName,
+                            nickName: this.loginName=='admin'?this.nickName:userInfo.nickName,
                             year: moment(this.time).format('YYYY'),
                             month: moment(this.time).format('MM'),
                             day: moment(this.time).format('DD'),
@@ -332,6 +346,14 @@
                 if (this.$route.query.type == 'day') {
                     this.title = `设计部${moment().format('YYYY年MM月DD日')}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
                 }
+            }
+            this.loginName = JSON.parse(localStorage.getItem('userInfo')).userName;
+            if (this.loginName=='admin') {
+                getAllUserData().then(res => {
+                    if (res.code === 1) {
+                        this.userList = res.data;
+                    }
+                });
             }
         }
     }

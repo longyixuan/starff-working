@@ -1,15 +1,20 @@
 <style lang="less">
 @import "./list.less";
+.jira .title {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
 </style>
 
 <template>
-    <div>
+    <div class="jira">
         <Card style="min-height: 400px">
             <template slot="title">
                 <DatePicker @on-change="yearChange" :value="year" style="width: 80px;margin-right:10px;" type="year"></DatePicker>
                 jira完成情况
             </template>
-            <Tabs type="card" value="name1">
+            <Tabs type="card" value="name1" :animated="false">
                 <TabPane label="按月查看" name="name1">
                     <div style="margin-bottom: 20px;" class="clearfix">
                         <Select filterable v-model="searchData.month" style="width: 160px;margin-right:10px;" placeholder="请选择月份">
@@ -18,10 +23,28 @@
                         </Select>
                         <Button type="primary" style="margin-right: 10px;" @click="searchM">查询</Button>
                     </div>
-                    <Divider>已完成</Divider>
-                    <div class="map" id="map-finshed-m"></div>
-                    <Divider>未完成</Divider>
-                    <div class="map" id="map-unfinsed-m"></div>
+                    <Divider style="font-weight: 700">已完成（jira总数：{{totalNumM+totalNumM1+bugNumM+bugNumM1}}，任务数：{{totalNumM+totalNumM1}}，bug数：{{bugNumM+bugNumM1}}）</Divider>
+                        <Row>
+                            <Col span="12">
+                                <div class="title">jira总数：{{totalNumM+bugNumM}}，任务数：{{totalNumM}}，bug数：{{bugNumM}}</div>
+                                <div class="map" id="map-finshed-m"></div>
+                            </Col>
+                            <Col span="12">
+                                <div class="title">jira总数：{{totalNumM1+bugNumM1}}，任务数：{{totalNumM1}}，bug数：{{bugNumM1}}</div>
+                                <div class="map" id="map-finshed-m1"></div>
+                            </Col>
+                        </Row>
+                    <Divider style="font-weight: 700">未完成（jira总数：{{total1NumM+total1NumM1+bug1NumM+bug1NumM1}}，任务数：{{total1NumM+total1NumM1}}，bug数：{{bug1NumM+bug1NumM1}}）</Divider>
+                        <Row>
+                            <Col span="12">
+                                <div class="title">jira总数：{{total1NumM+bug1NumM}}，任务数：{{total1NumM}}，bug数：{{bug1NumM}}</div>
+                                <div class="map" id="map-unfinsed-m"></div>
+                            </Col>
+                            <Col span="12">
+                                <div class="title">jira总数：{{total1NumM1+bug1NumM1}}，任务数：{{total1NumM1}}，bug数：{{bug1NumM1}}</div>
+                                <div class="map" id="map-unfinsed-m1"></div>
+                            </Col>
+                        </Row>
                 </TabPane>
                 <TabPane label="按人查看" name="name2">
                     <div style="margin-bottom: 20px;" class="clearfix">
@@ -30,9 +53,9 @@
                         </Select>
                         <Button type="primary" style="margin-right: 10px;" @click="searchP">查询</Button>
                     </div>
-                    <Divider>已完成</Divider>
+                    <Divider style="font-weight: 700">已完成（jira总数：{{totalNumP+bugNumP}}，任务数：{{totalNumP}}，bug数：{{bugNumP}}）</Divider>
                     <div class="map" id="map-finshed"></div>
-                    <Divider>未完成</Divider>
+                    <Divider style="font-weight: 700">未完成（jira总数：{{total1NumP+bug1NumP}}，任务数：{{total1NumP}}，bug数：{{bug1NumP}}）</Divider>
                     <div class="map" id="map-unfinsed"></div>
                 </TabPane>
             </Tabs>
@@ -59,6 +82,10 @@
                 jiraId: '',
                 userList: [],
                 monthList: ['01', '02', '03', '04', '05','06', '07', '08', '09', '10', '11', '12'],
+                userListSj: ['yanq', 'gaos', 'changxq', 'sunl', 'cuiyh'], //设计
+                userListSjName: ['崔永辉', '孙玲', '畅雪琦', '高爽', '颜情'], //设计
+                userListQd: ['wangtl', 'wangzhen', 'guoxq', 'weij', 'mayx', 'jiaxd', 'hanwm', 'yinxl', 'wangly', 'liugw'], // 前端
+                userListQdName: ['卫杰', '马艳雄', '尹晓龙', '王利英', '贾晓东', '韩文明', '郭晓琼', '王振', '王天乐', '刘国威'],
                 userName: '',
                 date: new Date(),
                 total: 0,
@@ -71,6 +98,18 @@
                     month: '全年',
                     isFinshed: true
                 },
+                bugNumP: 0,
+                bug1NumP: 0,
+                totalNumP: 0,
+                total1NumP: 0,
+                bugNumM: 0,
+                bug1NumM: 0,
+                totalNumM: 0,
+                total1NumM: 0,
+                bugNumM1: 0,
+                bug1NumM1: 0,
+                totalNumM1: 0,
+                total1NumM1: 0,
                 columns: [
                     {
                         title: '姓名',
@@ -228,6 +267,11 @@
                         let mapUnFinshed = echarts.init(document.getElementById("map-unfinsed"));
                         let result = {bug: [], total: [], bug1: [], total1: []};
                         this.option.xAxis[0].data = this.monthList;
+                        var _this = this;
+                        _this.bugNumP = 0;
+                        _this.bug1NumP = 0;
+                        _this.totalNumP = 0;
+                        _this.total1NumP = 0;
                         this.monthList.forEach(element => {
                             let temp = _.find(res.data,function(o) {
                                 return o.month == element;
@@ -236,6 +280,10 @@
                             result.bug.push(temp?temp.bug:0);
                             result.total1.push(temp?temp.total1:0);
                             result.bug1.push(temp?temp.bug1:0);
+                            _this.bugNumP+=(temp?temp.bug:0);
+                            _this.bug1NumP+=(temp?temp.bug1:0);
+                            _this.totalNumP+=(temp?temp.total:0);
+                            _this.total1NumP+=(temp?temp.total1:0);
                         });
                         this.option.series[0].data = result.total;
                         this.option.series[1].data = result.bug;
@@ -250,22 +298,72 @@
             searchM() {
                 let searchData = {
                     month: this.searchData.month==='全年'?'':this.searchData.month,
-                    year: this.year
+                    year: this.year,
+                    userListSj: this.userListSj, //设计
+                    userListQd: this.userListQd
                 };
                 this.option.series[0].data = [];
                 this.option.series[1].data  = [];
+                var _this = this;
+                _this.bugNumM = 0;
+                _this.bug1NumM = 0;
+                _this.totalNumM = 0;
+                _this.total1NumM = 0;
+                _this.bugNumM1 = 0;
+                _this.bug1NumM1 = 0;
+                _this.totalNumM1 = 0;
+                _this.total1NumM1 = 0;
                 getJiraDetail('month', searchData).then(res => {
                     if (res.code === 1) {
                         this.$Message.success('操作成功');
                         let mapFinshed = echarts.init(document.getElementById("map-finshed-m"));
                         let mapUnFinshed = echarts.init(document.getElementById("map-unfinsed-m"));
-                        this.option.xAxis[0].data = ['前端', '设计'];
-                        this.option.series[0].data = [res.data.qd?res.data.qd.total:0,res.data.sj?res.data.sj.total:0];
-                        this.option.series[1].data = [res.data.qd?res.data.qd.bug:0,res.data.sj?res.data.sj.bug:0];
+                        let mapFinshed1 = echarts.init(document.getElementById("map-finshed-m1"));
+                        let mapUnFinshed1 = echarts.init(document.getElementById("map-unfinsed-m1"));
+                        let result = {bug: [], total: [], bug1: [], total1: []};
+                        this.option.xAxis[0].data = this.userListSjName;
+                        this.userListSjName.forEach(element => {
+                            let temp = _.find(res.data.sj,function(o) {
+                                return o.nickName == element;
+                            });
+                            result.total.push(temp?temp.total:0);
+                            result.bug.push(temp?temp.bug:0);
+                            result.total1.push(temp?temp.total1:0);
+                            result.bug1.push(temp?temp.bug1:0);
+                            _this.bugNumM+=(temp?temp.bug:0);
+                            _this.bug1NumM+=(temp?temp.bug1:0);
+                            _this.totalNumM+=(temp?temp.total:0);
+                            _this.total1NumM+=(temp?temp.total1:0);
+                        });
+                        this.option.series[0].data = result.total;
+                        this.option.series[1].data = result.bug;
                         mapFinshed.setOption(this.option);
-                        this.option.series[0].data = [res.data.qd?res.data.qd.total1:0,res.data.sj?res.data.sj.total1:0];
-                        this.option.series[1].data = [res.data.qd?res.data.qd.bug1:0,res.data.sj?res.data.sj.bug1:0];
+                        this.option.series[0].data = result.total1;
+                        this.option.series[1].data = result.bug1;
                         mapUnFinshed.setOption(this.option);
+                        this.option.xAxis[0].data = [];
+                        let result1 = {bug: [], total: [], bug1: [], total1: []};
+                        this.option.xAxis[0].data = this.userListQdName;
+                        this.userListQdName.forEach(element => {
+                            let temp = _.find(res.data.qd,function(o) {
+                                return o.nickName == element;
+                            });
+                            result1.total.push(temp?temp.total:0);
+                            result1.bug.push(temp?temp.bug:0);
+                            result1.total1.push(temp?temp.total1:0);
+                            result1.bug1.push(temp?temp.bug1:0);
+                            _this.bugNumM1+=(temp?temp.bug:0);
+                            _this.bug1NumM1+=(temp?temp.bug1:0);
+                            _this.totalNumM1+=(temp?temp.total:0);
+                            _this.total1NumM1+=(temp?temp.total1:0);
+                        });
+                        this.option.series[0].data = result1.total;
+                        this.option.series[1].data = result1.bug;
+                        mapFinshed1.setOption(this.option);
+                        this.option.series[0].data = result1.total1;
+                        this.option.series[1].data = result1.bug1;
+                        console.log(this.option)
+                        mapUnFinshed1.setOption(this.option);
 
                     }
                 });
@@ -273,7 +371,9 @@
             getUserList() {
                 getAllUserData().then(res => {
                     if (res.code === 1) {
-                        this.userList = res.data;
+                        this.userList = _.filter(res.data, function(o) {
+                            return o.type===0;
+                        });
                     }
                 });
             }

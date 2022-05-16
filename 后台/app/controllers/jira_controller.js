@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-04-24 12:00:57
+ * @Last Modified time: 2022-05-05 10:59:18
  */
 
 const uuidv1 = require('uuid/v1');
@@ -149,9 +149,9 @@ const getDetailP = async (ctx, next) => {
                         nickName: {$arrayElemAt:["$user_info.nickName",0]},
                         year: '$year',
                         month: '$month',
-                        total: '$total',
+                        total: {'$subtract':['$total','$bug']},
                         bug: '$bug',
-                        total1: '$total1',
+                        total1: {'$subtract':['$total1','$bug1']},
                         bug1: '$bug1',
                     }
                 }
@@ -184,8 +184,8 @@ const getDetailP = async (ctx, next) => {
 const getDetailM = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    const userListSj = ['yanq', 'gaos', 'changxq', 'lugp', 'sunl', 'cuiyh']; //设计
-    const userListQd = ['wangtl', 'wangzhen', 'guoxq', 'weij', 'mayx', 'jiaxd', 'hanwm', 'yinxl', 'wangly']; // 前端
+    const userListSj = req.userListSj;
+    const userListQd = req.userListQd;
     let seachConfig = {
         year: req.year
     };
@@ -194,6 +194,14 @@ const getDetailM = async (ctx, next) => {
     } else { //全年
     }
     const sj = await jira_col.aggregate([
+        {
+            $lookup: {
+                from: "user",
+                localField: "userName",
+                foreignField: "userName",
+                as: "user_info"
+            }
+        },
         {
             $match: {
                 ...seachConfig,
@@ -205,7 +213,16 @@ const getDetailM = async (ctx, next) => {
         },
         {
             $group: {
-                _id: null,
+                _id: {
+                    userName: '$userName',
+                    user_info: '$user_info'
+                },
+                content: {
+                    $push: {
+                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                        userName: '$userName'
+                    }
+                },
                 total: {
                     $sum: '$total'
                 },
@@ -222,11 +239,25 @@ const getDetailM = async (ctx, next) => {
         },
         {
             $project: {
-                _id: 0
+                _id: 0,
+                userName: {$arrayElemAt:["$content.userName",0]},
+                nickName: {$arrayElemAt:["$content.nickName",0]},
+                total: {'$subtract':['$total','$bug']},
+                bug: '$bug',
+                total1: {'$subtract':['$total1','$bug1']},
+                bug1: '$bug1'
             }
         }
     ]);
     const qd = await jira_col.aggregate([
+        {
+            $lookup: {
+                from: "user",
+                localField: "userName",
+                foreignField: "userName",
+                as: "user_info"
+            }
+        },
         {
             $match: {
                 ...seachConfig,
@@ -238,7 +269,16 @@ const getDetailM = async (ctx, next) => {
         },
         {
             $group: {
-                _id: null,
+                _id: {
+                    userName: '$userName',
+                    user_info: '$user_info'
+                },
+                content: {
+                    $push: {
+                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                        userName: '$userName'
+                    }
+                },
                 total: {
                     $sum: '$total'
                 },
@@ -255,121 +295,22 @@ const getDetailM = async (ctx, next) => {
         },
         {
             $project: {
-                _id: 0
+                _id: 0,
+                userName: {$arrayElemAt:["$content.userName",0]},
+                nickName: {$arrayElemAt:["$content.nickName",0]},
+                total: {'$subtract':['$total','$bug']},
+                bug: '$bug',
+                total1: {'$subtract':['$total1','$bug1']},
+                bug1: '$bug1'
             }
         }
     ]);
-    // const finshed = await jira_col.aggregate([
-    //     {
-    //         $lookup: {
-    //             from: "user",
-    //             localField: "userName",
-    //             foreignField: "userName",
-    //             as: "user_info"
-    //         }
-    //     },
-    //     {
-    //         $match: {...req, ...{isFinshed: true}}
-    //     },
-    //     {
-    //         $group: {
-    //             _id: {
-    //                 userName: '$userName',
-    //                 user_info: '$user_info'
-    //             },
-    //             content: {
-    //                 $push: {
-    //                     jiraId: '$jiraId',
-    //                     userId: '$userId',
-    //                     userName: '$userName',
-    //                     nickName: {$arrayElemAt:["$user_info.nickName",0]},
-    //                     year: '$year',
-    //                     month: '$month',
-    //                     isFinshed: '$isFinshed',
-    //                     total: '$total',
-    //                     bug: '$bug',
-    //                     task: '$task'
-    //                 }
-    //             }
-    //         }
-    //     },
-    //     {
-    //         $project: {
-    //             _id: 0,
-    //             jiraId: {$arrayElemAt:["$content.jiraId",0]},
-    //             userId: {$arrayElemAt:["$content.userId",0]},
-    //             userName: {$arrayElemAt:["$content.userName",0]},
-    //             nickName: {$arrayElemAt:["$content.nickName",0]},
-    //             year: {$arrayElemAt:["$content.year",0]},
-    //             month: {$arrayElemAt:["$content.month",0]},
-    //             isFinshed: {$arrayElemAt:["$content.isFinshed",0]},
-    //             total: {$arrayElemAt:["$content.total",0]},
-    //             bug: {$arrayElemAt:["$content.bug",0]},
-    //             task: {$arrayElemAt:["$content.task",0]},
-    //         }
-    //     },
-    //     {
-    //         $sort: {
-    //             'total': -1
-    //         }
-    //     }
-    // ]);
-    // const unfinshed = await jira_col.aggregate([
-    //     {
-    //         $lookup: {
-    //             from: "user",
-    //             localField: "userName",
-    //             foreignField: "userName",
-    //             as: "user_info"
-    //         }
-    //     },
-    //     {
-    //         $match: {...req, ...{isFinshed: false}}
-    //     },
-    //     {
-    //         $group: {
-    //             _id: {
-    //                 userName: '$userName',
-    //                 user_info: '$user_info'
-    //             },
-    //             content: {
-    //                 $push: {
-    //                     jiraId: '$jiraId',
-    //                     userId: '$userId',
-    //                     userName: '$userName',
-    //                     nickName: {$arrayElemAt:["$user_info.nickName",0]},
-    //                     year: '$year',
-    //                     month: '$month',
-    //                     isFinshed: '$isFinshed',
-    //                     total: '$total',
-    //                     bug: '$bug',
-    //                     task: '$task'
-    //                 }
-    //             }
-    //         }
-    //     },
-    //     {
-    //         $project: {
-    //             _id: 0,
-    //             jiraId: {$arrayElemAt:["$content.jiraId",0]},
-    //             userId: {$arrayElemAt:["$content.userId",0]},
-    //             userName: {$arrayElemAt:["$content.userName",0]},
-    //             nickName: {$arrayElemAt:["$content.nickName",0]},
-    //             year: {$arrayElemAt:["$content.year",0]},
-    //             month: {$arrayElemAt:["$content.month",0]},
-    //             isFinshed: {$arrayElemAt:["$content.isFinshed",0]},
-    //             total: {$arrayElemAt:["$content.total",0]},
-    //             bug: {$arrayElemAt:["$content.bug",0]},
-    //             task: {$arrayElemAt:["$content.task",0]},
-    //         }
-    //     }
-    // ]);
     ctx.body = {
         code: 1,
         msg: '查询成功',
         data: {
-            sj: sj.length>0?sj[0]: null,
-            qd: qd.length>0?qd[0]: null
+            sj: sj,
+            qd: qd
         }
     };
 }

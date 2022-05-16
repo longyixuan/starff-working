@@ -1,69 +1,73 @@
 <template>
-  <Row
-    type="flex"
-    justify="center"
-    align="middle"
-    class="login"
-    @keydown.enter.native="submitLogin"
-  >
-    <Col :xs="{span:22}" style="width: 368px;">
-      <Row class="header">
-        <img src="../assets/xboot.png" width="360px;">
-        <clock class="my-clock"/>
+<div class="login">
+  <div class="login-warp">
+    <div class="login-left"></div>
+    <div class="login-right">
+      <Row
+        type="flex"
+        justify="center"
+        align="middle"
+        @keydown.enter.native="submitLogin"
+      >
+        <Col style="width: 368px;">
+          <Row class="header">
+            设计部工作管理系统
+          </Row>
+          <Alert type="error" show-icon v-if="error">{{errorMsg}}</Alert>
+          <Row class="login-form">
+            <Form ref="userNameLoginForm" :model="form" :rules="rules" class="form">
+              <FormItem prop="userName">
+                <Input
+                  v-model="form.userName"
+                  prefix="ios-contact"
+                  size="large"
+                  clearable
+                  placeholder="请输入用户名"
+                  autocomplete="off"
+                />
+              </FormItem>
+              <FormItem prop="password">
+                <Input
+                  type="password"
+                  v-model="form.password"
+                  prefix="ios-lock"
+                  size="large"
+                  clearable
+                  placeholder="请输入密码"
+                  autocomplete="off"
+                />
+              </FormItem>
+            </Form>
+            <Row type="flex" justify="space-between" class="code-row-bg">
+              <Dropdown>
+                <router-link to="/regist">
+                  <a class="forget-pass">注册账户</a>
+                </router-link>
+              </Dropdown>
+            </Row>
+            <Row>
+              <Button
+                class="login-btn"
+                type="primary"
+                size="large"
+                :loading="loading"
+                @click="submitLogin"
+                long
+              >
+                <span v-if="!loading">登录</span>
+                <span v-else>登录中...</span>
+              </Button>
+            </Row>
+          </Row>
+        </Col>
       </Row>
-      <Alert type="error" show-icon v-if="error">{{errorMsg}}</Alert>
-      <Row class="login-form">
-        <Form ref="userNameLoginForm" :model="form" :rules="rules" class="form">
-          <FormItem prop="userName">
-            <Input
-              v-model="form.userName"
-              prefix="ios-contact"
-              size="large"
-              clearable
-              placeholder="请输入用户名"
-              autocomplete="off"
-            />
-          </FormItem>
-          <FormItem prop="password">
-            <Input
-              type="password"
-              v-model="form.password"
-              prefix="ios-lock"
-              size="large"
-              clearable
-              placeholder="请输入密码"
-              autocomplete="off"
-            />
-          </FormItem>
-        </Form>
-        <Row type="flex" justify="space-between" class="code-row-bg">
-          <Dropdown>
-            <router-link to="/regist">
-              <a class="forget-pass">注册账户</a>
-            </router-link>
-          </Dropdown>
-        </Row>
-        <Row>
-          <Button
-            class="login-btn"
-            type="primary"
-            size="large"
-            :loading="loading"
-            @click="submitLogin"
-            long
-          >
-            <span v-if="!loading">登录</span>
-            <span v-else>登录中...</span>
-          </Button>
-        </Row>
-      </Row>
-    </Col>
-  </Row>
+    </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { login, userInfo, getJWT } from "@/api/index";
-import clock from "../views/my-components/clock.vue";
 export default {
   data() {
     return {
@@ -94,7 +98,6 @@ export default {
     };
   },
   components: {
-    clock
   },
   methods: {
     showErrorMsg(msg) {
@@ -113,8 +116,8 @@ export default {
             if (res.code === 1) {
               this.setStore("accessToken", res.token);
               // 获取用户信息
-              userInfo().then(res => {
-                if (res.code === 1) {
+              userInfo().then(res1 => {
+                if (res1.code === 1) {
                   this.setStore("userInfo", res.data);
                   this.$router.push({
                     name: "home_index"
