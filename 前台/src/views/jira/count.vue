@@ -14,14 +14,13 @@
                 <DatePicker @on-change="yearChange" :value="year" style="width: 80px;margin-right:10px;" type="year"></DatePicker>
                 jira完成情况
             </template>
-            <Tabs type="card" value="name1" :animated="false">
+            <Tabs type="card" value="name1" :animated="false" @on-click="tabClick">
                 <TabPane label="按月查看" name="name1">
                     <div style="margin-bottom: 20px;" class="clearfix">
-                        <Select filterable v-model="searchData.month" style="width: 160px;margin-right:10px;" placeholder="请选择月份">
+                        <Select @on-change="searchM" filterable v-model="searchData.month" style="width: 160px;margin-right:10px;" placeholder="请选择月份">
                             <Option value="全年">全年</Option>
                             <Option :value="item" :key="item" v-for="item in monthList">{{parseInt(item)}}月</Option>
                         </Select>
-                        <Button type="primary" style="margin-right: 10px;" @click="searchM">查询</Button>
                     </div>
                     <Divider style="font-weight: 700">已完成（jira总数：{{totalNumM+totalNumM1+bugNumM+bugNumM1}}，任务数：{{totalNumM+totalNumM1}}，bug数：{{bugNumM+bugNumM1}}）</Divider>
                         <Row>
@@ -45,6 +44,12 @@
                                 <div class="map" id="map-unfinsed-m1"></div>
                             </Col>
                         </Row>
+                </TabPane>
+                <TabPane label="按年查看" name="name3">
+                    <Divider style="font-weight: 700">已完成（jira总数：{{totalNumY+bugNumY}}，任务数：{{totalNumY}}，bug数：{{bugNumY}}）</Divider>
+                    <div class="map" id="map-finshed-y"></div>
+                    <Divider style="font-weight: 700">未完成（jira总数：{{total1NumY+bug1NumY}}，任务数：{{total1NumY}}，bug数：{{bug1NumY}}）</Divider>
+                    <div class="map" id="map-unfinsed-y"></div>
                 </TabPane>
                 <TabPane label="按人查看" name="name2">
                     <div style="margin-bottom: 20px;" class="clearfix">
@@ -102,6 +107,10 @@
                 bug1NumP: 0,
                 totalNumP: 0,
                 total1NumP: 0,
+                bugNumY: 0,
+                bug1NumY: 0,
+                totalNumY: 0,
+                total1NumY: 0,
                 bugNumM: 0,
                 bug1NumM: 0,
                 totalNumM: 0,
@@ -247,6 +256,11 @@
             }
         },
         methods: {
+            tabClick(name) {
+                if (name == 'name3') {
+                    this.searchY();
+                }
+            },
             yearChange(year) {
                 this.year = year;
                 setStore('year', year);
@@ -322,7 +336,13 @@
                         let mapUnFinshed1 = echarts.init(document.getElementById("map-unfinsed-m1"));
                         let result = {bug: [], total: [], bug1: [], total1: []};
                         this.option.xAxis[0].data = this.userListSjName;
-                        this.userListSjName.forEach(element => {
+                        if (res.data.sj.length>0) {
+                            this.option.xAxis[0].data = [];
+                            for(let i = 0; i<res.data.sj.length;i++) {
+                                this.option.xAxis[0].data.push(res.data.sj[i].nickName);
+                            };
+                        }
+                        this.option.xAxis[0].data.forEach(element => {
                             let temp = _.find(res.data.sj,function(o) {
                                 return o.nickName == element;
                             });
@@ -344,7 +364,13 @@
                         this.option.xAxis[0].data = [];
                         let result1 = {bug: [], total: [], bug1: [], total1: []};
                         this.option.xAxis[0].data = this.userListQdName;
-                        this.userListQdName.forEach(element => {
+                        if (res.data.qd.length>0) {
+                            this.option.xAxis[0].data = [];
+                            for(let i = 0; i<res.data.qd.length;i++) {
+                                this.option.xAxis[0].data.push(res.data.qd[i].nickName);
+                            };
+                        }
+                        this.option.xAxis[0].data.forEach(element => {
                             let temp = _.find(res.data.qd,function(o) {
                                 return o.nickName == element;
                             });
@@ -362,11 +388,49 @@
                         mapFinshed1.setOption(this.option);
                         this.option.series[0].data = result1.total1;
                         this.option.series[1].data = result1.bug1;
-                        console.log(this.option)
                         mapUnFinshed1.setOption(this.option);
 
                     }
                 });
+            },
+            searchY() {
+                var searchData = {
+                    year: this.year,
+                };
+                getJiraDetail('year', searchData).then(res => {
+                    if (res.code === 1) {
+                        this.$Message.success('操作成功');
+                        let result = {bug: [], total: [], bug1: [], total1: []};
+                        this.option.xAxis[0].data = this.monthList;
+                        var _this = this;
+                        _this.bugNumY = 0;
+                        _this.bug1NumY = 0;
+                        _this.totalNumY = 0;
+                        _this.total1NumY = 0;
+                        this.monthList.forEach(element => {
+                            let temp = _.find(res.data,function(o) {
+                                return o.month == element;
+                            });
+                            result.total.push(temp?temp.total:0);
+                            result.bug.push(temp?temp.bug:0);
+                            result.total1.push(temp?temp.total1:0);
+                            result.bug1.push(temp?temp.bug1:0);
+                            _this.bugNumY+=(temp?temp.bug:0);
+                            _this.bug1NumY+=(temp?temp.bug1:0);
+                            _this.totalNumY+=(temp?temp.total:0);
+                            _this.total1NumY+=(temp?temp.total1:0);
+                        });
+                        let mapFinshed = echarts.init(document.getElementById("map-finshed-y"));
+                        let mapUnFinshed = echarts.init(document.getElementById("map-unfinsed-y"));
+                        this.option.series[0].data = result.total;
+                        this.option.series[1].data = result.bug;
+                        mapFinshed.setOption(this.option);
+                        this.option.series[0].data = result.total1;
+                        this.option.series[1].data = result.bug1;
+                        mapUnFinshed.setOption(this.option);
+
+                    }
+                })
             },
             getUserList() {
                 getAllUserData().then(res => {

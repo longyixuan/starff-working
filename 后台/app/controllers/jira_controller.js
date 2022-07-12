@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-05-05 10:59:18
+ * @Last Modified time: 2022-07-12 10:05:56
  */
 
 const uuidv1 = require('uuid/v1');
@@ -247,6 +247,12 @@ const getDetailM = async (ctx, next) => {
                 total1: {'$subtract':['$total1','$bug1']},
                 bug1: '$bug1'
             }
+        },
+        {
+            $sort://排序关键词
+            {
+                total: -1//排序规则
+            }
         }
     ]);
     const qd = await jira_col.aggregate([
@@ -303,6 +309,12 @@ const getDetailM = async (ctx, next) => {
                 total1: {'$subtract':['$total1','$bug1']},
                 bug1: '$bug1'
             }
+        },
+        {
+            $sort://排序关键词
+            {
+                total: -1//排序规则
+            }
         }
     ]);
     ctx.body = {
@@ -314,6 +326,62 @@ const getDetailM = async (ctx, next) => {
         }
     };
 }
+
+const getDetailY = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let seachConfig = {
+        year: req.year
+    };
+    const result = await jira_col.aggregate([
+        {
+            $match: {
+                ...seachConfig
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    month: '$month'
+                },
+                total: {
+                    $sum: '$total'
+                },
+                bug: {
+                    $sum: '$bug'
+                },
+                total1: {
+                    $sum: '$total1'
+                },
+                bug1: {
+                    $sum: '$bug1'
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                month: "$_id.month",
+                total: {'$subtract':['$total','$bug']},
+                bug: '$bug',
+                total1: {'$subtract':['$total1','$bug1']},
+                bug1: '$bug1'
+            }
+        },
+        {
+            $sort://排序关键词
+            {
+                month:-1//排序规则
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: result
+    };
+}
+
 
 const getList = async (ctx, next) => {
     ctx.status = 200;
@@ -338,5 +406,6 @@ module.exports = {
     update,
     getList,
     getDetailP,
-    getDetailM
+    getDetailM,
+    getDetailY
 }

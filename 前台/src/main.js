@@ -44,5 +44,12 @@ new Vue({
     el: '#app',
     router,
     store,
-    render: h => h(App)
+    render: h => h(App),
+    mounted() {
+        var link = document.createElement("link");
+        link.type = "image/x-icon";
+        link.rel = 'icon';
+        link.href = 'http://172.16.2.131:9000/favicon.ico'
+        document.head.appendChild(link);
+    }
 })

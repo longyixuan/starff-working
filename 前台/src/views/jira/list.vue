@@ -16,9 +16,11 @@
                 <Select filterable v-model="searchData.month" style="width: 120px;margin-right:10px;" placeholder="请选择月份" @on-change="seach">
                     <Option :value="item" :key="item" v-for="item in monthList">{{parseInt(item)}}月</Option>
                 </Select>
-                <Button type="primary" @click="submit" style="float: right;" v-if="editStatus">保存</Button>
-                <Button type="primary" @click="editStatus = !editStatus" style="float: right;" v-else>编辑</Button>
-                <!-- <Button type="primary" @click="add" style="float: right;">新增</Button> -->
+                <Button type="primary" style="float: right;" @click="editStatus = !editStatus" v-if="!editStatus">编辑</Button>
+                <div v-else style="float: right;">
+                    <Button ghost type="primary" @click="add" style="margin-right: 10px">批量填充</Button>
+                    <Button type="primary" @click="submit">保存</Button>
+                </div>
             </div>
             <Table style="margin-bottom: 20px;" border :columns="columns" :data="data" ref="table">
                 <template slot-scope="{ row }" slot="userName">
@@ -49,31 +51,16 @@
                 </template> -->
             </Table>
         </Card>
-        <!-- <Modal title="录入" v-model="modal" width="500">
-            <Form :label-width="100">
-                <FormItem label="日期：">
-                    <DatePicker type="month" v-model="date" style="width: 100%"></DatePicker>
-                </FormItem>
-                <FormItem label="姓名：">
-                    <Select filterable clearable v-model="userName">
-                        <Option :value="item.userName" :key="item.userName" v-for="item in userList">{{item.nickName}}</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="jira总数：">
-                    <Input type="number" v-model="total" @on-change="changeNum"></Input>
-                </FormItem>
-                <FormItem label="bug数：">
-                    <Input type="number" v-model="bug" @on-change="changeNum"></Input>
-                </FormItem>
-                <FormItem label="是否完成：">
-                    <Checkbox v-model="isFinshed"></Checkbox>
-                </FormItem>
-            </Form>
+        <Modal title="录入" v-model="modal" width="1000">
+            <Row :gutter="20">
+                <Col span="12"><Input type="textarea" v-model="textarea" :rows="20"></Input></Col>
+                <Col span="12"><Input type="textarea" v-model="textarea1" :rows="20"></Input></Col>
+            </Row>
             <div slot="footer">
                 <Button type="text" @click="modal=false">取消</Button>
-                <Button type="primary" @click="submit">确定</Button>
+                <Button type="primary" @click="save">确定</Button>
             </div>
-        </Modal> -->
+        </Modal>
     </div>
 </template>
 <script>
@@ -101,6 +88,8 @@
                 monthList: ['01', '02', '03', '04', '05','06', '07', '08', '09', '10', '11', '12'],
                 userName: '',
                 date: new Date(),
+                textarea: '',
+                textarea1: '',
                 total: 0,
                 bug: 0,
                 task: 0,
@@ -145,6 +134,62 @@
             }
         },
         methods: {
+            save() {
+                if (this.textarea) {
+                    let arr = this.textarea.split('\n');
+                    let head = arr[0].split('\t');
+                    let bug = -1;
+                    let total = -1;
+                    for(let i = 0;i<head.length;i++) {
+                        if (head[i].indexOf('缺陷')!==-1) {
+                            bug = i;
+                        }
+                        if (head[i].indexOf('合计')!==-1) {
+                            total = i
+                        }
+                    }
+                    for (let j = 1; j < arr.length; j++) {
+                        let row = arr[j].split('\t');
+                        for (let k = 0; k < row.length; k++) {
+                            if (_.find(this.userList, ['nickName', row[0]])) {
+                                this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].total = row[total];
+                                if (bug !== -1) {
+                                    this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].bug = row[bug];
+                                }
+                            }
+                        }
+                    }
+                }
+                if (this.textarea1) {
+                    this.save1();
+                }
+                this.modal=false;
+            },
+            save1() {
+                let arr = this.textarea1.split('\n');
+                let head = arr[0].split('\t');
+                let bug = -1;
+                let total = -1;
+                for(let i = 0;i<head.length;i++) {
+                    if (head[i].indexOf('缺陷')!==-1) {
+                        bug = i;
+                    }
+                    if (head[i].indexOf('合计')!==-1) {
+                        total = i
+                    }
+                }
+                for (let j = 1; j < arr.length; j++) {
+                    let row = arr[j].split('\t');
+                    for (let k = 0; k < row.length; k++) {
+                        if (_.find(this.userList, ['nickName', row[0]])) {
+                            this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].total1 = row[total];
+                            if (bug !== -1) {
+                                this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].bug1 = row[bug];
+                            }
+                        }
+                    }
+                }
+            },
             yearChange(year) {
                 this.year = year;
                 setStore('year', year);
