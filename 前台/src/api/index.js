@@ -429,6 +429,24 @@ export const mergeModel = (params) => {
 
 //-----------------------模块--------------------------------//
 
+//-----------------------系统同步记录--------------------------------//
+export const addAws = (params) => {
+    return postRequest(`/aws/add`,params)
+}
+export const listAws = (params) => {
+    return postRequest(`/aws/list`,params)
+}
+export const updateAws = (params) => {
+    return postRequest(`/aws/update`,params)
+}
+export const deleteAws = (params) => {
+    return postRequest(`/aws/delete`,params)
+}
+export const detailAws= (params) => {
+    return postRequest(`/aws/detail`,params)
+}
+//-----------------------系统同步记录--------------------------------//
+
 //-----------------------个人工时控制台--------------------------------//
 
 export const personalCount = (params) => {
@@ -444,9 +462,3 @@ export const todayTime = (params) => {
 }
 
 //-----------------------个人工时控制台--------------------------------//
-
-//-----------------------死链接检查--------------------------------//
-export const checkLink = (params) => {
-    return postRequest(`/link/check`,params)
-}
-//-----------------------死链接检查--------------------------------//

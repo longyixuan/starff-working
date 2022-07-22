@@ -328,16 +328,14 @@ export const appRouter = {
             name: 'work-time-count', 
             component: () => import('@/views/home/personal.vue')
         },
-        /*
         { 
-            path: 'link-search',
+            path: 'aws/list',
             meta: {
-                title: ''
+                title: 'aws发布时间线'
             }, 
-            name: 'link-search', 
-            component: () => import('@/views/link/search.vue')
+            name: 'aws', 
+            component: () => import('@/views/aws/list.vue')
         }
-        */
     ]
 };
 

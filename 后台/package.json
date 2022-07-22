@@ -15,14 +15,14 @@
     "formidable": "^1.2.1",
     "jsonwebtoken": "^8.5.1",
     "jszip": "^3.2.2",
-    "jwt-simple": "^0.5.6",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-bodyparser": "^4.2.1",
-    "koa-jwt": "^3.6.0",
+    "koa-jwt": "^4.0.3",
     "koa-log4": "^2.3.2",
     "koa-router": "^7.4.0",
     "koa-send": "^5.0.0",
+    "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -32,7 +32,5 @@
     "unzip": "^0.1.11",
     "uuid": "^3.3.3"
   },
-  "devDependencies": {
-    "koa-static": "^5.0.0"
-  }
+  "devDependencies": {}
 }

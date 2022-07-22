@@ -32,8 +32,8 @@
                         <Tag type="border" color="warning" >{{row.tag | tagFilter(tags)}}</Tag>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click=updateTimeline(row.timelineId,index)>编辑</Button>
-                        <Button type="error" size="small" @click=deleteTimeline(row.timelineId,index)>删除</Button>
+                        <Button type="primary" size="small" style="margin-right: 5px" @click="updateTimeline(row.timelineId,index)">编辑</Button>
+                        <Button type="error" size="small" @click="deleteTimeline(row.timelineId,index)">删除</Button>
                     </template>
                 </Table>
             </TabPane>
