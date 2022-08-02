@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 18:35:47 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-05-16 19:06:04
+ * @Last Modified time: 2022-08-02 14:05:30
  */
 
 const config = require('./../../config');
@@ -210,7 +210,7 @@ const getAllUser = async (ctx, next) => {
     userName: {
       '$ne': 'admin'
     }
-  });
+  }).sort({ 'order': 1 });
 
   ctx.status = 200;
   ctx.body = {
@@ -222,13 +222,7 @@ const getAllUser = async (ctx, next) => {
 const getByCondition = async (ctx, next) => {
   ctx.status = 200;
   const req = ctx.query;
-  const AllByPage = await User_col.find({
-    $or: [
-      { userName: { $regex: req.userName }},
-      { departmentId: { $regex: req.departmentId }},
-      { email: { $regex: req.email }}
-    ]
-  })
+  const AllByPage = await User_col.find({}).sort({ 'order': 1 })
   .limit(parseInt(req.pageSize)).skip((parseInt(req.pageNumber) - 1)*parseInt(req.pageSize));
   const allPage = await User_col.find({});
   const totalElements = Math.ceil(allPage.length / parseInt(req.pageSize)); //计算页数

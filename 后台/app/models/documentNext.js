@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-01-29 10:30:04
+ * @Last Modified time: 2022-07-29 19:51:36
  */
 
 const mongoose = require('mongoose');
@@ -32,9 +32,21 @@ const DocumentnextSchema = new Schema({
         type: String,
         required: true
     },
-    gzjh: {
+    contentTitle: {
         type: String,
         required: true
+    },
+    contentDescription: {
+        type: String,
+        required: true
+    },
+    jira: {
+        type: String,
+        required: true
+    },
+    gzjh: {
+        type: String,
+        required: false
     }
 }, {
     collection: 'documentNext',

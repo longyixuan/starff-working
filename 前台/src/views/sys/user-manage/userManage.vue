@@ -180,7 +180,7 @@ export default {
         {
           title: "邮箱",
           key: "email",
-          width: 180,
+          width: 200,
           sortable: true
         },
         {

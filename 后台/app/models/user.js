@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-07 18:51:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-04-28 15:55:14
+ * @Last Modified time: 2022-08-02 13:30:07
  */
 
 
@@ -65,6 +65,10 @@ const UserSchema = new Schema({
     default: 0,
   },
   type: {
+    type: Number,
+    default: 0
+  },
+  order: {
     type: Number,
     default: 0
   }

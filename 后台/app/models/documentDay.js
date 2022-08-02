@@ -1,8 +1,8 @@
 /*
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-03-29 16:32:58
+ * @Last Modified by: yinxl
+ * @Last Modified time: 2022-07-27 21:17:50
  */
 
 const mongoose = require('mongoose');
@@ -56,6 +56,10 @@ const DocumentdaySchema = new Schema({
         required: true
     },
     contentDescription: {
+        type: String,
+        required: true
+    },
+    jira: {
         type: String,
         required: true
     },

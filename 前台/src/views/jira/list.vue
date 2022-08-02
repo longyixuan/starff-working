@@ -152,9 +152,9 @@
                         let row = arr[j].split('\t');
                         for (let k = 0; k < row.length; k++) {
                             if (_.find(this.userList, ['nickName', row[0]])) {
-                                this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].total = row[total];
+                                this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].total = parseInt(row[total]);
                                 if (bug !== -1) {
-                                    this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].bug = row[bug];
+                                    this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].bug =  parseInt(row[bug]);
                                 }
                             }
                         }
@@ -182,9 +182,9 @@
                     let row = arr[j].split('\t');
                     for (let k = 0; k < row.length; k++) {
                         if (_.find(this.userList, ['nickName', row[0]])) {
-                            this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].total1 = row[total];
+                            this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].total1 = parseInt(row[total]);
                             if (bug !== -1) {
-                                this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].bug1 = row[bug];
+                                this.data[_.findIndex(this.data, ['userName', _.find(this.userList, ['nickName', row[0]]).userName])].bug1 = parseInt(row[bug]);
                             }
                         }
                     }
@@ -208,6 +208,7 @@
                         break;
                     }
                 }
+                console.log(this.data)
                 return flag;
             },
             submit() {

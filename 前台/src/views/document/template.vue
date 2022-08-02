@@ -9,9 +9,6 @@
             </template>
             <Input v-model="title" class="summary-input marginB-20" placeholder="样例：xxxx年xx月月终工作总结（员工姓名）"/>
             <DatePicker v-model="time" format="yyyy年MM月dd日" @on-change="onChange" type="date" placeholder="工作总结时间"></DatePicker>
-            <Select v-if="loginName=='admin'" @on-change="onChangeUser" filterable clearable v-model="userName" style="width: 160px;margin-left:10px;" placeholder="请选择姓名">
-                <Option :value="item.userName" :key="item.userName" v-for="item in userList">{{item.nickName}}</Option>
-            </Select>
         </Card>
         <Card title="工作总结" class="marginB-20">
             <div class="summary-template" v-for="(summary,index) in submitList">
@@ -35,14 +32,19 @@
                     <Col span="24" class="marginB-20" v-for="(modalItem,index2) in summary.content">
                         <Card>
                             <div class="marginB-20">
-                                <Select
-                                    v-model="modalItem.contentTitle"
-                                    filterable
-                                    placeholder="填写模块名称"
-                                    style="width: 400px;">
-                                    <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option.modelId" :key="index">{{option.modelName}}</Option>
-                                </Select>
-                                下拉选项中没有的模块，请在系统模块管理中添加。
+                                <Row :gutter="16">
+                                    <Col span="18">
+                                        <Input placeholder="请填写jira任务链接" v-model="modalItem.jira"></Input>
+                                    </Col>
+                                    <Col span="6">
+                                        <Select
+                                            v-model="modalItem.contentTitle"
+                                            filterable
+                                            placeholder="填写模块名称">
+                                            <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option.modelId" :key="index">{{option.modelName}}</Option>
+                                        </Select>
+                                    </Col>
+                                </Row>
                             </div>
                             <Input class="marginB-20" type="textarea" :rows="4" placeholder="填写工作内容" v-model="modalItem.contentDescription"></Input>
                             <Button type="error" @click="delList(index,index2)">删除当前记录</Button>
@@ -71,9 +73,35 @@
                             </template>
                         </Select>
                     </Col>
-                    <Col span="24">
+                    <!-- <Col span="24">
                         <Input v-model="summary.gzjh" class="marginB-20" type="textarea" :rows="6" placeholder="填写工作内容"></Input>
+                    </Col> -->
+                </Row>
+                <Row :gutter="16">
+                    <Col span="24" class="marginB-20" v-for="(modalItem,index2) in summary.content">
+                        <Card>
+                            <div class="marginB-20">
+                                <Row :gutter="16">
+                                    <Col span="18">
+                                        <Input placeholder="请填写jira任务链接" v-model="modalItem.jira"></Input>
+                                    </Col>
+                                    <Col span="6">
+                                        <Select
+                                            v-model="modalItem.contentTitle"
+                                            filterable
+                                            placeholder="填写模块名称">
+                                            <Option v-for="(option, index) in sysFilter(summary.systemId)" :value="option.modelId" :key="'11'+index">{{option.modelName}}</Option>
+                                        </Select>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <Input class="marginB-20" type="textarea" :rows="4" placeholder="填写工作内容" v-model="modalItem.contentDescription"></Input>
+                            <Button type="error" @click="delList2(index,index2)">删除当前记录</Button>
+                        </Card>
                     </Col>
+                </Row>
+                <Row>
+                    <Button type="primary" ghost @click="addModal2(index)">添加记录</Button>
                 </Row>
             </div>
             <div class="summary-template-add marginB-20" @click="addGzjh">
@@ -83,25 +111,16 @@
         <Row>
             <Button type="primary" size="large" long @click="submit">保存</Button>
         </Row>
-        <Modal v-model="modal" :title="modalTitle">
-            <Input v-model="value" placeholder="输入模块名称"/>
-            <template slot="footer">
-                <Button @click="modal=false">取消</Button>
-                <Button type="primary" @click="addModalName">添加模块</Button>
-            </template>
-        </Modal>
     </div>
 </template>
 <script>
     import {
-        getAllUserData,
         getSystemList,
         addDocumentday,
         detailsDocumentday,
+        preDocumentday,
         editDocumentday,
-        seachModal,
         todayTime,
-        addModal,
         listModel
     } from "@/api/index";
     import moment from "moment";
@@ -111,7 +130,6 @@
                 todayTimeCount: 0,
                 gzjh: [],
                 title: '',
-                modalTitle: '',
                 modelList: [],
                 value: '',
                 id: '',
@@ -121,24 +139,10 @@
                 time: new Date(),
                 modalList: [],
                 systems: JSON.parse(localStorage.getItem('userInfo')).systems,
-                submitList: [],
-                userList: [],
-                loginName: '',
-                userName: '',
-                userId: '',
-                nickName: ''
+                submitList: []
             }
         },
         methods: {
-            add(index) {
-                if (this.submitList[index].systemId) {
-                    this.id = this.submitList[index].systemId;
-                    this.modalTitle = _.find(this.sysList,['id',this.id]).title;
-                    this.modal = true;
-                } else {
-                    this.$Message.error('请先选择系统');
-                }
-            },
             getTodayTime() {
                 todayTime({
                     userId: JSON.parse(localStorage.getItem('userInfo')).userId,
@@ -150,33 +154,8 @@
             sysFilter(id){
                 return _.filter(this.modelList,['systemId', id]);
             },
-            addModalName() {
-                if (this.value=='') {
-                    this.$Message.error('请填写模块名称');
-                    return;
-                }
-                let modalList = _.find(this.sysList,['id',this.id]).modal;
-                modalList.push(this.value)
-                let postData = {
-                    systemId: this.id,
-                    modalList: Array.from(new Set(modalList))
-                }
-                addModal(postData).then(res => {
-                    if (res.code === 1) {
-                        this.$Message.success('添加成功');
-                        this.modal = false;
-                        this.init();
-                        this.value=='';
-                    }
-                })
-            },
             onChange(value) {
                 this.title = `设计部${value}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
-            },
-            onChangeUser(value) {
-                this.userId = _.find(this.userList,['userName',value]).userId;
-                this.nickName = _.find(this.userList,['userName',value]).nickName;
-                this.title = `设计部${moment(this.time).format('YYYY年MM月DD日')}工作小结（${this.nickName}）`
             },
             setPostData(){
                 var result = [];
@@ -186,9 +165,9 @@
                         result.push({
                             documentId: this.documentId,
                             documentName: this.title,
-                            userId: this.loginName=='admin'?this.userId:userInfo.userId,
-                            userName: this.loginName=='admin'?this.userName:userInfo.userName,
-                            nickName: this.loginName=='admin'?this.nickName:userInfo.nickName,
+                            userId: userInfo.userId,
+                            userName: userInfo.userName,
+                            nickName: userInfo.nickName,
                             year: moment(this.time).format('YYYY'),
                             month: moment(this.time).format('MM'),
                             day: moment(this.time).format('DD'),
@@ -197,6 +176,7 @@
                             time: item.time,
                             systemName: _.find(this.sysList,['id',item.systemId]).title,
                             contentTitle: item2.contentTitle,
+                            jira: item2.jira,
                             contentDescription: item2.contentDescription
                         })
                     })
@@ -251,12 +231,17 @@
             setGzjh(){
                 var result = [];
                 this.gzjh.forEach((item,index) => {
-                    result.push({
-                        systemId: item.systemId,
-                        systemName: _.find(this.sysList,['id',item.systemId]).title,
-                        gzjh: item.gzjh
+                    item.content.forEach(item2 => {
+                        result.push({
+                            systemId: item.systemId,
+                            systemName: _.find(this.sysList,['id',item.systemId]).title,
+                            contentTitle: item2.contentTitle,
+                            jira: item2.jira,
+                            contentDescription: item2.contentDescription
+                        })
                     })
                 })
+                console.log(result)
                 return result;
             },
             submit() {
@@ -295,6 +280,12 @@
                     contentDescription: ''
                 });
             },
+            addModal2(index) { //工作计划
+                this.gzjh[index].content.push({
+                    contentTitle: '',
+                    contentDescription: ''
+                });
+            },
             addSummary() {
                 this.submitList.push(
                     {
@@ -307,6 +298,7 @@
                 this.gzjh.push(
                     {
                         systemId: '',
+                        content: [],
                         gzjh: ''
                     }
                 )
@@ -319,6 +311,29 @@
             },
             delList(index,index2) {
                 this.submitList[index].content.splice(index2,1);
+            },
+            delList2(index,index2) {
+                this.gzjh[index].content.splice(index2,1);
+            },
+            getPreList: function() {
+                preDocumentday(this.$route.query.type,{
+                    year: moment(this.time).format('YYYY'),
+                    month: moment(this.time).format('MM'),
+                    day: moment(this.time).format('DD'),
+                }).then(res => {
+                    if (res.code == 1) {
+                        if (res.data.length>0) {
+                            this.submitList = [];
+                            for (let i =0;i<res.data.length;i++) {
+                                this.submitList.push({
+                                    systemId: res.data[i]._id.systemId,
+                                    systemName: res.data[i]._id.systemName,
+                                    content: res.data[i].content
+                                })
+                            }
+                        }
+                    }
+                })
             }
         },
         mounted() {
@@ -340,20 +355,22 @@
                             })
                         }
                     }
-                    this.gzjh = res.gzjh;
+                    if (res.gzjh.length>0) {
+                        this.gzjh = [];
+                        for (let i =0;i<res.data.length;i++) {
+                            this.gzjh.push({
+                                systemId: res.gzjh[i]._id.systemId,
+                                systemName: res.gzjh[i]._id.systemName,
+                                content: res.gzjh[i].content
+                            })
+                        }
+                    }
                 })
             } else {
                 if (this.$route.query.type == 'day') {
                     this.title = `设计部${moment().format('YYYY年MM月DD日')}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
                 }
-            }
-            this.loginName = JSON.parse(localStorage.getItem('userInfo')).userName;
-            if (this.loginName=='admin') {
-                getAllUserData().then(res => {
-                    if (res.code === 1) {
-                        this.userList = res.data;
-                    }
-                });
+                 this.getPreList();
             }
         }
     }

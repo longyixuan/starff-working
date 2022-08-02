@@ -154,7 +154,9 @@ export default {
             }
             listAws(params).then(res=> {
                 if (res.code === 1) {
-                    this.data = res.data;
+                    this.data = _.sortBy(res.data, function(item) {
+                        return (new Date(item.time)).getTime();
+                    }).reverse();
                 }
             });
         },

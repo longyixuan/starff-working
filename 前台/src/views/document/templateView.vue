@@ -19,11 +19,12 @@
                                     <th>工作内容</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr v-for="(item2,index) in item.content">
-                                    <td>{{filterTitle(item2.contentTitle)}}</td>
+                            <tbody v-for="(item2,key) in groupContent(item.content)" :key="key">
+                                <tr v-for="(item3,item3Index) in item2" :key="'item3'+item3Index">
+                                    <td :rowspan="item2.length" v-if="item3Index==0">{{filterTitle(key)}}</td>
                                     <td>
-                                        <div style="white-space: pre-line;word-break: break-all;">{{item2.contentDescription}}</div>
+                                        <div style="white-space: pre-line;word-break: break-all;">{{item3.contentDescription}}（<a :href="item3.jira" target="_blank">{{item3.jira}}</a>）
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -51,29 +52,6 @@
                         </tbody>
                     </table>
                 </div>
-                <template v-if="hf.length>0">
-                    <h2 class="summary-view-h2">回复</h2>
-                    <div class="summary-view-content">
-                        <table class="summary-table">
-                        <thead>
-                            <tr>
-                                <th>内容</th>
-                                <th width="160">时间</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in hf">
-                                <td>
-                                    {{item.replayDes}}
-                                </td>
-                                <td>
-                                    {{item.replayTime}}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    </div>
-                </template>
                 <template v-if="reason!=''">
                     <h2 class="summary-view-h2">退回修改</h2>
                     <div class="summary-view-content">
@@ -102,8 +80,7 @@ export default {
             reason: '',
             submitList: [],
             modelList: [],
-            gzjhList: [],
-            hf: []
+            gzjhList: []
         }
     },
     methods: {
@@ -129,7 +106,6 @@ export default {
                         }
                     }
                     this.gzjhList = res.gzjh;
-                    this.hf = res.hf;
                     if (res.thyy) {
                         this.reason = res.thyy.reason
                     }
@@ -146,21 +122,10 @@ export default {
             '六十一', '六十二', '六十三', '六十四', '六十五', '六十六', '六十七', '六十八', '六十九','七十',
             '七十一', '七十二', '七十三', '七十四', '七十五', '七十六', '七十七', '七十八', '七十九','八十'];
             return cNum[num];
-            let changeNum = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九']; //changeNum[0] = "零"
-            let unit = ["", "十", "百", "千", "万"];
-            num = parseInt(num);
-            let getWan = (temp) => {
-                let strArr = temp.toString().split("").reverse();
-                let newNum = "";
-                for (var i = 0; i < strArr.length; i++) {
-                    newNum = (i == 0 && strArr[i] == 0 ? "" : (i > 0 && strArr[i] == 0 && strArr[i - 1] == 0 ? "" : changeNum[strArr[i]] + (strArr[i] == 0 ? unit[0] : unit[i]))) + newNum;
-                }
-                return newNum;
-            }
-            let overWan = Math.floor(num / 10000);
-            let noWan = num % 10000;
-            if (noWan.toString().length < 4) noWan = "0" + noWan;
-            return overWan ? getWan(overWan) + "万" + getWan(noWan) : getWan(num);
+        },
+        groupContent(data) {
+            console.log(_.groupBy(data, 'contentTitle'))
+            return _.groupBy(data, 'contentTitle');
         },
         callBackFn() {
             callbackDocument({

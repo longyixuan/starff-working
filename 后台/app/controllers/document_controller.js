@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-02-10 09:00:48
+ * @Last Modified time: 2022-08-01 19:52:41
  */
 
 const fs = require('fs');
@@ -316,6 +316,7 @@ const allTemplate = async (ctx) => {
 const addDocumentday = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    console.log(req.gzjh)
     const document = await Documentday_col.findOne({
         documentName: req.summaryName,
     });
@@ -374,9 +375,13 @@ const addDocumentday = async (ctx) => {
             systemName: item.systemName,
             userId: req.list[0].userId,
             userName: req.list[0].userName,
-            nickName: req.list[0].nickName
+            nickName: req.list[0].nickName,
+            contentTitle: item.contentTitle,
+            contentDescription: item.contentDescription,
+            jira: item.jira
         });
     });
+    
     await Documentnext_col.insertMany(gzjh)
     ctx.body = {
         code: 1,
@@ -439,12 +444,14 @@ const editDocumentday = async (ctx) => {
     req.gzjh.forEach(item=> {
         gzjh.push({
             documentId: documentId,
-            gzjh: item.gzjh,
             systemId: item.systemId,
             systemName: item.systemName,
             userId: req.list[0].userId,
             userName: req.list[0].userName,
-            nickName: req.list[0].nickName
+            nickName: req.list[0].nickName,
+            contentTitle: item.contentTitle,
+            contentDescription: item.contentDescription,
+            jira: item.jira
         });
     });
     await Documentnext_col.insertMany(gzjh)
@@ -471,9 +478,48 @@ const delteDocumentday = async (ctx) => {
 
 const detailsDocumentday = async (ctx) => {
     const id = ctx.query.id;
-    const gzjh = await Documentnext_col.find({
-        'documentId': id
-    });
+    const gzjh = await Documentnext_col.aggregate([
+        {
+            $lookup: {
+                from: "status",
+                localField: "documentId",
+                foreignField: "documentId",
+                as: "status_info"
+            }
+        },
+        {
+            $match: {
+                'documentId': id
+            }
+        },
+        {
+            $sort: {
+                'order': -1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    systemId: '$systemId',
+                    systemName: '$systemName',
+                    status_info: '$status_info'
+                },
+                content: {
+                    $push: {
+                        documentId: '$documentId',
+                        userId: '$userId',
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        contentTitle: '$contentTitle',
+                        jira: '$jira',
+                        contentDescription: '$contentDescription'
+                    }
+                }
+            }
+        }
+    ]);
     const thyy = await Callback_col.findOne({
         'documentId': id
     });
@@ -525,6 +571,7 @@ const detailsDocumentday = async (ctx) => {
                         order: '$order',
                         systemName: '$systemName',
                         contentTitle: '$contentTitle',
+                        jira: '$jira',
                         contentDescription: '$contentDescription'
                     }
                 }
@@ -539,6 +586,67 @@ const detailsDocumentday = async (ctx) => {
         gzjh: gzjh,
         thyy: thyy,
         hf: hf
+    }
+}
+
+const preDocumentday = async (ctx) => {
+    const req = ctx.request.body;
+    const result = await Documentday_col.find({
+        'year': req.year,
+        'month': req.month,
+        'day': req.day
+    });
+    let gzjh = [];
+    if (result.length>0) {
+        const id = result[0].documentId;
+        gzjh = await Documentnext_col.aggregate([
+            {
+                $lookup: {
+                    from: "status",
+                    localField: "documentId",
+                    foreignField: "documentId",
+                    as: "status_info"
+                }
+            },
+            {
+                $match: {
+                    'documentId': id
+                }
+            },
+            {
+                $sort: {
+                    'order': -1
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        systemId: '$systemId',
+                        systemName: '$systemName',
+                        status_info: '$status_info'
+                    },
+                    content: {
+                        $push: {
+                            documentId: '$documentId',
+                            userId: '$userId',
+                            userName: '$userName',
+                            nickName: '$nickName',
+                            systemId: '$systemId',
+                            systemName: '$systemName',
+                            contentTitle: '$contentTitle',
+                            jira: '$jira',
+                            contentDescription: '$contentDescription'
+                        }
+                    }
+                }
+            }
+        ]);
+    }
+    ctx.status = 200;
+    ctx.body = {
+        code: 1,
+        msg: '请求成功',
+        data: gzjh
     }
 }
 
@@ -1858,6 +1966,7 @@ module.exports = {
     editDocumentday,
     delteDocumentday,
     detailsDocumentday,
+    preDocumentday,
     listDocumentday,
     mergeDocumentday,
     seachDocumentday,

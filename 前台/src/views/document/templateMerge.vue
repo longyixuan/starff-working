@@ -218,7 +218,6 @@ export default {
                 list: JSON.stringify(this.submitList),
                 gzjh: JSON.stringify(this.gzjhList),
             }
-            console.log(this.submitList)
             downDocument(postData).then(res => {
                 if (res.code === 1) {
                     this.modal = false;
