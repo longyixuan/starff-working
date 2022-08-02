@@ -19,12 +19,11 @@
                                     <th>工作内容</th>
                                 </tr>
                             </thead>
-                            <tbody v-for="(item2,key) in groupContent(item.content)" :key="key">
-                                <tr v-for="(item3,item3Index) in item2" :key="'item3'+item3Index">
-                                    <td :rowspan="item2.length" v-if="item3Index==0">{{filterTitle(key)}}</td>
+                            <tbody>
+                                <tr v-for="(item2,index) in item.content">
+                                    <td>{{filterTitle(item2.contentTitle)}}</td>
                                     <td>
-                                        <div style="white-space: pre-line;word-break: break-all;">{{item3.contentDescription}}（<a :href="item3.jira" target="_blank">{{item3.jira}}</a>）
-                                        </div>
+                                        <div style="white-space: pre-line;word-break: break-all;">{{item2.contentDescription}}</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -122,10 +121,6 @@ export default {
             '六十一', '六十二', '六十三', '六十四', '六十五', '六十六', '六十七', '六十八', '六十九','七十',
             '七十一', '七十二', '七十三', '七十四', '七十五', '七十六', '七十七', '七十八', '七十九','八十'];
             return cNum[num];
-        },
-        groupContent(data) {
-            console.log(_.groupBy(data, 'contentTitle'))
-            return _.groupBy(data, 'contentTitle');
         },
         callBackFn() {
             callbackDocument({

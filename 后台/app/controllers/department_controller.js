@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-01-26 15:45:07
+ * @Last Modified time: 2019-10-08 17:27:30
  */
 
 const Department_col = require('./../models/department');
@@ -90,9 +90,9 @@ const updateDepartment = async (ctx, next) => {
 const editDepartment = async (ctx,next) => {
     const req = ctx.request.body;
     ctx.status = 200;
-    await Department_col.updateMany({
+    await Department_col.updateOne({
         id: req.id
-    }, { hasReplay: true });
+    }, req);
     const department = await Department_col.findOne({
         id: req.id
     });

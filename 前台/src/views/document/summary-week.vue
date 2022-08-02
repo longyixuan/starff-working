@@ -72,6 +72,12 @@
                     </Col>
                 </Row>
                 <Button type="primary" style="margin-bottom: 20px;" @click="seach">查询</Button>
+                <Alert type="warning" v-if="commitUser.length!=peopleList.length-1&&showdate.length>0">
+                    未提交总结：
+                    <template v-for="item in peopleList">
+                        <Tag color="warning" v-if="commitUser.indexOf(item.userName)===-1&&item.userName!='lvf'">{{item.nickName}} </Tag>
+                    </template>
+                </Alert>
                 <Table border :columns="columnPart" :data="listPart" style="margin-bottom:20px" @on-selection-change="selectionChangePart">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row._id.documentName }}</strong>
@@ -142,6 +148,7 @@
                 time: new Date(),
                 peopleList: [],
                 people: [],
+                commitUser: [],
                 columns: [
                     {
                         type: 'index',
@@ -359,9 +366,15 @@
                     return;
                 }
                 seachDocumentweek(postData).then((res)=>{
-                    this.listPart = res.data.filter(function(item){
+                    let listPart = res.data.filter(function(item){
                         return (item._id.status_info.length>0 || item.details[0].status);
                     });
+                    this.commitUser = [];
+                    listPart.forEach((element,index) => {
+                        listPart[index].order = _.find(this.peopleList, ['userName', listPart[index].details[0].userName]).order;
+                        this.commitUser.push(element.details[0].userName);
+                    });
+                    this.listPart = _.orderBy(listPart, ['order'], ['asc']);
                     this.$Message.success('查询成功');
                 })
             },

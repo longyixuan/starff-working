@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-01 19:52:41
+ * @Last Modified time: 2021-04-19 20:54:19
  */
 
 const fs = require('fs');
@@ -17,7 +17,6 @@ const Documentnext_col = require('./../models/documentNext');
 const Callback_col = require('./../models/callback');
 const WorkTime_col = require('./../models/workTime');
 const Status_col = require('./../models/status');
-const Replay_col = require('./../models/replay');
 const toChinesNum = require('./../utils/formatNum')
 const uuidv1 = require('uuid/v1');
 
@@ -316,7 +315,6 @@ const allTemplate = async (ctx) => {
 const addDocumentday = async (ctx) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    console.log(req.gzjh)
     const document = await Documentday_col.findOne({
         documentName: req.summaryName,
     });
@@ -375,13 +373,9 @@ const addDocumentday = async (ctx) => {
             systemName: item.systemName,
             userId: req.list[0].userId,
             userName: req.list[0].userName,
-            nickName: req.list[0].nickName,
-            contentTitle: item.contentTitle,
-            contentDescription: item.contentDescription,
-            jira: item.jira
+            nickName: req.list[0].nickName
         });
     });
-    
     await Documentnext_col.insertMany(gzjh)
     ctx.body = {
         code: 1,
@@ -444,14 +438,12 @@ const editDocumentday = async (ctx) => {
     req.gzjh.forEach(item=> {
         gzjh.push({
             documentId: documentId,
+            gzjh: item.gzjh,
             systemId: item.systemId,
             systemName: item.systemName,
             userId: req.list[0].userId,
             userName: req.list[0].userName,
-            nickName: req.list[0].nickName,
-            contentTitle: item.contentTitle,
-            contentDescription: item.contentDescription,
-            jira: item.jira
+            nickName: req.list[0].nickName
         });
     });
     await Documentnext_col.insertMany(gzjh)
@@ -478,52 +470,10 @@ const delteDocumentday = async (ctx) => {
 
 const detailsDocumentday = async (ctx) => {
     const id = ctx.query.id;
-    const gzjh = await Documentnext_col.aggregate([
-        {
-            $lookup: {
-                from: "status",
-                localField: "documentId",
-                foreignField: "documentId",
-                as: "status_info"
-            }
-        },
-        {
-            $match: {
-                'documentId': id
-            }
-        },
-        {
-            $sort: {
-                'order': -1
-            }
-        },
-        {
-            $group: {
-                _id: {
-                    systemId: '$systemId',
-                    systemName: '$systemName',
-                    status_info: '$status_info'
-                },
-                content: {
-                    $push: {
-                        documentId: '$documentId',
-                        userId: '$userId',
-                        userName: '$userName',
-                        nickName: '$nickName',
-                        systemId: '$systemId',
-                        systemName: '$systemName',
-                        contentTitle: '$contentTitle',
-                        jira: '$jira',
-                        contentDescription: '$contentDescription'
-                    }
-                }
-            }
-        }
-    ]);
-    const thyy = await Callback_col.findOne({
+    const gzjh = await Documentnext_col.find({
         'documentId': id
     });
-    const hf = await Replay_col.find({
+    const thyy = await Callback_col.findOne({
         'documentId': id
     });
     const document = await Documentday_col.aggregate([
@@ -556,7 +506,7 @@ const detailsDocumentday = async (ctx) => {
                 },
                 order: {
                     $min: '$order'
-                },
+                },  
                 content: {
                     $push: {
                         documentId: '$documentId',
@@ -571,7 +521,6 @@ const detailsDocumentday = async (ctx) => {
                         order: '$order',
                         systemName: '$systemName',
                         contentTitle: '$contentTitle',
-                        jira: '$jira',
                         contentDescription: '$contentDescription'
                     }
                 }
@@ -584,69 +533,7 @@ const detailsDocumentday = async (ctx) => {
         msg: '请求成功',
         data: document,
         gzjh: gzjh,
-        thyy: thyy,
-        hf: hf
-    }
-}
-
-const preDocumentday = async (ctx) => {
-    const req = ctx.request.body;
-    const result = await Documentday_col.find({
-        'year': req.year,
-        'month': req.month,
-        'day': req.day
-    });
-    let gzjh = [];
-    if (result.length>0) {
-        const id = result[0].documentId;
-        gzjh = await Documentnext_col.aggregate([
-            {
-                $lookup: {
-                    from: "status",
-                    localField: "documentId",
-                    foreignField: "documentId",
-                    as: "status_info"
-                }
-            },
-            {
-                $match: {
-                    'documentId': id
-                }
-            },
-            {
-                $sort: {
-                    'order': -1
-                }
-            },
-            {
-                $group: {
-                    _id: {
-                        systemId: '$systemId',
-                        systemName: '$systemName',
-                        status_info: '$status_info'
-                    },
-                    content: {
-                        $push: {
-                            documentId: '$documentId',
-                            userId: '$userId',
-                            userName: '$userName',
-                            nickName: '$nickName',
-                            systemId: '$systemId',
-                            systemName: '$systemName',
-                            contentTitle: '$contentTitle',
-                            jira: '$jira',
-                            contentDescription: '$contentDescription'
-                        }
-                    }
-                }
-            }
-        ]);
-    }
-    ctx.status = 200;
-    ctx.body = {
-        code: 1,
-        msg: '请求成功',
-        data: gzjh
+        thyy: thyy
     }
 }
 
@@ -1966,7 +1853,6 @@ module.exports = {
     editDocumentday,
     delteDocumentday,
     detailsDocumentday,
-    preDocumentday,
     listDocumentday,
     mergeDocumentday,
     seachDocumentday,

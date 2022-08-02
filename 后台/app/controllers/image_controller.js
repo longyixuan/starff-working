@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-11-20 13:41:58 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-07-21 12:34:08
+ * @Last Modified time: 2021-02-05 17:17:01
  */
 const fs = require('fs');
 const path = require("path");
@@ -51,6 +51,7 @@ const list = async (ctx, next) => {
         data: result
     }
 };
+
 module.exports = {
     add,
     list

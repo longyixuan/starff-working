@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-01 19:50:52
+ * @Last Modified time: 2021-04-09 16:17:31
  */
 
 const Router = require('koa-router');
@@ -31,7 +31,6 @@ router.post('/document/day/add', document_controller.addDocumentday);
 router.post('/document/day/edit', document_controller.editDocumentday);
 router.post('/document/day/del', document_controller.delteDocumentday);
 router.get('/document/day/details', document_controller.detailsDocumentday);
-router.post('/document/day/pre', document_controller.preDocumentday);
 router.get('/document/day/list', document_controller.listDocumentday);
 router.post('/document/day/merge', document_controller.mergeDocumentday);
 router.post('/document/seach', document_controller.seachDocumentday);

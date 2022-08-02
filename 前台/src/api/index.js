@@ -235,10 +235,6 @@ export const delteDocumentday = (type,params) => {
 export const detailsDocumentday = (type,params) => {
     return getRequest(`/document/${type}/details`, params)
 }
-export const preDocumentday = (type,params) => {
-    return postRequest(`/document/${type}/pre`, params)
-}
-
 export const listDocumentday = (type,params) => {
     return getRequest(`/document/${type}/list`,params)
 }
