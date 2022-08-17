@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-07-21 12:16:44
+ * @Last Modified time: 2022-08-16 10:25:37
  */
 
 
@@ -99,6 +99,7 @@ const model_router = require('./routes/api/model_router');
 // const replay_router = require('./routes/api/replay_router');
 // const return_router = require('./routes/api/return_router');
 const jira_router = require('./routes/api/jira_router');
+const vote_router = require('./routes/api/vote_router');
 
 app.use(user_router.routes()).use(user_router.allowedMethods());
 app.use(system_router.routes()).use(system_router.allowedMethods());
@@ -114,5 +115,6 @@ app.use(model_router.routes()).use(model_router.allowedMethods());
 // app.use(replay_router.routes()).use(replay_router.allowedMethods());
 // app.use(return_router.routes()).use(return_router.allowedMethods());
 app.use(jira_router.routes()).use(jira_router.allowedMethods());
+app.use(vote_router.routes()).use(vote_router.allowedMethods());
 
 app.listen(config.port);

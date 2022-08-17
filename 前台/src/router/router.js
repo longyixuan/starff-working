@@ -335,7 +335,39 @@ export const appRouter = {
             }, 
             name: 'aws', 
             component: () => import('@/views/aws/list.vue')
-        }
+        },
+        { 
+            path: 'vote',
+            meta: {
+                title: '投票'
+            }, 
+            name: 'vote', 
+            component: () => import('@/views/vote/vote.vue')
+        },
+        { 
+            path: 'vote/survey',
+            meta: {
+                title: '问卷'
+            }, 
+            name: 'survey', 
+            component: () => import('@/views/vote/survey.vue')
+        },
+        { 
+            path: 'vote/detail/:id',
+            meta: {
+                title: '问卷-填写'
+            }, 
+            name: 'survey-detail', 
+            component: () => import('@/views/vote/detail.vue')
+        },
+        { 
+            path: 'vote/count/:id',
+            meta: {
+                title: '问卷-统计'
+            }, 
+            name: 'survey-count', 
+            component: () => import('@/views/vote/count.vue')
+        },
     ]
 };
 

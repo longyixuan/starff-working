@@ -462,3 +462,49 @@ export const todayTime = (params) => {
 }
 
 //-----------------------个人工时控制台--------------------------------//
+
+
+//-----------------------投票--------------------------------//
+export const addVote = (params) => {
+    return postRequest(`/vote/add`,params)
+}
+export const editVote = (params) => {
+    return postRequest(`/vote/update`,params)
+}
+export const delVote = (params) => {
+    return postRequest(`/vote/delete`,params)
+}
+
+export const getVoteList = (params) => {
+    return postRequest(`/vote/list`,params)
+}
+
+export const addSurvey = (params) => {
+    return postRequest(`/survey/add`,params)
+}
+
+export const editSurvey = (params) => {
+    return postRequest(`/survey/update`,params)
+}
+
+export const delSurvey = (params) => {
+    return postRequest(`/survey/delete`,params)
+}
+
+export const detailSurvey = (id) => {
+    return postRequest(`/survey/detail/${id}`)
+}
+
+export const getSurveyList = (params) => {
+    return postRequest(`/survey/list`,params)
+}
+
+export const submitSurvey = (params) => {
+    return postRequest(`/survey/submit`,params)
+}
+
+export const countSurvey = (params) => {
+    return postRequest(`/survey/count`,params)
+}
+
+//-----------------------投票--------------------------------//

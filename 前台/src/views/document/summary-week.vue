@@ -72,7 +72,7 @@
                     </Col>
                 </Row>
                 <Button type="primary" style="margin-bottom: 20px;" @click="seach">查询</Button>
-                <Alert type="warning" v-if="commitUser.length!=peopleList.length-1&&showdate.length>0">
+                <Alert type="warning" v-if="commitUser.length!=peopleList.length-1&&isReq">
                     未提交总结：
                     <template v-for="item in peopleList">
                         <Tag color="warning" v-if="commitUser.indexOf(item.userName)===-1&&item.userName!='lvf'">{{item.nickName}} </Tag>
@@ -140,6 +140,7 @@
                 list: [],
                 listPart: [],
                 showdate: [],
+                isReq: false,
                 type: 0,
                 startTime: '',
                 endTime: '',
@@ -366,6 +367,7 @@
                     return;
                 }
                 seachDocumentweek(postData).then((res)=>{
+                    this.isReq = true;
                     let listPart = res.data.filter(function(item){
                         return (item._id.status_info.length>0 || item.details[0].status);
                     });

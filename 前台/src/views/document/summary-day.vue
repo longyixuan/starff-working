@@ -91,7 +91,7 @@
                     </Col>
                 </Row>
                 <Button type="primary" @click="seach" style="margin-bottom: 20px;">查询</Button>
-                <Alert type="warning" v-if="commitUser.length!=peopleList.length-1&&showdate.length>0">
+                <Alert type="warning" v-if="commitUser.length!=peopleList.length-1&&isReq">
                     未提交总结：
                     <template v-for="item in peopleList">
                         <Tag color="warning" v-if="commitUser.indexOf(item.userName)===-1&&item.userName!='lvf'">{{item.nickName}} </Tag>
@@ -156,6 +156,7 @@
                 listPart: [],
                 showdate: [],
                 type: 0,
+                isReq: false,
                 weekTitle: '设计部2020年05月25日-29日工作总结（姓名）',
                 startTime: '',
                 endTime: '',
@@ -426,6 +427,7 @@
                     return;
                 }
                 seachDocumentday(postData).then((res)=>{
+                    this.isReq = true;
                     let listPart = res.data.filter(function(item){
                         return (item._id.status_info.length>0 || item.details[0].status);
                     });

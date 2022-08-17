@@ -70,7 +70,7 @@
                     </Col>
                 </Row>
                 <Button type="primary" @click="seach" style="margin-bottom: 20px;">查询</Button>
-                <Alert type="warning" v-if="commitUser.length!=peopleList.length-1">
+                <Alert type="warning" v-if="commitUser.length!=peopleList.length-1&&isReq">
                     未提交总结：
                     <template v-for="item in peopleList">
                         <Tag color="warning" v-if="commitUser.indexOf(item.userName)===-1&&item.userName!='lvf'">{{item.nickName}} </Tag>
@@ -127,6 +127,7 @@
                 month: new Date(),
                 type: 0,
                 startTime: '',
+                isReq: false,
                 endTime: '',
                 selectionList: [],
                 selectionListPart: [],
@@ -305,6 +306,7 @@
                     return;
                 }
                 seachDocumentmonth(postData).then((res)=>{
+                    this.isReq = true;
                     let listPart = res.data.filter(function(item){
                         return (item._id.status_info.length>0 || item.details[0].status);
                     });

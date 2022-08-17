@@ -74,7 +74,7 @@ export const postRequest = (url, params) => {
         url: `${base}${url}`,
         data: params,
         transformRequest: [function (data) {
-            return qs.stringify(data,{allowDots: true});
+            return qs.stringify(data,{allowDots: true.valueOf});
         }],
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

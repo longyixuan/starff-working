@@ -61,6 +61,7 @@
             <MenuItem name="10" to="/aws/list"><Icon type="md-clipboard" />aws发布时间线</MenuItem>
             <!-- <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem> -->
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
+             <MenuItem name="6" to="/vote/survey"><Icon type="md-bookmark" />投票管理</MenuItem>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>
