@@ -3,17 +3,25 @@
 </style>
 <template>
     <Card title="投票">
-        <Alert>
-            每个选项为1-10。
-        </Alert>
-        <Table border :data="tableDate" :columns="tableColumns">
-            <template slot-scope="{ row, index }" :slot="opt" v-for="opt in option">
-                <Input :key="'opt-'+row[opt]" type="text" v-model="tableDate[index][opt]"/>
-            </template>
-        </Table>
-        <div style="margin-top: 20px;text-align: center;">
-            <Button type="primary" @click="submit">提交</Button>
-        </div>
+        <template v-if="isSubmit">
+            <div class="vote">
+                <div class="vote-img"></div>
+                <div class="vote-text">问卷已提交</div>
+            </div>
+        </template>
+        <template v-else>
+            <Alert>
+                每个选项为1-10。
+            </Alert>
+            <Table border :data="tableDate" :columns="tableColumns">
+                <template slot-scope="{ row, index }" :slot="opt" v-for="opt in option">
+                    <Input :key="'opt-'+row[opt]" type="text" v-model="tableDate[index][opt]"/>
+                </template>
+            </Table>
+            <div style="margin-top: 20px;text-align: center;">
+                <Button type="primary" @click="submit">提交</Button>
+            </div>
+        </template>
     </Card>
 </template>
 <script>
@@ -32,6 +40,7 @@ export default {
         tableDate: [],
         tableColumns: [],
         option: [],
+        isSubmit: false,
         id: this.$route.params.id
       }
   },
@@ -112,6 +121,7 @@ export default {
             }).then(res => {
                 if (res.code === 1) {
                     this.$Message.success(res.msg);
+                    this.isSubmit = true;
                 } else {
                     this.$Message.error(res.msg);
                 }

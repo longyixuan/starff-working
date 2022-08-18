@@ -10,7 +10,7 @@
           <div class="layout-logo">设计部工作管理系统</div>
           <div class="layout-right">
               {{username}}
-              <span><a href='/msg' style="color: #fff">消息中心</a></span>
+              <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
               <span @click="modal=true">修改密码</span>
               <span @click="logout">退出</span>
           </div>
@@ -61,7 +61,13 @@
             <MenuItem name="10" to="/aws/list"><Icon type="md-clipboard" />aws发布时间线</MenuItem>
             <!-- <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem> -->
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
-             <MenuItem name="6" to="/vote/survey"><Icon type="md-bookmark" />投票管理</MenuItem>
+            <Submenu name="11" v-if="type===1">
+              <template slot="title">
+                <Icon type="md-pie"/>投票管理
+              </template>
+              <MenuItem name="11-1" to="/vote">选项设置</MenuItem>
+              <MenuItem name="11-2" to="/vote/survey">投票历史</MenuItem>
+            </Submenu>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>

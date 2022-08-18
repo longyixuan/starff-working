@@ -2,24 +2,23 @@
 @import './vote.less';
 </style>
 <template>
-    <Card title="投票选项">
+    <Card title="投票历史">
         <div style="margin-bottom: 10px; text-align: right">
-            <Button type="primary" ghost to="/vote" style="margin-right: 10px">问卷选项设置</Button>
-            <Button type="primary" @click="modal = true">生成问卷</Button>
+            <Button type="primary" @click="modal = true">生成投票</Button>
         </div>
         <Table border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/count/' + row.id">查看结果</Button>
-                <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">问卷预览</Button>
+                <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票预览</Button>
                 <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
             </template>
         </Table>
-        <Modal title="问卷选项" width="800" v-model="modal" @on-ok="add">
+        <Modal title="生成投票" width="800" v-model="modal" @on-ok="add">
             <Form :label-width="80">
-                <FormItem label="问卷名称">
+                <FormItem label="名称">
                     <Input v-model="formItem.surveyName"></Input>
                 </FormItem>
-                <FormItem label="选项">
+                <FormItem label="投票项">
                     <Checkbox-Group v-model="formItem.option">
                         <Checkbox style="display: block" :label="item.id" v-for="item in voteList" :key="item.id">{{ item.voteName }}</Checkbox>
                     </Checkbox-Group>
@@ -64,7 +63,7 @@ export default {
             data: [],
             columns: [
                 {
-                    title: '问卷名称',
+                    title: '名称',
                     key: 'surveyName',
                 },
                 {

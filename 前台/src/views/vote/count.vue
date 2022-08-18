@@ -3,6 +3,9 @@
 </style>
 <template>
     <Card :title="`${surveyName}(${date})投票结果`">
+        <template slot="extra">
+            <Button type="primary" to="/vote/survey">返回</Button>
+        </template>
         <div class="map" id="map"></div>
     </Card>
 </template>
@@ -12,7 +15,9 @@ import {
     detailSurvey
 } from '@/api/index';
 import echarts from 'echarts';
+import template from '../document/template.vue';
 export default {
+  components: { template },
     name: 'timeline',
     data() {
         return {
