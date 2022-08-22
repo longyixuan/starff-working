@@ -2,12 +2,14 @@
  * @Author: yinxl 
  * @Date: 2022-08-16 10:18:07 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-17 13:49:02
+ * @Last Modified time: 2022-08-22 19:49:47
  */
 const Vote_col = require('./../models/vote');
 const Survey_col = require('./../models/survey');
 const SurveyResult_col = require('./../models/surveyResult');
 const uuidv1 = require('uuid/v1');
+const jsonwebtoken = require('jsonwebtoken');
+const User_col = require('./../models/user');
 
 const addVote = async (ctx, next) => {
     ctx.status = 200;
@@ -85,13 +87,23 @@ const detailSurvey = async (ctx, next) => {
 const removeSurvey = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    await Survey_col.deleteMany({
-        id: req.id
+    let item = await SurveyResult_col.findOne({
+        surveyId: req.id
     });
-    ctx.body = {
-        code: 1,
-        msg: '删除成功'
-    };
+    if (item) {
+        ctx.body = {
+            code: 0,
+            msg: '存在投票结果，无法删除'
+        };
+    } else {
+        await Survey_col.deleteMany({
+            id: req.id
+        });
+        ctx.body = {
+            code: 1,
+            msg: '删除成功'
+        };
+    }
 }
 
 const listSurvey = async (ctx, next) => {
@@ -104,35 +116,142 @@ const listSurvey = async (ctx, next) => {
     };
 }
 
+const listSurveyMy = async (ctx, next) => {
+    ctx.status = 200;
+    const token = ctx.request.headers.accesstoken;
+    try {
+        const json = await jsonwebtoken.verify(token, 'jwtSecret');
+        const user = await User_col.findOne({'userName': json.data.userName});
+        if (user) {
+            let result = await SurveyResult_col.aggregate([
+                {
+                    $lookup: {
+                        from: "survey",
+                        localField: "surveyId",
+                        foreignField: "id",
+                        as: "survey_info"
+                    }
+                },
+                {
+                    $match: {
+                        'userName': user.nickName
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            'surveyId': '$surveyId',
+                            'survey_info': '$survey_info'
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        surveyId: '$_id.surveyId',
+                        surveyName: {$arrayElemAt:["$_id.survey_info.surveyName",0]},
+                        date: {$arrayElemAt:["$_id.survey_info.date",0]},
+                    }
+                },
+            ]);
+            ctx.body = {
+                code: 1,
+                msg: '查询成功',
+                data: result
+            };
+        } else {
+            ctx.body = {
+                code: 0,
+                msg: '请求失败'
+            }
+        }
+    } catch (error) {
+        ctx.body = {
+            code: 0,
+            msg: '登录验证失败'
+        }
+    }
+}
+
 const submitSurvey = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    let item = await SurveyResult_col.findOne({
-        surveyId: req.surveyId,
-        submitUser: req.submitUser
+    let data = JSON.parse(req.data);
+    data.forEach(element => {
+        element.id = uuidv1();
     });
-    console.log(item)
-    if (item) {
-        ctx.body = {
-            code: 0,
-            msg: '重复提交'
-        };
-    } else {
-        let data = JSON.parse(req.data);
-        data.forEach(element => {
-            element.id = uuidv1();
-        });
-        await SurveyResult_col.insertMany(data);
-        ctx.body = {
-            code: 1,
-            msg: '操作成功'
-        };
-    }
+    await SurveyResult_col.insertMany(data);
+    ctx.body = {
+        code: 1,
+        msg: '操作成功'
+    };
 }
 
 const countSurvey = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const result2 = await SurveyResult_col.aggregate([
+        {
+            $lookup: {
+                from: "vote",
+                localField: "option",
+                foreignField: "id",
+                as: "vote_info"
+            }
+        },
+        {
+            $match: {
+                'surveyId': req.id,
+                'userName': {
+                    $in: req.people
+                }
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    'userName': '$userName',
+                    'option': {$arrayElemAt:["$vote_info.voteName",0]}
+                },
+                grade: {
+                    "$sum": "$grade"
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                userName: '$_id.userName',
+                option: '$_id.option',
+                grade: '$grade'
+            }
+        },
+        {
+            $sort: {
+                grade: -1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    'option': '$option'
+                },
+                content: {
+                    $push: {
+                        'userName': '$userName',
+                        'total': '$grade'
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                option: '$_id.option',
+                content: '$content'
+            }
+        }
+    ]);
     const result = await SurveyResult_col.aggregate([
         {
             $lookup: {
@@ -144,7 +263,34 @@ const countSurvey = async (ctx, next) => {
         },
         {
             $match: {
-                'surveyId': req.id
+                'surveyId': req.id,
+                'userName': {
+                    $in: req.people
+                }
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    'userName': '$userName',
+                    'option': {$arrayElemAt:["$vote_info.voteName",0]}
+                },
+                grade: {
+                    "$sum": "$grade"
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                userName: '$_id.userName',
+                option: '$_id.option',
+                grade: '$grade'
+            }
+        },
+        {
+            $sort: {
+                grade: -1
             }
         },
         {
@@ -152,14 +298,14 @@ const countSurvey = async (ctx, next) => {
                 _id: {
                     'userName': '$userName'
                 },
-                content: {
-                    $push: {
-                        'option': {$arrayElemAt:["$vote_info.voteName",0]},
-                        'grade': '$grade'
-                    }
-                },
                 total: {
                     "$sum": "$grade"
+                },
+                content: {
+                    $push: {
+                        'option': '$option',
+                        'total': '$grade'
+                    }
                 }
             }
         },
@@ -177,11 +323,305 @@ const countSurvey = async (ctx, next) => {
             }
         }
     ]);
+    const result3 = await SurveyResult_col.aggregate([
+        {
+            $lookup: {
+                from: "vote",
+                localField: "option",
+                foreignField: "id",
+                as: "vote_info"
+            }
+        },
+        {
+            $match: {
+                'surveyId': req.id,
+                'userName': {
+                    $in: req.people
+                }
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    'userName': '$userName',
+                    'option': {$arrayElemAt:["$vote_info.voteName",0]}
+                },
+                grade: {
+                    "$sum": "$grade"
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                userName: '$_id.userName',
+                option: '$_id.option',
+                grade: '$grade'
+            }
+        },
+        {
+            $sort: {
+                userName: -1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    'option': '$option'
+                },
+                content: {
+                    $push: {
+                        'userName': '$userName',
+                        'total': '$grade'
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                option: '$_id.option',
+                content: '$content'
+            }
+        }
+    ]);
     ctx.body = {
         code: 1,
         msg: '请求成功',
-        data: result
+        data: result,
+        data2: result2,
+        data3: result3
     };
+}
+
+const countSurveyMy = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    const token = ctx.request.headers.accesstoken;
+    try {
+        const json = await jsonwebtoken.verify(token, 'jwtSecret');
+        const user = await User_col.findOne({'userName': json.data.userName});
+        const survey = await Survey_col.findOne({'id': req.id});
+        if (!survey) {
+            ctx.body = {
+                code: 0,
+                msg: '投票不存在'
+            }
+        }
+        if (user) {
+            const result = await SurveyResult_col.aggregate([
+                {
+                    $lookup: {
+                        from: "vote",
+                        localField: "option",
+                        foreignField: "id",
+                        as: "vote_info"
+                    }
+                },
+                {
+                    $match: {
+                        'surveyId': req.id,
+                        'userName': user.nickName
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            'option': {$arrayElemAt:["$vote_info.voteName",0]}
+                        },
+                        grade: {
+                            "$sum": "$grade"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        option: '$_id.option',
+                        grade: '$grade'
+                    }
+                }
+            ]);
+            const result2 = await SurveyResult_col.aggregate([
+                {
+                    $lookup: {
+                        from: "vote",
+                        localField: "option",
+                        foreignField: "id",
+                        as: "vote_info"
+                    }
+                },
+                {
+                    $match: {
+                        'surveyId': req.id,
+                        'userName': {
+                            $in: req.people
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            'userName': '$userName',
+                            'option': {$arrayElemAt:["$vote_info.voteName",0]}
+                        },
+                        grade: {
+                            "$sum": "$grade"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        userName: '$_id.userName',
+                        option: '$_id.option',
+                        grade: '$grade'
+                    }
+                },
+                {
+                    $sort: {
+                        grade: -1
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            'userName': '$userName'
+                        },
+                        total: {
+                            "$sum": "$grade"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        userName: '$_id.userName',
+                        total: '$total'
+                    }
+                },
+                {
+                    $sort: {
+                        total: -1
+                    }
+                }
+            ]);
+            const result3 = await SurveyResult_col.aggregate([
+                {
+                    $lookup: {
+                        from: "vote",
+                        localField: "option",
+                        foreignField: "id",
+                        as: "vote_info"
+                    }
+                },
+                {
+                    $match: {
+                        'surveyId': req.id,
+                        'userName': {
+                            $in: req.people
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            'userName': '$userName',
+                            'option': {$arrayElemAt:["$vote_info.voteName",0]}
+                        },
+                        grade: {
+                            "$sum": "$grade"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        userName: '$_id.userName',
+                        option: '$_id.option',
+                        grade: '$grade'
+                    }
+                },
+                {
+                    $sort: {
+                        grade: -1
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            'option': '$option'
+                        },
+                        content: {
+                            $push: {
+                                'userName': '$userName',
+                                'total': '$grade'
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        option: '$_id.option',
+                        content: '$content'
+                    }
+                }
+            ]);
+            let ranking = [
+                {
+                    name: '总分',
+                    ranking: orderList(result2, user.nickName)
+                }
+            ]
+            result3.forEach(element => {
+                ranking.push({
+                    name: element.option,
+                    ranking: orderList(element.content, user.nickName)
+                });
+            });
+            ctx.body = {
+                code: 1,
+                msg: '请求成功',
+                surveyName: survey.surveyName,
+                date: survey.date,
+                ranking: ranking,
+                data: result
+            };
+        } else {
+            ctx.body = {
+                code: 0,
+                msg: '请求失败'
+            }
+        }
+    } catch (error) {
+        ctx.body = {
+            code: 0,
+            msg: '请求失败'
+        }
+    }
+}
+function orderList(list, userName) {
+    let prescore = 0;//预定义分数
+    let ranking = 0;//排名
+    let same = 0; //是否相同
+    let mark = 0;
+    list.forEach((item,index)=>{
+        if(item.total==prescore){
+            item.ranking = ranking;
+            same++;
+        }else{
+            ranking = ranking + same;
+            ranking++;
+            prescore = item.total;
+            same=0;
+            item.ranking = ranking;
+        }
+        if (userName == item.userName) {
+            mark = item.ranking;
+        }
+    })
+    return mark;
 }
 
 module.exports = {
@@ -194,5 +634,7 @@ module.exports = {
     removeSurvey,
     listSurvey,
     submitSurvey,
-    countSurvey
+    countSurvey,
+    listSurveyMy,
+    countSurveyMy,
 }

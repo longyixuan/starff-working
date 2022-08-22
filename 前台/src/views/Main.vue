@@ -63,11 +63,12 @@
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
             <Submenu name="11" v-if="type===1">
               <template slot="title">
-                <Icon type="md-pie"/>投票管理
+                <Icon type="md-happy" />投票管理
               </template>
               <MenuItem name="11-1" to="/vote">选项设置</MenuItem>
               <MenuItem name="11-2" to="/vote/survey">投票历史</MenuItem>
             </Submenu>
+            <MenuItem name="11" to="/vote/mysurvey" v-else><Icon type="md-happy" />投票查看</MenuItem>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>

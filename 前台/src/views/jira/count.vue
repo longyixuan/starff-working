@@ -188,14 +188,6 @@
                         "#b8860b",
                         "#30e0e0"
                     ],
-                    // toolbox: {
-                    //     feature: {
-                    //     dataView: { show: true, readOnly: false },
-                    //     magicType: { show: true, type: ['line', 'bar'] },
-                    //     restore: { show: true },
-                    //     saveAsImage: { show: true }
-                    //     }
-                    // },
                     legend: {
                         data: ['jira数', 'bug数']
                     },

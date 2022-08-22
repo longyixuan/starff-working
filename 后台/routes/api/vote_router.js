@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-08-16 10:15:53 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-16 15:14:48
+ * @Last Modified time: 2022-08-22 11:07:40
  */
 
 const Router = require('koa-router');
@@ -20,4 +20,8 @@ router.post('/survey/delete', vote_controller.removeSurvey);
 router.post('/survey/list', vote_controller.listSurvey);
 router.post('/survey/submit', vote_controller.submitSurvey);
 router.post('/survey/count', vote_controller.countSurvey);
+
+router.post('/survey/mylist', vote_controller.listSurveyMy);
+router.post('/survey/mycount', vote_controller.countSurveyMy);
+
 module.exports = router;

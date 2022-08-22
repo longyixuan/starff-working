@@ -4,12 +4,12 @@
 <template>
     <Card title="投票历史">
         <div style="margin-bottom: 10px; text-align: right">
-            <Button type="primary" @click="modal = true">生成投票</Button>
+            <Button type="primary" @click="modal = true">新增</Button>
         </div>
         <Table border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/count/' + row.id">查看结果</Button>
-                <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票预览</Button>
+                <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票</Button>
                 <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
             </template>
         </Table>
@@ -75,7 +75,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 240,
+                    width: 220,
                     align: 'center',
                 },
             ],
@@ -129,6 +129,7 @@ export default {
                 date: moment().format('YYYY-MM-DD'),
             }).then((res) => {
                 this.$Message.success('添加成功');
+                this.getVoteList();
             });
         },
         view(row) {
@@ -165,7 +166,7 @@ export default {
                             this.data.splice(index, 1);
                             this.$Message.success('删除成功');
                         } else {
-                            this.$Message.success(res.msg);
+                            this.$Message.error(res.msg);
                         }
                     });
                 },

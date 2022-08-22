@@ -28,6 +28,15 @@ export const registResult = {
     component: () => import('@/views/regist-result.vue')
 };
 
+export const voteDetail = {
+    path: '/vote/detail/:id',
+    meta: {
+        title: '投票'
+    },
+    name: 'survey-detail',
+    component: () => import('@/views/vote/detail.vue')
+};
+
 export const page404 = {
     path: '/*',
     name: 'error-404',
@@ -347,26 +356,42 @@ export const appRouter = {
         { 
             path: 'vote/survey',
             meta: {
-                title: '问卷'
+                title: '投票'
             }, 
             name: 'survey', 
             component: () => import('@/views/vote/survey.vue')
         },
-        { 
-            path: 'vote/detail/:id',
-            meta: {
-                title: '问卷-填写'
-            }, 
-            name: 'survey-detail', 
-            component: () => import('@/views/vote/detail.vue')
-        },
+        // { 
+        //     path: 'vote/detail/:id',
+        //     meta: {
+        //         title: '投票'
+        //     }, 
+        //     name: 'survey-detail', 
+        //     component: () => import('@/views/vote/detail.vue')
+        // },
         { 
             path: 'vote/count/:id',
             meta: {
-                title: '问卷-统计'
+                title: '投票'
             }, 
             name: 'survey-count', 
             component: () => import('@/views/vote/count.vue')
+        },
+        { 
+            path: 'vote/mysurvey',
+            meta: {
+                title: '投票'
+            }, 
+            name: 'survey', 
+            component: () => import('@/views/vote/mysurvey.vue')
+        },
+        { 
+            path: 'vote/mycount/:id',
+            meta: {
+                title: '投票'
+            }, 
+            name: 'survey-count', 
+            component: () => import('@/views/vote/mycount.vue')
         },
     ]
 };
@@ -377,6 +402,7 @@ export const routers = [
     registRouter,
     registResult,
     appRouter,
+    voteDetail,
     page500,
     page403
 ];

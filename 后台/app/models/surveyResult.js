@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-08-16 09:24:25
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-16 17:31:10
+ * @Last Modified time: 2022-08-22 09:42:57
  */
 
 const mongoose = require('mongoose');
@@ -14,10 +14,6 @@ const SurveyResultSchema = new Schema({
         required: true
     },
     surveyId: {
-        type: String,
-        required: true
-    },
-    submitUser: {
         type: String,
         required: true
     },

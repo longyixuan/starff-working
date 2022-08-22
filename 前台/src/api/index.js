@@ -507,4 +507,12 @@ export const countSurvey = (params) => {
     return postRequest(`/survey/count`,params)
 }
 
+export const getSurveyListMy = (params) => {
+    return postRequest(`/survey/mylist`,params)
+}
+
+export const countSurveyMy = (params) => {
+    return postRequest(`/survey/mycount`,params)
+}
+
 //-----------------------投票--------------------------------//
