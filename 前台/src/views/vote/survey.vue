@@ -11,7 +11,8 @@
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/count/' + row.id">查看结果</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" @click="setTime(row.id)">设置截至时间</Button>
-                <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
+                <Button type="warning" size="small" style="margin-right: 5px" @click="deleteTag(row.id, index, true)">重投</Button>
+                <Button type="error" size="small" @click="deleteTag(row.id, index, false)">删除</Button>
             </template>
         </Table>
         <Modal title="生成投票" width="800" v-model="modal" @on-ok="add">
@@ -98,7 +99,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 300,
+                    width: 360,
                     align: 'center',
                 },
             ],
@@ -172,16 +173,17 @@ export default {
             this.id = id;
             this.tableModal=true;
         },
-        deleteTag(id, index) {
+        deleteTag(id, index, reset) {
             this.$Modal.confirm({
                 title: '提示',
-                content: '确定要删除吗？',
+                content: reset?'确定要重投吗？':'确定要删除吗？',
                 onOk: () => {
                     delSurvey({
                         id: id,
+                        reset: reset
                     }).then((res) => {
                         if (res.code === 1) {
-                            this.data.splice(index, 1);
+                            this.getUserList();
                             this.$Message.success('删除成功');
                         } else {
                             this.$Message.error(res.msg);

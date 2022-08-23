@@ -137,7 +137,7 @@ export default {
     },
     mounted() {
         this.getUserList();
-        if (this.getStore('vote')) {
+        if (this.getStore('vote')==this.id) {
             this.isSubmit = true;
         }
     },

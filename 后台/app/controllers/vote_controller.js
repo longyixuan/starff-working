@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-08-16 10:18:07 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-23 11:58:47
+ * @Last Modified time: 2022-08-23 12:27:17
  */
 const Vote_col = require('./../models/vote');
 const Survey_col = require('./../models/survey');
@@ -119,10 +119,20 @@ const removeSurvey = async (ctx, next) => {
         surveyId: req.id
     });
     if (item) {
-        ctx.body = {
-            code: 0,
-            msg: '存在投票结果，无法删除'
-        };
+        if (req.reset) {
+            await SurveyResult_col.deleteMany({
+                surveyId: req.id
+            });
+            ctx.body = {
+                code: 0,
+                msg: '已删除投票结果'
+            };
+        } else {
+            ctx.body = {
+                code: 0,
+                msg: '存在投票结果，无法删除'
+            };
+        }
     } else {
         await Survey_col.deleteMany({
             id: req.id
