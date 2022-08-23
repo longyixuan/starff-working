@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-08-16 10:18:07 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-22 19:49:47
+ * @Last Modified time: 2022-08-23 11:58:47
  */
 const Vote_col = require('./../models/vote');
 const Survey_col = require('./../models/survey');
@@ -71,17 +71,45 @@ const addSurvey = async (ctx, next) => {
     };
 }
 
+const editSurvey = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await Survey_col.updateMany({
+        id: req.id
+    },{
+        endDate: req.endDate
+    });
+    ctx.body = {
+        code: 1,
+        msg: '设置成功'
+    };
+}
+
 const detailSurvey = async (ctx, next) => {
     ctx.status = 200;
     const id = ctx.params.id;
     const result = await Survey_col.findOne({
         id: id
     });
-    ctx.body = {
-        code: 1,
-        msg: '请求成功',
-        data: result
-    };
+    if (result) {
+        if (parseInt((result.endDate.getTime() - new Date().getTime())/1000)>0) {
+            ctx.body = {
+                code: 1,
+                msg: '请求成功',
+                data: result
+            };
+        } else {
+            ctx.body = {
+                code: 0,
+                msg: '投票时间已截至',
+            };
+        }
+    } else {
+        ctx.body = {
+            code: 0,
+            msg: '问卷不存在'
+        };
+    }
 }
 
 const removeSurvey = async (ctx, next) => {
@@ -109,10 +137,46 @@ const removeSurvey = async (ctx, next) => {
 const listSurvey = async (ctx, next) => {
     ctx.status = 200;
     let result = await Survey_col.find({});
+    let data = [];
+    for (let i = 0;i<result.length;i++) {
+        let num =  await SurveyResult_col.aggregate([
+            {
+                $match: {
+                    'surveyId': result[i].id
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        'option': '$option',
+                        'userName': '$userName'
+                    },
+                    count: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    count: "$count"
+                }
+            },
+        ]);
+        data.push({
+            'date': result[i].date,
+            'id': result[i].id,
+            'option': result[i].option,
+            'surveyName': result[i].surveyName,
+            'user': result[i].user,
+            'endDate': result[i].endDate,
+            'num': num.length>0?num[0].count:0
+        })
+    }
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: data
     };
 }
 
@@ -630,6 +694,7 @@ module.exports = {
     removeVote,
     listVote,
     addSurvey,
+    editSurvey,
     detailSurvey,
     removeSurvey,
     listSurvey,

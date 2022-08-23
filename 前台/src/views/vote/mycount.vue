@@ -15,8 +15,8 @@
             </div>
             <div>
                 <Icon type="ios-ribbon" color="#ff9900"/>小组排名<Icon type="md-arrow-forward" />
-                <template v-for="item in ranking2">
-                    {{item.name}}排名：<strong>{{item.ranking}}</strong>；
+                <template v-for="item in ranking">
+                    {{item.name}}排名：<strong>{{getRanking(item.name)}}</strong>；
                 </template>
             </div>
         </Alert>
@@ -40,6 +40,12 @@ export default {
         };
     },
     methods: {
+        getRanking(name) {
+            if (this.ranking2.length===0) {
+                return '';
+            }
+            return  _.find(this.ranking2, ['name', name]).ranking;
+        },
         count() {
             countSurveyMy({
                 id: this.id,

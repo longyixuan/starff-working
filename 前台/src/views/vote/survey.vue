@@ -10,6 +10,7 @@
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/count/' + row.id">查看结果</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票</Button>
+                <Button type="primary" size="small" style="margin-right: 5px" @click="setTime(row.id)">设置截至时间</Button>
                 <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
             </template>
         </Table>
@@ -33,16 +34,17 @@
                 </FormItem>
             </Form>
         </Modal>
-        <Modal title="预览" width="1000" v-model="tableModal">
-            <Table border :data="tableDate" :columns="tableColumns"></Table>
+        <Modal title="截至时间设置" v-model="tableModal">
+            <DatePicker v-model="endDate" type="datetime" placeholder="选则投票截至时间"></DatePicker>
             <div slot="footer">
-                <Button type="primary" @click="tableModal = false">关闭</Button>
+                <Button @click="tableModal = false">取消</Button>
+                <Button type="primary" @click="edit">确定</Button>
             </div>
         </Modal>
     </Card>
 </template>
 <script>
-import { getVoteList, getAllUserData, addSurvey, getSurveyList, delSurvey } from '@/api/index';
+import { getVoteList, getAllUserData, addSurvey, editSurvey, getSurveyList, delSurvey } from '@/api/index';
 import moment from 'moment';
 export default {
     name: 'timeline',
@@ -60,7 +62,9 @@ export default {
                 user: [],
                 surveyName: '',
             },
+            id: '',
             data: [],
+            endDate: new Date(),
             columns: [
                 {
                     title: '名称',
@@ -73,9 +77,28 @@ export default {
                     key: 'date',
                 },
                 {
+                    title: '投票截至时间',
+                    width: 160,
+                    align: 'center',
+                    key: 'endDate',
+                    render: function(h,parmars){
+                        if (_.has(parmars.row, 'endDate')) {
+                            return h('span', moment(parmars.row.endDate).format('YYYY-MM-DD HH:mm:ss'))
+                        } else {
+                            return h('span', '-')
+                        }
+                    }
+                },
+                {
+                    title: '已投票人次',
+                    width: 100,
+                    align: 'center',
+                    key: 'num',
+                },
+                {
                     title: '操作',
                     slot: 'action',
-                    width: 220,
+                    width: 300,
                     align: 'center',
                 },
             ],
@@ -132,27 +155,22 @@ export default {
                 this.getVoteList();
             });
         },
-        view(row) {
-            this.tableModal = true;
-            this.tableDate = [];
-            this.tableColumns = [
-                {
-                    title: '姓名',
-                    key: 'userName',
-                    width: 100,
-                },
-            ];
-            row.option.forEach((element) => {
-                this.tableColumns.push({
-                    title: _.find(this.voteList, ['id', element]).voteName,
-                    key: element,
-                });
+        edit() {
+            if (this.endDate == '') {
+                this.$Message.error('请选择时间')
+                return;
+            }
+            editSurvey({
+                id: this.id,
+                endDate: this.endDate,
+            }).then((res) => {
+                this.getVoteList();
+                this.tableModal= false;
             });
-            row.user.forEach((element) => {
-                this.tableDate.push({
-                    userName: _.find(this.userList, ['userId', element]).nickName,
-                });
-            });
+        },
+        setTime: function(id) {
+            this.id = id;
+            this.tableModal=true;
         },
         deleteTag(id, index) {
             this.$Modal.confirm({

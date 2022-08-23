@@ -7,7 +7,7 @@
             <template v-if="isSubmit">
                 <div class="vote">
                     <div class="vote-img"></div>
-                    <div class="vote-text">问卷已提交</div>
+                    <div class="vote-text">{{text}}</div>
                 </div>
             </template>
             <template v-else>
@@ -39,6 +39,7 @@ export default {
             option: [],
             isSubmit: false,
             surveyName: '',
+            text: '问卷已提交',
             id: this.$route.params.id,
         };
     },
@@ -59,32 +60,36 @@ export default {
         },
         getSurvey() {
             detailSurvey(this.id).then((res) => {
-                this.tableDate = [];
-                this.option = res.data.option;
-                this.surveyName = res.data.surveyName;
-                this.tableColumns = [
-                    {
-                        title: '姓名',
-                        key: 'userName',
-                        width: 100,
-                    },
-                ];
-                res.data.option.forEach((element) => {
-                    this.tableColumns.push({
-                        title: _.find(this.voteList, ['id', element]).voteName,
-                        key: element,
-                        slot: element,
+                if (res.code === 1) {
+                    this.tableDate = [];
+                    this.option = res.data.option;
+                    this.surveyName = res.data.surveyName;
+                    this.tableColumns = [
+                        {
+                            title: '姓名',
+                            key: 'userName',
+                            width: 100,
+                        },
+                    ];
+                    res.data.option.forEach((element) => {
+                        this.tableColumns.push({
+                            title: _.find(this.voteList, ['id', element]).voteName,
+                            key: element,
+                            slot: element,
+                        });
                     });
-                });
-                res.data.user.forEach((element) => {
-                    let item = {
-                        userName: _.find(this.userList, ['userId', element]).nickName,
-                    };
-                    res.data.option.forEach((element2) => {
-                        item[element2] = 0;
+                    res.data.user.forEach((element) => {
+                        let item = {
+                            userName: _.find(this.userList, ['userId', element]).nickName,
+                        };
+                        res.data.option.forEach((element2) => {
+                            item[element2] = 0;
+                        });
+                        this.tableDate.push(item);
                     });
-                    this.tableDate.push(item);
-                });
+                } else {
+                    this.text = res.msg;
+                }
             });
         },
         submit() {

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-08-16 10:15:53 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-22 11:07:40
+ * @Last Modified time: 2022-08-23 11:14:07
  */
 
 const Router = require('koa-router');
@@ -15,6 +15,7 @@ router.post('/vote/delete', vote_controller.removeVote);
 router.post('/vote/list', vote_controller.listVote);
 
 router.post('/survey/add', vote_controller.addSurvey);
+router.post('/survey/update', vote_controller.editSurvey);
 router.post('/survey/detail/:id', vote_controller.detailSurvey);
 router.post('/survey/delete', vote_controller.removeSurvey);
 router.post('/survey/list', vote_controller.listSurvey);
