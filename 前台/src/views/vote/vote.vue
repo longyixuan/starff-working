@@ -12,8 +12,16 @@
                 <Button type="error" size="small" @click="deleteTag(row.id,index)">删除</Button>
             </template>
         </Table>
-        <Modal title="编辑" width="800" v-model="modal" @on-ok="add">
-            <Input placeholder="输入选项名称" v-model="tag"></Input>
+        <Modal title="设置选项" width="800" v-model="modal" @on-ok="add">
+            <Form :label-width="80">
+                <FormItem label="名称：">
+                    <Input v-model="tag"></Input>
+                </FormItem>
+                <FormItem label="描述：">
+                    <Input type="textarea" v-model="des" :rows="4"></Input>
+                </FormItem>
+            </Form>
+            
         </Modal>
     </Card>
 </template>
@@ -31,11 +39,17 @@ export default {
         modal: false,
         data: [],
         tag: '',
+        des: '',
         id: '',
         columns: [
             {
                 title: '选项名称',
-                key: 'voteName'
+                key: 'voteName',
+                width: 200
+            },
+            {
+                title: '选项描述',
+                key: 'voteDes'
             },
             {
                 title: '操作',
@@ -51,7 +65,8 @@ export default {
           if (this.id) {
               editVote({
                 id: this.id,
-                voteName: this.tag
+                voteName: this.tag,
+                voteDes: this.des
             }).then(res=> {
                 this.$Message.success('修改成功');
                 this.init();
@@ -59,7 +74,8 @@ export default {
           } else {
             addVote({
               id: this.id,
-              voteName: this.tag
+              voteName: this.tag,
+              voteDes: this.des
             }).then(res=> {
                 this.$Message.success('添加成功');
                 this.init();
@@ -69,6 +85,7 @@ export default {
       updateTag(row) {
           this.id = row.id;
           this.tag = row.voteName;
+          this.des = row.voteDes;
           this.modal = true;
       },
       deleteTag(id,index) {

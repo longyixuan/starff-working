@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-08-16 09:24:25
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-16 10:54:42
+ * @Last Modified time: 2022-08-24 14:59:26
  */
 
 const mongoose = require('mongoose');
@@ -16,6 +16,9 @@ const VoteSchema = new Schema({
     voteName: {
         type: String,
         required: true
+    },
+    voteDes: {
+        type: String
     },
     order: {
         type: Number,

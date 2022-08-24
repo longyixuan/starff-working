@@ -11,7 +11,8 @@
                 </div>
             </template>
             <template v-else>
-                <Table border :data="tableDate" :columns="tableColumns">
+                <Alert type="warning">全部投满分不允许提交</Alert>
+                <Table border stripe :data="tableDate" :columns="tableColumns">
                     <template slot-scope="{ row, index }" :slot="opt" v-for="opt in option">
                         <Rate class="vote-star" show-text :count="10" icon="md-star" v-model="tableDate[index][opt]">
                             <span style="color: #f5a623">{{ tableDate[index][opt] }}</span>
@@ -66,16 +67,46 @@ export default {
                     this.surveyName = res.data.surveyName;
                     this.tableColumns = [
                         {
+                            type: 'index',
+                            width: 60,
+                            align: 'center'
+                        },
+                        {
                             title: '姓名',
                             key: 'userName',
                             width: 100,
                         },
                     ];
                     res.data.option.forEach((element) => {
+                        let _this = this;
                         this.tableColumns.push({
                             title: _.find(this.voteList, ['id', element]).voteName,
                             key: element,
                             slot: element,
+                            renderHeader(h, params) {
+                                return h('div', [
+                                    h('span', _.find(_this.voteList, ['id', element]).voteName),
+                                    h('tooltip', {
+                                        props: {
+                                            transfer: true,
+                                            placement: 'top',
+                                            'max-width':"240",
+                                            content: _.find(_this.voteList, ['id', element]).voteDes
+                                        }
+                                    },[
+                                        h('Icon', {
+                                            props: {
+                                                type: 'ios-help-circle',
+                                                size: '16',
+                                                color: '#666'
+                                            },
+                                            style: {
+                                                marginLeft: '5px'
+                                            }
+                                        })
+                                    ])
+                                ])
+                            }
                         });
                     });
                     res.data.user.forEach((element) => {
@@ -95,14 +126,18 @@ export default {
         },
         submit() {
             let data = [];
-            var _this = this;
-            var flag = false;
+            let _this = this;
+            let flag = false;
+            let flag2 = true;
             this.tableDate.forEach((element) => {
                 _.forOwn(element, function (value, key) {
-                    if (value === 0) {
-                        flag = true;
-                    }
                     if (key != 'userName') {
+                        if (value === 0) {
+                            flag = true;
+                        }
+                        if (value != 10) {
+                            flag2= false;
+                        }
                         data.push({
                             surveyId: _this.id,
                             option: key,
@@ -114,6 +149,10 @@ export default {
             });
             if (flag) {
                 this.$Message.error('存在空值，请填写完全');
+                return;
+            }
+            if (flag2) {
+                this.$Message.error('请不要全部投满分');
                 return;
             }
             this.$Modal.confirm({

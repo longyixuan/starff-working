@@ -63,38 +63,44 @@ export default {
                     this.data = this.orderList(res.data);
                     this.columns = [
                         {
+                            title: '排名',
+                            key: 'ranking',
+                            align: 'center',
+                            sortable: true,
+                            width: 80,
+                        },
+                        {
                             title: '姓名',
                             key: 'userName',
                         },
                         {
                             title: '总分',
                             key: 'total',
-                            sortable: true,
                             align: 'right',
                             width: 100,
-                        },
-                        {
-                            title: '排名',
-                            key: 'ranking',
-                            align: 'right',
-                            width: 80,
-                        },
+                        }
                     ];
                     let data2 = res.data2;
                     data2.forEach((item) => {
                         item.content = this.orderList(item.content);
-                        this.columns.push({
-                            title: item.option,
+                        let temp = [];
+                        temp.push({
+                            title: '分数',
                             key: item.option,
-                            sortable: true,
                             align: 'right',
                             width: 100,
                         });
-                        this.columns.push({
+                        temp.push({
                             title: '排名',
                             key: item.option + 'ranking',
                             align: 'right',
-                            width: 80,
+                            width: 100,
+                            sortable: true,
+                        });
+                        this.columns.push({
+                            title: item.option,
+                            align: 'center',
+                            children: temp
                         });
                     });
                     this.data.forEach((element) => {
