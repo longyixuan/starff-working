@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-08-16 10:18:07 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-23 12:27:17
+ * @Last Modified time: 2022-08-24 09:19:12
  */
 const Vote_col = require('./../models/vote');
 const Survey_col = require('./../models/survey');
@@ -119,7 +119,7 @@ const removeSurvey = async (ctx, next) => {
         surveyId: req.id
     });
     if (item) {
-        if (req.reset) {
+        if (req.reset == 'true') {
             await SurveyResult_col.deleteMany({
                 surveyId: req.id
             });

@@ -17,15 +17,15 @@
         </Table>
         <Modal title="生成投票" width="800" v-model="modal" @on-ok="add">
             <Form :label-width="80">
-                <FormItem label="名称">
+                <FormItem label="名称：">
                     <Input v-model="formItem.surveyName"></Input>
                 </FormItem>
-                <FormItem label="投票项">
+                <FormItem label="投票项：">
                     <Checkbox-Group v-model="formItem.option">
-                        <Checkbox style="display: block" :label="item.id" v-for="item in voteList" :key="item.id">{{ item.voteName }}</Checkbox>
+                        <Checkbox :label="item.id" v-for="item in voteList" :key="item.id">{{ item.voteName }}</Checkbox>
                     </Checkbox-Group>
                 </FormItem>
-                <FormItem label="人员">
+                <FormItem label="人员：">
                     <div style="border-bottom: 1px solid #e9e9e9; padding-bottom: 6px; margin-bottom: 6px">
                         <Checkbox :value="checkAll" @click.prevent.native="handleCheckAll">全选</Checkbox>
                     </div>
@@ -65,7 +65,7 @@ export default {
             },
             id: '',
             data: [],
-            endDate: new Date(),
+            endDate: moment().add(1, 'hour').format(),
             columns: [
                 {
                     title: '名称',
@@ -150,6 +150,7 @@ export default {
                 surveyName: this.formItem.surveyName,
                 option: this.formItem.option,
                 user: this.formItem.user,
+                endDate: this.endDate,
                 date: moment().format('YYYY-MM-DD'),
             }).then((res) => {
                 this.$Message.success('添加成功');
@@ -176,7 +177,7 @@ export default {
         deleteTag(id, index, reset) {
             this.$Modal.confirm({
                 title: '提示',
-                content: reset?'确定要重投吗？':'确定要删除吗？',
+                content: reset?'即将清空投票结果，确定要重投吗？':'确定要删除吗？',
                 onOk: () => {
                     delSurvey({
                         id: id,

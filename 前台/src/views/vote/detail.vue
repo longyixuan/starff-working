@@ -3,7 +3,7 @@
 </style>
 <template>
     <div :style="{ padding: '24px' }">
-        <Card title="投票">
+        <Card title="设计部投票">
             <template v-if="isSubmit">
                 <div class="vote">
                     <div class="vote-img"></div>
@@ -88,6 +88,7 @@ export default {
                         this.tableDate.push(item);
                     });
                 } else {
+                    this.isSubmit = true;
                     this.text = res.msg;
                 }
             });

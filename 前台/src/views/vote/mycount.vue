@@ -4,7 +4,7 @@
 <template>
     <Card :title="`${surveyName}(${date})投票结果`">
         <div slot="extra">
-            <Button type="primary" to="/vote/survey">返回</Button>
+            <Button type="primary" to="/vote/mysurvey">返回</Button>
         </div>
         <Alert type="warning">
             <div style="margin-bottom: 10px;">

@@ -77,7 +77,7 @@ export default {
                             title: '排名',
                             key: 'ranking',
                             align: 'right',
-                            width: 100,
+                            width: 80,
                         },
                     ];
                     let data2 = res.data2;
@@ -94,7 +94,7 @@ export default {
                             title: '排名',
                             key: item.option + 'ranking',
                             align: 'right',
-                            width: 100,
+                            width: 80,
                         });
                     });
                     this.data.forEach((element) => {
