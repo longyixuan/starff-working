@@ -118,7 +118,7 @@ export default {
                         data: [
                             {
                                 value: series,
-                                name: '我的'
+                                name: '我的分数'
                             },
                             {
                                 value: series2,
