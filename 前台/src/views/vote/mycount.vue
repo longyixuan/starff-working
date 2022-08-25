@@ -6,21 +6,32 @@
         <div slot="extra">
             <Button type="primary" to="/vote/mysurvey">返回</Button>
         </div>
-        <Alert type="warning">
-            <div style="margin-bottom: 10px;">
-                <Icon type="ios-ribbon" color="#ff9900"/>部门排名<Icon type="md-arrow-forward" />
-                <template v-for="item in ranking">
-                    {{item.name}}排名：<strong>{{item.ranking}}</strong>；
-                </template>
-            </div>
-            <div>
-                <Icon type="ios-ribbon" color="#ff9900"/>小组排名<Icon type="md-arrow-forward" />
-                <template v-for="item in ranking">
-                    {{item.name}}排名：<strong>{{getRanking(item.name)}}</strong>；
-                </template>
-            </div>
-        </Alert>
-        <div class="map" id="map"></div>
+        <Row :gutter="20">
+            <Col span="12">
+                <Card title="部门排名" dis-hover icon="ios-ribbon">
+                    <Alert type="warning">
+                        <div style="line-height: 1.6">
+                            <div v-for="item in ranking">
+                                {{item.name}}排名：<strong>{{item.ranking}}</strong>
+                            </div>
+                        </div>
+                    </Alert>
+                    <div class="map" id="map"></div>
+                </Card>
+            </Col>
+            <Col span="12">
+                <Card :title="getGroupName+'排名'" dis-hover icon="ios-ribbon">
+                    <Alert type="warning">
+                        <div style="line-height: 1.6">
+                            <div v-for="item in ranking">
+                                {{item.name}}排名：<strong>{{getRanking(item.name)}}</strong>
+                            </div>
+                        </div>
+                    </Alert>
+                    <div class="map" id="map2"></div>
+                </Card>
+            </Col>
+        </Row>
     </Card>
 </template>
 <script>
@@ -36,8 +47,15 @@ export default {
             surveyName: '',
             date: '',
             ranking: [],
-            ranking2: []
+            ranking2: [],
+            qd: ['卫杰','马艳雄','尹晓龙','王利英','贾晓东','韩文明','郭晓琼','王振','王天乐','刘国威'],
+            sj: ['孙玲','崔永辉','畅雪琦','高爽','颜情']
         };
+    },
+    computed: {
+        getGroupName() {
+            return _.includes(this.qd ,JSON.parse(localStorage.getItem('userInfo')).nickName)?'前端':'设计';
+        }
     },
     methods: {
         getRanking(name) {
@@ -49,47 +67,62 @@ export default {
         count() {
             countSurveyMy({
                 id: this.id,
-                people: ['卫杰','马艳雄','尹晓龙','王利英','贾晓东','韩文明','郭晓琼','王振','王天乐','刘国威','孙玲','崔永辉','畅雪琦','高爽','颜情']
+                people: [...this.qd, ...this.sj]
             }).then(res => {
                 if (res.code === 1) {
                     this.surveyName = res.surveyName;
                     this.date = res.date;
                     this.ranking = res.ranking;
-                    this.createMap(res.data);
-                }
-            })
-            countSurveyMy({
-                id: this.id,
-                people: _.includes(['卫杰','马艳雄','尹晓龙','王利英','贾晓东','韩文明','郭晓琼','王振','王天乐','刘国威'], JSON.parse(localStorage.getItem('userInfo')).nickName)?['卫杰','马艳雄','尹晓龙','王利英','贾晓东','韩文明','郭晓琼','王振','王天乐','刘国威']:['孙玲','崔永辉','畅雪琦','高爽','颜情']
-            }).then(res => {
-                if (res.code === 1) {
-                    this.ranking2 = res.ranking;
+                    this.createMap('map', res.data, res.ranking, res.num);
+                    countSurveyMy({
+                        id: this.id,
+                        people: _.includes(this.qd, JSON.parse(localStorage.getItem('userInfo')).nickName)?this.qd:this.sj
+                    }).then(res => {
+                        if (res.code === 1) {
+                            this.ranking2 = res.ranking;
+                            this.createMap('map2', res.data, res.ranking, res.num);
+                        }
+                    })
                 }
             })
         },
-        createMap(data) {
-            let map = echarts.init(document.getElementById('map'));
+        createMap(id, data, ranking, num) {
+            let map = echarts.init(document.getElementById(id));
             let indicator = [];
             let series = [];
-            data.forEach(element => {
-                indicator.push({name: element.option});
-                series.push(element.grade);
+            let series2 = [];
+            this.ranking.forEach(element => {
+                if (element.name != '总分') {
+                    indicator.push({name: element.name, max: num*10, min: 0});
+                    series.push(_.find(data, ['option', element.name]).grade);
+                    series2.push(_.find(ranking, ['name', element.name]).max);
+                }
             });
             let option = {
                 radar: {
-                    indicator: indicator
+                    indicator: indicator,
+                    radius: '70%',
+                    splitNumber: 5, // 雷达图圈数设置
+                },
+                legend: {
+                    top: 0,
+                    data: ['我的', '最高分']
                 },
                 tooltip: {
                     confine: true,
                 },
-                color: ['#87cefa', '#ff7f50', '#da70d6', '#32cd32', '#6495ed', '#ff69b4', '#ba55d3', '#cd5c5c', '#ffa500', '#40e0d0', '#1e90ff', '#ff6347', '#7b68ee', '#00fa9a', '#ffd700', '#6699FF', '#ff6666', '#3cb371', '#b8860b', '#30e0e0'],
+                color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
                 series: [
                     {
-                        name: '评分详情',
                         type: 'radar',
                         data: [
                             {
-                                value: series
+                                value: series,
+                                name: '我的'
+                            },
+                            {
+                                value: series2,
+                                name: '最高分'
                             }
                         ]
                     }

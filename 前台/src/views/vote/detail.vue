@@ -11,7 +11,6 @@
                 </div>
             </template>
             <template v-else>
-                <Alert type="warning">全部投满分不允许提交</Alert>
                 <Table border stripe :data="tableDate" :columns="tableColumns">
                     <template slot-scope="{ row, index }" :slot="opt" v-for="opt in option">
                         <Rate class="vote-star" show-text :count="10" icon="md-star" v-model="tableDate[index][opt]">

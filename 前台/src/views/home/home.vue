@@ -296,28 +296,7 @@ export default {
             type: "shadow"
           }
         },
-        color: [
-          "#87cefa",
-          "#ff7f50",
-          "#da70d6",
-          "#32cd32",
-          "#6495ed",
-          "#ff69b4",
-          "#ba55d3",
-          "#cd5c5c",
-          "#ffa500",
-          "#40e0d0",
-          "#1e90ff",
-          "#ff6347",
-          "#7b68ee",
-          "#00fa9a",
-          "#ffd700",
-          "#6699FF",
-          "#ff6666",
-          "#3cb371",
-          "#b8860b",
-          "#30e0e0"
-        ],
+        color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
         grid: {
           top: "10%",
           left: "2%",
@@ -352,28 +331,7 @@ export default {
           trigger: "item",
           formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
-        color: [
-          "#ff7f50",
-          "#87cefa",
-          "#da70d6",
-          "#32cd32",
-          "#6495ed",
-          "#ff69b4",
-          "#ba55d3",
-          "#cd5c5c",
-          "#ffa500",
-          "#40e0d0",
-          "#1e90ff",
-          "#ff6347",
-          "#7b68ee",
-          "#00fa9a",
-          "#ffd700",
-          "#6699FF",
-          "#ff6666",
-          "#3cb371",
-          "#b8860b",
-          "#30e0e0"
-        ],
+        color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
         series: [
           {
             name: "工时占比",

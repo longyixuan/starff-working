@@ -11,8 +11,8 @@
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/count/' + row.id">查看结果</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" @click="setTime(row.id)">设置截至时间</Button>
-                <Button type="warning" size="small" style="margin-right: 5px" @click="deleteTag(row.id, index, true)">重投</Button>
-                <Button type="error" size="small" @click="deleteTag(row.id, index, false)">删除</Button>
+                <Button type="warning" size="small" style="margin-right: 5px" :disabled="row.num===0" @click="deleteTag(row.id, index, true)">重投</Button>
+                <Button type="error" size="small" :disabled="row.num!==0" @click="deleteTag(row.id, index, false)">删除</Button>
             </template>
         </Table>
         <Modal title="生成投票" width="800" v-model="modal" @on-ok="add">
@@ -109,7 +109,7 @@ export default {
         getUserList() {
             getAllUserData().then((res) => {
                 if (res.code === 1) {
-                    this.userList = res.data;
+                    this.userList = _.filter(res.data, function(o) { return o.type!==1; });
                     this.getVoteList();
                 }
             });
@@ -168,6 +168,7 @@ export default {
             }).then((res) => {
                 this.getVoteList();
                 this.tableModal= false;
+                this.$Message.success('设置成功')
             });
         },
         setTime: function(id) {
@@ -183,8 +184,8 @@ export default {
                         id: id,
                         reset: reset
                     }).then((res) => {
+                        this.getSurveyList();
                         if (res.code === 1) {
-                            this.getUserList();
                             this.$Message.success('删除成功');
                         } else {
                             this.$Message.error(res.msg);
