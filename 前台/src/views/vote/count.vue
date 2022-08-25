@@ -51,13 +51,13 @@
         </Row>
         <Tabs type="card" v-model="tabName" style="margin-top: 20px;">
             <TabPane label="全部门排名" name="bm">
-                <Table border :data="list" :columns="columns"></Table>
+                <Table border stripe :data="list" :columns="columns"></Table>
             </TabPane>
             <TabPane label="前端组排名" name="qd">
-                <Table border :data="listQd" :columns="columns"></Table>
+                <Table border stripe :data="listQd" :columns="columns"></Table>
             </TabPane>
             <TabPane label="设计组排名" name="sj">
-                <Table border :data="listSj" :columns="columns"></Table>
+                <Table border stripe :data="listSj" :columns="columns"></Table>
             </TabPane>
         </Tabs>
     </Card>
@@ -161,7 +161,7 @@ export default {
                             key: 'ranking',
                             align: 'center',
                             sortable: true,
-                            width: 80,
+                            width: 90,
                         },
                         {
                             title: '姓名',
