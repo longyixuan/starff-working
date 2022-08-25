@@ -13,9 +13,11 @@
             <template v-else>
                 <Table border stripe :data="tableDate" :columns="tableColumns">
                     <template slot-scope="{ row, index }" :slot="opt" v-for="opt in option">
-                        <Rate class="vote-star" show-text :count="10" icon="md-star" v-model="tableDate[index][opt]">
-                            <span style="color: #f5a623">{{ tableDate[index][opt] }}</span>
-                        </Rate>
+                        <div :class="{'rule-td': true,'rule': rule && !tableDate[index][opt]}">
+                            <Rate class="vote-star" show-text :count="10" icon="md-star" v-model="tableDate[index][opt]">
+                                <span style="color: #f5a623">{{ tableDate[index][opt] }}</span>
+                            </Rate>
+                        </div>
                     </template>
                 </Table>
                 <div style="margin-top: 20px; text-align: center">
@@ -41,6 +43,7 @@ export default {
             surveyName: '',
             text: '问卷已提交',
             id: this.$route.params.id,
+            rule: false
         };
     },
     methods: {
@@ -146,6 +149,7 @@ export default {
                     }
                 });
             });
+            this.rule = true;
             if (flag) {
                 this.$Message.error('存在空值，请填写完全');
                 return;
