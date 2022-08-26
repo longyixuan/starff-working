@@ -8,25 +8,31 @@
         </div>
         <Row :gutter="20">
             <Col span="12">
-                <Card title="部门排名" dis-hover icon="ios-ribbon">
-                    <Alert type="warning">
-                        <div style="line-height: 1.6">
-                            <div v-for="item in ranking">
-                                {{item.name}}排名：<strong>{{item.ranking}}</strong>
-                            </div>
-                        </div>
+                <Card dis-hover icon="ios-ribbon">
+                    <p slot="title">
+                        <Icon type="ios-ribbon" size="20" color="#ff9900"/>部门排名：<strong>{{ranking.length>0?ranking[0].ranking:''}}</strong>
+                    </p>
+                    <Alert v-if="ranking.length>0" style="margin-bottom: 10px;">
+                        <template v-for="item in ranking">
+                            <span v-if="item.name !='总分'" style="margin-right: 20px;">
+                                {{item.name}}：<strong>{{item.ranking}}</strong>
+                            </span>
+                        </template>
                     </Alert>
                     <div class="map" id="map"></div>
                 </Card>
             </Col>
             <Col span="12">
-                <Card :title="getGroupName+'排名'" dis-hover icon="ios-ribbon">
-                    <Alert type="warning">
-                        <div style="line-height: 1.6">
-                            <div v-for="item in ranking">
-                                {{item.name}}排名：<strong>{{getRanking(item.name)}}</strong>
-                            </div>
-                        </div>
+                <Card dis-hover icon="ios-ribbon">
+                    <p slot="title">
+                        <Icon type="ios-ribbon" size="20" color="#ff9900"/>{{getGroupName}}排名：<strong>{{ranking2.length>0?ranking2[0].ranking:''}}</strong>
+                    </p>
+                    <Alert v-if="ranking2.length>0" style="margin-bottom: 10px;">
+                        <template v-for="item in ranking">
+                            <span v-if="item.name !='总分'" style="margin-right: 20px;">
+                                {{item.name}}：<strong>{{getRanking(item.name)}}</strong>
+                            </span>
+                        </template>
                     </Alert>
                     <div class="map" id="map2"></div>
                 </Card>

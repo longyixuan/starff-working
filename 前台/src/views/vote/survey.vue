@@ -117,6 +117,10 @@ export default {
         getVoteList() {
             getVoteList().then((res) => {
                 this.voteList = res.data;
+                this.voteList.forEach(element => {
+                    this.formItem.option.push(element.id);
+                })
+                this.handleCheckAll();
                 this.getSurveyList();
             });
         },

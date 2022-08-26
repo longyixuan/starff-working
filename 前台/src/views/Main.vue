@@ -67,7 +67,7 @@
               </template>
               <MenuItem name="11-1" to="/vote">选项设置</MenuItem>
               <MenuItem name="11-2" to="/vote/survey">投票历史</MenuItem>
-              <MenuItem name="11-3" to="/vote/mysurvey">我的投票</MenuItem>
+              <!-- <MenuItem name="11-3" to="/vote/mysurvey">我的投票</MenuItem> -->
             </Submenu>
             <MenuItem name="11" to="/vote/mysurvey" v-else><Icon type="md-happy" />投票查看</MenuItem>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
