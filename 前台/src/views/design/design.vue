@@ -3,9 +3,6 @@
 </style>
 <template>
     <Card title="录入">
-        <!-- <div style="margin-bottom: 10px;text-align: right;">
-            <Button type="primary" @click="isEdit=!isEdit">编辑</Button>
-        </div> -->
         <Table class="num-table" border :data="data" :columns="columns" stripe>
             <template slot-scope="{ row }" slot="action">
                 <Button v-if="row.isEdit" type="warning" size="small" @click="save(row)">保存</Button>
@@ -71,7 +68,6 @@ export default {
                                     return h('Input',{
                                         class: 'num-input',
                                         props: {
-                                            // type: 'number',
                                             value: parmars.row['tagNum_'+element.id]
                                         },
                                         on: {

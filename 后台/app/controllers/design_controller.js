@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-09-02 12:40:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-09-07 20:47:59
+ * @Last Modified time: 2022-09-09 19:52:57
  */
 
 const Design_col = require('./../models/design');
@@ -50,11 +50,25 @@ const removeTag = async (ctx, next) => {
 
 const listTag = async (ctx, next) => {
     ctx.status = 200;
-    let result = await DesignTag_col.find({});
+    let result = await DesignTag_col.find({parentId: 'root'});
+    let data = [];
+    for (let i = 0; i < result.length;i++) {
+        let children = await DesignTag_col.find({
+            parentId: result[i].id
+        })
+        data.push({
+            id: result[i].id,
+            hasDes: result[i].hasDes,
+            name: result[i].name,
+            order: result[i].order,
+            parentId: result[i].parentId,
+            child: children
+        });
+    }
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: data
     };
 }
 

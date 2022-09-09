@@ -4,7 +4,7 @@
 <template>
     <Card title="选项设置">
         <div style="margin-bottom: 10px; text-align: right">
-            <Button type="primary" @click="modal = true">添加选项</Button>
+            <Button type="primary" @click="addXx">添加选项</Button>
         </div>
         <Table border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
@@ -12,14 +12,33 @@
                 <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
             </template>
             <template slot-scope="{ row, index }" slot="children">
-                <Tag type="border" size="medium" closable @on-close="onClose" name="展板设计">展板设计</Tag>
+                <Tag :color="item.hasDes?'primary':'default'" style="cursor: pointer;" v-for="item in row.child" :key="item.id" type="border" size="medium" closable @click.native="onEdit(row.id, item)" @on-close="onClose" :name="item.id">{{item.name}}</Tag>
                 <Button type="dashed" size="small" @click="onAdd(row, index)">添加</Button>
+            </template>
+            <template slot-scope="{ row }" slot="hasDes">
+                {{row.hasDes?'是':'否'}}
             </template>
         </Table>
         <Modal title="设置选项" width="800" v-model="modal" @on-ok="add">
-            <Form :label-width="80">
+            <Form :label-width="120">
                 <FormItem label="名称：">
                     <Input v-model="tag"></Input>
+                </FormItem>
+                <FormItem label="展示备注：">
+                    <Checkbox v-model="hasDes"></Checkbox>
+                </FormItem>
+            </Form>
+        </Modal>
+        <Modal title="设置子选项" width="800" v-model="modal2" @on-ok="add2">
+            <Form :label-width="120">
+                <FormItem label="父选项：">
+                    {{mc}}
+                </FormItem>
+                <FormItem label="名称：">
+                    <Input v-model="tag2"></Input>
+                </FormItem>
+                <FormItem label="展示备注：">
+                    <Checkbox v-model="hasDes2"></Checkbox>
                 </FormItem>
             </Form>
         </Modal>
@@ -37,10 +56,14 @@ export default {
     data() {
         return {
             modal: false,
+            modal2: false,
             data: [],
             tag: '',
-            tag: '',
+            hasDes: true,
+            tag2: '',
+            hasDes2: true,
             id: '',
+            id2: '',
             columns: [
                 {
                     type: 'index',
@@ -53,6 +76,13 @@ export default {
                     width: 200,
                 },
                 {
+                    title: '是否展示备注',
+                    width: 130,
+                    key: 'hasDes',
+                    align: 'center',
+                    slot: 'hasDes'
+                },
+                {
                     title: '子项',
                     key: 'children',
                     slot: 'children'
@@ -62,28 +92,80 @@ export default {
                     slot: 'action',
                     width: 140,
                     align: 'center',
-                },
+                }
             ],
         };
     },
+    computed: {
+        mc() {
+            if (this.id) {
+                return _.find(this.data, ['id', this.id]).name;
+            } else {
+                return ''
+            }
+        }
+    },
     methods: {
         onClose(event, name) {
-            alert(name)
+            this.deleteTag(name,0);
         },
         onAdd(row, index) {
-            alert(index)
+            this.modal2 = true;
+            this.id = row.id;
+            this.id2 = '';
+        },
+        addXx () {
+            this.modal = true;
+            this.tag = '';
+            this.hasDes = true;
+            this.id = '';
+        },
+        onEdit(id, row) {
+            this.id = id;
+            this.id2 = row.id;
+            this.tag2 = row.name;
+            this.hasDes2 = row.hasDes;
+            this.modal2 = true;
         },
         add() {
             if (this.id) {
                 editDesignTag({
+                    parentId: 'root',
                     id: this.id,
-                    name: this.tag
+                    name: this.tag,
+                    hasDes: this.hasDes
                 }).then(res=> {
                     this.$Message.success('修改成功');
                     this.getList();
                 })
             } else {
-                addDesignTag({name: this.tag}).then(res => {
+                addDesignTag({
+                    parentId: 'root',
+                    name: this.tag,
+                    hasDes: this.hasDes
+                }).then(res => {
+                    this.$Message.success('添加成功');
+                    this.getList();
+                });
+            }
+        },
+        add2() {
+            if (this.id2) {
+                editDesignTag({
+                    parentId: this.id,
+                    id: this.id2,
+                    name: this.tag2,
+                    hasDes: this.hasDes2
+                }).then(res=> {
+                    this.$Message.success('修改成功');
+                    this.getList();
+                })
+            } else {
+                addDesignTag({
+                    parentId: this.id,
+                    name: this.tag2,
+                    hasDes: this.hasDes2
+                }).then(res => {
                     this.$Message.success('添加成功');
                     this.getList();
                 });
@@ -92,6 +174,7 @@ export default {
         updateTag(row) {
             this.id = row.id;
             this.tag = row.name;
+            this.hasDes = row.hasDes;
             this.modal = true;
         },
         deleteTag(id,index) {
@@ -103,7 +186,7 @@ export default {
                         id: id
                     }).then(res=> {
                         if (res.code === 1) {
-                            this.data.splice(index,1);
+                            this.getList();
                             this.$Message.success('删除成功');
                         } else {
                             this.$Message.success(res.msg);
