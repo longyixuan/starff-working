@@ -20,8 +20,8 @@
                 <Button type="primary" to="/time-line/add">新增时间线</Button>
             </div>
         </div>
-        <Tabs v-model="tabName" type="card">
-            <TabPane label="表格显示" name="name1">
+        <!-- <Tabs v-model="tabName" type="card">
+            <TabPane label="表格显示" name="name1"> -->
                 <Table border :columns="columns" :data="data" ref="table">
                     <template slot-scope="{ row }" slot="model">
                         <template v-if="modelList.length > 0">
@@ -36,7 +36,7 @@
                         <Button type="error" size="small" @click="deleteTimeline(row.timelineId,index)">删除</Button>
                     </template>
                 </Table>
-            </TabPane>
+            <!-- </TabPane>
             <TabPane label="时间线显示" name="name2">
                 <ul class="timeline" v-if="tabName=='name2'">
                     <li class="timeline-item" v-for="item in lineDate">
@@ -56,7 +56,7 @@
                     </li>
                 </ul>
             </TabPane>
-        </Tabs>
+        </Tabs> -->
     </Card>
   </div>
 </template>

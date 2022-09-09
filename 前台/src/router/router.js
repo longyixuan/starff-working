@@ -257,141 +257,157 @@ export const appRouter = {
             name: 'template-view',
             component: () => import('@/views/document/templateView.vue')
         },
-        { 
-            path: 'time-line',
+        {
+          path: 'time-line',
             meta: {
                 title: '系统时间线'
-            }, 
-            name: 'time-line', 
+            },
+            name: 'time-line',
             component: () => import('@/views/timeline/time-line.vue')
         },
-        { 
+        {
             path: 'time-line/add',
             meta: {
                 title: '系统时间线'
-            }, 
-            name: 'time-line-add', 
+            },
+            name: 'time-line-add',
             component: () => import('@/views/timeline/add.vue')
         },
-        { 
+        {
             path: 'time-line/edit',
             meta: {
                 title: '系统时间线'
-            }, 
-            name: 'time-line-edit', 
+            },
+            name: 'time-line-edit',
             component: () => import('@/views/timeline/add.vue')
         },
-        { 
+        {
             path: 'sys-time-line',
             meta: {
                 title: '系统同步记录'
-            }, 
-            name: 'sys-time-line', 
+            },
+            name: 'sys-time-line',
             component: () => import('@/views/systimeline/time-line.vue')
         },
-        { 
+        {
             path: 'sys-time-line/add',
             meta: {
                 title: '系统同步记录'
-            }, 
-            name: 'sys-time-line-add', 
+            },
+            name: 'sys-time-line-add',
             component: () => import('@/views/systimeline/add.vue')
         },
-        { 
+        {
             path: 'sys-time-line/edit',
             meta: {
                 title: '系统同步记录'
-            }, 
-            name: 'sys-time-line-edit', 
+            },
+            name: 'sys-time-line-edit',
             component: () => import('@/views/systimeline/add.vue')
         },
-        { 
+        {
             path: 'jira-list',
             meta: {
                 title: 'jira完成情况'
-            }, 
-            name: 'jira', 
+            },
+            name: 'jira',
             component: () => import('@/views/jira/list.vue')
         },
-        { 
+        {
             path: 'jira-count',
             meta: {
                 title: 'jira完成情况'
-            }, 
-            name: 'jira', 
+            },
+            name: 'jira',
             component: () => import('@/views/jira/count.vue')
         },
-        { 
+        {
             path: 'time-line/tag',
             meta: {
                 title: '标签管理'
-            }, 
-            name: 'tag', 
+            },
+            name: 'tag',
             component: () => import('@/views/timeline/tag.vue')
         },
-        { 
+        {
             path: 'work-time-count',
             meta: {
                 title: ''
-            }, 
-            name: 'work-time-count', 
+            },
+            name: 'work-time-count',
             component: () => import('@/views/home/personal.vue')
         },
-        { 
+        {
             path: 'aws/list',
             meta: {
                 title: 'aws发布时间线'
-            }, 
-            name: 'aws', 
+            },
+            name: 'aws',
             component: () => import('@/views/aws/list.vue')
         },
-        { 
+        {
             path: 'vote',
             meta: {
                 title: '投票'
-            }, 
-            name: 'vote', 
+            },
+            name: 'vote',
             component: () => import('@/views/vote/vote.vue')
         },
-        { 
+        {
             path: 'vote/survey',
             meta: {
                 title: '投票'
-            }, 
-            name: 'survey', 
+            },
+            name: 'survey',
             component: () => import('@/views/vote/survey.vue')
         },
-        // { 
+        // {
         //     path: 'vote/detail/:id',
         //     meta: {
         //         title: '投票'
-        //     }, 
-        //     name: 'survey-detail', 
+        //     },
+        //     name: 'survey-detail',
         //     component: () => import('@/views/vote/detail.vue')
         // },
-        { 
+        {
             path: 'vote/count/:id',
             meta: {
                 title: '投票'
-            }, 
-            name: 'survey-count', 
+            },
+            name: 'survey-count',
             component: () => import('@/views/vote/count.vue')
         },
-        { 
+        {
             path: 'vote/mysurvey',
             meta: {
                 title: '投票'
-            }, 
-            name: 'survey', 
+            },
+            name: 'survey',
             component: () => import('@/views/vote/mysurvey.vue')
         },
-        { 
+        {
             path: 'vote/mycount/:id',
             meta: {
                 title: '投票'
-            }, 
-            name: 'survey-count', 
+            },
+            name: 'survey-count',
             component: () => import('@/views/vote/mycount.vue')
+        },
+        {
+            path: 'design',
+            meta: {
+                title: '视觉作品数量记录'
+            },
+            name: 'design',
+            component: () => import('@/views/design/design.vue')
+        },
+        {
+            path: 'design/tag',
+            meta: {
+                title: '视觉作品数量记录'
+            },
+            name: 'design-tag',
+            component: () => import('@/views/design/tag.vue')
         },
     ]
 };

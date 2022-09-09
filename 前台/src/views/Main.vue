@@ -24,7 +24,7 @@
         </Alert>
       </Layout> -->
       <Layout>
-        <Sider hide-trigger :style="{background: '#fff'}">
+        <Sider hide-trigger :style="{background: '#fff'}" width="220">
           <Menu active-name="0" theme="light" width="auto">
             <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
             <Submenu name="1" v-if="type===1">
@@ -49,12 +49,19 @@
               <MenuItem name="3-2" to="/summary-week">周总结</MenuItem>
               <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
             </Submenu>
-            <Submenu name="9" v-if="type===1">
+            <Submenu name="12">
               <template slot="title">
                 <Icon type="md-pie"/>jira完成情况
               </template>
-              <MenuItem name="9-1" to="/jira-list">录入</MenuItem>
-              <MenuItem name="9-2" to="/jira-count">查看</MenuItem>
+              <MenuItem name="12-1" to="/jira-list">录入</MenuItem>
+              <MenuItem name="12-2" to="/jira-count">查看</MenuItem>
+            </Submenu>
+            <Submenu name="9">
+              <template slot="title">
+                <Icon type="md-flag" />视觉作品数量记录
+              </template>
+              <MenuItem name="9-1" to="/design/tag">选项设置</MenuItem>
+              <MenuItem name="9-2" to="/design">录入</MenuItem>
             </Submenu>
             <MenuItem name="4" to="/sys-modal" v-if="type===1"><Icon type="ios-folder-open" />系统模块管理</MenuItem>
             <MenuItem name="5" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>

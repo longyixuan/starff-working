@@ -520,3 +520,33 @@ export const countSurveyMy = (params) => {
 }
 
 //-----------------------投票--------------------------------//
+
+//-----------------------视觉作品数量记录--------------------------------//
+export const addDesignTag = (params) => {
+    return postRequest(`/design/tag/add`,params)
+}
+
+export const editDesignTag = (params) => {
+    return postRequest(`/design/update`,params)
+}
+export const delDesignTag = (params) => {
+    return postRequest(`/design/delete`,params)
+}
+
+export const listDesignTag = (params) => {
+    return postRequest(`/design/tag/list`,params)
+}
+
+export const addDesign = (params) => {
+    return postRequest(`/design/add`,params)
+}
+
+export const detailDesign = (params) => {
+    return postRequest(`/design/detail`,params)
+}
+
+export const allDesign = (params) => {
+    return postRequest(`/design/all`,params)
+}
+
+//-----------------------视觉作品数量记录--------------------------------//
