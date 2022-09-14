@@ -60,8 +60,9 @@
               <template slot="title">
                 <Icon type="md-flag" />视觉作品数量记录
               </template>
-              <MenuItem name="9-1" to="/design/tag">选项设置</MenuItem>
+              <MenuItem name="9-1" to="/design/tag" v-if="type===1">选项设置</MenuItem>
               <MenuItem name="9-2" to="/design">录入</MenuItem>
+              <MenuItem name="9-3" to="/design/show" v-if="type===1">查看</MenuItem>
             </Submenu>
             <MenuItem name="4" to="/sys-modal" v-if="type===1"><Icon type="ios-folder-open" />系统模块管理</MenuItem>
             <MenuItem name="5" to="/time-line"><Icon type="md-options" />系统时间线</MenuItem>

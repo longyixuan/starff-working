@@ -12,7 +12,7 @@
                 <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
             </template>
             <template slot-scope="{ row, index }" slot="children">
-                <Tag :color="item.hasDes?'primary':'default'" style="cursor: pointer;" v-for="item in row.child" :key="item.id" type="border" size="medium" closable @click.native="onEdit(row.id, item)" @on-close="onClose" :name="item.id">{{item.name}}</Tag>
+                <Tag style="cursor: pointer;" v-for="item in row.child" :key="item.id" type="border" size="medium" closable @click.native="onEdit(row.id, item)" @on-close="onClose" :name="item.id">{{item.name}}{{item.hasDes?'【展示备注】':''}}</Tag>
                 <Button type="dashed" size="small" @click="onAdd(row, index)">添加</Button>
             </template>
             <template slot-scope="{ row }" slot="hasDes">

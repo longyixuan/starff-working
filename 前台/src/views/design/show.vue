@@ -2,25 +2,24 @@
 @import "./design.less";
 </style>
 <template>
-    <Card title="录入">
+    <Card title="查看">
         <div style="margin-bottom: 20px;" class="clearfix">
-            <DatePicker v-model="year" :clearable="false" type="year" style="width: 160px"></DatePicker>
+            <DatePicker v-model="year" :clearable="false" type="year" style="width: 160px;margin-right:10px;"></DatePicker>
+            <Select v-model="userId" style="width: 160px;margin-right:10px;" placeholder="请选择姓名">
+                <Option value="全部门" key="全部门">全部门</Option>
+                <Option :value="item.userId" :key="item.userId" v-for="item in userList">{{item.nickName}}</Option>
+            </Select>
+            <Button type="primary" style="margin-right: 10px;" @click="getList">查询</Button>
         </div>
-        <Table class="num-table" border :data="data" :columns="columns" stripe>
-            <template slot-scope="{ row }" slot="action">
-                <template v-if="!row.noEdit">
-                    <Button v-if="row.isEdit" type="warning" size="small" @click="save(row)">保存</Button>
-                    <Button v-else type="primary" size="small" @click="edit(row)">编辑</Button>
-                </template>
-            </template>
-        </Table>
+        <Table class="num-table" border :data="data" :columns="columns" stripe></Table>
     </Card>
 </template>
 <script>
 import {
     listDesignTag,
-    addDesign,
     detailDesign,
+    getAllUserData,
+    allDesign
 } from '@/api/index';
 import moment from "moment";
 export default {
@@ -28,9 +27,11 @@ export default {
     data() {
         return {
             monthList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            sj: ['lugp', 'cuiyh', 'sunl', 'changxq', 'gaos', 'yanq'],
             tagList: [],
             data: [],
-            userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+            userList: [],
+            userId: '全部门',
             year: new Date(),
             isEdit: false,
             columns: []
@@ -43,6 +44,17 @@ export default {
                 this.$nextTick().then( ()=>{
                     this.createColumns();
                 });
+            });
+        },
+        getUserList() {
+            let _this = this;
+            getAllUserData().then(res => {
+                if (res.code === 1) {
+                    this.userList = res.data;
+                    this.userList = _.filter(res.data, function(o) {
+                        return _this.sj.indexOf(o.userName)!==-1;
+                    });
+                }
             });
         },
         createColumns() {
@@ -193,15 +205,6 @@ export default {
                     children: children
                 });
             });
-            if (this.userId) {
-                this.columns.push({
-                    title: '操作',
-                    slot: 'action',
-                    width: 70,
-                    align: 'center',
-                    fixed: 'right'
-                })
-            }
             this.createData(ids);
         },
         createData(ids) {
@@ -212,64 +215,73 @@ export default {
             });
             this.init();
         },
-        edit(item) {
-            item.isEdit = true;
-        },
-        save(item) {
-            item.isEdit = false;
-            let postData = [];
-            let month = item.month;
-            let year = moment(this.year).format('YYYY');
-            let userId = this.userId;
-            _.forIn(item, function(value, key) {
-                if (key.indexOf('tagNum_')!==-1) {
-                    postData.push({
-                        year: year,
-                        month: month,
-                        userId: userId,
-                        tagId: key.split('_')[1],
-                        tagNum: value,
-                        tagDes: item['tagDes_'+key.split('_')[1]]
-                    });
-                }
-            });
-            addDesign({ data: postData }).then( res => {
-                if (res.code === 1) {
-                    this.$Message.success('操作成功');
-                }
-            });
-        },
         init() {
-            detailDesign({
-                year: moment(this.year).format('YYYY'),
-                userId: this.userId,
-            }).then(res => {
-                if (res.code===1 && res.data.length>0) {
-                    res.data.forEach( ele => {
-                        let _index = _.findIndex(this.data, ['month', ele.month]);
-                        ele.content.forEach( ele2 => {
-                            this.data[_index]['tagNum_'+ele2.tagId] = ele2.tagNum;
-                            this.data[_index]['tagDes_'+ele2.tagId] = ele2.tagDes;
+            if (this.userId!='全部门') {
+                detailDesign({
+                    year: moment(this.year).format('YYYY'),
+                    userId: this.userId,
+                }).then(res => {
+                    if (res.code===1 && res.data.length>0) {
+                        res.data.forEach( ele => {
+                            let _index = _.findIndex(this.data, ['month', ele.month]);
+                            ele.content.forEach( ele2 => {
+                                this.data[_index]['tagNum_'+ele2.tagId] = ele2.tagNum;
+                                this.data[_index]['tagDes_'+ele2.tagId] = ele2.tagDes;
+                            });
                         });
-                    });
-                    this.initT(res.data2,res.data3);
-                }
-            });
+                        this.initT(res.data2,res.data3);
+                    }
+                });
+            } else {
+                allDesign({
+                    year: moment(this.year).format('YYYY')
+                }).then(res => {
+                    if (res.code===1 && res.data.length>0) {
+                        res.data.forEach( ele => {
+                            let _index = _.findIndex(this.data, ['month', ele.month]);
+                            let tempIds = [];
+                            ele.content.forEach( ele2 => {
+                                if (tempIds.indexOf(ele2.tagId)!==-1) {
+                                    this.data[_index]['tagNum_'+ele2.tagId] += ele2.tagNum;
+                                    this.data[_index]['tagDes_'+ele2.tagId] += ele2.tagDes;
+                                } else {
+                                    this.data[_index]['tagNum_'+ele2.tagId] = ele2.tagNum;
+                                    this.data[_index]['tagDes_'+ele2.tagId] = ele2.tagDes;
+                                    tempIds.push(ele2.tagId);
+                                }
+                            });
+                        });
+                        this.initT(res.data2,res.data3);
+                    }
+                });
+            }
         },
         initT(data2,data3) {
             let temp = {
                 month: '全年',
                 noEdit: true
             };
+            let temp2 = {
+                month: '占全员比',
+                noEdit: true
+            };
             data2.forEach( ele => {
                 temp['tagNum_'+ele.tagId] = ele.sum;
                 temp['tagDes_'+ele.tagId] = '';
                 let obj = _.find(data3, ['tagId', ele.tagId]);
+                if (obj.sum!==0) {
+                    temp2['tagNum_'+ele.tagId] = `${(ele.sum/obj.sum*100).toFixed(2)}%`;
+                } else {
+                    temp2['tagNum_'+ele.tagId] = '-';
+                }
+                temp2['tagDes_'+ele.tagId] = '';
             });
             this.data.push(temp);
+            this.data.push(temp2);
         }
     },
     mounted() {
+        this.getUserList();
         this.getList();
     }
 }

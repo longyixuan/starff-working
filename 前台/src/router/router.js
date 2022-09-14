@@ -409,6 +409,14 @@ export const appRouter = {
             name: 'design-tag',
             component: () => import('@/views/design/tag.vue')
         },
+        {
+            path: 'design/show',
+            meta: {
+                title: '视觉作品数量记录'
+            },
+            name: 'design-show',
+            component: () => import('@/views/design/show.vue')
+        }
     ]
 };
 

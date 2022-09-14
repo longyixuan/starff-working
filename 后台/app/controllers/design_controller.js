@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-09-02 12:40:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-09-09 19:52:57
+ * @Last Modified time: 2022-09-14 09:12:33
  */
 
 const Design_col = require('./../models/design');
@@ -152,10 +152,109 @@ const detail = async (ctx, next) => {
             }
         }
     ])
+    const result2 = await Design_col.aggregate([
+        {
+            $lookup: {
+                from: "user",
+                localField: "userId",
+                foreignField: "userId",
+                as: "user_info"
+            }
+        },
+        {
+            $match: {
+                year: parseInt(req.year),
+                userId: req.userId
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    tagId: '$tagId'
+                },
+                sum: { $sum: '$tagNum' },
+                content: {
+                    $push: {
+                        id: '$id',
+                        userId: '$userId',
+                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                        year: '$year',
+                        month: '$month',
+                        tagId: '$tagId',
+                        tagNum: '$tagNum',
+                        tagDes: '$tagDes',
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                tagId: "$_id.tagId",
+                content: "$content",
+                sum: "$sum"
+            }
+        },
+        {
+            $sort: {
+                month: 1 //排序规则
+            }
+        }
+    ])
+    const result3 = await Design_col.aggregate([
+        {
+            $lookup: {
+                from: "user",
+                localField: "userId",
+                foreignField: "userId",
+                as: "user_info"
+            }
+        },
+        {
+            $match: {
+                year: parseInt(req.year)
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    tagId: '$tagId'
+                },
+                sum: { $sum: '$tagNum' },
+                content: {
+                    $push: {
+                        id: '$id',
+                        userId: '$userId',
+                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                        year: '$year',
+                        month: '$month',
+                        tagId: '$tagId',
+                        tagNum: '$tagNum',
+                        tagDes: '$tagDes',
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                tagId: "$_id.tagId",
+                content: "$content",
+                sum: "$sum"
+            }
+        },
+        {
+            $sort: {
+                month: 1 //排序规则
+            }
+        }
+    ])
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: result,
+        data2: result2,
+        data3: result3
     };
 }
 
@@ -180,7 +279,6 @@ const all = async (ctx, next) => {
             $group: {
                 _id: {
                     month: '$month',
-                    userId: '$userId'
                 },
                 content: {
                     $push: {
@@ -200,7 +298,6 @@ const all = async (ctx, next) => {
             $project: {
                 _id: 0,
                 month: "$_id.month",
-                userId: "$_id.userId",
                 content: "$content"
             }
         },
@@ -208,26 +305,110 @@ const all = async (ctx, next) => {
             $sort: {
                 month: 1 //排序规则
             }
+        }
+    ])
+    const result2 = await Design_col.aggregate([
+        {
+            $lookup: {
+                from: "user",
+                localField: "userId",
+                foreignField: "userId",
+                as: "user_info"
+            }
+        },
+        {
+            $match: {
+                year: parseInt(req.year)
+            }
         },
         {
             $group: {
                 _id: {
-                    userId: '$userId'
+                    tagId: '$tagId'
                 },
+                sum: { $sum: '$tagNum' },
                 content: {
                     $push: {
+                        id: '$id',
                         userId: '$userId',
+                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                        year: '$year',
                         month: '$month',
-                        content: '$content'
+                        tagId: '$tagId',
+                        tagNum: '$tagNum',
+                        tagDes: '$tagDes',
                     }
                 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                tagId: "$_id.tagId",
+                content: "$content",
+                sum: "$sum"
+            }
+        },
+        {
+            $sort: {
+                month: 1 //排序规则
+            }
+        }
+    ])
+    const result3 = await Design_col.aggregate([
+        {
+            $lookup: {
+                from: "user",
+                localField: "userId",
+                foreignField: "userId",
+                as: "user_info"
+            }
+        },
+        {
+            $match: {
+                year: parseInt(req.year)
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    tagId: '$tagId'
+                },
+                sum: { $sum: '$tagNum' },
+                content: {
+                    $push: {
+                        id: '$id',
+                        userId: '$userId',
+                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                        year: '$year',
+                        month: '$month',
+                        tagId: '$tagId',
+                        tagNum: '$tagNum',
+                        tagDes: '$tagDes',
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                tagId: "$_id.tagId",
+                content: "$content",
+                sum: "$sum"
+            }
+        },
+        {
+            $sort: {
+                month: 1 //排序规则
             }
         }
     ])
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: result,
+        data2: result2,
+        data3: result3
     };
 }
 
