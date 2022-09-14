@@ -101,7 +101,7 @@ export default {
                             align: 'center',
                             resizable: true,
                             render: function(h, parmars) {
-                                if (parmars.row['tagDes_'+ele.id] == '') {
+                                if (!parmars.row['tagDes_'+ele.id]) {
                                     return h('span', {}, '-')
                                 } else {
                                     return h('Tooltip',{
@@ -124,7 +124,7 @@ export default {
                         width: 80,
                         align: 'center',
                         render: function(h, parmars) {
-                            if (parmars.row['tagDes_'+element.id] == '') {
+                            if (!parmars.row['tagDes_'+element.id]) {
                                 return h('span', {}, '-')
                             } else {
                                 return h('Tooltip',{
@@ -185,10 +185,10 @@ export default {
                             ele.content.forEach( ele2 => {
                                 if (tempIds.indexOf(ele2.tagId)!==-1) {
                                     this.data[_index]['tagNum_'+ele2.tagId] += ele2.tagNum;
-                                    this.data[_index]['tagDes_'+ele2.tagId] += ele2.tagDes;
+                                    this.data[_index]['tagDes_'+ele2.tagId] += ele2.tagDes?ele2.tagDes:'';
                                 } else {
                                     this.data[_index]['tagNum_'+ele2.tagId] = ele2.tagNum;
-                                    this.data[_index]['tagDes_'+ele2.tagId] = ele2.tagDes;
+                                    this.data[_index]['tagDes_'+ele2.tagId] = ele2.tagDes?ele2.tagDes:'';
                                     tempIds.push(ele2.tagId);
                                 }
                             });

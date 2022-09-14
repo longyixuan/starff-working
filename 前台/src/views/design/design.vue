@@ -132,7 +132,8 @@ export default {
                                         }
                                     });
                                 } else {
-                                    if (parmars.row['tagDes_'+ele.id] == '') {
+                                    console.log()
+                                    if (!parmars.row['tagDes_'+ele.id]) {
                                         return h('span', {}, '')
                                     } else {
                                         return h('Tooltip',{
@@ -229,7 +230,7 @@ export default {
                         userId: userId,
                         tagId: key.split('_')[1],
                         tagNum: value,
-                        tagDes: item['tagDes_'+key.split('_')[1]]
+                        tagDes: item['tagDes_'+key.split('_')[1]]?item['tagDes_'+key.split('_')[1]]:''
                     });
                 }
             });
