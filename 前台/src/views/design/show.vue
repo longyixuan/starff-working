@@ -79,21 +79,7 @@ export default {
                         align: 'right',
                         width: 80,
                         render: function(h, parmars) {
-                            if (parmars.row.isEdit) {
-                                return h('Input',{
-                                    class: 'num-input',
-                                    props: {
-                                        value: parmars.row['tagNum_'+element.id]
-                                    },
-                                    on: {
-                                        'input': function(value) {
-                                            parmars.row['tagNum_'+element.id] = value;
-                                        }
-                                    }
-                                });
-                            } else {
-                                return h('span',{}, parmars.row['tagNum_'+element.id]===0?'-':parmars.row['tagNum_'+element.id]);
-                            }
+                            return h('span',{}, !parmars.row['tagNum_'+element.id]?'0':parmars.row['tagNum_'+element.id]);
                         }
                     });
                 }
@@ -104,21 +90,7 @@ export default {
                         align: 'right',
                         width: 110,
                         render: function(h, parmars) {
-                            if (parmars.row.isEdit) {
-                                return h('Input',{
-                                    class: 'num-input',
-                                    props: {
-                                        value: parmars.row['tagNum_'+ele.id]
-                                    },
-                                    on: {
-                                        'input': function(value) {
-                                            parmars.row['tagNum_'+ele.id] = value;
-                                        }
-                                    }
-                                });
-                            } else {
-                                return h('span',{}, parmars.row['tagNum_'+ele.id]===0?'-':parmars.row['tagNum_'+ele.id]);
-                            }
+                            return h('span',{}, !parmars.row['tagNum_'+ele.id]?'0':parmars.row['tagNum_'+ele.id]);
                         }
                     })
                     if (ele.hasDes) {
@@ -129,33 +101,17 @@ export default {
                             align: 'center',
                             resizable: true,
                             render: function(h, parmars) {
-                                if (parmars.row.isEdit) {
-                                    return h('Input',{
-                                        class: 'text-input',
-                                        props: {
-                                            value: parmars.row['tagDes_'+ele.id],
-                                            type: 'textarea',
-                                            rows: 4
-                                        },
-                                        on: {
-                                            'input': function(value) {
-                                                parmars.row['tagDes_'+ele.id] = value;
-                                            }
-                                        }
-                                    });
+                                if (parmars.row['tagDes_'+ele.id] == '') {
+                                    return h('span', {}, '-')
                                 } else {
-                                    if (parmars.row['tagDes_'+ele.id] == '') {
-                                        return h('span', {}, '')
-                                    } else {
-                                        return h('Tooltip',{
-                                            props: {
-                                                maxWidth: 200,
-                                                content: parmars.row['tagDes_'+ele.id],
-                                            },
-                                        }, [
-                                            h('a', {}, '查看')
-                                        ]);
-                                    }
+                                    return h('Tooltip',{
+                                        props: {
+                                            maxWidth: 200,
+                                            content: parmars.row['tagDes_'+ele.id],
+                                        },
+                                    }, [
+                                        h('a', {}, '查看')
+                                    ]);
                                 }
                             }
                         })
@@ -168,33 +124,17 @@ export default {
                         width: 80,
                         align: 'center',
                         render: function(h, parmars) {
-                            if (parmars.row.isEdit) {
-                                return h('Input',{
-                                    class: 'text-input',
-                                    props: {
-                                        value: parmars.row['tagDes_'+element.id],
-                                        type: 'textarea',
-                                        rows: 4
-                                    },
-                                    on: {
-                                        'input': function(value) {
-                                            parmars.row['tagDes_'+element.id] = value;
-                                        }
-                                    }
-                                });
+                            if (parmars.row['tagDes_'+element.id] == '') {
+                                return h('span', {}, '-')
                             } else {
-                                if (parmars.row['tagDes_'+element.id] == '') {
-                                    return h('span', {}, '')
-                                } else {
-                                    return h('Tooltip',{
-                                        props: {
-                                            maxWidth: 200,
-                                            content: parmars.row['tagDes_'+element.id],
-                                        },
-                                    }, [
-                                        h('a', {}, '查看')
-                                    ]);
-                                }
+                                return h('Tooltip',{
+                                    props: {
+                                        maxWidth: 200,
+                                        content: parmars.row['tagDes_'+element.id],
+                                    },
+                                }, [
+                                    h('a', {}, '查看')
+                                ]);
                             }
                         }
                     })
@@ -221,6 +161,7 @@ export default {
                     year: moment(this.year).format('YYYY'),
                     userId: this.userId,
                 }).then(res => {
+                    this.$Message.success('查询成功');
                     if (res.code===1 && res.data.length>0) {
                         res.data.forEach( ele => {
                             let _index = _.findIndex(this.data, ['month', ele.month]);
@@ -236,6 +177,7 @@ export default {
                 allDesign({
                     year: moment(this.year).format('YYYY')
                 }).then(res => {
+                    this.$Message.success('查询成功');
                     if (res.code===1 && res.data.length>0) {
                         res.data.forEach( ele => {
                             let _index = _.findIndex(this.data, ['month', ele.month]);
@@ -272,7 +214,7 @@ export default {
                 if (obj.sum!==0) {
                     temp2['tagNum_'+ele.tagId] = `${(ele.sum/obj.sum*100).toFixed(2)}%`;
                 } else {
-                    temp2['tagNum_'+ele.tagId] = '-';
+                    temp2['tagNum_'+ele.tagId] = '0';
                 }
                 temp2['tagDes_'+ele.tagId] = '';
             });
