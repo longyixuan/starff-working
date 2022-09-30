@@ -4,7 +4,7 @@
 <template>
     <Card title="录入">
         <div style="margin-bottom: 20px;" class="clearfix">
-            <DatePicker v-model="year" :clearable="false" type="year" style="width: 160px"></DatePicker>
+            <DatePicker @on-change="getList" v-model="year" :clearable="false" type="year" style="width: 160px"></DatePicker>
         </div>
         <Table class="num-table" border :data="data" :columns="columns" stripe>
             <template slot-scope="{ row }" slot="action">
@@ -62,7 +62,7 @@ export default {
                 let children = [];
                 if (element.child.length===0) {
                     children.push({
-                        title: '数量',
+                        title: element.unit,
                         key: 'tagNum_'+element.id,
                         align: 'right',
                         width: 80,
@@ -86,6 +86,8 @@ export default {
                     });
                 }
                 element.child.forEach( ele => {
+                    ids['tagNum_'+ele.id] = 0;
+                    ids['tagDes_'+ele.id] = '';
                     children.push({
                         title: ele.name,
                         key: 'tagNum_'+ele.id,
@@ -105,7 +107,7 @@ export default {
                                     }
                                 });
                             } else {
-                                return h('span',{}, parmars.row['tagNum_'+ele.id]===0?'-':parmars.row['tagNum_'+ele.id]);
+                                return h('span',{}, (parmars.row['tagNum_'+ele.id]===0 || !parmars.row['tagNum_'+ele.id])?'-':parmars.row['tagNum_'+ele.id]);
                             }
                         }
                     })
@@ -132,11 +134,11 @@ export default {
                                         }
                                     });
                                 } else {
-                                    console.log()
                                     if (!parmars.row['tagDes_'+ele.id]) {
                                         return h('span', {}, '')
                                     } else {
                                         return h('Tooltip',{
+                                            class: 'my-tooltip',
                                             props: {
                                                 maxWidth: 200,
                                                 content: parmars.row['tagDes_'+ele.id],
@@ -176,6 +178,7 @@ export default {
                                     return h('span', {}, '')
                                 } else {
                                     return h('Tooltip',{
+                                        class: 'my-tooltip',
                                         props: {
                                             maxWidth: 200,
                                             content: parmars.row['tagDes_'+element.id],

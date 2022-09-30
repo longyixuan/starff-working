@@ -24,6 +24,9 @@
                 <FormItem label="名称：">
                     <Input v-model="tag"></Input>
                 </FormItem>
+                <FormItem label="单位名称：">
+                    <Input v-model="unit"></Input>
+                </FormItem>
                 <FormItem label="展示备注：">
                     <Checkbox v-model="hasDes"></Checkbox>
                 </FormItem>
@@ -59,6 +62,7 @@ export default {
             modal2: false,
             data: [],
             tag: '',
+            unit: '个数',
             hasDes: true,
             tag2: '',
             hasDes2: true,
@@ -74,6 +78,11 @@ export default {
                     title: '名称',
                     key: 'name',
                     width: 200,
+                },
+                {
+                    title: '单位名称',
+                    key: 'unit',
+                    width: 100
                 },
                 {
                     title: '是否展示备注',
@@ -133,6 +142,7 @@ export default {
                     parentId: 'root',
                     id: this.id,
                     name: this.tag,
+                    unit: this.unit,
                     hasDes: this.hasDes
                 }).then(res=> {
                     this.$Message.success('修改成功');
@@ -142,6 +152,7 @@ export default {
                 addDesignTag({
                     parentId: 'root',
                     name: this.tag,
+                    unit: this.unit,
                     hasDes: this.hasDes
                 }).then(res => {
                     this.$Message.success('添加成功');
@@ -155,6 +166,7 @@ export default {
                     parentId: this.id,
                     id: this.id2,
                     name: this.tag2,
+                    unit: this.unit,
                     hasDes: this.hasDes2
                 }).then(res=> {
                     this.$Message.success('修改成功');
@@ -164,6 +176,7 @@ export default {
                 addDesignTag({
                     parentId: this.id,
                     name: this.tag2,
+                    unit: this.unit,
                     hasDes: this.hasDes2
                 }).then(res => {
                     this.$Message.success('添加成功');

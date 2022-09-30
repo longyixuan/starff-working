@@ -49,14 +49,14 @@
               <MenuItem name="3-2" to="/summary-week">周总结</MenuItem>
               <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
             </Submenu>
-            <Submenu name="12">
+            <Submenu name="12" v-if="type===1">
               <template slot="title">
                 <Icon type="md-pie"/>jira完成情况
               </template>
               <MenuItem name="12-1" to="/jira-list">录入</MenuItem>
               <MenuItem name="12-2" to="/jira-count">查看</MenuItem>
             </Submenu>
-            <Submenu name="9">
+            <Submenu name="9" v-if="type===1 || ['lugp', 'cuiyh', 'sunl', 'changxq', 'gaos', 'yanq'].indexOf(username)!==-1">
               <template slot="title">
                 <Icon type="md-flag" />视觉作品数量记录
               </template>

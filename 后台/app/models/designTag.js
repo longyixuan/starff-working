@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-09-01 17:24:10 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-09-02 20:01:53
+ * @Last Modified time: 2022-09-15 19:41:56
  */
 
 const mongoose = require('mongoose');
@@ -26,6 +26,11 @@ const designTagSchema = new Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    unit: {
+        type: String,
+        required: true,
+        default: '个数'
     },
     hasDes: {
         type: Boolean,

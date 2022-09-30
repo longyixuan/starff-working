@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-09-02 12:40:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-09-14 09:12:33
+ * @Last Modified time: 2022-09-15 19:48:48
  */
 
 const Design_col = require('./../models/design');
@@ -62,6 +62,7 @@ const listTag = async (ctx, next) => {
             name: result[i].name,
             order: result[i].order,
             parentId: result[i].parentId,
+            unit: result[i].unit,
             child: children
         });
     }

@@ -50,7 +50,6 @@ export default {
             let _this = this;
             getAllUserData().then(res => {
                 if (res.code === 1) {
-                    this.userList = res.data;
                     this.userList = _.filter(res.data, function(o) {
                         return _this.sj.indexOf(o.userName)!==-1;
                     });
@@ -74,7 +73,7 @@ export default {
                 let children = [];
                 if (element.child.length===0) {
                     children.push({
-                        title: '数量',
+                        title: element.unit,
                         key: 'tagNum_'+element.id,
                         align: 'right',
                         width: 80,
@@ -105,6 +104,7 @@ export default {
                                     return h('span', {}, '-')
                                 } else {
                                     return h('Tooltip',{
+                                        class: 'my-tooltip',
                                         props: {
                                             maxWidth: 200,
                                             content: parmars.row['tagDes_'+ele.id],
@@ -128,6 +128,7 @@ export default {
                                 return h('span', {}, '-')
                             } else {
                                 return h('Tooltip',{
+                                    class: 'my-tooltip',
                                     props: {
                                         maxWidth: 200,
                                         content: parmars.row['tagDes_'+element.id],
@@ -185,10 +186,10 @@ export default {
                             ele.content.forEach( ele2 => {
                                 if (tempIds.indexOf(ele2.tagId)!==-1) {
                                     this.data[_index]['tagNum_'+ele2.tagId] += ele2.tagNum;
-                                    this.data[_index]['tagDes_'+ele2.tagId] += ele2.tagDes?ele2.tagDes:'';
+                                    this.data[_index]['tagDes_'+ele2.tagId] += ele2.tagDes?(this.data[_index]['tagDes_'+ele2.tagId]?'\n'+ele2.tagDes:ele2.tagDes):'';
                                 } else {
                                     this.data[_index]['tagNum_'+ele2.tagId] = ele2.tagNum;
-                                    this.data[_index]['tagDes_'+ele2.tagId] = ele2.tagDes?ele2.tagDes:'';
+                                    this.data[_index]['tagDes_'+ele2.tagId] = ele2.tagDes?(ele2.tagDes):'';
                                     tempIds.push(ele2.tagId);
                                 }
                             });
@@ -219,7 +220,9 @@ export default {
                 temp2['tagDes_'+ele.tagId] = '';
             });
             this.data.push(temp);
-            this.data.push(temp2);
+            if (this.userId!='全部门') {
+                this.data.push(temp2);
+            }
         }
     },
     mounted() {
