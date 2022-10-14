@@ -27,16 +27,6 @@ export const registResult = {
     },
     component: () => import('@/views/regist-result.vue')
 };
-
-export const voteDetail = {
-    path: '/vote/detail/:id',
-    meta: {
-        title: '投票'
-    },
-    name: 'survey-detail',
-    component: () => import('@/views/vote/detail.vue')
-};
-
 export const page404 = {
     path: '/*',
     name: 'error-404',
@@ -394,6 +384,14 @@ export const appRouter = {
             component: () => import('@/views/vote/mycount.vue')
         },
         {
+            path: '/vote/detail/:id',
+            meta: {
+                title: '投票'
+            },
+            name: 'survey-detail',
+            component: () => import('@/views/vote/detail.vue')
+        },
+        {
             path: 'design',
             meta: {
                 title: '视觉作品数量记录'
@@ -426,7 +424,6 @@ export const routers = [
     registRouter,
     registResult,
     appRouter,
-    voteDetail,
     page500,
     page403
 ];

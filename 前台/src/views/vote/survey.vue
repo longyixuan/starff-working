@@ -7,6 +7,11 @@
             <Button type="primary" @click="modal = true">新增</Button>
         </div>
         <Table border :data="data" :columns="columns">
+            <template slot-scope="{ row, index }" slot="num">
+                <Tooltip transfer max-width="200" placement="top" :content="contentFn(row.voteUser)">
+                    <a>{{row.num}}</a>
+                </Tooltip>
+            </template>
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/count/' + row.id">查看结果</Button>
                 <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票</Button>
@@ -95,6 +100,7 @@ export default {
                     width: 100,
                     align: 'center',
                     key: 'num',
+                    slot: 'num'
                 },
                 {
                     title: '操作',
@@ -198,6 +204,15 @@ export default {
                 },
             });
         },
+        contentFn(userList) {
+            var str = [];
+            this.userList.forEach(item => {
+                if (userList.indexOf(item.userName)===-1) {
+                    str.push(item.nickName);
+                }
+            });
+            return `未投票人员：${str.join('、')}`;
+        }
     },
     mounted() {
         this.getUserList();

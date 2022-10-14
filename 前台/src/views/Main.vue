@@ -24,7 +24,7 @@
         </Alert>
       </Layout> -->
       <Layout>
-        <Sider hide-trigger :style="{background: '#fff'}" width="220">
+        <Sider hide-trigger :style="{background: '#fff'}" width="220" v-show="$route.name!='survey-detail'">
           <Menu active-name="0" theme="light" width="auto">
             <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
             <Submenu name="1" v-if="type===1">

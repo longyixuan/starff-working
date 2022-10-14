@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-08-16 09:24:25
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-23 11:00:23
+ * @Last Modified time: 2022-10-14 10:14:18
  */
 
 const mongoose = require('mongoose');
@@ -27,6 +27,10 @@ const SurveySchema = new Schema({
     user: {
         type: Array,
         required: true
+    },
+    voteUser:{
+        type: Array,
+        default: []
     },
     option: {
         type: Array,

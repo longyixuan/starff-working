@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-08-16 10:18:07 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-25 13:32:02
+ * @Last Modified time: 2022-10-14 11:03:24
  */
 const Vote_col = require('./../models/vote');
 const Survey_col = require('./../models/survey');
@@ -131,6 +131,11 @@ const removeSurvey = async (ctx, next) => {
             await SurveyResult_col.deleteMany({
                 surveyId: req.id
             });
+            await Survey_col.updateOne({
+                id: req.id
+            }, {
+                voteUser: []
+            });
             ctx.body = {
                 code: 0,
                 msg: '已删除投票结果'
@@ -187,6 +192,7 @@ const listSurvey = async (ctx, next) => {
             'option': result[i].option,
             'surveyName': result[i].surveyName,
             'user': result[i].user,
+            'voteUser': result[i].voteUser,
             'endDate': result[i].endDate,
             'num': num.length>0?num[0].count:0
         })
@@ -265,15 +271,33 @@ const listSurveyMy = async (ctx, next) => {
 const submitSurvey = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    let data = JSON.parse(req.data);
-    data.forEach(element => {
-        element.id = uuidv1();
+    await Vote_col.updateOne({
+        id: req.id
+    }, req);
+    const result = await Survey_col.findOne({
+        id: req.surveyId
     });
-    await SurveyResult_col.insertMany(data);
-    ctx.body = {
-        code: 1,
-        msg: '操作成功'
-    };
+    if (result.voteUser.indexOf(req.userName)!==-1) { //已投
+        ctx.body = {
+            code: 0,
+            msg: '请勿重复投票'
+        };
+    } else {
+        let data = JSON.parse(req.data);
+        data.forEach(element => {
+            element.id = uuidv1();
+        });
+        await SurveyResult_col.insertMany(data);
+        await Survey_col.updateOne({
+            id: req.surveyId
+        }, {
+            voteUser: [...result.voteUser, req.userName]
+        });
+        ctx.body = {
+            code: 1,
+            msg: '操作成功'
+        };
+    }
 }
 
 const countSurvey = async (ctx, next) => {

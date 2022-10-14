@@ -15,7 +15,7 @@ export const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
     ViewUI.LoadingBar.start();
-    if (!JSON.parse(localStorage.getItem('userInfo')) && to.name !== 'login' && to.name !== 'regist' && to.name !== 'regist-result' && to.name !== 'relate' &&to.name !='survey-detail') { // 判断是否已经登录且前往的页面不是登录页
+    if (!JSON.parse(localStorage.getItem('userInfo')) && to.name !== 'login' && to.name !== 'regist' && to.name !== 'regist-result' && to.name !== 'relate') { // 判断是否已经登录且前往的页面不是登录页
         next({
             name: 'login'
         });

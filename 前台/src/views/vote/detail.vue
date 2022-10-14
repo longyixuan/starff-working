@@ -2,30 +2,28 @@
 @import './vote.less';
 </style>
 <template>
-    <div :style="{ padding: '24px' }">
-        <Card title="设计部投票">
-            <template v-if="isSubmit">
-                <div class="vote">
-                    <div class="vote-img"></div>
-                    <div class="vote-text">{{text}}</div>
-                </div>
-            </template>
-            <template v-else>
-                <Table border stripe :data="tableDate" :columns="tableColumns">
-                    <template slot-scope="{ row, index }" :slot="opt" v-for="opt in option">
-                        <div :class="{'rule-td': true,'rule': rule && !tableDate[index][opt]}">
-                            <Rate class="vote-star" show-text :count="10" icon="md-star" v-model="tableDate[index][opt]">
-                                <span style="color: #f5a623">{{ tableDate[index][opt] }}</span>
-                            </Rate>
-                        </div>
-                    </template>
-                </Table>
-                <div style="margin-top: 20px; text-align: center">
-                    <Button type="primary" @click="submit">提交</Button>
-                </div>
-            </template>
-        </Card>
-    </div>
+    <Card title="设计部投票">
+        <template v-if="isSubmit">
+            <div class="vote">
+                <div class="vote-img"></div>
+                <div class="vote-text">{{text}}</div>
+            </div>
+        </template>
+        <template v-else>
+            <Table border stripe :data="tableDate" :columns="tableColumns">
+                <template slot-scope="{ row, index }" :slot="opt" v-for="opt in option">
+                    <div :class="{'rule-td': true,'rule': rule && !tableDate[index][opt]}">
+                        <Rate class="vote-star" show-text :count="10" icon="md-star" v-model="tableDate[index][opt]">
+                            <span style="color: #f5a623">{{ tableDate[index][opt] }}</span>
+                        </Rate>
+                    </div>
+                </template>
+            </Table>
+            <div style="margin-top: 20px; text-align: center">
+                <Button type="primary" @click="submit">提交</Button>
+            </div>
+        </template>
+    </Card>
 </template>
 <script>
 import { getVoteList, getAllUserData, submitSurvey, detailSurvey } from '@/api/index';
@@ -164,11 +162,11 @@ export default {
                 onOk: () => {
                     submitSurvey({
                         surveyId: this.id,
+                        userName: JSON.parse(localStorage.getItem('userInfo')).userName,
                         data: JSON.stringify(data),
                     }).then((res) => {
                         if (res.code === 1) {
                             this.$Message.success(res.msg);
-                            this.setStore('vote', this.id);
                             this.isSubmit = true;
                         } else {
                             this.$Message.error(res.msg);
@@ -180,9 +178,6 @@ export default {
     },
     mounted() {
         this.getUserList();
-        if (this.getStore('vote')==this.id) {
-            this.isSubmit = true;
-        }
     },
 };
 </script>

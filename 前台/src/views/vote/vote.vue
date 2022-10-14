@@ -21,7 +21,6 @@
                     <Input type="textarea" v-model="des" :rows="4"></Input>
                 </FormItem>
             </Form>
-            
         </Modal>
     </Card>
 </template>
