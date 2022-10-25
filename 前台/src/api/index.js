@@ -550,3 +550,35 @@ export const allDesign = (params) => {
 }
 
 //-----------------------视觉作品数量记录--------------------------------//
+
+
+//-----------------------系统及维护人--------------------------------//
+export const addTagFzxt = (params) => {
+    return postRequest(`/fzxt/tag/add`,params)
+}
+
+export const editTagFzxt = (params) => {
+    return postRequest(`/fzxt/tag/update`,params)
+}
+
+export const getTagListFzxt = (params) => {
+    return postRequest(`/fzxt/tag/list`,params)
+}
+
+export const delTagFzxt = (params) => {
+    return postRequest(`/fzxt/tag/delete`,params)
+}
+export const addFzxt = (params) => {
+    return postRequest(`/fzxt/add`,params)
+}
+export const editFzxt = (params) => {
+    return postRequest(`/fzxt/update`,params)
+}
+export const delFzxt = (params) => {
+    return postRequest(`/fzxt/del`,params)
+}
+export const listFzxt = (params) => {
+    return postRequest(`/fzxt/list`,params)
+}
+
+//-----------------------系统及维护人--------------------------------//

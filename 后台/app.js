@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-09-06 17:35:09
+ * @Last Modified time: 2022-10-22 15:25:58
  */
 
 
@@ -100,6 +100,7 @@ const model_router = require('./routes/api/model_router');
 const jira_router = require('./routes/api/jira_router');
 const vote_router = require('./routes/api/vote_router');
 const design_router = require('./routes/api/design_router');
+const fzxt_router = require('./routes/api/fzxt_router');
 // const replay_router = require('./routes/api/replay_router');
 // const return_router = require('./routes/api/return_router');
 
@@ -117,6 +118,7 @@ app.use(model_router.routes()).use(model_router.allowedMethods());
 app.use(jira_router.routes()).use(jira_router.allowedMethods());
 app.use(vote_router.routes()).use(vote_router.allowedMethods());
 app.use(design_router.routes()).use(design_router.allowedMethods());
+app.use(fzxt_router.routes()).use(fzxt_router.allowedMethods());
 // app.use(replay_router.routes()).use(replay_router.allowedMethods());
 // app.use(return_router.routes()).use(return_router.allowedMethods());
 

@@ -69,6 +69,14 @@
             <MenuItem name="10" to="/aws/list"><Icon type="md-clipboard" />aws发布时间线</MenuItem>
             <!-- <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem> -->
             <MenuItem name="6" to="/time-line/tag" v-if="type===1"><Icon type="md-bookmark" />标签管理</MenuItem>
+            <Submenu name="13" v-if="type===1">
+              <template slot="title">
+                <Icon type="md-planet" />系统列表及负责人
+              </template>
+              <MenuItem name="13-1" to="/fzxt/tag">所属平台设置</MenuItem>
+              <MenuItem name="13-2" to="/fzxt/list">查看</MenuItem>
+            </Submenu>
+            <MenuItem name="13" to="/fzxt/list" v-else><Icon type="md-planet" />系统列表及负责人</MenuItem>
             <Submenu name="11" v-if="type===1">
               <template slot="title">
                 <Icon type="md-happy" />投票管理

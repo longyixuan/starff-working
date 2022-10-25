@@ -320,6 +320,22 @@ export const appRouter = {
             component: () => import('@/views/timeline/tag.vue')
         },
         {
+            path: 'fzxt/tag',
+            meta: {
+                title: '系统列表及负责人'
+            },
+            name: 'tagfzxt',
+            component: () => import('@/views/fzxt/tag.vue')
+        },
+        {
+            path: 'fzxt/list',
+            meta: {
+                title: '系统列表及负责人'
+            },
+            name: 'listfzxt',
+            component: () => import('@/views/fzxt/list.vue')
+        },
+        {
             path: 'work-time-count',
             meta: {
                 title: ''

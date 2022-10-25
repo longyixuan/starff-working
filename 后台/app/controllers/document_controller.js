@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-04-19 20:54:19
+ * @Last Modified time: 2022-10-25 14:06:16
  */
 
 const fs = require('fs');
@@ -506,7 +506,7 @@ const detailsDocumentday = async (ctx) => {
                 },
                 order: {
                     $min: '$order'
-                },  
+                },
                 content: {
                     $push: {
                         documentId: '$documentId',
