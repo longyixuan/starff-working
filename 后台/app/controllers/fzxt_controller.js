@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-10-22 15:26:15 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-10-25 19:08:22
+ * @Last Modified time: 2022-10-26 08:52:11
  */
 
 const Fzxt_col = require('./../models/fzxt');
@@ -88,9 +88,18 @@ const add = async (ctx, next) => {
 const update = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    const data = {
+        id: req.id,
+        pt: req.pt?req.pt:'',
+        wz: req.wz?req.wz:'',
+        xtmc: req.xtmc,
+        kfbm: req.kfbm?req.kfbm:[],
+        qd: req.qd?req.qd:[],
+        sj: req.sj?req.sj:[]
+    }
     await Fzxt_col.updateOne({
         id: req.id
-    }, req);
+    }, data);
     ctx.body = {
         code: 1,
         msg: '更新成功'

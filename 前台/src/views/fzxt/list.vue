@@ -6,7 +6,7 @@
         <Card title="系统列表及负责人">
             <div class="clearfix" style="margin-bottom: 20px;">
                 <Input clearable style="width: 200px" type="text" v-model="xtmc" placeholder="系统名称"></Input>
-                <Select filterable clearable style="width: 200px;margin-left: 10px" v-model="xm">
+                <Select placeholder="负责人" filterable clearable style="width: 200px;margin-left: 10px" v-model="xm">
                         <Option :value="item.userName" v-for="item in userList">{{ item.nickName }}</Option>
                     </Select>
                 <Button type="primary" style="margin-left: 10px" @click="search">查询</Button>
@@ -65,7 +65,7 @@
                     <Input v-model.trim="addForm.xtmc"></Input>
                 </FormItem>
                 <FormItem label="网址：">
-                    <Input v-model.trim="addForm.wz"></Input>
+                    <Input v-model.trim="addForm.wz" placeholder="多个网址用、分隔"></Input>
                 </FormItem>
                 <FormItem label="GA代码ID：">
                     <Input v-model.trim="addForm.ga"></Input>
@@ -205,6 +205,10 @@ export default {
             this.modal = true;
         },
         save() {
+            if (this.addForm.xtmc=='') {
+                this.$Message.error('系统名称不可为空');
+                return;
+            }
             if (this.addForm.id == '') {
                 addFzxt(this.addForm).then((res) => {
                     this.modal = false;
