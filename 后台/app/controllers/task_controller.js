@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-11-11 13:45:10
+ * @Last Modified time: 2022-11-14 16:16:17
  */
 
 const Task_col = require('./../models/task');
@@ -20,30 +20,7 @@ const add = async (ctx, next) => {
 
 const getList = async (ctx, next) => {
     ctx.status = 200;
-    const req = ctx.request.body;
-    let seachConfig = {};
-    if (req.userType == '0') {
-        seachConfig.userName = req.userName;
-    }
-    if (req.system) {
-        seachConfig.systemId = {
-            '$in': req.system
-        }
-    }
-    if (req.year) {
-        seachConfig.time = {
-            "$regex": req.year
-        }
-    }
-    if (req.keyword) {
-        let regexp=new RegExp(req.keyword,'i')
-        seachConfig.des = {
-            "$regex": regexp
-        }
-    }
-    let result = await Task_col.aggregate([{
-        $match: seachConfig
-    }]);
+    let result = await Task_col.find({});
     ctx.body = {
         code: 1,
         msg: '查询成功',

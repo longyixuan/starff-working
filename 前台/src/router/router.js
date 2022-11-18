@@ -430,7 +430,15 @@ export const appRouter = {
             },
             name: 'design-show',
             component: () => import('@/views/design/show.vue')
-        }
+        },
+        {
+            path: 'task/add',
+            meta: {
+                title: '任务管理'
+            },
+            name: 'task-add',
+            component: () => import('@/views/task/add.vue')
+        },
     ]
 };
 

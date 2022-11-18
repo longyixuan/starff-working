@@ -582,3 +582,16 @@ export const listFzxt = (params) => {
 }
 
 //-----------------------系统及维护人--------------------------------//
+
+
+//-----------------------任务管理--------------------------------//
+
+export const addTask = (params) => {
+    return postRequest(`/task/add`,params)
+}
+
+export const listTask = (params) => {
+    return postRequest(`/task/list`,params)
+}
+
+//-----------------------任务管理--------------------------------//
