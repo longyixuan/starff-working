@@ -93,7 +93,7 @@
 <script>
 import { getSystemList, getAllUserData, addTask, listTask } from '@/api/index';
 import moment from 'moment';
-import gantt from './Gantt.vue';
+// import gantt from './Gantt.vue';
 export default {
     name: 'task',
     data() {
@@ -141,7 +141,7 @@ export default {
         };
     },
     components: {
-        gantt,
+        // gantt,
     },
     methods: {
         rwzt(rwzt) {

@@ -7,8 +7,8 @@ import App from './App'
 import { router } from './router/index'
 import store from './store'
 import 'view-design/dist/styles/iview.css'
-import VXETable from 'vxe-table'
-import 'vxe-table/lib/style.css'
+// import VXETable from 'vxe-table'
+// import 'vxe-table/lib/style.css'
 import {
     getRequest,
     postRequest,
@@ -24,7 +24,7 @@ import {
 import '@babel/polyfill'
 Vue.config.productionTip = false
 Vue.use(ViewUI);
-Vue.use(VXETable);
+// Vue.use(VXETable);
 Vue.use(VueWechatTitle);
 // 挂载全局使用的方法
 Vue.prototype.getRequest = getRequest;
