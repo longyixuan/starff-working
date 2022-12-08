@@ -10,6 +10,8 @@ const router = new Router();
 const task_controller = require('./../../app/controllers/task_controller');
 
 router.post('/task/add', task_controller.add);
+router.post('/task/edit', task_controller.update);
+router.post('/task/remove', task_controller.remove);
 router.post('/task/list', task_controller.getList);
 
 

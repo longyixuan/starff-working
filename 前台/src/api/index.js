@@ -590,6 +590,14 @@ export const addTask = (params) => {
     return postRequest(`/task/add`,params)
 }
 
+export const updateTask = (params) => {
+    return postRequest(`/task/edit`,params)
+}
+
+export const delTask = (params) => {
+    return postRequest(`/task/remove`,params)
+}
+
 export const listTask = (params) => {
     return postRequest(`/task/list`,params)
 }

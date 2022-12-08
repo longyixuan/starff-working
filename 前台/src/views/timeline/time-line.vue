@@ -5,7 +5,7 @@
 <template>
   <div>
     <Card title="系统时间线">
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 20px;" class="clearfix">
             <DatePicker v-model="year" style="width: 120px;margin-right:10px;" type="year" placeholder="请选择年份"></DatePicker>
             <Select clearable filterable style="width: 400px;margin-right:10px;" multiple v-model="system" placeholder="请选择系统">
                 <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
