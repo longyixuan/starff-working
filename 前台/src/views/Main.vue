@@ -86,7 +86,13 @@
               <!-- <MenuItem name="11-3" to="/vote/mysurvey">我的投票</MenuItem> -->
             </Submenu>
             <MenuItem name="11" to="/vote/mysurvey" v-else><Icon type="md-happy" />投票查看</MenuItem>
-            <MenuItem name="14" to="/task/add"><Icon type="ios-paper-plane" />任务管理</MenuItem>
+            <Submenu name="14">
+              <template slot="title">
+                <Icon type="ios-paper-plane" />任务管理
+              </template>
+              <MenuItem name="14-1" to="/task/add">查看任务</MenuItem>
+              <MenuItem name="14-2" to="/task/guidang">查看归档</MenuItem>
+            </Submenu>
             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
           </Menu>
         </Sider>

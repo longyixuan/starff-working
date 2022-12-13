@@ -26,7 +26,7 @@
 }
 .rwgl-table-col {
     height: 40px;
-    padding: 8px 16px;
+    padding: 8px;
     border-right: 1px solid #eee;
     box-sizing: border-box;
 }
@@ -35,7 +35,8 @@
     overflow: auto;
 }
 .cur {
-    color: #6698ff;
+    color: #6698ff !important;
+    font-weight: 700 !important;
 }
 .rwzt-tag {
     height: 24px;
@@ -97,6 +98,8 @@
 
 .chsi-gantt {
     display: flex;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
 }
 .rwgl-task {
     flex: 1;
@@ -211,4 +214,17 @@
         cursor: pointer;
         color: #6698ff;
     }
+}
+.ivu-icon-md-arrow-dropdown, .ivu-icon-md-arrow-dropright {
+    cursor: pointer;
+}
+.flex-block {
+    display: flex;
+}
+.task-text {
+    display: block;
+    width: 144px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

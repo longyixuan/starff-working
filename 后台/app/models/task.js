@@ -47,7 +47,8 @@ const taskSchema = new Schema(
         },
         yxj: {  //优先级
             type: String,
-            required: true
+            required: true,
+            default: 0
         },
         rwlx: { //任务类型，bug，任务
             type: String,
@@ -58,6 +59,14 @@ const taskSchema = new Schema(
         },
         bz: { //备注
             type: String
+        },
+        rwjz: {
+            type: String
+        },
+        isHistory: { //是否归档
+            type: Boolean,
+            required: true,
+            default: false
         }
     },
     {

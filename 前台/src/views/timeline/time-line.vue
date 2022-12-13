@@ -22,20 +22,22 @@
         </div>
         <!-- <Tabs v-model="tabName" type="card">
             <TabPane label="表格显示" name="name1"> -->
-                <Table border :columns="columns" :data="data" ref="table">
-                    <template slot-scope="{ row }" slot="model">
-                        <template v-if="modelList.length > 0">
-                            <Tag v-for="item in row.model" :key="item">{{item | modelFilter(modelList)}}</Tag>
+                <div style="overflow-x: auto;">
+                    <Table border :columns="columns" :data="data" ref="table" style="min-width: 1400px;">
+                        <template slot-scope="{ row }" slot="model">
+                            <template v-if="modelList.length > 0">
+                                <Tag v-for="item in row.model" :key="item">{{item | modelFilter(modelList)}}</Tag>
+                            </template>
                         </template>
-                    </template>
-                    <template slot-scope="{ row }" slot="tag">
-                        <Tag type="border" color="warning" >{{row.tag | tagFilter(tags)}}</Tag>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="updateTimeline(row.timelineId,index)">编辑</Button>
-                        <Button type="error" size="small" @click="deleteTimeline(row.timelineId,index)">删除</Button>
-                    </template>
-                </Table>
+                        <template slot-scope="{ row }" slot="tag">
+                            <Tag type="border" color="warning" >{{row.tag | tagFilter(tags)}}</Tag>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="action">
+                            <Button type="primary" size="small" style="margin-right: 5px" @click="updateTimeline(row.timelineId,index)">编辑</Button>
+                            <Button type="error" size="small" @click="deleteTimeline(row.timelineId,index)">删除</Button>
+                        </template>
+                    </Table>
+                </div>
             <!-- </TabPane>
             <TabPane label="时间线显示" name="name2">
                 <ul class="timeline" v-if="tabName=='name2'">

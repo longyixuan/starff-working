@@ -12,47 +12,49 @@
                 <Button type="primary" style="margin-left: 10px" @click="search">查询</Button>
                 <Button type="primary" @click="add" style="float: right">新增</Button>
             </div>
-            <table class="xt-table">
-                <thead>
-                    <tr>
-                        <th width="160">所属平台</th>
-                        <th>系统名称</th>
-                        <th width="300">网址</th>
-                        <th width="140">GA代码ID</th>
-                        <th width="120">开发部门</th>
-                        <th width="160">前端人员</th>
-                        <th width="160">设计人员</th>
-                        <th width="120">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-for="(row, rowIndex) in data">
-                        <tr v-for="(col, index) in row.list">
-                            <td :rowspan="row.list.length" v-if="index === 0">{{ col.pt }}</td>
-                            <td v-html="linght(col.xtmc)"></td>
-                            <td>
-                                <div v-for="wz in col.wz.split('、')">
-                                    <a :href="wz" target="_blank">{{ wz }}</a>
-                                </div>
-                            </td>
-                            <td>{{ col.ga }}</td>
-                            <td>
-                                <Tag v-for="item in col.kfbm">{{ item }}</Tag>
-                            </td>
-                            <td>
-                                <Tag v-for="item in col.qd">{{ getName(item) }}</Tag>
-                            </td>
-                            <td>
-                                <Tag v-for="item in col.sj">{{ getName(item) }}</Tag>
-                            </td>
-                            <td>
-                                <Button type="primary" size="small" style="margin-right: 5px" @click="edit(rowIndex, index)">编辑</Button>
-                                <Button type="error" size="small" @click="remove(col.id)">删除</Button>
-                            </td>
+            <div style="overflow-x: auto;">
+                <table class="xt-table" style="min-width: 1400px;">
+                    <thead>
+                        <tr>
+                            <th width="160">所属平台</th>
+                            <th>系统名称</th>
+                            <th width="300">网址</th>
+                            <th width="140">GA代码ID</th>
+                            <th width="120">开发部门</th>
+                            <th width="160">前端人员</th>
+                            <th width="160">设计人员</th>
+                            <th width="120">操作</th>
                         </tr>
-                    </template>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <template v-for="(row, rowIndex) in data">
+                            <tr v-for="(col, index) in row.list">
+                                <td :rowspan="row.list.length" v-if="index === 0">{{ col.pt }}</td>
+                                <td v-html="linght(col.xtmc)"></td>
+                                <td>
+                                    <div v-for="wz in col.wz.split('、')">
+                                        <a :href="wz" target="_blank">{{ wz }}</a>
+                                    </div>
+                                </td>
+                                <td>{{ col.ga }}</td>
+                                <td>
+                                    <Tag v-for="item in col.kfbm">{{ item }}</Tag>
+                                </td>
+                                <td>
+                                    <Tag v-for="item in col.qd">{{ getName(item) }}</Tag>
+                                </td>
+                                <td>
+                                    <Tag v-for="item in col.sj">{{ getName(item) }}</Tag>
+                                </td>
+                                <td>
+                                    <Button type="primary" size="small" style="margin-right: 5px" @click="edit(rowIndex, index)">编辑</Button>
+                                    <Button type="error" size="small" @click="remove(col.id)">删除</Button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
         </Card>
         <Modal :title="markIndex === -1 ? '新增' : '修改'" v-model="modal" width="1000">
             <Form :label-width="100">

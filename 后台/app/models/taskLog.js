@@ -47,7 +47,8 @@ const taskLogSchema = new Schema(
         },
         yxj: {  //优先级
             type: Number,
-            required: true
+            required: true,
+            default: 0
         },
         rwlx: { //任务类型，bug，任务
             type: String,
@@ -57,6 +58,9 @@ const taskLogSchema = new Schema(
             type: String
         },
         bz: { //备注
+            type: String
+        },
+        rwjz: {
             type: String
         },
         updateTime: {

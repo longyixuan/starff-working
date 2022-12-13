@@ -602,4 +602,12 @@ export const listTask = (params) => {
     return postRequest(`/task/list`,params)
 }
 
+export const logTask = (params) => {
+    return postRequest(`/task/log`,params)
+}
+
+export const hisTask = (params) => {
+    return postRequest(`/task/history`,params)
+}
+
 //-----------------------任务管理--------------------------------//

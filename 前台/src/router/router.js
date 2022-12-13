@@ -439,6 +439,14 @@ export const appRouter = {
             name: 'task-add',
             component: () => import('@/views/task/add.vue')
         },
+        {
+            path: 'task/guidang',
+            meta: {
+                title: '任务管理'
+            },
+            name: 'task-guidang',
+            component: () => import('@/views/task/guidang.vue')
+        }
     ]
 };
 
