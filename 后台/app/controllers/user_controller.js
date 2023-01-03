@@ -238,6 +238,7 @@ const getByCondition = async (ctx, next) => {
 const adminEdit = async (ctx, next) => {
   const req = ctx.request.body;
   ctx.status = 200;
+  
   // 获取用户的 userId
   if(req.departmentId!='') {
     const department = await Department_col.findOne({
@@ -245,6 +246,7 @@ const adminEdit = async (ctx, next) => {
     });
     req.departmentTitle = department.title;
   }
+  delete req._id;
   await User_col.updateOne({
     userId: req.userId
   }, req);

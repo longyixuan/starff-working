@@ -99,9 +99,17 @@ export const appRouter = {
             path: 'system-manage',
             meta: {
                 title: '系统管理'
-            }, 
+            },
             name: 'system-manage',
             component: () => import('@/views/sys/system-manage/systemManage.vue')
+        },
+        {
+            path: 'role-manage',
+            meta: {
+                title: '角色管理'
+            },
+            name: 'role-manage',
+            component: () => import('@/views/sys/role/index.vue')
         },
         {
             path: 'work-time',

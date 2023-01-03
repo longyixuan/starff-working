@@ -24,13 +24,13 @@ const RoleSchema = new Schema({
         type: Number
     },
     departments: [],
-    description: {
+    description: { //描述
         type: String
     },
-    name: {
+    name: { //名字
         type: String
     },
-    permission: [],
+    permission: [], //权限
     isParent: {
         type: Boolean
     },

@@ -67,6 +67,14 @@ const getList = async (ctx, next) => {
     let result = await Task_col.aggregate([
         {
             $lookup: {
+                from: "system",
+                localField: "xtId",
+                foreignField: "id",
+                as: "system"
+            }
+        },
+        {
+            $lookup: {
                 from: "taskLog",
                 localField: "id",
                 foreignField: "id",
@@ -81,12 +89,83 @@ const getList = async (ctx, next) => {
                 'created_at': -1
             }
         },
+        {
+            $group: {
+                _id: {
+                    xtId: '$xtId',
+                    xtmc: {$arrayElemAt:["$system.title",0]}
+                },
+                content: {
+                    $push: {
+                        id: '$id',
+                        rwmc: '$rwmc',
+                        frwId: '$frwId',
+                        xtId: '$xtId',
+                        jbrId: '$jbrId',
+                        kssj: '$kssj',
+                        jssj: '$jssj',
+                        wcsj: '$wcsj',
+                        rwzt: '$rwzt',
+                        rwlx: '$rwlx',
+                        jira: '$jira',
+                        bz: '$bz',
+                        rwjz: '$rwjz',
+                        isHistory: '$isHistory',
+                        taskLog: '$taskLog'
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                xtId: '$_id.xtId',
+                xtmc: '$_id.xtmc',
+                rwList: '$content'
+            }
+        },
+        {
+            $sort: {
+                'xtmc': 1
+            }
+        }
         // {
         //     $skip: (Number(2) - 1) * Number(1)
         // },
         // {
         //     $limit: 1
         // }
+    ]);
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: result
+    };
+}
+
+const getListC = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let result = await Task_col.aggregate([
+        {
+            $lookup: {
+                from: "taskLog",
+                localField: "id",
+                foreignField: "id",
+                as: "taskLog"
+            }
+        },
+        {
+            $match: {
+                frwId: req.frwId,
+                isHistory: false
+            }
+        },
+        {
+            $sort: {
+                'created_at': -1
+            }
+        }
     ]);
     ctx.body = {
         code: 1,
@@ -169,6 +248,7 @@ const hisLog = async (ctx, next) => {
 module.exports = {
     add,
     getList,
+    getListC,
     update,
     remove,
     getLog,

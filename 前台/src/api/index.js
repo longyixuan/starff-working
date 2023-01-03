@@ -137,6 +137,13 @@ export const getSystemTree = (params) => {
     return getRequest('/system/systemTree', params)
 }
 //-----------------------系统管理--------------------------------//
+
+//-----------------------角色管理--------------------------------//
+export const addRole = (params) => {
+    return postRequest('/role/add', params)
+}
+//-----------------------角色管理--------------------------------//
+
 //-----------------------工时管理--------------------------------//
 //工时记录
 export const getTimeList = (params) => {
@@ -212,7 +219,6 @@ export const commitTemplate = (params) => {
     return postRequest('/template/commit', params)
 }
 export const mergeTemplate = (params) => {
-    console.log(params)
     return postRequest('/template/merge', params)
 }
 export const getTemplateListall = (params) => {
@@ -600,6 +606,10 @@ export const delTask = (params) => {
 
 export const listTask = (params) => {
     return postRequest(`/task/list`,params)
+}
+
+export const listTaskC = (params) => {
+    return postRequest(`/task/listc`,params)
 }
 
 export const logTask = (params) => {

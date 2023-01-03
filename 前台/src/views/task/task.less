@@ -4,7 +4,7 @@
     font-weight: 700;
     .rwgl-table-row {
         height: 60px;
-        line-height: 40px;
+        line-height: 36px;
         border-top: 1px solid #eee;
     }
     .rwgl-table-col {
@@ -19,20 +19,23 @@
     display: flex;
     border-bottom: 1px solid #eee;
     line-height: 1.6;
-    height: 40px;
+    height: 36px;
     &:hover {
         background-color: #f8faff;
     }
 }
 .rwgl-table-col {
-    height: 40px;
-    padding: 8px;
+    height: 36px;
+    padding: 4px;
     border-right: 1px solid #eee;
     box-sizing: border-box;
 }
 .flex1 {
     flex: 1;
     overflow: auto;
+}
+.rw-flex1 {
+    flex: 1;
 }
 .cur {
     color: #6698ff !important;
@@ -141,7 +144,7 @@
 }
 .rwgl-task-body-bar {
     flex: 1;
-    height: 40px;
+    height: 36px;
     border-bottom: 1px solid #eee;
     box-sizing: border-box;
     display: flex;
@@ -149,7 +152,7 @@
     position: relative;
 }
 .rwgl-task-body-col {
-    height: 40px;
+    height: 36px;
     width: 210px;
     border-right: 1px solid #eee;
 }
@@ -188,6 +191,17 @@
         border-right: 1px dotted #fa8888;
     }
 }
+.rwgl-table-flex {
+    display: flex;
+}
+.rwgl-table-xt {
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+}
 
 ::-webkit-scrollbar {
     /*滚动条整体样式*/
@@ -223,8 +237,47 @@
 }
 .task-text {
     display: block;
-    width: 144px;
+    width: 152px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+// 月视图
+.task-type-month {
+    flex: 1;
+}
+.task-type-month-header {
+    display: flex;
+    height: 60px;
+    background: rgba(243, 243, 243, 0.5);
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+.month-header-span {
+    width: calc(100% / 12);
+    text-align: center;
+    height: 60px;
+    line-height: 60px;
+    border-right: 1px solid #eee;
+    &:last-child {
+        border-right: 0;
+    }
+}
+.month-body-row {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+    height: 36px;
+}
+.month-body-span {
+    width: calc(100% / 12);
+    border-right: 1px solid #eee;
+    box-sizing: border-box;
+    &:last-child {
+        border-right: 0;
+    }
+}
+.month-view {
+    background: rgb(102, 152, 255);
 }

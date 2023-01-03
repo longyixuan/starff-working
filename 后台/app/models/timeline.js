@@ -42,6 +42,10 @@ const TimelineSchema = new Schema({
         type: String,
         default: ''
     },
+    updateUser: {
+        type: String,
+        default: ''
+    },
     tag: {
         type: String,
         default: ''

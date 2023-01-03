@@ -13,6 +13,7 @@ router.post('/task/add', task_controller.add);
 router.post('/task/edit', task_controller.update);
 router.post('/task/remove', task_controller.remove);
 router.post('/task/list', task_controller.getList);
+router.post('/task/listc', task_controller.getListC);
 router.post('/task/log', task_controller.getLog);
 router.post('/task/history', task_controller.hisLog);
 
