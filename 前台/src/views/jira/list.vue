@@ -217,7 +217,7 @@
                     return;
                 }
                 addJira({
-                    year: moment(this.date).format('YYYY'),
+                    year: this.year,
                     month: this.searchData.month,
                     list: this.data
                 }).then(res => {

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-10-25 14:06:16
+ * @Last Modified time: 2023-01-03 09:23:34
  */
 
 const fs = require('fs');
@@ -801,7 +801,7 @@ const listDocumentday = async (ctx) => {
             {
                 $match: {
                     'userId': req.userId,
-                    'year': req.year,
+                    'year': (req.premonth == '12' &&  req.month == '01')  ? (req.year-1+'') : req.year,
                     'month': req.premonth
                 }
             },
