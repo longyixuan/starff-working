@@ -279,7 +279,7 @@ export default {
             st: 'day',
             modal: false,
             sysList: [],
-            tj: ['任务名称', '所属系统', '状态'],
+            tj: ['任务名称', '所属系统', '状态', '经办人', '开始时间', '结束时间', '任务类型'],
             ztList: ['未开始', '进行中', '已完成'],
             rwLx: ['任务', 'bug'],
             userList: [],
@@ -570,7 +570,7 @@ export default {
         this.listTask();
         this.$nextTick(() => {
             this.$refs['rwgl-task'].scrollTo({
-                left: (getYearWeek(moment().format('YYYY-MM-DD'))+2)*200
+                left: getYearWeek(moment().format('YYYY-MM-DD'))*200
             });
         });
     },

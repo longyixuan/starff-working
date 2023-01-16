@@ -117,7 +117,8 @@
                 time: new Date(),
                 modalList: [],
                 systems: JSON.parse(localStorage.getItem('userInfo')).systems,
-                submitList: []
+                submitList: [],
+                isSubmit: false
             }
         },
         methods: {
@@ -214,6 +215,7 @@
                 return num;
             },
             submitGo(postData) {
+                this.isSubmit = true;
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {
@@ -332,6 +334,19 @@
                 if (this.$route.query.type == 'day') {
                     this.title = `设计部${moment().format('YYYY年MM月DD日')}工作小结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
                 }
+            }
+        },
+        beforeRouteLeave(to, form, next) {
+            if (to.path == '/summary-day' && this.isSubmit) {
+                next();
+            } else {
+                this.$Modal.confirm({
+                    title: '提示',
+                    content: '离开当前页面，数据将不会保存',
+                    onOk: () => {
+                        next();
+                    }
+                });
             }
         }
     }

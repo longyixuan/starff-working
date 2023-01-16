@@ -114,7 +114,8 @@
                 time: new Date(),
                 modalList: [],
                 systems: JSON.parse(localStorage.getItem('userInfo')).systems,
-                submitList: []
+                submitList: [],
+                isSubmit: false
             }
         },
         methods: {
@@ -193,6 +194,7 @@
                     return;
                 }
                 var postData = {summaryName: this.title,list: JSON.stringify(this.setPostData()),gzjh: this.setGzjh()};
+                this.isSubmit = true;
                 if(this.documentId!='') {
                     editDocumentday(this.$route.query.type,postData).then(res => {
                         if (res.code == 1) {
@@ -279,6 +281,19 @@
                 if (this.$route.query.type == 'month') {
                     this.title = `设计部${moment().format('YYYY年MM月')}工作总结（${JSON.parse(localStorage.getItem('userInfo')).nickName}）`
                 }
+            }
+        },
+        beforeRouteLeave(to, form, next) {
+            if (to.path == '/summary-month' && this.isSubmit) {
+                next();
+            } else {
+                this.$Modal.confirm({
+                    title: '提示',
+                    content: '离开当前页面，数据将不会保存',
+                    onOk: () => {
+                        next();
+                    }
+                });
             }
         }
     }

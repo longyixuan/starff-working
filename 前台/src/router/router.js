@@ -454,7 +454,23 @@ export const appRouter = {
             },
             name: 'task-guidang',
             component: () => import('@/views/task/guidang.vue')
-        }
+        },
+        // {
+        //     path: 'image/add',
+        //     meta: {
+        //         title: '图片'
+        //     },
+        //     name: 'image-add',
+        //     component: () => import('@/views/image/add.vue')
+        // },
+        // {
+        //     path: 'image/list',
+        //     meta: {
+        //         title: '图片'
+        //     },
+        //     name: 'image-list',
+        //     component: () => import('@/views/image/list.vue')
+        // }
     ]
 };
 
