@@ -17,5 +17,10 @@ router.post('/task/listc', task_controller.getListC);
 router.post('/task/log', task_controller.getLog);
 router.post('/task/history', task_controller.hisLog);
 
+router.post('/task/zt/list', task_controller.ztList);
+router.post('/task/zt/add', task_controller.ztAdd);
+router.post('/task/zt/edit', task_controller.ztEdit);
+router.post('/task/zt/del', task_controller.ztDel);
+
 
 module.exports = router;

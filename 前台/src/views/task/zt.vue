@@ -26,7 +26,7 @@
     </Card>
 </template>
 <script>
-import { addTagFzxt, editTagFzxt, getTagListFzxt, delTagFzxt } from '@/api/index';
+import { addTaskTag, editTaskTag, getTaskTagList, delTaskTag } from '@/api/index';
 export default {
     name: 'taskZt',
     data() {
@@ -62,7 +62,7 @@ export default {
                 return;
             }
             if (this.id) {
-                editTagFzxt({
+                editTaskTag({
                     id: this.id,
                     name: this.tag,
                     order: this.order
@@ -71,7 +71,7 @@ export default {
                     this.init();
                 });
             } else {
-                addTagFzxt({
+                addTaskTag({
                     id: this.id,
                     name: this.tag,
                     order: this.order
@@ -102,7 +102,7 @@ export default {
                 title: '提示',
                 content: '确定要删除吗？',
                 onOk: () => {
-                    delTagFzxt({
+                    delTaskTag({
                         id: id,
                     }).then((res) => {
                         if (res.code === 1) {
@@ -116,7 +116,7 @@ export default {
             });
         },
         init() {
-            getTagListFzxt().then((res) => {
+            getTaskTagList().then((res) => {
                 this.data = res.data;
             });
         },

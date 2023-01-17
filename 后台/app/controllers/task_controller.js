@@ -2,19 +2,35 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-11-14 16:16:17
+ * @Last Modified time: 2023-01-17 16:36:52
  */
 
 const Task_col = require('./../models/task');
 const TaskLog_col = require('./../models/taskLog');
+const TaskLog_zt = require('./../models/taskZt');
 const uuidv1 = require('uuid/v1');
 const add = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
     req.id = uuidv1();
     req.kssj = new Date(req.kssj);
-    req.jssj = new Date(req.jssj);
+    if (req.jssj) {
+        req.jssj = new Date(req.jssj);
+    }
     await Task_col.create(req);
+    if (req.bz) { //写入日志
+        let log = await TaskLog_col.findOne({
+            id: req.id,
+            updateTime: new Date(req.updateTime)
+        });
+        if (log) {
+            await TaskLog_col.updateOne({
+                id: req.id
+            },req);
+        } else {
+            await TaskLog_col.create(req);
+        }
+    }
     ctx.body = {
         code: 1,
         msg: '新增成功'
@@ -29,9 +45,6 @@ const getList = async (ctx, next) => {
         seachConfig.isHistory = Boolean(req.isHistory);
     } else {
         seachConfig.isHistory = false;
-    }
-    if (req.hasOwnProperty('frwId')) {
-        seachConfig.frwId = req.frwId;
     }
     if (req.xtId) {
         seachConfig.xtId = {
@@ -99,17 +112,14 @@ const getList = async (ctx, next) => {
                     $push: {
                         id: '$id',
                         rwmc: '$rwmc',
-                        frwId: '$frwId',
                         xtId: '$xtId',
                         jbrId: '$jbrId',
                         kssj: '$kssj',
                         jssj: '$jssj',
-                        wcsj: '$wcsj',
                         rwzt: '$rwzt',
                         rwlx: '$rwlx',
                         jira: '$jira',
                         bz: '$bz',
-                        rwjz: '$rwjz',
                         isHistory: '$isHistory',
                         taskLog: '$taskLog'
                     }
@@ -209,13 +219,23 @@ const update = async (ctx, next) => {
 const remove = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    await Task_col.deleteMany({
+    const result = await TaskLog_col.findOne({
         id: req.id
     });
-    ctx.body = {
-        code: 1,
-        msg: '删除成功'
-    };
+    if (result) { // 有备注不可删除
+        ctx.body = {
+            code: 0,
+            msg: '已有工作记录，不可删除'
+        };
+    } else {
+        await Task_col.deleteMany({
+            id: req.id
+        });
+        ctx.body = {
+            code: 1,
+            msg: '删除成功'
+        };
+    }
 }
 
 const getLog = async (ctx, next) => {
@@ -245,6 +265,55 @@ const hisLog = async (ctx, next) => {
     };
 }
 
+const ztAdd = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    req.id = uuidv1();
+    await TaskLog_zt.create(req);
+    ctx.body = {
+        code: 1,
+        msg: '新增成功'
+    };
+}
+
+const ztEdit = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await TaskLog_zt.updateOne({
+        id: req.id
+    }, req);
+    const result = await TaskLog_zt.findOne({
+        id: req.id
+    });
+    ctx.body = {
+        code: 1,
+        msg: '修改成功',
+        data: result
+    };
+}
+
+const ztDel = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    await TaskLog_zt.deleteMany({
+        id: req.id
+    });
+    ctx.body = {
+        code: 1,
+        msg: '删除成功'
+    };
+}
+
+const ztList = async (ctx, next) => {
+    ctx.status = 200;
+    let result = await TaskLog_zt.find({});
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: result
+    };
+}
+
 module.exports = {
     add,
     getList,
@@ -252,5 +321,9 @@ module.exports = {
     update,
     remove,
     getLog,
-    hisLog
+    hisLog,
+    ztList,
+    ztAdd,
+    ztEdit,
+    ztDel
 }

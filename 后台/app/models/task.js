@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-11-11 09:38:17
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-11-14 16:04:57
+ * @Last Modified time: 2023-01-17 13:17:37
  */
 
 const mongoose = require('mongoose');
@@ -35,13 +35,9 @@ const taskSchema = new Schema(
             required: true
         },
         jssj: { //结束时间
-            type: Date,
-            required: true
-        },
-        wcsj: { //完成时间
             type: Date
         },
-        rwzt: { // 任务状态，未开始，进行中，已完成
+        rwzt: { // 任务状态
             type: String,
             required: true
         },
@@ -50,17 +46,10 @@ const taskSchema = new Schema(
             required: true,
             default: 0
         },
-        rwlx: { //任务类型，bug，任务
-            type: String,
-            required: true
-        },
         jira: {
             type: String
         },
         bz: { //备注
-            type: String
-        },
-        rwjz: {
             type: String
         },
         isHistory: { //是否归档

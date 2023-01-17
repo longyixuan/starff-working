@@ -15,7 +15,7 @@
                     }}</Option>
                 </Select>
                 <Select placeholder="状态" multiple clearable v-model="search.rwzt" style="width: 100px;margin-right:10px;">
-                    <Option :value="item.id" :key="item.id" v-for="item in ztList">{{ item.name }}</Option>
+                    <Option :value="item" :key="item" v-for="item in ztList">{{ item }}</Option>
                 </Select>
                 <DatePicker type="date" placeholder="开始时间" v-model="search.kssj" style="width: 120px;margin-right:10px;"></DatePicker>
                 <DatePicker type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;"></DatePicker>
@@ -26,52 +26,46 @@
                 <div class="rwgl-table" style="width: 100%;box-shadow: none">
                     <div class="rwgl-table-header">
                         <div class="rwgl-table-row">
-                            <div class="rwgl-table-col" style="width: 50px">序号</div>
-                            <div class="rwgl-table-col" style="width: 160px">所属系统</div>
                             <div class="rwgl-table-col flex1">任务名称</div>
-                            <div class="rwgl-table-col" style="width: 50px">Jira</div>
+                            <div class="rwgl-table-col" style="width: 160px">所属系统</div>
                             <div class="rwgl-table-col" style="width: 100px">状态</div>
                             <div class="rwgl-table-col" style="width: 100px">经办人</div>
                             <div class="rwgl-table-col" style="width: 120px">开始时间</div>
                             <div class="rwgl-table-col" style="width: 120px">结束时间</div>
+                            <div class="rwgl-table-col" style="width: 100px">任务类型</div>
                             <div class="rwgl-table-col" style="width: 90px">操作</div>
                         </div>
                     </div>
                     <div class="rwgl-table-body">
-                        <div class="rwgl-table-flex" :key="'fz-'+ fzIndex" v-for="fz,fzIndex in list">
-                            <div class="rwgl-table-xt" style="width: 50px;">
-                                <span style="text-align: center;flex: 1">{{fzIndex+1}}</span>
+                        <template  v-for="item,itemIndex in list">
+                            <div class="rwgl-table-row">
+                                <div class="rwgl-table-col flex1 flex-block" @click="getLog(item.id)" style="cursor: pointer;">
+                                    {{ item.rwmc }}
+                                </div>
+                                <div class="rwgl-table-col flex-block" style="width: 160px">
+                                    {{ xtFn(item.xtId) }}
+                                </div>
+                                <div class="rwgl-table-col" style="width: 100px">
+                                    {{ item.rwzt }}
+                                </div>
+                                <div class="rwgl-table-col" style="width: 100px">{{ jbrFn(item.jbrId) }}</div>
+                                <div class="rwgl-table-col" style="width: 120px">{{ moment(item.kssj) }}</div>
+                                <div class="rwgl-table-col" style="width: 120px">{{ moment(item.jssj) }}</div>
+                                <div class="rwgl-table-col" style="width: 100px">
+                                    <span class="rwlx-tag-warp" v-if="item.rwlx == '任务'">
+                                        <span class="rwlx-tag rwlx-tag-rw"><Icon type="md-mail" color="#fff" /></span>
+                                        {{ item.rwlx }}
+                                    </span>
+                                    <span class="rwlx-tag-warp" v-if="item.rwlx == 'bug'">
+                                        <span class="rwlx-tag rwlx-tag-bug"><Icon type="md-bug" color="#fff" /></span>
+                                        {{ item.rwlx }}
+                                    </span>
+                                </div>
+                                <div class="rwgl-table-col" style="width: 90px">
+                                    <Button type="warning" @click="hisTask(item.id)" size="small">撤销归档</Button>
+                                </div>
                             </div>
-                            <div class="rwgl-table-xt" style="width: 160px;">
-                                <Tooltip placement="top" transfer :content="fz.xtmc">
-                                    <span class="task-text">{{fz.xtmc}}</span>
-                                </Tooltip>
-                            </div>
-                            <div class="rwgl-table-rw rw-flex1">
-                                <template v-for="item,itemIndex in fz.rwList">
-                                    <div class="rwgl-table-row" :key="'tasklist-'+itemIndex" @click="showDetail(item)">
-                                        <div class="rwgl-table-col flex-block flex1">
-                                            <Tooltip placement="top" transfer :content="item.rwmc">
-                                                <span class="task-text">{{ item.rwmc }}</span>
-                                            </Tooltip>
-                                        </div>
-                                        <div class="rwgl-table-col" style="width: 50px;">
-                                            <a :href="item.jira" v-if="item.jira" target="_blank">查看</a>
-                                            <span v-else>-</span>
-                                        </div>
-                                        <div class="rwgl-table-col" style="width: 100px">
-                                            <span>{{ getrRwzt(item.rwzt) }}</span>
-                                        </div>
-                                        <div class="rwgl-table-col" style="width: 100px">{{ jbrFn(item.jbrId) }}</div>
-                                        <div class="rwgl-table-col" style="width: 120px" >{{ moment(item.kssj) }}</div>
-                                        <div class="rwgl-table-col" style="width: 120px">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
-                                        <div class="rwgl-table-col" style="width: 90px">
-                                            <Button type="warning" @click="hisTask(item.id)" size="small">撤销归档</Button>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -96,10 +90,12 @@
 import {
     getSystemList,
     getAllUserData,
+    addTask,
     listTask,
+    updateTask,
+    delTask,
     logTask,
-    hisTask,
-    getTaskTagList
+    hisTask
 } from '@/api/index';
 import moment from 'moment';
 export default {
@@ -158,8 +154,16 @@ export default {
     components: {
     },
     methods: {
-        getrRwzt(rwzt) {
-            return _.find(this.ztList, ['id', rwzt]).name;
+        rwzt(rwzt) {
+            if (rwzt === '未开始') {
+                return 'rwzt-tag wks';
+            }
+            if (rwzt === '进行中') {
+                return 'rwzt-tag jxz';
+            }
+            if (rwzt === '已完成') {
+                return 'rwzt-tag ywc';
+            }
         },
         jbrFn(userName) {
             if (_.find(this.userList, ['userName', userName])) {
@@ -219,15 +223,9 @@ export default {
                 this.$Message.success(res.msg);
                 this.listTask();
             });
-        },
-        getTaskTagList() {
-            getTaskTagList().then( res => {
-                this.ztList = res.data;
-            });
         }
     },
     mounted() {
-        this.getTaskTagList();
         this.getSystemList();
         this.getUserList();
         this.listTask();

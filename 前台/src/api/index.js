@@ -592,6 +592,22 @@ export const listFzxt = (params) => {
 
 //-----------------------任务管理--------------------------------//
 
+export const addTaskTag = (params) => {
+    return postRequest(`/task/zt/add`,params)
+}
+
+export const editTaskTag = (params) => {
+    return postRequest(`/task/zt/edit`,params)
+}
+
+export const getTaskTagList = (params) => {
+    return postRequest(`/task/zt/list`,params)
+}
+
+export const delTaskTag = (params) => {
+    return postRequest(`/task/zt/del`,params)
+}
+
 export const addTask = (params) => {
     return postRequest(`/task/add`,params)
 }

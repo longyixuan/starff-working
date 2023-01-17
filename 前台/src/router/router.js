@@ -448,6 +448,14 @@ export const appRouter = {
             component: () => import('@/views/task/add.vue')
         },
         {
+            path: 'task/zt',
+            meta: {
+                title: '任务管理'
+            },
+            name: 'task-zt',
+            component: () => import('@/views/task/zt.vue')
+        },
+        {
             path: 'task/guidang',
             meta: {
                 title: '任务管理'

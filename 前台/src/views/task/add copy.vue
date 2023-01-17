@@ -15,7 +15,7 @@
                     }}</Option>
                 </Select>
                 <Select placeholder="状态" multiple clearable v-model="search.rwzt" style="width: 100px;margin-right:10px;">
-                    <Option :value="item.id" :key="item.id" v-for="item in ztList">{{ item.name }}</Option>
+                    <Option :value="item" :key="item" v-for="item in ztList">{{ item }}</Option>
                 </Select>
                 <DatePicker type="date" placeholder="开始时间" v-model="search.kssj" style="width: 120px;margin-right:10px;"></DatePicker>
                 <DatePicker type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;"></DatePicker>
@@ -30,7 +30,7 @@
                     <Checkbox label="经办人">经办人</Checkbox>
                     <Checkbox label="开始时间">开始时间</Checkbox>
                     <Checkbox label="结束时间">结束时间</Checkbox>
-                    <Checkbox label="Jira">Jira</Checkbox>
+                    <Checkbox label="任务类型">任务类型</Checkbox>
                 </Checkbox-Group>
                 <Radio-Group v-model="st" type="button" size="small">
                     视图：
@@ -45,11 +45,11 @@
                             <div class="rwgl-table-col" style="width: 50px">序号</div>
                             <div class="rwgl-table-col" style="width: 160px">所属系统</div>
                             <div class="rwgl-table-col" style="width: 200px">任务名称</div>
-                            <div class="rwgl-table-col" style="width: 50px" v-if="tj.includes('Jira')">Jira</div>
                             <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">状态</div>
                             <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">经办人</div>
                             <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('开始时间')">开始时间</div>
                             <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('结束时间')">结束时间</div>
+                            <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('任务类型')">任务类型</div>
                         </div>
                     </div>
                     <div class="rwgl-table-body">
@@ -64,23 +64,68 @@
                             </div>
                             <div class="rwgl-table-rw rw-flex1">
                                 <template v-for="item,itemIndex in fz.rwList">
-                                    <div class="rwgl-table-row" :key="'tasklist-'+itemIndex">
-                                        <div class="rwgl-table-col flex-block" style="width: 200px;cursor: pointer;" @click="showDetail(item)">
-                                            <Tooltip placement="top" transfer :content="item.rwmc">
-                                                <span class="task-text">{{ item.rwmc }}</span>
-                                            </Tooltip>
-                                        </div>
-                                        <div class="rwgl-table-col" style="width: 50px;" v-if="tj.includes('Jira')">
-                                            <a :href="item.jira" v-if="item.jira" target="_blank">查看</a>
-                                            <span v-else>-</span>
+                                    <div class="rwgl-table-row" @click="showDetail(item)">
+                                        <div class="rwgl-table-col flex-block" style="width: 200px">
+                                            <template v-if="!item.frwId">
+                                                <Icon type="md-arrow-dropright" size="18" @click.native.stop="getTaskC(fzIndex,itemIndex,item)" v-if="!item.expand"/>
+                                                <Icon type="md-arrow-dropdown" size="18" @click.native.stop="getTaskC2(fzIndex,itemIndex,item)" v-else/>
+                                                <Tooltip placement="top" transfer :content="item.rwmc">
+                                                    <span class="task-text">{{ item.rwmc }}</span>
+                                                </Tooltip>
+                                                <Tooltip placement="top" transfer content="添加子任务">
+                                                    <Icon type="md-add-circle" class="add-task-c" @click.native.stop="addTaskC(item)"/>
+                                                </Tooltip>
+                                            </template>
+                                            <template v-else>
+                                                <Tooltip placement="top" transfer :content="item.rwmc">
+                                                    <span class="task-text">{{ item.rwmc }}</span>
+                                                </Tooltip>
+                                            </template>
                                         </div>
                                         <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">
-                                            <span>{{ getrRwzt(item.rwzt) }}</span>
+                                            <span :class="rwzt(item.rwzt)">{{ item.rwzt }}</span>
                                         </div>
                                         <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">{{ jbrFn(item.jbrId) }}</div>
                                         <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('开始时间')">{{ moment(item.kssj) }}</div>
-                                        <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('结束时间')">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
+                                        <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('结束时间')">{{ moment(item.jssj) }}</div>
+                                        <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('任务类型')">
+                                            <span class="rwlx-tag-warp" v-if="item.rwlx == '任务'">
+                                                <span class="rwlx-tag rwlx-tag-rw"><Icon type="md-mail" color="#fff" /></span>
+                                                {{ item.rwlx }}
+                                            </span>
+                                            <span class="rwlx-tag-warp" v-if="item.rwlx == 'bug'">
+                                                <span class="rwlx-tag rwlx-tag-bug"><Icon type="md-bug" color="#fff" /></span>
+                                                {{ item.rwlx }}
+                                            </span>
+                                        </div>
                                     </div>
+                                    <template v-if="item.expand">
+                                        <template v-for="item2 in item.child">
+                                            <div class="rwgl-table-row" @click="showDetail(item2,item.rwmc)">
+                                                <div class="rwgl-table-col flex-block" style="width: 200px">
+                                                    <Tooltip placement="top" transfer :content="item2.rwmc">
+                                                        <span style="margin-left: 22px;" class="task-text">{{ item2.rwmc }}</span>
+                                                    </Tooltip>
+                                                </div>
+                                                <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">
+                                                    <span :class="rwzt(item2.rwzt)">{{ item2.rwzt }}</span>
+                                                </div>
+                                                <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">{{ jbrFn(item2.jbrId) }}</div>
+                                                <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('开始时间')">{{ moment(item2.kssj) }}</div>
+                                                <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('结束时间')">{{ moment(item2.jssj) }}</div>
+                                                <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('任务类型')">
+                                                    <span class="rwlx-tag-warp" v-if="item2.rwlx == '任务'">
+                                                        <span class="rwlx-tag rwlx-tag-rw"><Icon type="md-mail" color="#fff" /></span>
+                                                        {{ item2.rwlx }}
+                                                    </span>
+                                                    <span class="rwlx-tag-warp" v-if="item2.rwlx == 'bug'">
+                                                        <span class="rwlx-tag rwlx-tag-bug"><Icon type="md-bug" color="#fff" /></span>
+                                                        {{ item2.rwlx }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
                                 </template>
                             </div>
                         </div>
@@ -90,12 +135,11 @@
                     <div class="rwgl-task-table" :style="{ width: 210 * weekDate.length + 'px' }">
                         <div class="rwgl-task-header rwgl-table-header">
                             <div class="rwgl-table-row">
-                                <div v-for="item,lineIndex in weekDate" :key="'line-'+lineIndex" class="rwgl-table-col" style="width: 210px">
+                                <div v-for="item in weekDate" class="rwgl-table-col" style="width: 210px">
                                     <div class="rwgl-table-row-month">{{ item.range.month }}</div>
                                     <div class="rwgl-table-row-day">
                                         <span class="rwgl-table-row-day-item"
                                             :class="{ 'zm': itemIndex > 4, cur: isCurDay(item, itemIndex) }"
-                                            :key="'lineday-'+itemIndex"
                                             v-for="(itemValue, itemIndex) in getWeekArr(item.range.start)">
                                             {{ itemValue }}
                                         </span>
@@ -107,12 +151,23 @@
                             <template v-for="xt in list">
                                 <template v-for="item in xt.rwList">
                                     <div class="rwgl-task-body-bar">
-                                        <div class="rwgl-task-body-col" :key="'linebar2-'+item.range.start" v-for="item in weekDate"></div>
+                                        <div class="rwgl-task-body-col" v-for="item in weekDate"></div>
                                         <div class="rwgl-task-body-barbg" :style="getStyle(item)"
                                             @click="getLog(item.id)">
                                             <div v-for="(progress, progressIndex) in getNum(item).num" class="task-progress" :class="{'do': !getNum(item).log.includes(progressIndex), 'jh': (getNum(item).numJh == progressIndex && getNum(item).isTimeout)}"></div>
                                         </div>
                                     </div>
+                                    <template v-if="item.expand">
+                                        <template v-for="item2 in item.child">
+                                            <div class="rwgl-task-body-bar">
+                                                <div class="rwgl-task-body-col" v-for="item2 in weekDate"></div>
+                                                <div class="rwgl-task-body-barbg" :style="getStyle(item2)"
+                                                    @click="getLog(item2.id)">
+                                                    <div v-for="(progress, progressIndex) in getNum(item2).num" class="task-progress" :class="{'do': !getNum(item2).log.includes(progressIndex), 'jh': (getNum(item2).numJh == progressIndex && getNum(item2).isTimeout)}"></div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
                                 </template>
                             </template>
                         </div>
@@ -139,6 +194,9 @@
                         <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
                     </Select>
                 </FormItem>
+                <FormItem label="父任务名称" v-if="form.frwId">
+                    {{frwmc}}
+                </FormItem>
                 <FormItem label="任务名称" class="ivu-form-item-required">
                     <Input placeholder="请输入" v-model="form.rwmc"></Input>
                 </FormItem>
@@ -152,36 +210,33 @@
                         }}</Option>
                     </Select>
                 </FormItem>
+                <FormItem label="任务类型" class="ivu-form-item-required">
+                    <Select placeholder="请选择" v-model="form.rwlx">
+                        <Option :value="item" :key="item" v-for="item in rwLx">{{ item }}</Option>
+                    </Select>
+                </FormItem>
                 <FormItem label="任务期限" class="ivu-form-item-required">
-                    <template v-if="form.id">
-                        {{moment(form.kssj)}}
-                    </template>
-                    <template v-else>
-                        <DatePicker type="date" placeholder="请选择" v-model="form.kssj" style="width: 200px"></DatePicker>
-                    </template>
+                    <DatePicker type="date" placeholder="请选择" v-model="form.kssj" style="width: 200px"></DatePicker>
                     至
-                    <template v-if="form.id && form.jssj">
-                        {{moment(form.jssj)}}
-                    </template>
-                    <template v-else>
-                        <DatePicker type="date" placeholder="请选择" v-model="form.jssj" style="width: 200px"></DatePicker>
-                    </template>
+                    <DatePicker type="date" placeholder="请选择" v-model="form.jssj" style="width: 200px"></DatePicker>
                 </FormItem>
                 <FormItem label="当前状态" class="ivu-form-item-required">
-                    <RadioGroup v-model="form.rwzt">
-                        <Radio :label="item.id" :key="item.id" v-for="item in ztList">{{ item.name }}</Radio>
-                    </RadioGroup>
+                    <Select placeholder="请选择" v-model="form.rwzt" style="width: 200px">
+                        <Option :value="item" :key="item" v-for="item in ztList">{{ item }}</Option>
+                    </Select>
                 </FormItem>
-                <FormItem label="每日进度">
-                    <DatePicker type="date" placeholder="日期" v-model="form.updateTime" style="width: 200px;margin-bottom: 10px;"></DatePicker>
-                    <Input type="textarea" placeholder="本日工作内容" v-model="form.bz" :rows="4"></Input>
+                <FormItem label="任务进展">
+                    <Input type="textarea" placeholder="请输入" v-model="form.rwjz" :rows="4"></Input>
+                </FormItem>
+                <FormItem label="备注">
+                    <Input type="textarea" placeholder="请输入" v-model="form.bz" :rows="4"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
                 <Button type="text" @click="cancel">取消</Button>
                 <Button type="primary" @click="ok">确定</Button>
                 <Button type="error" @click="del" v-if="form.id">删除</Button>
-                <Button type="warning" @click="hisTask" v-if="form.id">归档</Button>
+                <Button type="error" @click="hisTask" v-if="form.id">归档</Button>
             </div>
         </Modal>
         <Modal v-model="modalC" title="详情" width="1000">
@@ -214,8 +269,7 @@ import {
     updateTask,
     delTask,
     logTask,
-    hisTask,
-    getTaskTagList
+    hisTask
 } from '@/api/index';
 import moment from 'moment';
 export default {
@@ -225,8 +279,8 @@ export default {
             st: 'day',
             modal: false,
             sysList: [],
-            tj: [],
-            ztList: [],
+            tj: ['任务名称', '所属系统', '状态', '经办人', '开始时间', '结束时间', '任务类型'],
+            ztList: ['未开始', '进行中', '已完成'],
             rwLx: ['任务', 'bug'],
             userList: [],
             list: [],
@@ -234,13 +288,15 @@ export default {
                 id: '',
                 rwmc: '',
                 xtId: '',
-                rwzt: '',
+                frwId: '',
+                rwlx: '任务',
+                rwzt: '未开始',
                 jbrId: JSON.parse(localStorage.getItem('userInfo')).userId,
                 jira: '',
                 kssj: '',
                 jssj: '',
                 bz: '',
-                updateTime: new Date()
+                rwjz: ''
             },
             frwmc: '',
             search: {
@@ -281,13 +337,16 @@ export default {
             }
             return false;
         },
-        getTaskTagList() {
-            getTaskTagList().then( res => {
-                this.ztList = res.data;
-            });
-        },
-        getrRwzt(rwzt) {
-            return _.find(this.ztList, ['id', rwzt]).name;
+        rwzt(rwzt) {
+            if (rwzt === '未开始') {
+                return 'rwzt-tag wks';
+            }
+            if (rwzt === '进行中') {
+                return 'rwzt-tag jxz';
+            }
+            if (rwzt === '已完成') {
+                return 'rwzt-tag ywc';
+            }
         },
         jbrFn(userName) {
             if (_.find(this.userList, ['userName', userName])) {
@@ -311,22 +370,11 @@ export default {
         cancel() {
             this.modal = false;
         },
-        del() {
-            this.$Modal.confirm({
-                title: '提示',
-                content: '确定要删除吗？',
-                onOk: () => {
-                    delTask({id: this.form.id }).then(res => {
-                        if (res.code === 1) {
-                            this.$Message.success(res.msg);
-                            this.listTask();
-                            this.modal = false;
-                        } else {
-                            this.$Message.error(res.msg);
-                        }
-                    })
-                },
-            });
+        del(id) {
+            delTask({id: this.form.id }).then(res => {
+                this.$Message.success(res.msg);
+                this.modal = false;
+            })
         },
         getSystemList() {
             getSystemList().then((res) => {
@@ -344,13 +392,14 @@ export default {
             addTask({
                 rwmc: this.form.rwmc,
                 xtId: this.form.xtId,
+                frwId: this.form.frwId,
+                rwlx: this.form.rwlx,
                 rwzt: this.form.rwzt,
                 jbrId: this.form.jbrId,
                 jira: this.form.jira,
                 kssj: moment(this.form.kssj).format('YYYY-MM-DD'),
-                jssj: this.form.jssj==='' ? '' : moment(this.form.jssj).format('YYYY-MM-DD'),
+                jssj: moment(this.form.jssj).format('YYYY-MM-DD'),
                 bz: this.form.bz,
-                updateTime: moment(this.form.updateTime).format('YYYY-MM-DD'),
             }).then( res => {
                 this.$Message.success(res.msg);
                 this.listTask();
@@ -359,16 +408,18 @@ export default {
         },
         updateTask() {
             updateTask({
+                updateTime: moment().format('YYYY-MM-DD'),
                 id: this.form.id,
                 rwmc: this.form.rwmc,
                 xtId: this.form.xtId,
+                frwId: this.form.frwId,
+                rwlx: this.form.rwlx,
                 rwzt: this.form.rwzt,
                 jbrId: this.form.jbrId,
                 jira: this.form.jira,
                 kssj: moment(this.form.kssj).format('YYYY-MM-DD'),
-                jssj: this.form.jssj==='' ? '' : moment(this.form.jssj).format('YYYY-MM-DD'),
+                jssj: moment(this.form.jssj).format('YYYY-MM-DD'),
                 bz: this.form.bz,
-                updateTime: moment(this.form.updateTime).format('YYYY-MM-DD')
             }).then( res => {
                 this.$Message.success(res.msg);
                 this.listTask();
@@ -376,7 +427,7 @@ export default {
             });
         },
         listTask() {
-            listTask().then((res) => {
+            listTask({frwId: ''}).then((res) => {
                 this.list = res.data;
             });
         },
@@ -392,68 +443,64 @@ export default {
             return arr;
         },
         getStyle({ kssj, jssj, taskLog }) {
-            let temp = _.orderBy(taskLog, (item) => {
-                return moment(item.updateTime).format('YYYY-MM-DD');
-            }, ['desc']);  // 更新日志排序
-            let isTimeout = false; //结束时间的差
-            let days = 0; //开始时间的差,用于计算bar的宽度
-            if (jssj) { // 写了结束时间
-                days = moment(jssj).diff(moment(kssj), "days");
-            }
-            if (temp.length>0) {  // 判断是否超时
-                isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
-                if (isTimeout) { // 超时
-                    days = moment(temp[0].updateTime).diff(moment(kssj), "days");
+            let temp = _.uniqBy(taskLog, 'updateTime');
+            let log = [];
+            let days = 0;
+            let days2 = 0;
+            temp.forEach(element => {
+                if (moment(element.updateTime).diff(moment(jssj), "days")>0) { //超时完成
+                    days = moment(element.updateTime).diff(moment(jssj), "days");
+                    days2 = moment(element.updateTime).diff(moment(kssj), "days");
                 }
-            }
+                log.push(moment(element.updateTime).diff(moment(kssj), "days"))
+            });
             let num = getYearWeek(moment(kssj).format('YYYY-MM-DD')); //第几周
-            let num2 = moment(kssj).diff(moment(this.weekDate[num].range.start), "days"); //本周开始时间的第几天
+            let dayNum = moment(jssj).diff(moment(kssj), "days");
+            let num2 = moment(kssj).diff(moment(this.weekDate[num].range.start), "days")
             return {
-                width: (!jssj && temp.length===0) ?  '0' : (days+1) * 30 + 'px',
+                width: days > 0 ? (days2+1) * 30 + 'px' : (dayNum+1) * 30 + 'px',
                 left: num * 210 + num2 * 30 + 'px',
-                borderColor: isTimeout ? '#fa8888' : '#6698ff'
+                borderColor: days > 0 ? '#fa8888' : '#6698ff'
             };
         },
         getNum({ rwmc, kssj,jssj,taskLog }) {
-            let temp = _.orderBy(taskLog, (item) => {
-                return moment(item.updateTime).format('YYYY-MM-DD');
-            }, ['desc']);  // 更新日志排序
+            let temp = _.uniqBy(taskLog, 'updateTime');
             let log = [];
-            let isTimeout = false; //结束时间的差
-            let days = 0; //开始时间的差,用于计算bar的宽度
+            let days = 0;
+            let days2 = 0;
             temp.forEach(element => {
+                if (moment(element.updateTime).diff(moment(jssj), "days")>0) { //超时完成
+                    days = moment(element.updateTime).diff(moment(jssj), "days");
+                    days2 = moment(element.updateTime).diff(moment(kssj), "days");
+                }
                 log.push(moment(element.updateTime).diff(moment(kssj), "days"))
             });
-            if (jssj) { // 写了结束时间
-                days = moment(jssj).diff(moment(kssj), "days");
-            }
-            if (temp.length>0) {  // 判断是否超时
-                isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
-                if (isTimeout) { // 超时
-                    days = moment(temp[0].updateTime).diff(moment(kssj), "days");
-                }
-            }
             return {
                 log: log,
-                numJh: jssj ? moment(jssj).diff(moment(kssj), "days") : -1,
-                isTimeout: isTimeout,
-                num: (!jssj && temp.length===0) ? 0 : (days+1)
+                numJh: moment(jssj).diff(moment(kssj), "days"),
+                isTimeout: days > 0,
+                num: days > 0 ? (days2+1) : (moment(jssj).diff(moment(kssj), "days")+1)
             };
         },
         isCurDay(obj, dayIndex) {
             let date1 = moment(obj.range.start).add(dayIndex, 'days').format('YYYY-MM-DD');
             return moment().format('YYYY-MM-DD') === date1;
         },
-        showDetail(item) {
+        showDetail(item, frwmc) {
             this.form.id = item.id;
             this.form.rwmc = item.rwmc;
             this.form.xtId = item.xtId;
+            this.form.frwId = item.frwId;
+            this.form.rwlx = item.rwlx;
             this.form.rwzt = item.rwzt;
             this.form.jbrId = item.jbrId;
             this.form.jira = item.jira;
             this.form.kssj = item.kssj;
             this.form.jssj = item.jssj;
             this.form.bz = item.bz;
+            if (frwmc) {
+                this.frwmc = frwmc;
+            }
             this.modal = true;
         },
         addTaskC(task) {
@@ -463,6 +510,15 @@ export default {
             this.form.jbrId = task.jbrId;
             this.form.jssj = task.jssj;
             this.modal = true;
+        },
+        getTaskC(fzIndex, index, item) {
+            this.$set(this.list[fzIndex].rwList[index], 'expand', true);
+            listTaskC({ frwId: item.id }).then((res) => {
+                this.$set(this.list[fzIndex].rwList[index], 'child', res.data);
+            });
+        },
+        getTaskC2(fzIndex, index, item) {
+            this.$set(this.list[fzIndex].rwList[index], 'expand', false);
         },
         searchFn() {
             listTask({
@@ -486,10 +542,12 @@ export default {
             this.form.id = '';
             this.form.rwmc = '';
             this.form.xtId = '';
-            this.form.rwzt = this.ztList[0].id;
-            this.form.jbrId = JSON.parse(localStorage.getItem('userInfo')).userName;
+            this.form.frwId = '';
+            this.form.rwlx = '';
+            this.form.rwzt = '';
+            this.form.jbrId = '';
             this.form.jira = '';
-            this.form.kssj = moment().format('YYYY-MM-DD');
+            this.form.kssj = '';
             this.form.jssj = '';
             this.form.bz = '';
             this.modal = true;
@@ -503,8 +561,6 @@ export default {
                 isHistory: true
             }).then(res => {
                 this.$Message.success(res.msg);
-                this.listTask();
-                this.modal = false;
             });
         }
     },
@@ -519,7 +575,6 @@ export default {
         });
     },
     created() {
-        this.getTaskTagList();
         this.weekDate = getAllWeekRange(new Date().getFullYear());
     }
 };
