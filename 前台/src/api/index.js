@@ -139,9 +139,9 @@ export const getSystemTree = (params) => {
 //-----------------------系统管理--------------------------------//
 
 //-----------------------角色管理--------------------------------//
-export const addRole = (params) => {
-    return postRequest('/role/add', params)
-}
+// export const addRole = (params) => {
+//     return postRequest('/role/add', params)
+// }
 //-----------------------角色管理--------------------------------//
 
 //-----------------------工时管理--------------------------------//

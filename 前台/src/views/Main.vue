@@ -34,7 +34,7 @@
               <MenuItem name="1-1" to="/department-manage">部门管理</MenuItem>
               <MenuItem name="1-2" to="/user-manage">用户管理</MenuItem>
               <MenuItem name="1-3" to="/system-manage">系统管理</MenuItem>
-              <MenuItem name="1-4" to="/role-manage">角色管理</MenuItem>
+              <!-- <MenuItem name="1-4" to="/role-manage">角色管理</MenuItem> -->
             </Submenu>
             <Submenu name="2">
               <template slot="title">
