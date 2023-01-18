@@ -91,7 +91,7 @@
               <template slot="title">
                 <Icon type="ios-paper-plane" />任务管理
               </template>
-              <MenuItem name="14-1" to="/task/zt">状态管理</MenuItem>
+              <MenuItem name="14-1" to="/task/zt" v-if="type===1">状态管理</MenuItem>
               <MenuItem name="14-2" to="/task/add">查看任务</MenuItem>
               <MenuItem name="14-3" to="/task/guidang">查看归档</MenuItem>
             </Submenu>

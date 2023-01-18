@@ -3,7 +3,7 @@
 </style>
 
 <template>
-    <Card title="任务状态">
+    <Card title="任务管理 - 状态管理">
         <div style="margin-bottom: 10px; text-align: right">
             <Button type="primary" @click="addTag">添加</Button>
         </div>

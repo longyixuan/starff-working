@@ -4,12 +4,12 @@
 
 <template>
     <div>
-        <Card title="任务管理">
+        <Card title="任务管理 - 查看任务">
             <div class="task-search" style="margin-bottom: 20px">
                 <Select placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
                 </Select>
-                <Select placeholder="经办人" multiple v-model="search.jbrId" filterable clearable style="width: 100px;margin-right:10px;">
+                <Select placeholder="经办人" multiple v-model="search.jbrId" filterable clearable style="width: 140px;margin-right:10px;">
                     <Option :value="item.userName" :key="item.userId" v-for="item in userList">{{ item.nickName ?
                             item.nickName : item.userName
                     }}</Option>
@@ -21,7 +21,7 @@
                 <DatePicker type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;"></DatePicker>
                 <Input v-model="search.rwmc" style="width: 200px;margin-right:10px;" clearable placeholder="任务名称" autocomplete="off"/>
                 <Button type="primary" style="margin-right:10px;" @click="searchFn">查询</Button>
-                <Button type="primary" @click="addModal">添加</Button>
+                <Button type="primary" @click="addModal">新增任务</Button>
             </div>
             <div style="margin-bottom: 20px;display:flex;">
                 <Checkbox-Group v-model="tj" style="flex:1;">
@@ -30,7 +30,6 @@
                     <Checkbox label="经办人">经办人</Checkbox>
                     <Checkbox label="开始时间">开始时间</Checkbox>
                     <Checkbox label="结束时间">结束时间</Checkbox>
-                    <Checkbox label="Jira">Jira</Checkbox>
                 </Checkbox-Group>
                 <Radio-Group v-model="st" type="button" size="small">
                     视图：
@@ -43,13 +42,13 @@
                     <div class="rwgl-table-header">
                         <div class="rwgl-table-row">
                             <div class="rwgl-table-col" style="width: 50px">序号</div>
-                            <div class="rwgl-table-col" style="width: 160px">所属系统</div>
-                            <div class="rwgl-table-col" style="width: 200px">任务名称</div>
-                            <div class="rwgl-table-col" style="width: 50px" v-if="tj.includes('Jira')">Jira</div>
+                            <div class="rwgl-table-col" style="width: 140px">所属系统</div>
+                            <div class="rwgl-table-col" style="width: 300px">任务名称</div>
+                            <div class="rwgl-table-col" style="width: 50px">Jira</div>
                             <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">状态</div>
                             <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">经办人</div>
-                            <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('开始时间')">开始时间</div>
-                            <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('结束时间')">结束时间</div>
+                            <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('开始时间')">开始时间</div>
+                            <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('结束时间')">结束时间</div>
                         </div>
                     </div>
                     <div class="rwgl-table-body">
@@ -57,20 +56,20 @@
                             <div class="rwgl-table-xt" style="width: 50px;">
                                 <span style="text-align: center;flex: 1">{{fzIndex+1}}</span>
                             </div>
-                            <div class="rwgl-table-xt" style="width: 160px;">
+                            <div class="rwgl-table-xt" style="width: 140px;">
                                 <Tooltip placement="top" transfer :content="fz.xtmc">
-                                    <span class="task-text">{{fz.xtmc}}</span>
+                                    <span class="task-text" style="width: 132px;">{{fz.xtmc}}</span>
                                 </Tooltip>
                             </div>
                             <div class="rwgl-table-rw rw-flex1">
                                 <template v-for="item,itemIndex in fz.rwList">
                                     <div class="rwgl-table-row" :key="'tasklist-'+itemIndex">
-                                        <div class="rwgl-table-col flex-block" style="width: 200px;cursor: pointer;" @click="showDetail(item)">
+                                        <div class="rwgl-table-col flex-block" style="width: 300px;cursor: pointer;" @click="showDetail(item)">
                                             <Tooltip placement="top" transfer :content="item.rwmc">
-                                                <span class="task-text">{{ item.rwmc }}</span>
+                                                <span class="task-text" style="color: #2d8cf0;">{{ item.rwmc }}</span>
                                             </Tooltip>
                                         </div>
-                                        <div class="rwgl-table-col" style="width: 50px;" v-if="tj.includes('Jira')">
+                                        <div class="rwgl-table-col" style="width: 50px;text-align: center;">
                                             <a :href="item.jira" v-if="item.jira" target="_blank">查看</a>
                                             <span v-else>-</span>
                                         </div>
@@ -78,8 +77,8 @@
                                             <span>{{ getrRwzt(item.rwzt) }}</span>
                                         </div>
                                         <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">{{ jbrFn(item.jbrId) }}</div>
-                                        <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('开始时间')">{{ moment(item.kssj) }}</div>
-                                        <div class="rwgl-table-col" style="width: 120px" v-if="tj.includes('结束时间')">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
+                                        <div class="rwgl-table-col" style="width: 100px;text-align: center;" v-if="tj.includes('开始时间')">{{ moment(item.kssj) }}</div>
+                                        <div class="rwgl-table-col" style="width: 100px;text-align: center;" v-if="tj.includes('结束时间')">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
                                     </div>
                                 </template>
                             </div>
@@ -109,7 +108,7 @@
                                     <div class="rwgl-task-body-bar">
                                         <div class="rwgl-task-body-col" :key="'linebar2-'+item.range.start" v-for="item in weekDate"></div>
                                         <div class="rwgl-task-body-barbg" :style="getStyle(item)"
-                                            @click="getLog(item.id)">
+                                            @click="getLog(item.id, item.rwmc)">
                                             <div v-for="(progress, progressIndex) in getNum(item).num" class="task-progress" :class="{'do': !getNum(item).log.includes(progressIndex), 'jh': (getNum(item).numJh == progressIndex && getNum(item).isTimeout)}"></div>
                                         </div>
                                     </div>
@@ -184,12 +183,12 @@
                 <Button type="warning" @click="hisTask" v-if="form.id">归档</Button>
             </div>
         </Modal>
-        <Modal v-model="modalC" title="详情" width="1000">
+        <Modal v-model="modalC" :title="title" width="1000">
             <Table border :columns="columns" :data="listC" >
-                <template slot-scope="{ row, index }" slot="updateTime">
+                <template slot-scope="{ row }" slot="updateTime">
                     {{moment(row.updateTime)}}
                 </template>
-                <template slot-scope="{ row, index }" slot="bz">
+                <template slot-scope="{ row }" slot="bz">
                     <div style="white-space: pre-line;" v-html="row.bz"></div>
                 </template>
             </Table>
@@ -227,9 +226,9 @@ export default {
             sysList: [],
             tj: [],
             ztList: [],
-            rwLx: ['任务', 'bug'],
             userList: [],
             list: [],
+            title: '详情',
             form: {
                 id: '',
                 rwmc: '',
@@ -476,7 +475,8 @@ export default {
                 this.list = res.data;
             });
         },
-        getLog(id) {
+        getLog(id,title) {
+            this.title = title;
             logTask({id: id}).then(res => {
                 this.modalC = true;
                 this.listC = res.data;
@@ -521,6 +521,9 @@ export default {
     created() {
         this.getTaskTagList();
         this.weekDate = getAllWeekRange(new Date().getFullYear());
+        if (JSON.parse(localStorage.getItem('userInfo')).userName!=='admin' && JSON.parse(localStorage.getItem('userInfo')).userName!=='lvf') {
+            this.search.jbrId.push(JSON.parse(localStorage.getItem('userInfo')).userName);
+        }
     }
 };
 </script>
