@@ -154,6 +154,9 @@ export default {
     },
     methods: {
         getrRwzt(rwzt) {
+            if (this.ztList.length===0) {
+                return '';
+            }
             return _.find(this.ztList, ['id', rwzt]).name;
         },
         jbrFn(userName) {

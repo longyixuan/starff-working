@@ -57,10 +57,6 @@ export default {
     },
     methods: {
         add() {
-            if (this.tag === '') {
-                this.$Message.error('所属平台不可为空');
-                return;
-            }
             if (this.id) {
                 editTaskTag({
                     id: this.id,

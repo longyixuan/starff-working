@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-01-17 16:36:52
+ * @Last Modified time: 2023-01-18 15:39:58
  */
 
 const Task_col = require('./../models/task');
@@ -188,8 +188,9 @@ const update = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
     req.kssj = new Date(req.kssj);
-    req.jssj = new Date(req.jssj);
-    req.wcsj = new Date(req.updateTime);
+    if (req.jssj) {
+        req.jssj = new Date(req.jssj);
+    }
     await Task_col.updateOne({
         id: req.id
     }, req);
@@ -268,8 +269,11 @@ const hisLog = async (ctx, next) => {
 const ztAdd = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    req.id = uuidv1();
-    await TaskLog_zt.create(req);
+    await TaskLog_zt.create({
+        id: uuidv1(),
+        name: req.name,
+        order: req.order
+    });
     ctx.body = {
         code: 1,
         msg: '新增成功'
@@ -281,7 +285,10 @@ const ztEdit = async (ctx, next) => {
     const req = ctx.request.body;
     await TaskLog_zt.updateOne({
         id: req.id
-    }, req);
+    }, {
+        name: req.name,
+        order: req.order
+    });
     const result = await TaskLog_zt.findOne({
         id: req.id
     });
@@ -306,7 +313,7 @@ const ztDel = async (ctx, next) => {
 
 const ztList = async (ctx, next) => {
     ctx.status = 200;
-    let result = await TaskLog_zt.find({});
+    let result = await TaskLog_zt.find({}).sort({order: 1 });
     ctx.body = {
         code: 1,
         msg: '查询成功',

@@ -39,6 +39,7 @@
             </div>
             <div class="chsi-gantt">
                 <div class="rwgl-table">
+                    <Affix>
                     <div class="rwgl-table-header">
                         <div class="rwgl-table-row">
                             <div class="rwgl-table-col" style="width: 50px">序号</div>
@@ -51,6 +52,7 @@
                             <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('结束时间')">结束时间</div>
                         </div>
                     </div>
+                    </Affix>
                     <div class="rwgl-table-body">
                         <div class="rwgl-table-flex" v-for="fz,fzIndex in list">
                             <div class="rwgl-table-xt" style="width: 50px;">
@@ -87,6 +89,7 @@
                 </div>
                 <div class="rwgl-task" ref="rwgl-task" v-if="st=='day'">
                     <div class="rwgl-task-table" :style="{ width: 210 * weekDate.length + 'px' }">
+                        <Affix>
                         <div class="rwgl-task-header rwgl-table-header">
                             <div class="rwgl-table-row">
                                 <div v-for="item,lineIndex in weekDate" :key="'line-'+lineIndex" class="rwgl-table-col" style="width: 210px">
@@ -102,6 +105,7 @@
                                 </div>
                             </div>
                         </div>
+                        </Affix>
                         <div class="rwgl-task-body">
                             <template v-for="xt in list">
                                 <template v-for="item in xt.rwList">
@@ -159,7 +163,7 @@
                         <DatePicker type="date" placeholder="请选择" v-model="form.kssj" style="width: 200px"></DatePicker>
                     </template>
                     至
-                    <template v-if="form.id && form.jssj">
+                    <template v-if="form.id && isEditer">
                         {{moment(form.jssj)}}
                     </template>
                     <template v-else>
@@ -209,7 +213,6 @@ import {
     getAllUserData,
     addTask,
     listTask,
-    listTaskC,
     updateTask,
     delTask,
     logTask,
@@ -268,7 +271,8 @@ export default {
                     slot: 'bz'
                 }
             ],
-            listC: []
+            listC: [],
+            isEditer: false
         };
     },
     components: {
@@ -301,10 +305,12 @@ export default {
             return '';
         },
         ok() {
-            if (!this.form.id) {
-                this.addTask();
-            } else {
-                this.updateTask();
+            if (this.validForm()) {
+                if (!this.form.id) {
+                    this.addTask();
+                } else {
+                    this.updateTask();
+                }
             }
         },
         cancel() {
@@ -339,6 +345,29 @@ export default {
                 }
             });
         },
+        validForm() {
+            if (!this.form.xtId) {
+                this.$Message.error('请选择所属系统');
+                return false;
+            }
+            if (!this.form.rwmc) {
+                this.$Message.error('请填写任务名称');
+                return false;
+            }
+            if (!this.form.jbrId) {
+                this.$Message.error('请选择经办人');
+                return false;
+            }
+            if (!this.form.kssj) {
+                this.$Message.error('请选择开始时间');
+                return false;
+            }
+            if (!this.form.rwzt) {
+                this.$Message.error('请选择任务状态');
+                return false;
+            }
+            return true;
+        },
         addTask() {
             addTask({
                 rwmc: this.form.rwmc,
@@ -347,7 +376,7 @@ export default {
                 jbrId: this.form.jbrId,
                 jira: this.form.jira,
                 kssj: moment(this.form.kssj).format('YYYY-MM-DD'),
-                jssj: this.form.jssj==='' ? '' : moment(this.form.jssj).format('YYYY-MM-DD'),
+                jssj: !this.form.jssj ? '' : moment(this.form.jssj).format('YYYY-MM-DD'),
                 bz: this.form.bz,
                 updateTime: moment(this.form.updateTime).format('YYYY-MM-DD'),
             }).then( res => {
@@ -365,7 +394,7 @@ export default {
                 jbrId: this.form.jbrId,
                 jira: this.form.jira,
                 kssj: moment(this.form.kssj).format('YYYY-MM-DD'),
-                jssj: this.form.jssj==='' ? '' : moment(this.form.jssj).format('YYYY-MM-DD'),
+                jssj: !this.form.jssj ? '' : moment(this.form.jssj).format('YYYY-MM-DD'),
                 bz: this.form.bz,
                 updateTime: moment(this.form.updateTime).format('YYYY-MM-DD')
             }).then( res => {
@@ -454,6 +483,9 @@ export default {
             this.form.jssj = item.jssj;
             this.form.bz = item.bz;
             this.modal = true;
+            if (item.jssj) {
+                this.isEditer = true;
+            }
         },
         addTaskC(task) {
             this.frwmc = task.rwmc;
