@@ -1,0 +1,104 @@
+.qdgf {
+    .v-note-wrapper {
+        z-index: unset;
+    }
+    .markdown-body pre {
+        padding: 0;
+    }
+    .hljs {
+        padding: 15px 12px;
+    }
+    pre {
+        position: relative;
+        .hljs-copy {
+            display: none;
+            position: absolute;
+            color: #fff;
+            top: 0;
+            right: 5px;
+            line-height: 20px;
+            cursor: pointer;
+            right: 4px;
+            top: 4px;
+            font-size: 12px;
+            color: #ffffff;
+            background-color: #9999AA;
+            padding: 2px 8px;
+            margin: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        &:hover {
+            cursor: pointer;
+            .hljs-copy {
+                display: inline;
+            }
+        }
+    }
+}
+
+.toc {
+    background: #fff;
+    border-radius: 4px;
+    padding: 0 16px;
+    .title {
+        font-weight: 500;
+        padding: 12px 0;
+        font-size: 16px;
+        line-height: 24px;
+        color: #1d2129;
+        border-bottom: 1px solid #e4e6eb;
+    }
+}
+.catalog-list {
+    max-height: 500px;
+    overflow: auto;
+    list-style: none;
+    .catalog-list-item {
+        font-size: 14px;
+        line-height: 22px;
+        padding: 10px 0;
+        .lev2 {
+            padding-left: 10px;
+        }
+        .lev3 {
+            padding-left: 20px;
+        }
+        a {
+            color: #909090;
+        }
+        &.active {
+            position: relative;
+            a {
+                color: #1e80ff;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                top: 14px;
+                left: 0;
+                width: 4px;
+                height: 16px;
+                background: #1e80ff;
+            }
+        }
+    }
+}
+::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 6px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 8px;
+}
+::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(97, 184, 179, 0.1);
+    background: #ededed;
+}
+::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    box-shadow: inset 0 0 5px rgba(87, 175, 187, 0.1);
+    border-radius: 10px;
+    background: #fff;
+}

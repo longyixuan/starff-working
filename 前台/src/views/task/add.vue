@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Card title="任务管理 - 查看任务">
+        <Card title="任务进度管理 - 查看任务">
             <div class="task-search" style="margin-bottom: 20px">
                 <Select placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
@@ -59,7 +59,7 @@
                                 <span style="text-align: center;flex: 1">{{fzIndex+1}}</span>
                             </div>
                             <div class="rwgl-table-xt" style="width: 140px;">
-                                <Tooltip placement="top" transfer :content="fz.xtmc">
+                                <Tooltip max-width="120" placement="top" transfer :content="fz.xtmc">
                                     <span class="task-text" style="width: 132px;">{{fz.xtmc}}</span>
                                 </Tooltip>
                             </div>
@@ -67,7 +67,7 @@
                                 <template v-for="item,itemIndex in fz.rwList">
                                     <div class="rwgl-table-row" :key="'tasklist-'+itemIndex">
                                         <div class="rwgl-table-col flex-block" style="width: 300px;cursor: pointer;" @click="showDetail(item)">
-                                            <Tooltip placement="top" transfer :content="item.rwmc">
+                                            <Tooltip max-width="240" placement="top" transfer :content="item.rwmc">
                                                 <span class="task-text" style="color: #2d8cf0;">{{ item.rwmc }}</span>
                                             </Tooltip>
                                         </div>
@@ -128,7 +128,7 @@
                     <div class="task-type-month-body">
                         <template v-for="xt in list">
                             <div v-for="item in xt.rwList" class="month-body-row">
-                                <span v-for="i in 12" class="month-body-span" :class="{'month-view': monthView(item,i)}"></span>
+                                <span v-for="i in 12" @click="getLog(item.id, item.rwmc)" class="month-body-span" :class="{'month-view': monthView(item,i)}"></span>
                             </div>
                         </template>
                     </div>
@@ -175,9 +175,9 @@
                         <Radio :label="item.id" :key="item.id" v-for="item in ztList">{{ item.name }}</Radio>
                     </RadioGroup>
                 </FormItem>
-                <FormItem label="每日进度">
-                    <DatePicker type="date" placeholder="日期" v-model="form.updateTime" style="width: 200px;margin-bottom: 10px;"></DatePicker>
-                    <Input type="textarea" placeholder="本日工作内容" v-model="form.bz" :rows="4"></Input>
+                <FormItem label="当天工作内容">
+                    <DatePicker @on-change="updateTimeChange" format="yyyy-MM-dd" type="date" placeholder="日期" v-model="form.updateTime" style="width: 200px;margin-bottom: 10px;"></DatePicker>
+                    <Input type="textarea" placeholder="当天工作内容" v-model="form.bz" :rows="4"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -216,6 +216,7 @@ import {
     updateTask,
     delTask,
     logTask,
+    daylogTask,
     hisTask,
     getTaskTagList
 } from '@/api/index';
@@ -272,14 +273,14 @@ export default {
                 }
             ],
             listC: [],
-            isEditer: false
+            isEditer: true
         };
     },
     components: {
     },
     methods: {
         monthView(item,month) {
-            if (moment(item.kssj).format('M') == month || moment(item.jssj).format('M') == month) {
+            if ((moment(item.kssj).format('M') == month && moment(item.kssj).format('YYYY') == moment().format('YYYY')) || (moment(item.jssj).format('M') == month && moment(item.jssj).format('YYYY') == moment().format('YYYY'))) {
                 return true;
             }
             return false;
@@ -427,10 +428,14 @@ export default {
             let days = 0; //开始时间的差,用于计算bar的宽度
             if (jssj) { // 写了结束时间
                 days = moment(jssj).diff(moment(kssj), "days");
-            }
-            if (temp.length>0) {  // 判断是否超时
-                isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
-                if (isTimeout) { // 超时
+                if (temp.length>0) {  // 判断是否超时
+                    isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
+                    if (isTimeout) { // 超时
+                        days = moment(temp[0].updateTime).diff(moment(kssj), "days");
+                    }
+                }
+            } else { //未写结束时间
+                if (temp.length>0) {  // 判断是否超时
                     days = moment(temp[0].updateTime).diff(moment(kssj), "days");
                 }
             }
@@ -454,10 +459,14 @@ export default {
             });
             if (jssj) { // 写了结束时间
                 days = moment(jssj).diff(moment(kssj), "days");
-            }
-            if (temp.length>0) {  // 判断是否超时
-                isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
-                if (isTimeout) { // 超时
+                if (temp.length>0) {  // 判断是否超时
+                    isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
+                    if (isTimeout) { // 超时
+                        days = moment(temp[0].updateTime).diff(moment(kssj), "days");
+                    }
+                }
+            } else { //未写结束时间
+                if (temp.length>0) {  // 判断是否超时
                     days = moment(temp[0].updateTime).diff(moment(kssj), "days");
                 }
             }
@@ -481,10 +490,13 @@ export default {
             this.form.jira = item.jira;
             this.form.kssj = item.kssj;
             this.form.jssj = item.jssj;
-            this.form.bz = item.bz;
+            this.form.bz = '';
+            this.daylogTask(item.id, moment(this.form.updateTime).format('YYYY-MM-DD'));
             this.modal = true;
             if (item.jssj) {
                 this.isEditer = true;
+            } else {
+                this.isEditer = false;
             }
         },
         addTaskC(task) {
@@ -512,6 +524,16 @@ export default {
             logTask({id: id}).then(res => {
                 this.modalC = true;
                 this.listC = res.data;
+            });
+        },
+        updateTimeChange(date) {
+            if (this.form.id != '') {
+                this.daylogTask(this.form.id, date);
+            }
+        },
+        daylogTask(id, updateTime) {
+            daylogTask({id: id, updateTime: updateTime }).then(res => {
+                this.form.bz = res.data;
             });
         },
         addModal() {

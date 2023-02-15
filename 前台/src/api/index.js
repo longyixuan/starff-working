@@ -11,6 +11,10 @@ export const uploadFile = "/upload/file"
 
 export const uploadImage = "/upload/image"
 
+export const imageAdd = (params) => {
+    return uploadFileRequest(`/upload/image`,params)
+}
+
 export const imageList = (params) => {
     return postRequest(`/upload/imagelist`,params)
 }
@@ -632,8 +636,46 @@ export const logTask = (params) => {
     return postRequest(`/task/log`,params)
 }
 
+export const daylogTask = (params) => {
+    return postRequest(`/task/daylog`,params)
+}
+
 export const hisTask = (params) => {
     return postRequest(`/task/history`,params)
 }
 
 //-----------------------任务管理--------------------------------//
+
+//-----------------------资料库--------------------------------//
+export const addZlkType = (params) => {
+    return postRequest(`/mdtype/add`,params)
+}
+
+export const editZlkType = (params) => {
+    return postRequest(`/mdtype/update`,params)
+}
+
+export const listZlkType = (params) => {
+    return postRequest(`/mdtype/list`,params)
+}
+
+export const delZlkType = (params) => {
+    return postRequest(`/mdtype/del`,params)
+}
+
+export const mdAdd = (params) => {
+    return postRequest(`/md/add`,params)
+}
+
+export const mdUpdata = (params) => {
+    return postRequest(`/md/update`,params)
+}
+
+export const mdList = (params) => {
+    return postRequest(`/md/list`,params)
+}
+
+export const mdDetail = (params) => {
+    return postRequest(`/md/detail`,params)
+}
+//-----------------------资料库--------------------------------//

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-11-20 13:41:58 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-02-05 17:17:01
+ * @Last Modified time: 2023-02-10 12:21:46
  */
 const fs = require('fs');
 const path = require("path");
@@ -18,17 +18,11 @@ const add = async (ctx, next) => {
     let filePath = path.join(__dirname, '../../images/') + imageId + "." + fileFormat[fileFormat.length - 1];
     const upStream = fs.createWriteStream(filePath);
     reader.pipe(upStream);
-    const result = await Image_col.create({
-        imageId: imageId,
-        imageName: fileFormat.splice(0,fileFormat.length - 1).join(""),
-        systemId: req.systemId,
-        ext: fileFormat[fileFormat.length - 1]
-    });
     ctx.status = 200;
     ctx.body = {
         code: 1,
         msg: '上传成功',
-        data: result
+        data: imageId
     }
 };
 

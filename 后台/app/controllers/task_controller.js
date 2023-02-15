@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-01-18 15:39:58
+ * @Last Modified time: 2023-02-02 18:47:30
  */
 
 const Task_col = require('./../models/task');
@@ -200,12 +200,12 @@ const update = async (ctx, next) => {
             updateTime: new Date(req.updateTime)
         });
         if (log) {
-            await TaskLog_col.updateOne({
-                id: req.id
-            },req);
-        } else {
-            await TaskLog_col.create(req);
+            await TaskLog_col.deleteMany({
+                id: req.id,
+                updateTime: new Date(req.updateTime)
+            });
         }
+        await TaskLog_col.create(req);
     }
     const result = await Task_col.findOne({
         id: req.id
@@ -244,10 +244,24 @@ const getLog = async (ctx, next) => {
     const req = ctx.request.body;
    let result = await TaskLog_col.find({
         id: req.id
-    }).sort({ updateTime: 1 });
+    }).sort({ updateTime: -1 });
     ctx.body = {
         code: 1,
         data: result,
+        msg: '查询成功'
+    };
+}
+
+const getDayLog = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+   let result = await TaskLog_col.findOne({
+        id: req.id,
+        updateTime: new Date(req.updateTime)
+    });
+    ctx.body = {
+        code: 1,
+        data: result ? result.bz : '',
         msg: '查询成功'
     };
 }
@@ -328,6 +342,7 @@ module.exports = {
     update,
     remove,
     getLog,
+    getDayLog,
     hisLog,
     ztList,
     ztAdd,

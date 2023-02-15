@@ -8,7 +8,7 @@
             <Header>
                 <Menu mode="horizontal" theme="dark" active-name="1">
                     <div class="layout-logo">设计部工作管理系统</div>
-                    <div class="layout-right">
+                    <div class="layout-right" v-show="$route.name != 'zlk-index'">
                         {{ username }}
                         <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
                         <span @click="modal = true">修改密码</span>
@@ -17,14 +17,14 @@
                 </Menu>
             </Header>
             <!-- <Layout v-if="msgList.length>0">
-        <Alert style="margin-bottom: 0;" type="warning">
-          <div style="display: flex;line-height: 24px;align-items: center;color: #fa795e" v-for="item in msgList" :key="item.id">
-            你有未读消息（发送时间：{{item.replayTime}}，发送人：{{item.fsr}}），<a :href="'/summary/admindetails?id='+item.documentId+'&type='+item.type" @click="readMsg(item.id)">查看</a>。
-          </div>
-        </Alert>
-      </Layout> -->
+                <Alert style="margin-bottom: 0;" type="warning">
+                <div style="display: flex;line-height: 24px;align-items: center;color: #fa795e" v-for="item in msgList" :key="item.id">
+                    你有未读消息（发送时间：{{item.replayTime}}，发送人：{{item.fsr}}），<a :href="'/summary/admindetails?id='+item.documentId+'&type='+item.type" @click="readMsg(item.id)">查看</a>。
+                </div>
+                </Alert>
+            </Layout> -->
             <Layout>
-                <div v-show="$route.name != 'survey-detail'">
+                <div v-show="$route.name != 'survey-detail' && $route.name != 'zlk-index'">
                     <Sider hide-trigger :style="{ background: '#fff' }" width="220" ref="side" collapsible :collapsed-width="1" v-model="isCollapsed">
                         <Menu active-name="0" theme="light" width="auto">
                             <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
@@ -75,17 +75,22 @@
                             </Submenu>
                             <MenuItem name="11" to="/vote/mysurvey" v-else><Icon type="md-happy" />投票查看</MenuItem>
                             <Submenu name="14">
-                                <template slot="title"> <Icon type="ios-paper-plane" />任务管理 </template>
+                                <template slot="title"> <Icon type="ios-paper-plane" />任务进度管理</template>
                                 <MenuItem name="14-1" to="/task/zt" v-if="type === 1">状态管理</MenuItem>
                                 <MenuItem name="14-2" to="/task/add">查看任务</MenuItem>
                                 <MenuItem name="14-3" to="/task/guidang">查看归档</MenuItem>
+                            </Submenu>
+                            <Submenu name="15">
+                                <template slot="title"><Icon type="md-book" />资料库</template>
+                                <MenuItem name="15-1" to="/zlk/type">资料类型</MenuItem>
+                                <MenuItem name="15-2" to="/zlk/list">资料管理</MenuItem>
                             </Submenu>
                             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
                         </Menu>
                     </Sider>
                 </div>
                 <Layout :style="{ padding: '24px', position: 'relative' }">
-                    <span class="zk-sq" @click="collapsedSider">{{!isCollapsed ? '收起' : '展开'}}</span>
+                    <span class="zk-sq" @click="collapsedSider" v-show="$route.name != 'survey-detail' && $route.name != 'zlk-index'">{{!isCollapsed ? '收起' : '展开'}}</span>
                     <Content :style="{ minHeight: '280px' }">
                         <router-view></router-view>
                     </Content>

@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Card title="任务管理 - 查看归档">
+        <Card title="任务进度管理 - 查看归档">
             <div class="task-search" style="margin-bottom: 20px">
                 <Select placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
@@ -64,7 +64,7 @@
                                         <div class="rwgl-table-col" style="width: 100px;text-align: center;" >{{ moment(item.kssj) }}</div>
                                         <div class="rwgl-table-col" style="width: 100px;text-align: center;">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
                                         <div class="rwgl-table-col" style="width: 90px">
-                                            <Button type="warning" @click="hisTask(item.id)" size="small">撤销归档</Button>
+                                            <Button type="warning" @click.stop="hisTask(item.id)" size="small">撤销归档</Button>
                                         </div>
                                     </div>
                                 </template>
@@ -190,6 +190,7 @@ export default {
         },
         searchFn() {
             listTask({
+                isHistory: true,
                 xtId: this.search.xtId,
                 rwmc: this.search.rwmc,
                 rwzt: this.search.rwzt,

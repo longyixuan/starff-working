@@ -463,6 +463,38 @@ export const appRouter = {
             name: 'task-guidang',
             component: () => import('@/views/task/guidang.vue')
         },
+        {
+            path: 'zlk/type',
+            meta: {
+                title: '资料库'
+            },
+            name: 'zlk-type',
+            component: () => import('@/views/zlk/menu.vue')
+        },
+        {
+            path: 'zlk/list',
+            meta: {
+                title: '资料库'
+            },
+            name: 'zlk-list',
+            component: () => import('@/views/zlk/list.vue')
+        },
+        {
+            path: 'zlk/add',
+            meta: {
+                title: '资料库'
+            },
+            name: 'zlk-add',
+            component: () => import('@/views/zlk/add.vue')
+        },
+        {
+            path: 'zlk/index',
+            meta: {
+                title: '资料库'
+            },
+            name: 'zlk-index',
+            component: () => import('@/views/zlk/index.vue')
+        },
         // {
         //     path: 'image/add',
         //     meta: {

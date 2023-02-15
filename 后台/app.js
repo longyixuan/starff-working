@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-11-11 13:44:15
+ * @Last Modified time: 2023-02-14 16:56:31
  */
 
 
@@ -14,6 +14,7 @@ const cors = require('koa2-cors');
 const path = require('path');
 
 const koaBody = require('koa-body');
+const static = require('koa-static');
 
 // https://github.com/Automattic/mongoose
 const mongoose = require('mongoose');
@@ -52,6 +53,9 @@ mongoose.connect(config.db, {
 app.use(accessLogger());
 app.on('error', err => {logger.error(err); });
 app.use(cors());
+app.use(static(
+    path.join(__dirname, '/images')
+));
 app.use(koaBody({
     multipart: true,
     patchKoa: true,
@@ -102,6 +106,7 @@ const vote_router = require('./routes/api/vote_router');
 const design_router = require('./routes/api/design_router');
 const fzxt_router = require('./routes/api/fzxt_router');
 const task_router = require('./routes/api/task_router');
+const md_router = require('./routes/api/md_router');
 // const replay_router = require('./routes/api/replay_router');
 // const return_router = require('./routes/api/return_router');
 
@@ -121,6 +126,7 @@ app.use(vote_router.routes()).use(vote_router.allowedMethods());
 app.use(design_router.routes()).use(design_router.allowedMethods());
 app.use(fzxt_router.routes()).use(fzxt_router.allowedMethods());
 app.use(task_router.routes()).use(task_router.allowedMethods());
+app.use(md_router.routes()).use(md_router.allowedMethods());
 // app.use(replay_router.routes()).use(replay_router.allowedMethods());
 // app.use(return_router.routes()).use(return_router.allowedMethods());
 

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:39:35 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-11-14 16:20:39
+ * @Last Modified time: 2023-02-01 10:20:57
  */
 
 const Router = require('koa-router');
@@ -15,6 +15,7 @@ router.post('/task/remove', task_controller.remove);
 router.post('/task/list', task_controller.getList);
 router.post('/task/listc', task_controller.getListC);
 router.post('/task/log', task_controller.getLog);
+router.post('/task/daylog', task_controller.getDayLog);
 router.post('/task/history', task_controller.hisLog);
 
 router.post('/task/zt/list', task_controller.ztList);

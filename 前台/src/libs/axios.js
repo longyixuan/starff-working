@@ -5,8 +5,8 @@ import { router } from '../router/index';
 import { Message } from 'view-design';
 // 统一请求路径前缀
 // let base = 'http://172.16.2.131:3333';
-// let base = 'http://172.17.5.60:3333';
-let base = 'http://localhost:3333';
+let base = 'http://172.17.5.60:3333';
+// let base = 'http://localhost:3333';
 // 超时设定
 axios.defaults.timeout = 50000;
 
@@ -116,14 +116,22 @@ export const deleteRequest = (url, params) => {
     });
 };
 
+// export const uploadFileRequest = (url, params) => {
+//     let accessToken = getStore('accessToken');
+//     return axios({
+//         method: 'post',
+//         url: `${base}${url}`,
+//         params: params,
+//         headers: {
+//             'accessToken': accessToken
+//         }
+//     });
+// };
+
 export const uploadFileRequest = (url, params) => {
-    let accessToken = getStore('accessToken');
-    return axios({
-        method: 'post',
-        url: `${base}${url}`,
-        params: params,
+    return axios.post(`${base}${url}`, params,{
         headers: {
-            'accessToken': accessToken
+            'Content-Type': 'multipart/form-data'
         }
     });
 };

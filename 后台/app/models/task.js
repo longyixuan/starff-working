@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-11-11 09:38:17
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-01-17 13:17:37
+ * @Last Modified time: 2023-02-01 10:09:59
  */
 
 const mongoose = require('mongoose');
@@ -47,9 +47,6 @@ const taskSchema = new Schema(
             default: 0
         },
         jira: {
-            type: String
-        },
-        bz: { //备注
             type: String
         },
         isHistory: { //是否归档
