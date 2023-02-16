@@ -5,7 +5,7 @@
 <template>
     <div>
         <Card title="任务进度管理 - 查看任务">
-            <div class="task-search" style="margin-bottom: 20px">
+            <div class="task-search">
                 <Select placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
                 </Select>
@@ -17,13 +17,28 @@
                 <Select placeholder="状态" multiple clearable v-model="search.rwzt" style="width: 100px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in ztList">{{ item.name }}</Option>
                 </Select>
-                <DatePicker type="date" placeholder="开始时间" v-model="search.kssj" style="width: 120px;margin-right:10px;"></DatePicker>
-                <DatePicker type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;"></DatePicker>
                 <Input v-model="search.rwmc" style="width: 200px;margin-right:10px;" clearable placeholder="任务名称" autocomplete="off"/>
-                <Button type="primary" style="margin-right:10px;" @click="searchFn">查询</Button>
-                <Button type="primary" @click="addModal">新增任务</Button>
+                <Date-Picker type="date" placeholder="开始时间" v-model="search.kssj" style="width: 120px;margin-right:10px;margin-bottom: 10px;"></Date-Picker>
+                <Date-Picker type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;margin-bottom: 10px;"></Date-Picker>
+                <Button type="primary" @click="quickTime('yestday')" ghost>昨天</Button>
+                <Button type="primary" @click="quickTime('day')" ghost style="margin-left: 10px;">今天</Button>
+                <Button type="primary" @click="quickTime('week')" ghost style="margin-left: 10px;">本周</Button>
+                <Button
+                type="primary"
+                @click="quickTime('month')"
+                ghost
+                style="margin-left: 10px;"
+                >本月</Button>
+                <Button
+                type="primary"
+                @click="quickTime('preMonth')"
+                ghost
+                style="margin-left: 10px;"
+                >上月</Button>
+                <Button type="primary" style="margin-left:10px;" @click="searchFn">查询</Button>
+                <Button type="primary" style="margin-left:10px;" @click="addModal">新增任务</Button>
             </div>
-            <div style="margin-bottom: 20px;display:flex;">
+            <div style="margin-bottom: 10px;display:flex;align-items: center;">
                 <Checkbox-Group v-model="tj" style="flex:1;">
                     显示列：
                     <Checkbox label="状态">状态</Checkbox>
@@ -220,6 +235,14 @@ import {
     hisTask,
     getTaskTagList
 } from '@/api/index';
+import {
+        getWeekStartDate,
+        getWeekEndDate,
+        getMonthStartDate,
+        getMonthEndDate,
+        getLastMonthStartDate,
+        getLastMonthEndDate
+    } from "@/libs/timeHelp";
 import moment from 'moment';
 export default {
     name: 'task',
@@ -482,18 +505,19 @@ export default {
             return moment().format('YYYY-MM-DD') === date1;
         },
         showDetail(item) {
-            this.form.id = item.id;
-            this.form.rwmc = item.rwmc;
-            this.form.xtId = item.xtId;
-            this.form.rwzt = item.rwzt;
-            this.form.jbrId = item.jbrId;
-            this.form.jira = item.jira;
-            this.form.kssj = item.kssj;
-            this.form.jssj = item.jssj;
+            let temp = Object.assign({},item);
+            this.form.id = temp.id;
+            this.form.rwmc = temp.rwmc;
+            this.form.xtId = temp.xtId;
+            this.form.rwzt = temp.rwzt;
+            this.form.jbrId = temp.jbrId;
+            this.form.jira = temp.jira;
+            this.form.kssj = temp.kssj;
+            this.form.jssj = temp.jssj;
             this.form.bz = '';
-            this.daylogTask(item.id, moment(this.form.updateTime).format('YYYY-MM-DD'));
+            this.daylogTask(temp.id, moment(this.form.updateTime).format('YYYY-MM-DD'));
             this.modal = true;
-            if (item.jssj) {
+            if (temp.jssj) {
                 this.isEditer = true;
             } else {
                 this.isEditer = false;
@@ -560,7 +584,28 @@ export default {
                 this.listTask();
                 this.modal = false;
             });
-        }
+        },
+        quickTime(type) {
+            if (type == "yestday") {
+                this.search.kssj = moment().add(-1, 'days').format('YYYY-MM-DD');
+                this.search.jssj = moment().add(-1, 'days').format('YYYY-MM-DD');
+            } else if(type == "day") {
+                this.search.kssj = moment().format('YYYY-MM-DD');
+                this.search.jssj = moment().format('YYYY-MM-DD');
+            } else if (type == "week") {
+                //周
+                this.search.kssj = getWeekStartDate();
+                this.search.jssj = getWeekEndDate();
+            } else if (type == "month") {
+                //月
+                this.search.kssj = getMonthStartDate();
+                this.search.jssj = getMonthEndDate();
+            } else {
+                //上月
+                this.search.kssj = getLastMonthStartDate();
+                this.search.jssj = getLastMonthEndDate();
+            }
+        },
     },
     mounted() {
         this.getSystemList();

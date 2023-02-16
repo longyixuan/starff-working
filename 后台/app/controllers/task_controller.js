@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-02 18:47:30
+ * @Last Modified time: 2023-02-16 20:03:25
  */
 
 const Task_col = require('./../models/task');
@@ -46,6 +46,7 @@ const getList = async (ctx, next) => {
     } else {
         seachConfig.isHistory = false;
     }
+    let seachConfig2 = {}
     if (req.xtId) {
         seachConfig.xtId = {
             '$in': req.xtId
@@ -68,15 +69,12 @@ const getList = async (ctx, next) => {
         };
     }
     if (req.kssj) {
-        seachConfig.kssj = {
-            $gte: new Date(req.kssj)
-        };
+        seachConfig2.$gte = new Date(req.kssj)
     }
     if (req.jssj) {
-        seachConfig.jssj = {
-            $lte: new Date(req.jssj)
-        };
+        seachConfig2.$lte = new Date(req.jssj)
     }
+    let result2 = await TaskLog_col.find({updateTime: seachConfig2}).distinct("id").exec();
     let result = await Task_col.aggregate([
         {
             $lookup: {
@@ -95,7 +93,14 @@ const getList = async (ctx, next) => {
             }
         },
         {
-            $match: seachConfig
+            $match: {
+                ...{
+                    id: {
+                        '$in': result2
+                    }
+                },
+                ...seachConfig
+            }
         },
         {
             $sort: {
@@ -149,7 +154,8 @@ const getList = async (ctx, next) => {
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: result,
+        result2: result2
     };
 }
 
