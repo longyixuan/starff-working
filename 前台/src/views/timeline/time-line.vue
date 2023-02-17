@@ -104,8 +104,14 @@ export default {
                 },
                 {
                     title: '最后更新人',
-                    key: 'userName',
                     width: 120,
+                    render(h, params) {
+                        return h(
+                            'span',
+                            {},
+                            params.row.updateUser?params.row.updateUser:params.row.userName
+                        );
+                    },
                 },
                 {
                     title: '操作',

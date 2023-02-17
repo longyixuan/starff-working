@@ -610,7 +610,7 @@ export default {
     mounted() {
         this.getSystemList();
         this.getUserList();
-        this.listTask();
+        this.searchFn();
         this.$nextTick(() => {
             this.$refs['rwgl-task'].scrollTo({
                 left: getYearWeek(moment().format('YYYY-MM-DD'))*200

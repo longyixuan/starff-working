@@ -27,7 +27,7 @@ export default {
     data() {
         return {
             monthList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            sj: ['lugp', 'cuiyh', 'sunl', 'changxq', 'gaos', 'yanq'],
+            sj: ['lugp', 'cuiyh', 'sunl', 'changxq', 'gaos', 'yanq', 'hecx'],
             tagList: [],
             data: [],
             userList: [],

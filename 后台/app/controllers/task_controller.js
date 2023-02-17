@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-16 20:03:25
+ * @Last Modified time: 2023-02-17 08:41:45
  */
 
 const Task_col = require('./../models/task');
@@ -47,6 +47,7 @@ const getList = async (ctx, next) => {
         seachConfig.isHistory = false;
     }
     let seachConfig2 = {}
+    let seachConfigFlag2 = false;
     if (req.xtId) {
         seachConfig.xtId = {
             '$in': req.xtId
@@ -69,12 +70,14 @@ const getList = async (ctx, next) => {
         };
     }
     if (req.kssj) {
-        seachConfig2.$gte = new Date(req.kssj)
+        seachConfig2.$gte = new Date(req.kssj);
+        seachConfigFlag2 = true;
     }
     if (req.jssj) {
-        seachConfig2.$lte = new Date(req.jssj)
+        seachConfig2.$lte = new Date(req.jssj);
+        seachConfigFlag2 = true;
     }
-    let result2 = await TaskLog_col.find({updateTime: seachConfig2}).distinct("id").exec();
+    let result2 = await TaskLog_col.find(seachConfigFlag2?{updateTime: seachConfig2}:{}).distinct("id").exec();
     let result = await Task_col.aggregate([
         {
             $lookup: {
