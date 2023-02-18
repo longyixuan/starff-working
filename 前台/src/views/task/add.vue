@@ -386,6 +386,10 @@ export default {
                 this.$Message.error('请选择开始时间');
                 return false;
             }
+            if ( moment(this.form.jssj).diff(this.form.kssj, 'day') < 0) {
+                this.$Message.error('结束时间不能早于开始时间');
+                return false;
+            }
             if (!this.form.rwzt) {
                 this.$Message.error('请选择任务状态');
                 return false;
