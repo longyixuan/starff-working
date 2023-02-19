@@ -679,3 +679,7 @@ export const mdDetail = (params) => {
     return postRequest(`/md/detail`,params)
 }
 //-----------------------资料库--------------------------------//
+
+export const getRole = (params) => {
+    return getRequest(`/user/getRole`,params)
+}

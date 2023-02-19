@@ -9,6 +9,7 @@ const Task_col = require('./../models/task');
 const TaskLog_col = require('./../models/taskLog');
 const TaskLog_zt = require('./../models/taskZt');
 const uuidv1 = require('uuid/v1');
+const moment = require('moment');
 const add = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
@@ -96,6 +97,14 @@ const getList = async (ctx, next) => {
             }
         },
         {
+            $lookup: {
+                from: "user",
+                localField: "jbrId",
+                foreignField: "userName",
+                as: "user"
+            }
+        },
+        {
             $match: {
                 ...{
                     id: {
@@ -122,6 +131,7 @@ const getList = async (ctx, next) => {
                         rwmc: '$rwmc',
                         xtId: '$xtId',
                         jbrId: '$jbrId',
+                        jbrName: {$arrayElemAt:["$user.nickName",0]},
                         kssj: '$kssj',
                         jssj: '$jssj',
                         rwzt: '$rwzt',
@@ -147,18 +157,82 @@ const getList = async (ctx, next) => {
                 'xtmc': 1
             }
         }
-        // {
-        //     $skip: (Number(2) - 1) * Number(1)
-        // },
-        // {
-        //     $limit: 1
-        // }
+    ]);
+    let list = await Task_col.aggregate([
+        {
+            $lookup: {
+                from: "system",
+                localField: "xtId",
+                foreignField: "id",
+                as: "system"
+            }
+        },
+        {
+            $lookup: {
+                from: "taskLog",
+                localField: "id",
+                foreignField: "id",
+                as: "taskLog"
+            }
+        },
+        {
+            $lookup: {
+                from: "user",
+                localField: "jbrId",
+                foreignField: "userName",
+                as: "user"
+            }
+        },
+        {
+            $match: {
+                ...{
+                    id: {
+                        '$in': result2
+                    }
+                },
+                ...seachConfig
+            }
+        },
+        {
+            $sort: {
+                'kssj': -1
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                id: '$id',
+                rwmc: '$rwmc',
+                xtId: '$xtId',
+                xtmc: {$arrayElemAt:["$system.title",0]},
+                jbrId: '$jbrId',
+                jbrName: {$arrayElemAt:["$user.nickName",0]},
+                kssj: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$kssj"
+                    }
+                },
+                jssj: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$jssj"
+                    }
+                },
+                rwzt: '$rwzt',
+                rwlx: '$rwlx',
+                jira: '$jira',
+                bz: '$bz',
+                isHistory: '$isHistory',
+                taskLog: '$taskLog'
+            }
+        }
     ]);
     ctx.body = {
         code: 1,
         msg: '查询成功',
         data: result,
-        result2: result2
+        list: list
     };
 }
 

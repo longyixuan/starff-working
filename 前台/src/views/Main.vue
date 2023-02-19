@@ -166,6 +166,7 @@ export default {
         this.username = JSON.parse(localStorage.getItem('userInfo')).userName;
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
         // this.$store.dispatch('getMsgList');
+        this.$store.dispatch('getRole');
     }
 };
 </script>

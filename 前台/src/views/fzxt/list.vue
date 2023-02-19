@@ -171,8 +171,8 @@ export default {
     created() {
         getTagListFzxt().then((res) => {
             this.tags = res.data;
+            this.getUserList();
         });
-        this.getUserList();
     },
     methods: {
         search() {
@@ -269,16 +269,18 @@ export default {
                         return o.type ===0;
                     });
                     this.sjList = _.filter(res.data, function (o) {
-                        return _.includes(_this.$store.state.app.userListSj, o.userName);
+                        return _.includes(_this.$store.state.user.userListSj, o.userName);
                     });
                     this.qdList = _.filter(res.data, function (o) {
-                        return _.includes(_this.$store.state.app.userListQd, o.userName);
+                        return _.includes(_this.$store.state.user.userListQd, o.userName);
                     });
                     this.getlistFzxt();
                 }
             });
         },
     },
-    mounted() {},
+    mounted() {
+        
+    },
 };
 </script>

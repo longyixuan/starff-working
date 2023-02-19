@@ -87,8 +87,8 @@
                 jiraId: '',
                 userList: [],
                 monthList: ['01', '02', '03', '04', '05','06', '07', '08', '09', '10', '11', '12'],
-                userListSj: ['yanq', 'gaos', 'changxq', 'sunl', 'cuiyh'], //设计
-                userListSjName: ['崔永辉', '孙玲', '畅雪琦', '高爽', '颜情'], //设计
+                userListSj: ['hecx', 'yanq', 'gaos', 'changxq', 'sunl', 'cuiyh'], //设计
+                userListSjName: ['崔永辉', '孙玲', '畅雪琦', '高爽', '颜情', '何晨曦'], //设计
                 userListQd: ['wangtl', 'wangzhen', 'guoxq', 'weij', 'mayx', 'jiaxd', 'hanwm', 'yinxl', 'wangly', 'liugw'], // 前端
                 userListQdName: ['卫杰', '马艳雄', '尹晓龙', '王利英', '贾晓东', '韩文明', '郭晓琼', '王振', '王天乐', '刘国威'],
                 userName: '',

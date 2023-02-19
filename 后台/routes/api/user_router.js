@@ -22,6 +22,7 @@ router.post('/user/admin/enable/:id', user_controller.userEnable);
 router.post('/user/admin/resetPassword', user_controller.resetPassword);
 router.delete('/user/delByIds/:id', user_controller.delUser);
 router.post('/user/userSystem', user_controller.userSystem);
+router.get('/user/getRole', user_controller.getRole);
 router.post('/user/editPassword', user_controller.editPassword);
 // router.post('/user/modifyPass', user_controller.resetPassword);
 router.get('/user/getByDepartmentId/:id', user_controller.getByDepartment);

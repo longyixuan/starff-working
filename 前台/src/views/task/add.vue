@@ -20,135 +20,156 @@
                 <Input v-model="search.rwmc" style="width: 200px;margin-right:10px;" clearable placeholder="任务名称" autocomplete="off"/>
                 <Date-Picker type="date" placeholder="开始时间" v-model="search.kssj" style="width: 120px;margin-right:10px;margin-bottom: 10px;"></Date-Picker>
                 <Date-Picker type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;margin-bottom: 10px;"></Date-Picker>
-                <Button type="primary" @click="quickTime('yestday')" ghost>昨天</Button>
-                <Button type="primary" @click="quickTime('day')" ghost style="margin-left: 10px;">今天</Button>
-                <Button type="primary" @click="quickTime('week')" ghost style="margin-left: 10px;">本周</Button>
+                <Button type="primary" @click="quickTime('yestday')" ghost style="margin-right: 10px;">昨天</Button>
+                <Button type="primary" @click="quickTime('day')" ghost style="margin-right: 10px;">今天</Button>
+                <Button type="primary" @click="quickTime('week')" ghost style="margin-right: 10px;">本周</Button>
                 <Button
                 type="primary"
                 @click="quickTime('month')"
                 ghost
-                style="margin-left: 10px;"
+                style="margin-right: 10px;"
                 >本月</Button>
                 <Button
                 type="primary"
                 @click="quickTime('preMonth')"
                 ghost
-                style="margin-left: 10px;"
+                style="margin-right: 10px;"
                 >上月</Button>
-                <Button type="primary" style="margin-left:10px;" @click="searchFn">查询</Button>
-                <Button type="primary" style="margin-left:10px;" @click="addModal">新增任务</Button>
+                <Button type="primary" style="margin-right:10px;" @click="searchFn">查询</Button>
+                <Button type="primary" @click="addModal">新增任务</Button>
             </div>
-            <div style="margin-bottom: 10px;display:flex;align-items: center;">
-                <Checkbox-Group v-model="tj" style="flex:1;">
-                    显示列：
-                    <Checkbox label="状态">状态</Checkbox>
-                    <Checkbox label="经办人">经办人</Checkbox>
-                    <Checkbox label="开始时间">开始时间</Checkbox>
-                    <Checkbox label="结束时间">结束时间</Checkbox>
-                </Checkbox-Group>
-                <Radio-Group v-model="st" type="button" size="small">
-                    视图：
-                    <Radio label="day">日</Radio>
-                    <Radio label="month">月</Radio>
-                </Radio-Group>
-            </div>
-            <div class="chsi-gantt">
-                <div class="rwgl-table">
-                    <Affix>
-                    <div class="rwgl-table-header">
-                        <div class="rwgl-table-row">
-                            <div class="rwgl-table-col" style="width: 50px">序号</div>
-                            <div class="rwgl-table-col" style="width: 140px">所属系统</div>
-                            <div class="rwgl-table-col" style="width: 300px">任务名称</div>
-                            <div class="rwgl-table-col" style="width: 50px">Jira</div>
-                            <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">状态</div>
-                            <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">经办人</div>
-                            <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('开始时间')">开始时间</div>
-                            <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('结束时间')">结束时间</div>
-                        </div>
+            <Tabs type="card">
+                <Tab-Pane label="列表">
+                    <Table border stripe :columns="columnsList" :data="dataList">
+                        <template slot-scope="{ row }" slot="jira">
+                            <a :href="row.jira" target="_blank" v-if="row.jira">查看</a>
+                        </template>
+                        <template slot-scope="{ row }" slot="action">
+                            <Button type="primary" size="small" ghost style="margin-right: 5px;" @click="getLog(row.id, row.rwmc)">日志</Button>
+                            <Button type="primary" size="small" style="margin-right: 5px;" @click="showDetail(row)">编辑</Button>
+                            <Button type="warning" size="small" style="margin-right: 5px;" @click="hisTask(row.id)" v-if="type === 1">归档</Button>
+                            <Button type="error" size="small" style="margin-right: 5px;" @click="del(row.id)" v-if="type === 1">删除</Button>
+                        </template>
+                    </Table>
+                </Tab-Pane>
+                <Tab-Pane label="甘特图">
+                    <div style="margin-bottom: 10px;display:flex;align-items: center;">
+                        <Checkbox-Group v-model="tj" style="flex:1;">
+                            显示列：
+                            <Checkbox label="状态">状态</Checkbox>
+                            <Checkbox label="经办人">经办人</Checkbox>
+                            <Checkbox label="开始时间">开始时间</Checkbox>
+                            <Checkbox label="结束时间">结束时间</Checkbox>
+                        </Checkbox-Group>
+                        <Radio-Group v-model="st" type="button" size="small">
+                            视图：
+                            <Radio label="day">日</Radio>
+                            <Radio label="month">月</Radio>
+                        </Radio-Group>
                     </div>
-                    </Affix>
-                    <div class="rwgl-table-body">
-                        <div class="rwgl-table-flex" v-for="fz,fzIndex in list">
-                            <div class="rwgl-table-xt" style="width: 50px;">
-                                <span style="text-align: center;flex: 1">{{fzIndex+1}}</span>
+                    <div class="chsi-gantt" v-show="list.length>0">
+                        <div class="rwgl-table">
+                            <Affix>
+                            <div class="rwgl-table-header">
+                                <div class="rwgl-table-row">
+                                    <div class="rwgl-table-col" style="width: 50px">序号</div>
+                                    <div class="rwgl-table-col" style="width: 140px">所属系统</div>
+                                    <div class="rwgl-table-col" style="width: 300px">任务名称</div>
+                                    <div class="rwgl-table-col" style="width: 50px">Jira</div>
+                                    <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">状态</div>
+                                    <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">经办人</div>
+                                    <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('开始时间')">开始时间</div>
+                                    <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('结束时间')">结束时间</div>
+                                </div>
                             </div>
-                            <div class="rwgl-table-xt" style="width: 140px;">
-                                <Tooltip max-width="120" placement="top" transfer :content="fz.xtmc">
-                                    <span class="task-text" style="width: 132px;">{{fz.xtmc}}</span>
-                                </Tooltip>
-                            </div>
-                            <div class="rwgl-table-rw rw-flex1">
-                                <template v-for="item,itemIndex in fz.rwList">
-                                    <div class="rwgl-table-row" :key="'tasklist-'+itemIndex">
-                                        <div class="rwgl-table-col flex-block" style="width: 300px;cursor: pointer;" @click="showDetail(item)">
-                                            <Tooltip max-width="240" placement="top" transfer :content="item.rwmc">
-                                                <span class="task-text" style="color: #2d8cf0;">{{ item.rwmc }}</span>
-                                            </Tooltip>
-                                        </div>
-                                        <div class="rwgl-table-col" style="width: 50px;text-align: center;">
-                                            <a :href="item.jira" v-if="item.jira" target="_blank">查看</a>
-                                            <span v-else>-</span>
-                                        </div>
-                                        <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">
-                                            <span>{{ getrRwzt(item.rwzt) }}</span>
-                                        </div>
-                                        <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">{{ jbrFn(item.jbrId) }}</div>
-                                        <div class="rwgl-table-col" style="width: 100px;text-align: center;" v-if="tj.includes('开始时间')">{{ moment(item.kssj) }}</div>
-                                        <div class="rwgl-table-col" style="width: 100px;text-align: center;" v-if="tj.includes('结束时间')">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
+                            </Affix>
+                            <div class="rwgl-table-body">
+                                <div class="rwgl-table-flex" v-for="fz,fzIndex in list">
+                                    <div class="rwgl-table-xt" style="width: 50px;">
+                                        <span style="text-align: center;flex: 1">{{fzIndex+1}}</span>
                                     </div>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="rwgl-task" ref="rwgl-task" v-if="st=='day'">
-                    <div class="rwgl-task-table" :style="{ width: 210 * weekDate.length + 'px' }">
-                        <Affix>
-                        <div class="rwgl-task-header rwgl-table-header">
-                            <div class="rwgl-table-row">
-                                <div v-for="item,lineIndex in weekDate" :key="'line-'+lineIndex" class="rwgl-table-col" style="width: 210px">
-                                    <div class="rwgl-table-row-month">{{ item.range.month }}</div>
-                                    <div class="rwgl-table-row-day">
-                                        <span class="rwgl-table-row-day-item"
-                                            :class="{ 'zm': itemIndex > 4, cur: isCurDay(item, itemIndex) }"
-                                            :key="'lineday-'+itemIndex"
-                                            v-for="(itemValue, itemIndex) in getWeekArr(item.range.start)">
-                                            {{ itemValue }}
-                                        </span>
+                                    <div class="rwgl-table-xt" style="width: 140px;">
+                                        <Tooltip max-width="120" placement="top" transfer :content="fz.xtmc">
+                                            <span class="task-text" style="width: 132px;">{{fz.xtmc}}</span>
+                                        </Tooltip>
+                                    </div>
+                                    <div class="rwgl-table-rw rw-flex1">
+                                        <template v-for="item,itemIndex in fz.rwList">
+                                            <div class="rwgl-table-row">
+                                                <div class="rwgl-table-col flex-block" style="width: 300px;cursor: pointer;" @click="showDetail(item)">
+                                                    <Tooltip max-width="240" placement="top" transfer :content="item.rwmc">
+                                                        <span class="task-text" style="color: #2d8cf0;">{{ item.rwmc }}</span>
+                                                    </Tooltip>
+                                                </div>
+                                                <div class="rwgl-table-col" style="width: 50px;text-align: center;">
+                                                    <a :href="item.jira" v-if="item.jira" target="_blank">查看</a>
+                                                    <span v-else>-</span>
+                                                </div>
+                                                <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('状态')">
+                                                    <span>{{ getrRwzt(item.rwzt) }}</span>
+                                                </div>
+                                                <div class="rwgl-table-col" style="width: 100px" v-if="tj.includes('经办人')">{{ jbrFn(item.jbrId) }}</div>
+                                                <div class="rwgl-table-col" style="width: 100px;text-align: center;" v-if="tj.includes('开始时间')">{{ moment(item.kssj) }}</div>
+                                                <div class="rwgl-table-col" style="width: 100px;text-align: center;" v-if="tj.includes('结束时间')">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        </Affix>
-                        <div class="rwgl-task-body">
-                            <template v-for="xt in list">
-                                <template v-for="item in xt.rwList">
-                                    <div class="rwgl-task-body-bar">
-                                        <div class="rwgl-task-body-col" :key="'linebar2-'+item.range.start" v-for="item in weekDate"></div>
-                                        <div class="rwgl-task-body-barbg" :style="getStyle(item)"
-                                            @click="getLog(item.id, item.rwmc)">
-                                            <div v-for="(progress, progressIndex) in getNum(item).num" class="task-progress" :class="{'do': !getNum(item).log.includes(progressIndex), 'jh': (getNum(item).numJh == progressIndex && getNum(item).isTimeout)}"></div>
+                        <div class="rwgl-task" ref="rwgl-task" v-if="st=='day'">
+                            <div class="rwgl-task-table" :style="{ width: 210 * weekDate.length + 'px' }">
+                                <Affix>
+                                <div class="rwgl-task-header rwgl-table-header">
+                                    <div class="rwgl-table-row">
+                                        <div v-for="item,lineIndex in weekDate" :key="'line-'+lineIndex" class="rwgl-table-col" style="width: 210px">
+                                            <div class="rwgl-table-row-month">{{ item.range.month }}</div>
+                                            <div class="rwgl-table-row-day">
+                                                <span class="rwgl-table-row-day-item"
+                                                    :class="{ 'zm': itemIndex > 4, cur: isCurDay(item, itemIndex) }"
+                                                    :key="'lineday-'+itemIndex"
+                                                    v-for="(itemValue, itemIndex) in getWeekArr(item.range.start)">
+                                                    {{ itemValue }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
+                                </Affix>
+                                <div class="rwgl-task-body">
+                                    <template v-for="xt in list">
+                                        <template v-for="item in xt.rwList">
+                                            <div class="rwgl-task-body-bar">
+                                                <div class="rwgl-task-body-col" :key="'linebar2-'+item.range.start" v-for="item in weekDate"></div>
+                                                <div class="rwgl-task-body-barbg" :style="getStyle(item)"
+                                                    @click="getLog(item.id, item.rwmc)">
+                                                    <div v-for="(progress, progressIndex) in getNum(item).num" class="task-progress" :class="{'do': !getNum(item).log.includes(progressIndex), 'jh': (getNum(item).numJh == progressIndex && getNum(item).isTimeout)}"></div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-type-month" v-if="st=='month'">
+                            <div class="task-type-month-header">
+                                <span v-for="i in 12" class="month-header-span">{{i}}月</span>
+                            </div>
+                            <div class="task-type-month-body">
+                                <template v-for="xt in list">
+                                    <div v-for="item in xt.rwList" class="month-body-row">
+                                        <span v-for="i in 12" @click="getLog(item.id, item.rwmc)" class="month-body-span" :class="{'month-view': monthView(item,i)}"></span>
+                                    </div>
                                 </template>
-                            </template>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="task-type-month" v-if="st=='month'">
-                    <div class="task-type-month-header">
-                        <span v-for="i in 12" class="month-header-span">{{i}}月</span>
+                    <div class="no-result" v-show="list.length==0">
+                        <div class="no-result-img"></div>
+                        <div class="no-result-text">无查询结果</div>
                     </div>
-                    <div class="task-type-month-body">
-                        <template v-for="xt in list">
-                            <div v-for="item in xt.rwList" class="month-body-row">
-                                <span v-for="i in 12" @click="getLog(item.id, item.rwmc)" class="month-body-span" :class="{'month-view': monthView(item,i)}"></span>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
+                </Tab-Pane>
+            </Tabs>
         </Card>
         <Modal v-model="modal" width="1000" title="创建任务" :mask-closable="false">
             <Form :label-width="100">
@@ -198,8 +219,6 @@
             <div slot="footer">
                 <Button type="text" @click="cancel">取消</Button>
                 <Button type="primary" @click="ok">确定</Button>
-                <Button type="error" @click="del" v-if="form.id">删除</Button>
-                <Button type="warning" @click="hisTask" v-if="form.id">归档</Button>
             </div>
         </Modal>
         <Modal v-model="modalC" :title="title" width="1000">
@@ -256,6 +275,54 @@ export default {
             userList: [],
             list: [],
             title: '详情',
+            dataList: [],
+            type: 0,
+            columnsList: [
+                {
+                    title: '任务名称',
+                    key: 'rwmc'
+                },
+                {
+                    title: '所属系统',
+                    key: 'xtmc',
+                    width: 200
+                },
+                {
+                    title: 'jira',
+                    slot: 'jira',
+                    width: 70,
+                    align: 'center'
+                },
+                {
+                    title: '状态',
+                    key: 'rwzt',
+                    width: 80,
+                    align: 'center'
+                },
+                {
+                    title: '经办人',
+                    key: 'jbrName',
+                    width: 80
+                },
+                {
+                    title: '开始时间',
+                    key: 'kssj',
+                    width: 120,
+                    align: 'center'
+                },
+                {
+                    title: '结束时间',
+                    key: 'jssj',
+                    width: 120,
+                    align: 'center'
+                },
+                {
+                    title: '操作',
+                    slot: 'action',
+                    width: 120,
+                    align: 'center'
+                },
+            ],
             form: {
                 id: '',
                 rwmc: '',
@@ -340,12 +407,12 @@ export default {
         cancel() {
             this.modal = false;
         },
-        del() {
+        del(id) {
             this.$Modal.confirm({
                 title: '提示',
                 content: '确定要删除吗？',
                 onOk: () => {
-                    delTask({id: this.form.id }).then(res => {
+                    delTask({id: id }).then(res => {
                         if (res.code === 1) {
                             this.$Message.success(res.msg);
                             this.listTask();
@@ -545,6 +612,7 @@ export default {
                 jssj: this.search.jssj ? moment(this.search.jssj).format('YYYY-MM-DD') : ''
             }).then((res) => {
                 this.list = res.data;
+                this.dataList = res.list;
             });
         },
         getLog(id,title) {
@@ -579,9 +647,9 @@ export default {
         moment(date) {
             return moment(date).format('YYYY-MM-DD');
         },
-        hisTask() {
+        hisTask(id) {
             hisTask({
-                id: this.form.id,
+                id: id,
                 isHistory: true
             }).then(res => {
                 this.$Message.success(res.msg);
@@ -622,6 +690,10 @@ export default {
         });
     },
     created() {
+        this.type = JSON.parse(localStorage.getItem('userInfo')).type;
+        if (this.type === 1) {
+            this.columnsList[this.columnsList.length-1].width = 240;
+        }
         this.getTaskTagList();
         this.weekDate = getAllWeekRange(new Date().getFullYear());
         if (JSON.parse(localStorage.getItem('userInfo')).userName!=='admin' && JSON.parse(localStorage.getItem('userInfo')).userName!=='lvf') {
