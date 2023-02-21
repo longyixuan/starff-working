@@ -126,7 +126,7 @@
                                             <div class="rwgl-table-row-month">{{ item.range.month }}</div>
                                             <div class="rwgl-table-row-day">
                                                 <span class="rwgl-table-row-day-item"
-                                                    :class="{ 'zm': itemIndex > 4, cur: isCurDay(item, itemIndex) }"
+                                                    :class="{ 'zm': itemIndex > 4, 'cur': (item.range.month + itemValue + '日') === myDate }"
                                                     :key="'lineday-'+itemIndex"
                                                     v-for="(itemValue, itemIndex) in getWeekArr(item.range.start)">
                                                     {{ itemValue }}
@@ -143,7 +143,7 @@
                                                 <div class="rwgl-task-body-col" :key="'linebar2-'+item.range.start" v-for="item in weekDate"></div>
                                                 <div class="rwgl-task-body-barbg" :style="getStyle(item)"
                                                     @click="getLog(item.id, item.rwmc)">
-                                                    <div v-for="(progress, progressIndex) in getNum(item).num" class="task-progress" :class="{'do': !getNum(item).log.includes(progressIndex), 'jh': (getNum(item).numJh == progressIndex && getNum(item).isTimeout)}"></div>
+                                                    <div v-for="progress in getNum(item).num" class="task-progress" :class="{'do': getNum(item).log.includes(progress-1) , 'jh': getNum(item).isTimeout && getNum(item).numJh == progress}"></div>
                                                 </div>
                                             </div>
                                         </template>
@@ -196,7 +196,7 @@
                         {{moment(form.kssj)}}
                     </template>
                     <template v-else>
-                        <DatePicker type="date" placeholder="请选择" v-model="form.kssj" style="width: 200px"></DatePicker>
+                        <DatePicker :clearable="false" type="date" placeholder="请选择" v-model="form.kssj" style="width: 200px"></DatePicker>
                     </template>
                     至
                     <template v-if="form.id && isEditer">
@@ -212,7 +212,7 @@
                     </RadioGroup>
                 </FormItem>
                 <FormItem label="当天工作内容">
-                    <DatePicker @on-change="updateTimeChange" format="yyyy-MM-dd" type="date" placeholder="日期" v-model="form.updateTime" style="width: 200px;margin-bottom: 10px;"></DatePicker>
+                    <DatePicker :clearable="false" @on-change="updateTimeChange" format="yyyy-MM-dd" type="date" placeholder="日期" v-model="form.updateTime" style="width: 200px;margin-bottom: 10px;"></DatePicker>
                     <Input type="textarea" placeholder="当天工作内容" v-model="form.bz" :rows="4"></Input>
                 </FormItem>
             </Form>
@@ -267,6 +267,7 @@ export default {
     name: 'task',
     data() {
         return {
+            myDate: moment().format('YYYY年MM月DD日'),
             st: 'day',
             modal: false,
             sysList: [],
@@ -319,7 +320,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 120,
+                    width: 135,
                     align: 'center'
                 },
             ],
@@ -461,6 +462,10 @@ export default {
                 this.$Message.error('请选择任务状态');
                 return false;
             }
+            if (this.form.bz && moment(this.form.updateTime).diff(this.form.kssj, 'day') < 0) {
+                 this.$Message.error('当天工作时间不能早于任务开始时间，若想修改开始时间请联系yinxl');
+                return false;
+            }
             return true;
         },
         addTask() {
@@ -514,61 +519,49 @@ export default {
             arr.push(moment(startDay).add(6, 'days').format('DD'));
             return arr;
         },
-        getStyle({ kssj, jssj, taskLog }) {
-            let temp = _.orderBy(taskLog, (item) => {
-                return moment(item.updateTime).format('YYYY-MM-DD');
-            }, ['desc']);  // 更新日志排序
-            let isTimeout = false; //结束时间的差
-            let days = 0; //开始时间的差,用于计算bar的宽度
-            if (jssj) { // 写了结束时间
-                days = moment(jssj).diff(moment(kssj), "days");
-                if (temp.length>0) {  // 判断是否超时
-                    isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
-                    if (isTimeout) { // 超时
-                        days = moment(temp[0].updateTime).diff(moment(kssj), "days");
-                    }
-                }
-            } else { //未写结束时间
-                if (temp.length>0) {  // 判断是否超时
-                    days = moment(temp[0].updateTime).diff(moment(kssj), "days");
-                }
-            }
+        getStyle({ duration,duration2, duration3, kssj }) {
             let num = getYearWeek(moment(kssj).format('YYYY-MM-DD')); //第几周
             let num2 = moment(kssj).diff(moment(this.weekDate[num].range.start), "days"); //本周开始时间的第几天
+            let days = 0;
+            let isTimeout = false; //结束时间的差
+            if (duration3 && duration3>0) {
+                isTimeout = true;
+            }
+            if (duration && duration2) {
+                days = duration2 > duration ? duration2 + 1: duration + 1;
+            } else if (duration && !duration2){
+                days = duration + 1;
+            } else {
+                days = duration2 + 1;
+            }
             return {
-                width: (!jssj && temp.length===0) ?  '0' : (days+1) * 30 + 'px',
+                width: days * 30 + 'px',
                 left: num * 210 + num2 * 30 + 'px',
                 borderColor: isTimeout ? '#fa8888' : '#6698ff'
             };
         },
-        getNum({ rwmc, kssj,jssj,taskLog }) {
-            let temp = _.orderBy(taskLog, (item) => {
-                return moment(item.updateTime).format('YYYY-MM-DD');
-            }, ['desc']);  // 更新日志排序
+        getNum({ duration,taskLog,duration2, duration3 }) {
             let log = [];
             let isTimeout = false; //结束时间的差
-            let days = 0; //开始时间的差,用于计算bar的宽度
-            temp.forEach(element => {
-                log.push(moment(element.updateTime).diff(moment(kssj), "days"))
+            let days = 0;
+            taskLog.forEach(element => {
+                log.push(element.duration);
             });
-            if (jssj) { // 写了结束时间
-                days = moment(jssj).diff(moment(kssj), "days");
-                if (temp.length>0) {  // 判断是否超时
-                    isTimeout = moment(jssj).diff(moment(temp[0].updateTime), "days") < 0;
-                    if (isTimeout) { // 超时
-                        days = moment(temp[0].updateTime).diff(moment(kssj), "days");
-                    }
-                }
-            } else { //未写结束时间
-                if (temp.length>0) {  // 判断是否超时
-                    days = moment(temp[0].updateTime).diff(moment(kssj), "days");
-                }
+            if (duration3 && duration3>0) {
+                isTimeout = true;
+            }
+            if (duration && duration2) {
+                days = duration2 > duration ? duration2 + 1: duration + 1;
+            } else if (duration && !duration2){
+                days = duration + 1;
+            } else {
+                days = duration2 + 1;
             }
             return {
                 log: log,
-                numJh: jssj ? moment(jssj).diff(moment(kssj), "days") : -1,
+                numJh: duration !==null ? duration + 1 : 0,
                 isTimeout: isTimeout,
-                num: (!jssj && temp.length===0) ? 0 : (days+1)
+                num: days
             };
         },
         isCurDay(obj, dayIndex) {

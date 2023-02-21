@@ -2,21 +2,26 @@
 @import './zlk.less';
 </style>
 <template>
-    <div class="qdgf">
-        <Row :gutter="24">
+    <div class="qdgf qdgf-view">
+        <div class="qdgf-banner">{{ titleDes }}</div>
+        <Row :gutter="24" style="padding: 42px 32px">
             <Col span="20">
                 <mavon-editor :toolbarsFlag="false" :ishljs="true" :boxShadow="false" codeStyle="monokai" :toolbars="toolbars" ref="md" defaultOpen="preview" :editable="false" v-model="value" :subfield="false"></mavon-editor>
             </Col>
-            <Col span="4">
+            <Col span="4" class="siderbar">
                 <Affix>
                     <div class="toc">
                         <div class="title">文章目录</div>
                         <!-- 遍历目录 -->
                         <ul class="catalog-list">
-                            <li v-for="toc,index in tocs" :class="{'active': tocIndex==index}" :key="toc.href" class="catalog-list-item" @click="setToc(index)">
+                            <li v-for="(toc, index) in tocs" :class="{ active: tocIndex == index }" :key="toc.href" class="catalog-list-item" @click="setToc(index)">
                                 <!-- <a @click="scrollToPosition(toc.href)" v-html="toc.name"></a> -->
-                                <div class="lev2" v-if="toc.lev==2"><a :href="toc.href">{{toc.name}}</a></div>
-                                <div class="lev3" v-if="toc.lev==3"><a :href="toc.href">{{toc.name}}</a></div>
+                                <div class="lev2" v-if="toc.lev == 2">
+                                    <a :id="'toc'+toc.id" :href="toc.href">{{ toc.name }}</a>
+                                </div>
+                                <div class="lev3" v-if="toc.lev == 3">
+                                    <a :id="'toc'+toc.id" :href="toc.href">{{ toc.name }}</a>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -27,7 +32,7 @@
 </template>
 <script>
 import { mdDetail } from '@/api/index';
-import { offsetDomTop, scrolltoToc } from "@/libs/mdHelp";
+import { offsetDomTop, scrolltoToc } from '@/libs/mdHelp';
 
 export default {
     computed: {
@@ -49,6 +54,7 @@ export default {
             typeList: [],
             value: '',
             title: '',
+            titleDes: '',
             renderHtml: '',
             menuList: [],
             mdListData: [],
@@ -114,51 +120,61 @@ export default {
                 let child = item.children[0];
                 child.setAttribute('id', 'copy' + index);
             });
-        }
+        },
+        visibleChange(tocs) {
+            window.addEventListener('scroll', () => {
+                for (let index = 0; index < tocs.length; index++) {
+                    let element = tocs[index];
+                    if (index>0) {
+                        let top = document.getElementById(element.id).getBoundingClientRect().top;
+                        if (top > 0 && document.getElementById(tocs[index-1].id).getBoundingClientRect().top < 0) {
+                            this.tocIndex = index;
+                        }
+                    }
+                }
+            }, false);
+        },
     },
     created() {
         mdDetail({ id: this.$route.query.id }).then((res) => {
             this.title = res.data.title;
+            this.titleDes = res.data.titleDes;
             this.value = res.data.mdCode;
             this.renderHtml = res.data.htmlCode;
         });
     },
     mounted() {
         this.$nextTick(() => {
-        setTimeout(()=>{
-            const aArr = this.$refs.md.$refs.vShowContent.querySelectorAll("a");
-            let tocs = [];
-            for (var i = 0; i < aArr.length; i++) {
-                if (aArr[i].id) {
-                    let href = aArr[i].id;
-                    let tag = aArr[i].parentNode;
-                    let name = aArr[i].parentNode.innerText;
-                    if (tag.tagName === 'H2') {
-                        tocs.push({
-                            href: "#" + href,
-                            name: tag.innerText,
-                            lev: 2
-                        });
+            setTimeout(() => {
+                const aArr = this.$refs.md.$refs.vShowContent.querySelectorAll('a');
+                let tocs = [];
+                for (var i = 0; i < aArr.length; i++) {
+                    if (aArr[i].id) {
+                        let id = aArr[i].id;
+                        let tag = aArr[i].parentNode;
+                        let name = aArr[i].parentNode.innerText;
+                        if (tag.tagName === 'H2') {
+                            tocs.push({
+                                id: id,
+                                href: '#' + id,
+                                name: tag.innerText,
+                                lev: 2
+                            });
+                        }
+                        if (tag.tagName === 'H3') {
+                            tocs.push({
+                                id: id,
+                                href: '#' + id,
+                                name: tag.innerText,
+                                lev: 3
+                            });
+                        }
                     }
-                    if (tag.tagName === 'H3') {
-                        tocs.push({
-                            href: "#" + href,
-                            name: tag.innerText,
-                            lev: 3
-                        });
-                    }
-                    // if (tag.tagName === 'H4') {
-                    //     tocs.push({
-                    //         href: "#" + href,
-                    //         name: tag.innerText,
-                    //         lev: 4
-                    //     });
-                    // }
                 }
-            }
-            this.tocs = tocs;
-        },1000);
+                this.tocs = tocs;
+                this.visibleChange(tocs);
+            }, 1000);
         });
-    }
+    },
 };
 </script>

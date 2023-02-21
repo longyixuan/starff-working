@@ -19,7 +19,6 @@ const user = {
             localStorage.clear();
         },
         setRole(states, data) {
-            console.log(states);
             let qd = [];
             let sj = [];
             let userListQd = [];

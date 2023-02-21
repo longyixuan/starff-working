@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-17 08:41:45
+ * @Last Modified time: 2023-02-21 10:23:14
  */
 
 const Task_col = require('./../models/task');
@@ -47,8 +47,8 @@ const getList = async (ctx, next) => {
     } else {
         seachConfig.isHistory = false;
     }
-    let seachConfig2 = {}
-    let seachConfigFlag2 = false;
+    // let seachConfig2 = {}
+    // let seachConfigFlag2 = false;
     if (req.xtId) {
         seachConfig.xtId = {
             '$in': req.xtId
@@ -71,14 +71,24 @@ const getList = async (ctx, next) => {
         };
     }
     if (req.kssj) {
-        seachConfig2.$gte = new Date(req.kssj);
-        seachConfigFlag2 = true;
+        seachConfig.kssj = {
+            $gte: new Date(req.kssj)
+        };
     }
     if (req.jssj) {
-        seachConfig2.$lte = new Date(req.jssj);
-        seachConfigFlag2 = true;
+        seachConfig.jssj = {
+            $lte: new Date(req.jssj)
+        };
     }
-    let result2 = await TaskLog_col.find(seachConfigFlag2?{updateTime: seachConfig2}:{}).distinct("id").exec();
+    // if (req.kssj) {
+    //     seachConfig2.$gte = new Date(req.kssj);
+    //     seachConfigFlag2 = true;
+    // }
+    // if (req.jssj) {
+    //     seachConfig2.$lte = new Date(req.jssj);
+    //     seachConfigFlag2 = true;
+    // }
+    // let result2 = await TaskLog_col.find(seachConfigFlag2?{updateTime: seachConfig2}:{}).distinct("id").exec();
     let result = await Task_col.aggregate([
         {
             $lookup: {
@@ -90,14 +100,6 @@ const getList = async (ctx, next) => {
         },
         {
             $lookup: {
-                from: "taskLog",
-                localField: "id",
-                foreignField: "id",
-                as: "taskLog"
-            }
-        },
-        {
-            $lookup: {
                 from: "user",
                 localField: "jbrId",
                 foreignField: "userName",
@@ -105,18 +107,61 @@ const getList = async (ctx, next) => {
             }
         },
         {
-            $match: {
-                ...{
-                    id: {
-                        '$in': result2
+            $lookup: {
+                from: "taskLog",
+                // localField: "id",
+                // foreignField: "id",
+                let: {
+                    id: "$id",
+                  },
+                pipeline: [
+                    {
+                        $match: {
+                            '$expr': {
+                                '$eq': ['$id', '$$id']
+                            }
+                        }
+                    },
+                    {
+                        '$sort': { updateTime: -1}
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            id: '$id',
+                            updateTime: '$updateTime',
+                            updateTimeStr: {
+                                $dateToString: {
+                                    format: "%Y年%m月%d日",
+                                    date: "$updateTime"
+                                }
+                            },
+                            duration: {"$divide":[{$subtract: ['$updateTime', '$kssj'] }, 1000 * 60 * 60 * 24]},
+                            bz: '$bz'
+                        }
                     }
-                },
+                ],
+                as: "taskLog"
+            }
+        },
+        {
+            $match: {
+                // ...{
+                //     id: {
+                //         '$in': result2
+                //     }
+                // },
                 ...seachConfig
             }
         },
         {
             $sort: {
                 'created_at': -1
+            }
+        },
+        {
+            $addFields: {
+                taskLogLast: { $arrayElemAt:["$taskLog", 0] }
             }
         },
         {
@@ -139,7 +184,12 @@ const getList = async (ctx, next) => {
                         jira: '$jira',
                         bz: '$bz',
                         isHistory: '$isHistory',
-                        taskLog: '$taskLog'
+                        taskLog: '$taskLog',
+                        duration: {"$divide":[{$subtract: ['$jssj', '$kssj'] }, 1000 * 60 * 60 * 24]},
+                        logSize: {$size: '$taskLog'},
+                        updateTime: '$taskLogLast.updateTime',
+                        duration2: {"$divide":[{$subtract: [ '$taskLogLast.updateTime', '$kssj'] }, 1000 * 60 * 60 * 24]},
+                        duration3: {"$divide":[{$subtract: [ '$taskLogLast.updateTime', '$jssj'] }, 1000 * 60 * 60 * 24]}
                     }
                 }
             }
@@ -170,8 +220,23 @@ const getList = async (ctx, next) => {
         {
             $lookup: {
                 from: "taskLog",
-                localField: "id",
-                foreignField: "id",
+                // localField: "id",
+                // foreignField: "id",
+                let: {
+                    id: "$id"
+                  },
+                pipeline: [
+                    {
+                        $match: {
+                            '$expr': {
+                                '$eq': ['$id', '$$id']
+                            }
+                        }
+                    },
+                    {
+                        '$sort': { updateTime: -1}
+                    }
+                ],
                 as: "taskLog"
             }
         },
@@ -184,18 +249,31 @@ const getList = async (ctx, next) => {
             }
         },
         {
+            $lookup: {
+                from: "taskZt",
+                localField: "rwzt",
+                foreignField: "id",
+                as: "taskZt"
+            }
+        },
+        {
             $match: {
-                ...{
-                    id: {
-                        '$in': result2
-                    }
-                },
+                // ...{
+                //     id: {
+                //         '$in': result2
+                //     }
+                // },
                 ...seachConfig
             }
         },
         {
             $sort: {
                 'kssj': -1
+            }
+        },
+        {
+            $addFields: {
+                taskLogLast: { $arrayElemAt:["$taskLog", 0] }
             }
         },
         {
@@ -219,12 +297,17 @@ const getList = async (ctx, next) => {
                         date: "$jssj"
                     }
                 },
-                rwzt: '$rwzt',
+                rwzt: {$arrayElemAt:["$taskZt.name",0]},
                 rwlx: '$rwlx',
                 jira: '$jira',
                 bz: '$bz',
                 isHistory: '$isHistory',
-                taskLog: '$taskLog'
+                taskLog: '$taskLog',
+                duration: {"$divide":[{$subtract: ['$jssj', '$kssj'] }, 1000 * 60 * 60 * 24]},
+                logSize: {$size: '$taskLog'},
+                updateTime: '$taskLogLast.updateTime',
+                duration2: {"$divide":[{$subtract: [ '$taskLogLast.updateTime', '$kssj'] }, 1000 * 60 * 60 * 24]},
+                duration3: {"$divide":[{$subtract: [ '$taskLogLast.updateTime', '$jssj'] }, 1000 * 60 * 60 * 24]}
             }
         }
     ]);

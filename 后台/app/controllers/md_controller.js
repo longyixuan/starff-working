@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-07-21 13:43:59
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-15 09:57:40
+ * @Last Modified time: 2023-02-20 11:49:59
  */
 
 const Md_col = require('./../models/md');
@@ -84,12 +84,46 @@ const list = async (ctx, next) => {
 
 const detail = async (ctx, next) => {
     const req = ctx.request.body;
-    let result = await Md_col.findOne({ id: req.id });
+    let result = await Md_col.aggregate([
+        {
+            $lookup: {
+                from: "mdType",
+                localField: "title",
+                foreignField: "id",
+                as: "mdType"
+            }
+        },
+        {
+            $match: {
+                id: req.id
+            }
+        },
+        {
+            $lookup: {
+                from: "user",
+                localField: "user",
+                foreignField: "userName",
+                as: "userInfo"
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                user: '$user',
+                title: '$title',
+                id: '$id',
+                userName: {$arrayElemAt:["$userInfo.nickName",0]},
+                titleDes: {$arrayElemAt:["$mdType.name",0]},
+                mdCode: '$mdCode',
+                htmlCode: '$htmlCode'
+            }
+        },
+    ]);
     ctx.status = 200;
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: result.length>0?result[0]:null
     }
 };
 
