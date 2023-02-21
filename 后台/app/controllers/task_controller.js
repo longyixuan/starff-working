@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-21 10:23:14
+ * @Last Modified time: 2023-02-21 10:58:34
  */
 
 const Task_col = require('./../models/task');
@@ -297,7 +297,8 @@ const getList = async (ctx, next) => {
                         date: "$jssj"
                     }
                 },
-                rwzt: {$arrayElemAt:["$taskZt.name",0]},
+                rwztDes: {$arrayElemAt:["$taskZt.name",0]},
+                rwzt: '$rwzt',
                 rwlx: '$rwlx',
                 jira: '$jira',
                 bz: '$bz',

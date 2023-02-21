@@ -37,7 +37,7 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="updateTimeline(row.timelineId, index)">编辑</Button>
-                        <Button type="error" size="small" @click="deleteTimeline(row.timelineId, index)">删除</Button>
+                        <Button v-if="type===1" type="error" size="small" @click="deleteTimeline(row.timelineId, index)">删除</Button>
                     </template>
                 </Table>
             </div>
@@ -52,6 +52,7 @@ export default {
     name: 'timeline',
     data() {
         return {
+            type: 0,
             modal: true,
             year: new Date(),
             system: [],
@@ -116,7 +117,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 140,
+                    width: 80,
                     align: 'center',
                 },
             ],
@@ -252,6 +253,10 @@ export default {
     mounted() {
         this.getlist();
         this.init();
+        this.type = JSON.parse(localStorage.getItem('userInfo')).type;
+        if (this.type === 1) {
+            this.columns[this.columns.length-1].width = 140;
+        }
         listModel().then((res) => {
             this.modelList = res.data;
         });

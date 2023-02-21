@@ -38,8 +38,8 @@
                 <Button type="primary" style="margin-right:10px;" @click="searchFn">查询</Button>
                 <Button type="primary" @click="addModal">新增任务</Button>
             </div>
-            <Tabs type="card">
-                <Tab-Pane label="列表">
+            <Tabs type="card" @on-click="onTabClick">
+                <Tab-Pane label="列表" name="tab1">
                     <Table border stripe :columns="columnsList" :data="dataList">
                         <template slot-scope="{ row }" slot="jira">
                             <a :href="row.jira" target="_blank" v-if="row.jira">查看</a>
@@ -52,7 +52,7 @@
                         </template>
                     </Table>
                 </Tab-Pane>
-                <Tab-Pane label="甘特图">
+                <Tab-Pane label="甘特图" name="tab2">
                     <div style="margin-bottom: 10px;display:flex;align-items: center;">
                         <Checkbox-Group v-model="tj" style="flex:1;">
                             显示列：
@@ -296,7 +296,7 @@ export default {
                 },
                 {
                     title: '状态',
-                    key: 'rwzt',
+                    key: 'rwztDes',
                     width: 80,
                     align: 'center'
                 },
@@ -671,16 +671,23 @@ export default {
                 this.search.jssj = getLastMonthEndDate();
             }
         },
+        scrollToFn() {
+            this.$nextTick(() => {
+                this.$refs['rwgl-task'].scrollTo({
+                    left: getYearWeek(moment().format('YYYY-MM-DD'))*200
+                });
+            });
+        },
+        onTabClick(name) {
+            if (name === 'tab2') {
+                this.scrollToFn();
+            }
+        }
     },
     mounted() {
         this.getSystemList();
         this.getUserList();
         this.searchFn();
-        this.$nextTick(() => {
-            this.$refs['rwgl-task'].scrollTo({
-                left: getYearWeek(moment().format('YYYY-MM-DD'))*200
-            });
-        });
     },
     created() {
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;

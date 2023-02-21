@@ -7,13 +7,22 @@
         <Layout>
             <Header>
                 <Menu mode="horizontal" theme="dark" active-name="1">
-                    <div class="layout-logo">设计部工作管理系统</div>
-                    <div class="layout-right" v-show="$route.name != 'zlk-index'">
-                        {{ username }}
-                        <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
-                        <span @click="modal = true">修改密码</span>
-                        <span @click="logout">退出</span>
-                    </div>
+                    <template v-if="$route.name != 'zlk-index'">
+                        <div class="layout-logo">设计部工作管理系统</div>
+                        <div class="layout-right" >
+                            {{ username }}
+                            <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
+                            <span @click="modal = true">修改密码</span>
+                            <span @click="logout">退出</span>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="layout-logo">设计部组件与规范汇总</div>
+                        <div class="layout-right layout-right-md">
+                            <a :href="'/zlk/index?id='+md.id" :key="md.id" v-for="md in mdList">{{md.titleDes}}</a>
+                            <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">大屏监控平台组件库</a>
+                        </div>
+                    </template>
                 </Menu>
             </Header>
             <!-- <Layout v-if="msgList.length>0">
@@ -110,7 +119,7 @@
 </template>
 
 <script>
-import { editPassword, replayList, replayUpdate } from '@/api/index';
+import { editPassword, replayList, replayUpdate, mdList } from '@/api/index';
 export default {
     data() {
         return {
@@ -119,7 +128,8 @@ export default {
             type: '',
             value: '',
             modal: false,
-            isCollapsed: false
+            isCollapsed: false,
+            mdList: []
         };
     },
     computed: {
@@ -167,6 +177,9 @@ export default {
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
         // this.$store.dispatch('getMsgList');
         this.$store.dispatch('getRole');
+        mdList().then((res) => {
+            this.mdList = res.data;
+        });
     }
 };
 </script>

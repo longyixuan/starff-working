@@ -23,7 +23,7 @@
                             <th width="120">开发部门</th>
                             <th width="160">前端人员</th>
                             <th width="160">设计人员</th>
-                            <th width="120">操作</th>
+                            <th :width="type===1 ? 120 : 70">操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,7 +48,7 @@
                                 </td>
                                 <td>
                                     <Button type="primary" size="small" style="margin-right: 5px" @click="edit(rowIndex, index)">编辑</Button>
-                                    <Button type="error" size="small" @click="remove(col.id)">删除</Button>
+                                    <Button v-if="type===1" type="error" size="small" @click="remove(col.id)">删除</Button>
                                 </td>
                             </tr>
                         </template>
@@ -102,6 +102,7 @@ export default {
     name: 'timeline',
     data() {
         return {
+            type: 0,
             modal: false,
             markIndex: -1,
             tags: [],
@@ -122,49 +123,6 @@ export default {
                 qd: [],
                 sj: [],
             },
-            columns: [
-                {
-                    title: '所属平台',
-                    slot: 'pt',
-                    width: 160,
-                    align: 'center',
-                },
-                {
-                    title: '系统名称',
-                    key: 'xtmc',
-                },
-                {
-                    title: '网址',
-                    slot: 'wz',
-                    width: 200,
-                },
-                {
-                    title: 'GA代码ID',
-                    key: 'ga',
-                    width: 130,
-                },
-                {
-                    title: '开发部门',
-                    key: 'kfbm',
-                    width: 120,
-                },
-                {
-                    title: '前端人员',
-                    slot: 'qd',
-                    width: 160,
-                },
-                {
-                    title: '设计人员',
-                    slot: 'sj',
-                    width: 160,
-                },
-                {
-                    title: '操作',
-                    slot: 'action',
-                    width: 140,
-                    align: 'center',
-                },
-            ],
             data: [],
         };
     },
@@ -280,7 +238,7 @@ export default {
         },
     },
     mounted() {
-        
+        this.type = JSON.parse(localStorage.getItem('userInfo')).type;
     },
 };
 </script>
