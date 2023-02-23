@@ -54,15 +54,15 @@
     box-sizing: border-box;
     line-height: 1;
 }
-.wks {
-    background: rgb(246, 198, 89);
-}
-.jxz {
-    background: rgb(250, 136, 136);
-}
-.ywc {
-    background: rgb(64, 224, 195);
-}
+// .wks {
+//     background: rgb(246, 198, 89);
+// }
+// .jxz {
+//     background: rgb(250, 136, 136);
+// }
+// .ywc {
+//     background: rgb(64, 224, 195);
+// }
 .ywc-task {
     background: rgb(64, 224, 195) !important;
     border-color: rgb(64, 224, 195) !important;
@@ -299,4 +299,27 @@
 
 .task-search {
     margin-bottom: 20px;
+}
+
+.task-rwzt {
+    display: flex;
+    align-items: center;
+    &::before {
+        display: block;
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #f90;
+        margin-right: 8px;
+    }
+    &.wks::before {
+        background: #999;
+    }
+    &.jxz::before {
+        background: #2d8cf0;
+    }
+    &.yfb::before {
+        background: #19be6b;
+    }
 }

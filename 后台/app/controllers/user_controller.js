@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2019-04-10 18:35:47
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-08-02 14:05:30
+ * @Last Modified time: 2023-02-23 15:29:08
  */
 
 const config = require("./../../config");
@@ -237,11 +237,15 @@ const getAllUser = async (ctx, next) => {
 const getByCondition = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.query;
-    const AllByPage = await User_col.find({})
+    let seachConfig = {};
+    if (req.departmentId) {
+        seachConfig.departmentId = req.departmentId;
+    }
+    const AllByPage = await User_col.find(seachConfig)
         .sort({ order: 1 })
         .limit(parseInt(req.pageSize))
         .skip((parseInt(req.pageNumber) - 1) * parseInt(req.pageSize));
-    const allPage = await User_col.find({});
+    const allPage = await User_col.find(seachConfig);
     const totalElements = Math.ceil(allPage.length / parseInt(req.pageSize)); //计算页数
     ctx.body = {
         code: 1,

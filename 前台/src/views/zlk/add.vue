@@ -95,7 +95,7 @@ export default {
             console.log(pos, $file);
             imageAdd(formdata).then((res) => {
                 let fileFormat = $file.name.split('.');
-                this.$refs.md.$img2Url(pos, 'http://' + window.location.hostname + ':3333/' + res.data + '.' + fileFormat[fileFormat.length - 1]);
+                this.$refs.md.$img2Url(pos, 'http://172.16.2.131:3333/' + res.data + '.' + fileFormat[fileFormat.length - 1]);
             });
         },
         imgDel(value, render) {

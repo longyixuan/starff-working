@@ -21,7 +21,7 @@
                     <span style="color: #999">选择系统后显示</span>
                 </FormItem>
                 <FormItem label="备注：">
-                    <Input type="textarea" :rows="4" v-model="description"></Input>
+                    <Input type="textarea" :rows="4" v-model.trim="description"></Input>
                 </FormItem>
                 <FormItem label="标签：">
                     <RadioGroup v-model="tag">

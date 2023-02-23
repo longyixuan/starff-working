@@ -5,24 +5,24 @@
 <template>
     <div class="layout">
         <Layout>
-            <Header>
+            <Header v-if="$route.name != 'zlk-index'">
                 <Menu mode="horizontal" theme="dark" active-name="1">
-                    <template v-if="$route.name != 'zlk-index'">
-                        <div class="layout-logo">设计部工作管理系统</div>
-                        <div class="layout-right" >
-                            {{ username }}
-                            <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
-                            <span @click="modal = true">修改密码</span>
-                            <span @click="logout">退出</span>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="layout-logo">设计部组件与规范汇总</div>
-                        <div class="layout-right layout-right-md">
-                            <a :href="'/zlk/index?id='+md.id" :key="md.id" v-for="md in mdList">{{md.titleDes}}</a>
-                            <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">大屏监控平台组件库</a>
-                        </div>
-                    </template>
+                    <div class="layout-logo">设计部工作管理系统</div>
+                    <div class="layout-right" >
+                        {{ username }}
+                        <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
+                        <span @click="modal = true">修改密码</span>
+                        <span @click="logout">退出</span>
+                    </div>
+                </Menu>
+            </Header>
+            <Header class="zlk-header" v-else>
+                <Menu mode="horizontal" theme="dark" active-name="1">
+                    <div class="layout-logo">设计部资料库</div>
+                    <div class="layout-right layout-right-md">
+                        <a :href="'/zlk/index?id='+md.id" :key="md.id" v-for="md in mdList">{{md.titleDes}}</a>
+                        <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">大屏监控平台组件库</a>
+                    </div>
                 </Menu>
             </Header>
             <!-- <Layout v-if="msgList.length>0">
@@ -83,15 +83,16 @@
                                 <!-- <MenuItem name="11-3" to="/vote/mysurvey">我的投票</MenuItem> -->
                             </Submenu>
                             <MenuItem name="11" to="/vote/mysurvey" v-else><Icon type="md-happy" />投票查看</MenuItem>
-                            <Submenu name="14">
-                                <template slot="title"> <Icon type="ios-paper-plane" />任务进度管理</template>
-                                <MenuItem name="14-1" to="/task/zt" v-if="type === 1">状态管理</MenuItem>
+                            <Submenu name="14" v-if="type === 1">
+                                <template slot="title"><Icon type="ios-paper-plane" />任务进度管理</template>
+                                <MenuItem name="14-1" to="/task/zt">状态管理</MenuItem>
                                 <MenuItem name="14-2" to="/task/add">查看任务</MenuItem>
                                 <MenuItem name="14-3" to="/task/guidang">查看归档</MenuItem>
                             </Submenu>
+                            <MenuItem name="14" to="/task/add" v-else><Icon type="ios-paper-plane" />任务进度管理</MenuItem>
                             <Submenu name="15">
                                 <template slot="title"><Icon type="md-book" />资料库</template>
-                                <MenuItem name="15-1" to="/zlk/type">资料类型</MenuItem>
+                                <MenuItem name="15-1" to="/zlk/type">资料库目录</MenuItem>
                                 <MenuItem name="15-2" to="/zlk/list">资料管理</MenuItem>
                             </Submenu>
                             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>

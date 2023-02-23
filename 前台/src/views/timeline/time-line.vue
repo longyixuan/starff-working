@@ -16,6 +16,9 @@
                 <Select clearable style="width: 200px; margin-right: 10px" v-model="tag" placeholder="请选择标签">
                     <Option v-for="item in tags" :value="item.id" :key="item.id">{{ item.name }}</Option>
                 </Select>
+                <Select clearable v-if="type===1" v-model="departmentId" placeholder="请选择部门" style="width:200px;margin-right: 10px;">
+                    <Option v-for="item in departmentList" :value="item.id" :key="item.id">{{ item.title }}</Option>
+                </Select>
                 <Input v-model="keyword" style="width: 200px; margin-right: 10px" clearable placeholder="请输入关键字" autocomplete="off" />
                 <Button type="primary" style="margin-right: 10px" @click="seach">查询</Button>
                 <div style="float: right">
@@ -46,7 +49,7 @@
 </template>
 
 <script>
-import { getSystemList, getTimelineList, delTimeline, getTagList, listModel } from '@/api/index';
+import { getSystemList, getTimelineList, delTimeline, getTagList, listModel, initDepartment } from '@/api/index';
 import moment from 'moment';
 export default {
     name: 'timeline',
@@ -62,11 +65,13 @@ export default {
             tabName: 'name1',
             modelList: [],
             tags: [],
+            departmentId: '',
             data: [],
             lineDate: [],
             exportData: [],
             model: [],
             listModel: [],
+            departmentList: [],
             columns: [
                 {
                     title: '时间',
@@ -124,6 +129,7 @@ export default {
         };
     },
     created() {
+        this.getParentList();
         getTagList().then((res) => {
             this.tags = res.data;
         });
@@ -141,6 +147,13 @@ export default {
         },
     },
     methods: {
+        getParentList() {
+            initDepartment().then(res => {
+                if (res.code === 1) {
+                    this.departmentList = res.data;
+                }
+            });
+        },
         filterModal(system) {
             if (system.length===1) {
                 return _.filter(this.modelList,['systemId', system[0]]);
@@ -173,7 +186,10 @@ export default {
                 year: moment(this.year).format('YYYY'),
                 tag: this.tag,
                 system: this.system,
-                keyword: this.keyword
+                keyword: this.keyword,
+                userName: JSON.parse(localStorage.getItem('userInfo')).nickName,
+                type: JSON.parse(localStorage.getItem('userInfo')).type,
+                departmentId: this.departmentId
             };
             getTimelineList(params).then((res) => {
                 if (res.code === 1) {

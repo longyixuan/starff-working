@@ -2,11 +2,12 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-01-04 15:35:20
+ * @Last Modified time: 2023-02-23 17:13:59
  */
 
 const Timeline_col = require('./../models/timeline');
 const Tag_col = require('./../models/tag');
+const User_col = require("./../models/user");
 const uuidv1 = require('uuid/v1');
 const add = async (ctx, next) => {
     ctx.status = 200;
@@ -54,25 +55,25 @@ const getList = async (ctx, next) => {
     let seachConfig = {
         islock: false
     };
-    let groupConfig = {
-        _id: {
-            timeStamp: '$timeStamp',
-            time: '$time'
-        },
-        details: {
-            $push: {
-                model: '$model',
-                description: '$description',
-                userName: '$userName',
-                tag: '$tag',
-                systemId: '$systemId',
-                systemName: '$systemName',
-                timelineId: '$timelineId',
-                timeStamp: '$timeStamp',
-                time: '$time'
-            }
-        }
-    };
+    // let groupConfig = {
+    //     _id: {
+    //         timeStamp: '$timeStamp',
+    //         time: '$time'
+    //     },
+    //     details: {
+    //         $push: {
+    //             model: '$model',
+    //             description: '$description',
+    //             userName: '$userName',
+    //             tag: '$tag',
+    //             systemId: '$systemId',
+    //             systemName: '$systemName',
+    //             timelineId: '$timelineId',
+    //             timeStamp: '$timeStamp',
+    //             time: '$time'
+    //         }
+    //     }
+    // };
     if (req.system) {
         seachConfig.systemId = {
             '$in': req.system
@@ -92,19 +93,36 @@ const getList = async (ctx, next) => {
             "$regex": regexp
         }
     }
+    if (req.type != 1) {
+        seachConfig.userName = req.userName;
+    } else {
+        if (req.departmentId) {
+            let userList = await User_col.find({
+                departmentId: req.departmentId
+            });
+            let temp = [];
+            userList.forEach(element => {
+                temp.push(element.nickName);
+            });
+            seachConfig.userName = {
+                "$in": temp
+            }
+        }
+        
+    }
+    console.log(seachConfig)
     let result = await Timeline_col.aggregate([{
         $match: seachConfig
     }]);
-    let result2 = await Timeline_col.aggregate([{
-        $match: seachConfig
-    },{
-        $group: groupConfig
-    }]);
+    // let result2 = await Timeline_col.aggregate([{
+    //     $match: seachConfig
+    // },{
+    //     $group: groupConfig
+    // }]);
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result,
-        timeSys: result2
+        data: result
     };
 }
 

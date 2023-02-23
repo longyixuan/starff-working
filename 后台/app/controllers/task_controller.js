@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-21 10:58:34
+ * @Last Modified time: 2023-02-22 14:00:32
  */
 
 const Task_col = require('./../models/task');
@@ -268,7 +268,9 @@ const getList = async (ctx, next) => {
         },
         {
             $sort: {
-                'kssj': -1
+                'kssj': -1,
+                'created_at': -1,
+                'updated_at': -1
             }
         },
         {

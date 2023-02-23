@@ -41,6 +41,9 @@
             <Tabs type="card" @on-click="onTabClick">
                 <Tab-Pane label="列表" name="tab1">
                     <Table border stripe :columns="columnsList" :data="dataList">
+                        <template slot-scope="{ row }" slot="rwztDes">
+                            <span class="task-rwzt" :class="{'wks': row.rwztDes === '未开始', 'jxz': row.rwztDes === '进行中', 'yfb': row.rwztDes === '已发布'}">{{row.rwztDes}}</span>
+                        </template>
                         <template slot-scope="{ row }" slot="jira">
                             <a :href="row.jira" target="_blank" v-if="row.jira">查看</a>
                         </template>
@@ -52,7 +55,7 @@
                         </template>
                     </Table>
                 </Tab-Pane>
-                <Tab-Pane label="甘特图" name="tab2">
+                <Tab-Pane label="进度" name="tab2">
                     <div style="margin-bottom: 10px;display:flex;align-items: center;">
                         <Checkbox-Group v-model="tj" style="flex:1;">
                             显示列：
@@ -296,8 +299,8 @@ export default {
                 },
                 {
                     title: '状态',
-                    key: 'rwztDes',
-                    width: 80,
+                    slot: 'rwztDes',
+                    width: 100,
                     align: 'center'
                 },
                 {
@@ -343,7 +346,7 @@ export default {
                 rwzt: [],
                 jbrId: [],
                 kssj: moment().startOf("month").format("YYYY-MM-DD"),
-                jssj: moment().endOf("month").format("YYYY-MM-DD")
+                jssj: ''
             },
             weekDate: [],
             modalC: false,
@@ -481,7 +484,7 @@ export default {
                 updateTime: moment(this.form.updateTime).format('YYYY-MM-DD'),
             }).then( res => {
                 this.$Message.success(res.msg);
-                this.listTask();
+                this.searchFn();
                 this.modal = false;
             });
         },
@@ -499,7 +502,7 @@ export default {
                 updateTime: moment(this.form.updateTime).format('YYYY-MM-DD')
             }).then( res => {
                 this.$Message.success(res.msg);
-                this.listTask();
+                this.searchFn();
                 this.modal = false;
             });
         },
@@ -606,6 +609,7 @@ export default {
             }).then((res) => {
                 this.list = res.data;
                 this.dataList = res.list;
+                this.$Message.success('查询成功');
             });
         },
         getLog(id,title) {

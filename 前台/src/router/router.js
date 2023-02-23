@@ -490,7 +490,7 @@ export const appRouter = {
         {
             path: 'zlk/index',
             meta: {
-                title: '资料库'
+                title: '设计部资料库'
             },
             name: 'zlk-index',
             component: () => import('@/views/zlk/index.vue')

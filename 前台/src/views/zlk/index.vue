@@ -4,11 +4,11 @@
 <template>
     <div class="qdgf qdgf-view">
         <div class="qdgf-banner">{{ titleDes }}</div>
-        <Row :gutter="24" style="padding: 42px 32px">
-            <Col span="20">
+        <Layout style="padding: 42px 32px;background: #fff;">
+            <Content style="padding-right: 20px">
                 <mavon-editor :toolbarsFlag="false" :ishljs="true" :boxShadow="false" codeStyle="monokai" :toolbars="toolbars" ref="md" defaultOpen="preview" :editable="false" v-model="value" :subfield="false"></mavon-editor>
-            </Col>
-            <Col span="4" class="siderbar">
+            </Content>
+            <Sider width="288" :style="{background: '#fff'}">
                 <Affix>
                     <div class="toc">
                         <div class="title">文章目录</div>
@@ -26,8 +26,8 @@
                         </ul>
                     </div>
                 </Affix>
-            </Col>
-        </Row>
+            </Sider>
+        </Layout>
     </div>
 </template>
 <script>

@@ -2,10 +2,11 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:03:56 
  * @Last Modified by: yinxl
- * @Last Modified time: 2019-10-08 17:27:30
+ * @Last Modified time: 2023-02-23 14:44:28
  */
 
 const Department_col = require('./../models/department');
+const User_col = require("./../models/user");
 const uuidv1 = require('uuid/v1');
 
 const addDepartment = async (ctx, next) => {
@@ -93,6 +94,14 @@ const editDepartment = async (ctx,next) => {
     await Department_col.updateOne({
         id: req.id
     }, req);
+    await User_col.updateMany(
+        {
+            departmentId: req.id,
+        },
+        {
+            departmentTitle: req.title
+        }
+    );
     const department = await Department_col.findOne({
         id: req.id
     });
