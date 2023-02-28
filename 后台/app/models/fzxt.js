@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-10 13:40:39 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-10-25 15:46:40
+ * @Last Modified time: 2023-02-27 10:53:16
  */
 
 const mongoose = require('mongoose');
@@ -24,6 +24,9 @@ const fzxtSchema = new Schema({
         type: String
     },
     kfbm: {
+        type: Array
+    },
+    sjbm: {
         type: Array
     },
     qd: {

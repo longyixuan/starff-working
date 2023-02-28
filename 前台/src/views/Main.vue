@@ -50,8 +50,8 @@
                             </Submenu>
                             <Submenu name="3">
                                 <template slot="title"> <Icon type="md-document" />工作总结 </template>
-                                <MenuItem name="3-1" to="/summary-day">日总结</MenuItem>
-                                <MenuItem name="3-2" to="/summary-week">周总结</MenuItem>
+                                <!-- <MenuItem name="3-1" to="/summary-day">日总结</MenuItem> -->
+                                <!-- <MenuItem name="3-2" to="/summary-week">周总结</MenuItem> -->
                                 <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
                             </Submenu>
                             <Submenu name="12" v-if="type === 1">

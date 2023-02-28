@@ -8,7 +8,7 @@
             <Content style="padding-right: 20px">
                 <mavon-editor :toolbarsFlag="false" :ishljs="true" :boxShadow="false" codeStyle="monokai" :toolbars="toolbars" ref="md" defaultOpen="preview" :editable="false" v-model="value" :subfield="false"></mavon-editor>
             </Content>
-            <Sider width="288" :style="{background: '#fff'}">
+            <Sider width="288" :style="{background: '#fff'}" v-if="tocs.length>0">
                 <Affix>
                     <div class="toc">
                         <div class="title">文章目录</div>

@@ -6,24 +6,30 @@
     <div>
         <Card title="任务进度管理 - 查看任务">
             <div class="task-search">
-                <Select placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
+                <Select class="marin-b10" placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
                 </Select>
-                <Select placeholder="经办人" multiple v-model="search.jbrId" filterable clearable style="width: 140px;margin-right:10px;">
-                    <Option :value="item.userName" :key="item.userId" v-for="item in userList">{{ item.nickName ?
-                            item.nickName : item.userName
-                    }}</Option>
+                <Select class="marin-b10" placeholder="设计部门" v-model="search.sjbm" filterable clearable style="width: 160px;margin-right:10px;">
+                    <Option :value="item.id" :key="item.id" v-for="item in departmentList">{{ item.title }}</Option>
                 </Select>
-                <Select placeholder="状态" multiple clearable v-model="search.rwzt" style="width: 100px;margin-right:10px;">
+                <Select class="marin-b10" placeholder="经办人" multiple v-model="search.jbrId" filterable clearable style="width: 140px;margin-right:10px;">
+                    <template v-for="item in userList">
+                        <Option :value="item.userName" :key="item.userId">{{ item.nickName ?
+                            item.nickName : item.userName
+                        }}</Option>
+                    </template>
+                </Select>
+                <Select class="marin-b10" placeholder="状态" multiple clearable v-model="search.rwzt" style="width: 100px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in ztList">{{ item.name }}</Option>
                 </Select>
-                <Input v-model="search.rwmc" style="width: 200px;margin-right:10px;" clearable placeholder="任务名称" autocomplete="off"/>
-                <Date-Picker type="date" placeholder="开始时间" v-model="search.kssj" style="width: 120px;margin-right:10px;margin-bottom: 10px;"></Date-Picker>
-                <Date-Picker type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;margin-bottom: 10px;"></Date-Picker>
-                <Button type="primary" @click="quickTime('yestday')" ghost style="margin-right: 10px;">昨天</Button>
-                <Button type="primary" @click="quickTime('day')" ghost style="margin-right: 10px;">今天</Button>
-                <Button type="primary" @click="quickTime('week')" ghost style="margin-right: 10px;">本周</Button>
+                <Input class="marin-b10" v-model="search.rwmc" style="width: 180px;margin-right:10px;" clearable placeholder="任务名称" autocomplete="off"/>
+                <Date-Picker class="marin-b10" type="date" placeholder="开始时间" v-model="search.kssj" style="width: 120px;margin-right:10px;"></Date-Picker>
+                <Date-Picker class="marin-b10" type="date" placeholder="结束时间" v-model="search.jssj" style="width: 120px;margin-right:10px;"></Date-Picker>
+                <Button class="marin-b10" type="primary" @click="quickTime('yestday')" ghost style="margin-right: 10px;">昨天</Button>
+                <Button class="marin-b10" type="primary" @click="quickTime('day')" ghost style="margin-right: 10px;">今天</Button>
+                <Button class="marin-b10" type="primary" @click="quickTime('week')" ghost style="margin-right: 10px;">本周</Button>
                 <Button
+                class="marin-b10"
                 type="primary"
                 @click="quickTime('month')"
                 ghost
@@ -35,8 +41,13 @@
                 ghost
                 style="margin-right: 10px;"
                 >上月</Button>
-                <Button type="primary" style="margin-right:10px;" @click="searchFn">查询</Button>
-                <Button type="primary" @click="addModal">新增任务</Button>
+                <Tooltip transfer content="按照任务的开始时间和结束时间进行查询" max-width="200">
+                    <Button class="marin-b10" type="primary" style="margin-right:10px;" @click="searchFn">查询任务</Button>
+                </Tooltip>
+                <Tooltip transfer content="按照任务备注的开始时间和结束时间进行查询" max-width="200">
+                    <Button class="marin-b10" type="primary" style="margin-right:10px;" @click="searchFnRz">查询日志</Button>
+                </Tooltip>
+                <Button class="marin-b10" type="primary" @click="addModal">新增任务</Button>
             </div>
             <Tabs type="card" @on-click="onTabClick">
                 <Tab-Pane label="列表" name="tab1">
@@ -255,7 +266,8 @@ import {
     logTask,
     daylogTask,
     hisTask,
-    getTaskTagList
+    getTaskTagList,
+    initDepartment
 } from '@/api/index';
 import {
         getWeekStartDate,
@@ -280,6 +292,7 @@ export default {
             list: [],
             title: '详情',
             dataList: [],
+            departmentList: [],
             type: 0,
             columnsList: [
                 {
@@ -343,6 +356,7 @@ export default {
             search: {
                 xtId: [],
                 rwmc: '',
+                sjbm: '',
                 rwzt: [],
                 jbrId: [],
                 kssj: moment().startOf("month").format("YYYY-MM-DD"),
@@ -373,6 +387,13 @@ export default {
     components: {
     },
     methods: {
+        getDepartment() {
+            initDepartment().then(res => {
+                if (res.code === 1) {
+                    this.departmentList = res.data;
+                }
+            });
+        },
         monthView(item,month) {
             if ((moment(item.kssj).format('M') == month && moment(item.kssj).format('YYYY') == moment().format('YYYY')) || (moment(item.jssj).format('M') == month && moment(item.jssj).format('YYYY') == moment().format('YYYY'))) {
                 return true;
@@ -436,7 +457,9 @@ export default {
         getUserList() {
             getAllUserData().then((res) => {
                 if (res.code === 1) {
-                    this.userList = res.data;
+                    this.userList = _.filter(res.data, (o) => {
+                        return o.type === 0;
+                    });
                 }
             });
         },
@@ -603,14 +626,39 @@ export default {
                 xtId: this.search.xtId,
                 rwmc: this.search.rwmc,
                 rwzt: this.search.rwzt,
-                jbrId: this.search.jbrId,
+                jbrId: (this.search.sjbm && this.search.jbrId.length===0) ? this.getBmUser(this.search.sjbm) : this.search.jbrId,
                 kssj: this.search.kssj ? moment(this.search.kssj).format('YYYY-MM-DD') : '',
-                jssj: this.search.jssj ? moment(this.search.jssj).format('YYYY-MM-DD') : ''
+                jssj: this.search.jssj ? moment(this.search.jssj).format('YYYY-MM-DD') : '',
+                type: 'rw'
             }).then((res) => {
                 this.list = res.data;
                 this.dataList = res.list;
                 this.$Message.success('查询成功');
             });
+        },
+        searchFnRz() {
+            listTask({
+                xtId: this.search.xtId,
+                rwmc: this.search.rwmc,
+                rwzt: this.search.rwzt,
+                jbrId: (this.search.sjbm && this.search.jbrId.length===0) ? this.getBmUser(this.search.sjbm) : this.search.jbrId,
+                kssj: this.search.kssj ? moment(this.search.kssj).format('YYYY-MM-DD') : '',
+                jssj: this.search.jssj ? moment(this.search.jssj).format('YYYY-MM-DD') : '',
+                type: 'rz'
+            }).then((res) => {
+                this.list = res.data;
+                this.dataList = res.list;
+                this.$Message.success('查询成功');
+            });
+        },
+        getBmUser(departmentId) {
+            let arr = [];
+            for (let i = 0; i < this.userList.length; i++) {
+                if (this.userList[i].departmentId == departmentId) {
+                    arr.push(this.userList[i].userName);
+                }
+            }
+            return arr;
         },
         getLog(id,title) {
             this.title = title;
@@ -690,6 +738,7 @@ export default {
     },
     mounted() {
         this.getSystemList();
+        this.getDepartment();
         this.getUserList();
         this.searchFn();
     },
@@ -700,7 +749,8 @@ export default {
         }
         this.getTaskTagList();
         this.weekDate = getAllWeekRange(new Date().getFullYear());
-        if (JSON.parse(localStorage.getItem('userInfo')).userName!=='admin' && JSON.parse(localStorage.getItem('userInfo')).userName!=='lvf') {
+        if ( this.type!== 1) {
+            this.search.sjbm = JSON.parse(localStorage.getItem('userInfo')).departmentId;
             this.search.jbrId.push(JSON.parse(localStorage.getItem('userInfo')).userName);
         }
     }

@@ -7,8 +7,11 @@
             <div class="clearfix" style="margin-bottom: 20px;">
                 <Input clearable style="width: 200px" type="text" v-model="xtmc" placeholder="系统名称"></Input>
                 <Select placeholder="负责人" filterable clearable style="width: 200px;margin-left: 10px" v-model="xm">
-                        <Option :value="item.userName" v-for="item in userList">{{ item.nickName }}</Option>
-                    </Select>
+                    <Option :value="item.userName" v-for="item in userList">{{ item.nickName }}</Option>
+                </Select>
+                <Select placeholder="设计部门" clearable style="width: 200px;margin-left: 10px" v-model="sjbm">
+                    <Option :value="item" v-for="item in sjbmList">{{ item }}</Option>
+                </Select>
                 <Button type="primary" style="margin-left: 10px" @click="search">查询</Button>
                 <Button type="primary" @click="add" style="float: right">新增</Button>
             </div>
@@ -21,6 +24,7 @@
                             <th width="300">网址</th>
                             <th width="140">GA代码ID</th>
                             <th width="120">开发部门</th>
+                            <th width="100">设计部门</th>
                             <th width="160">前端人员</th>
                             <th width="160">设计人员</th>
                             <th :width="type===1 ? 120 : 70">操作</th>
@@ -39,6 +43,9 @@
                                 <td>{{ col.ga }}</td>
                                 <td>
                                     <Tag v-for="item in col.kfbm">{{ item }}</Tag>
+                                </td>
+                                <td>
+                                    <Tag v-for="item in col.sjbm">{{ item }}</Tag>
                                 </td>
                                 <td>
                                     <Tag v-for="item in col.qd">{{ getName(item) }}</Tag>
@@ -77,6 +84,11 @@
                         <Checkbox :label="item" v-for="(item, index) in kfbmList" :key="'kfbm-' + index">{{ item }}</Checkbox>
                     </Checkbox-Group>
                 </FormItem>
+                <FormItem label="设计部门：">
+                    <Checkbox-Group v-model="addForm.sjbm">
+                        <Checkbox :label="item" v-for="(item, index) in sjbmList" :key="'sjbm-' + index">{{ item }}</Checkbox>
+                    </Checkbox-Group>
+                </FormItem>
                 <FormItem label="前端人员：">
                     <Checkbox-Group v-model="addForm.qd">
                         <Checkbox :label="item.userName" v-for="item in qdList" :key="item.userName">{{ item.nickName }}</Checkbox>
@@ -112,7 +124,9 @@ export default {
             keyword: ['已关停'],
             xtmc: '',
             xm: '',
+            sjbm: '',
             kfbmList: ['综合部', '招生信息部', '就业信息部', '学籍学历部', '设计部', '系统运维部', '易志科'],
+            sjbmList: ['设计一部', '设计二部'],
             addForm: {
                 id: '',
                 pt: '',
@@ -120,6 +134,7 @@ export default {
                 wz: '',
                 ga: '',
                 kfbm: [],
+                sjbm: [],
                 qd: [],
                 sj: [],
             },
@@ -160,6 +175,7 @@ export default {
             this.addForm.wz = '';
             this.addForm.ga = '';
             this.addForm.kfbm = [];
+            this.addForm.sjbm = [];
             this.addForm.qd = [];
             this.addForm.sj = [];
             this.modal = true;
@@ -184,7 +200,8 @@ export default {
         getlistFzxt() {
             listFzxt({
                 xtmc: this.xtmc,
-                xm: this.xm
+                xm: this.xm,
+                sjbm: this.sjbm
             }).then((res) => {
                 this.data = res.data;
             });
@@ -197,6 +214,7 @@ export default {
             this.addForm.wz = this.data[rowIndex].list[index].wz;
             this.addForm.ga = this.data[rowIndex].list[index].ga;
             this.addForm.kfbm = this.data[rowIndex].list[index].kfbm;
+            this.addForm.sjbm = this.data[rowIndex].list[index].sjbm;
             this.addForm.qd = this.data[rowIndex].list[index].qd;
             this.addForm.sj = this.data[rowIndex].list[index].sj;
             this.modal = true;
@@ -222,15 +240,14 @@ export default {
         getUserList() {
             getAllUserData().then((res) => {
                 if (res.code === 1) {
-                    var _this = this;
                     this.userList = _.filter(res.data, function (o) {
                         return o.type ===0;
                     });
                     this.sjList = _.filter(res.data, function (o) {
-                        return _.includes(_this.$store.state.user.userListSj, o.userName);
+                        return o.defaultRole == 'sj'
                     });
                     this.qdList = _.filter(res.data, function (o) {
-                        return _.includes(_this.$store.state.user.userListQd, o.userName);
+                        return o.defaultRole == 'qd'
                     });
                     this.getlistFzxt();
                 }

@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-22 14:00:32
+ * @Last Modified time: 2023-02-28 10:54:18
  */
 
 const Task_col = require('./../models/task');
@@ -47,8 +47,8 @@ const getList = async (ctx, next) => {
     } else {
         seachConfig.isHistory = false;
     }
-    // let seachConfig2 = {}
-    // let seachConfigFlag2 = false;
+    let seachConfig2 = {}
+    let seachConfigFlag2 = false;
     if (req.xtId) {
         seachConfig.xtId = {
             '$in': req.xtId
@@ -70,25 +70,31 @@ const getList = async (ctx, next) => {
             '$in': req.jbrId
         };
     }
-    if (req.kssj) {
-        seachConfig.kssj = {
-            $gte: new Date(req.kssj)
-        };
+    if (req.type == 'rw') {
+        if (req.kssj) {
+            seachConfig.kssj = {
+                $gte: new Date(req.kssj)
+            };
+        }
+        if (req.jssj) {
+            seachConfig.jssj = {
+                $lte: new Date(req.jssj)
+            };
+        }
+    } else {
+        if (req.kssj) {
+            seachConfig2.$gte = new Date(req.kssj);
+            seachConfigFlag2 = true;
+        }
+        if (req.jssj) {
+            seachConfig2.$lte = new Date(req.jssj);
+            seachConfigFlag2 = true;
+        }
+        let result2 = await TaskLog_col.find(seachConfigFlag2?{updateTime: seachConfig2}:{}).distinct("id").exec();
+        seachConfig.id = {
+            '$in': result2
+        }
     }
-    if (req.jssj) {
-        seachConfig.jssj = {
-            $lte: new Date(req.jssj)
-        };
-    }
-    // if (req.kssj) {
-    //     seachConfig2.$gte = new Date(req.kssj);
-    //     seachConfigFlag2 = true;
-    // }
-    // if (req.jssj) {
-    //     seachConfig2.$lte = new Date(req.jssj);
-    //     seachConfigFlag2 = true;
-    // }
-    // let result2 = await TaskLog_col.find(seachConfigFlag2?{updateTime: seachConfig2}:{}).distinct("id").exec();
     let result = await Task_col.aggregate([
         {
             $lookup: {
@@ -145,14 +151,7 @@ const getList = async (ctx, next) => {
             }
         },
         {
-            $match: {
-                // ...{
-                //     id: {
-                //         '$in': result2
-                //     }
-                // },
-                ...seachConfig
-            }
+            $match: seachConfig
         },
         {
             $sort: {
@@ -257,14 +256,7 @@ const getList = async (ctx, next) => {
             }
         },
         {
-            $match: {
-                // ...{
-                //     id: {
-                //         '$in': result2
-                //     }
-                // },
-                ...seachConfig
-            }
+            $match: seachConfig
         },
         {
             $sort: {

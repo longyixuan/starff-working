@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-10-22 15:26:15 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-10-26 08:52:11
+ * @Last Modified time: 2023-02-27 13:43:06
  */
 
 const Fzxt_col = require('./../models/fzxt');
@@ -93,6 +93,7 @@ const update = async (ctx, next) => {
         pt: req.pt?req.pt:'',
         wz: req.wz?req.wz:'',
         xtmc: req.xtmc,
+        sjbm: req.sjbm?req.sjbm:[],
         kfbm: req.kfbm?req.kfbm:[],
         qd: req.qd?req.qd:[],
         sj: req.sj?req.sj:[]
@@ -129,6 +130,9 @@ const getList = async (ctx, next) => {
     if (req.xtmc) {
         const reg = new RegExp(req.xtmc, 'i');
         match.xtmc = { $regex : reg }
+    }
+    if (req.sjbm) {
+        match.sjbm = req.sjbm
     }
     if (req.xm) {
         match.$or = [
@@ -173,6 +177,7 @@ const getList = async (ctx, next) => {
                         xtmc: '$xtmc',
                         wz: '$wz',
                         ga: '$ga',
+                        sjbm: '$sjbm',
                         kfbm: '$kfbm',
                         qd: '$qd',
                         sj: '$sj'
