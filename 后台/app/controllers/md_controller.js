@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-07-21 13:43:59
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-20 11:49:59
+ * @Last Modified time: 2023-03-03 08:55:59
  */
 
 const Md_col = require('./../models/md');
@@ -46,6 +46,7 @@ const update = async (ctx, next) => {
 }
 
 const list = async (ctx, next) => {
+    const req = ctx.request.body;
     let result = await Md_col.aggregate([
         {
             $lookup: {
@@ -64,13 +65,20 @@ const list = async (ctx, next) => {
             }
         },
         {
+            $match: {
+                type: req.type
+            }
+        },
+        {
             $project: {
                 _id: 0,
                 user: '$user',
                 title: '$title',
                 id: '$id',
                 userName: {$arrayElemAt:["$userInfo.nickName",0]},
-                titleDes: {$arrayElemAt:["$mdType.name",0]}
+                titleDes: {$arrayElemAt:["$mdType.name",0]},
+                titlePid: {$arrayElemAt:["$mdType.pid",0]},
+                titlePidDes: {$arrayElemAt:["$mdType.pidDes",0]}
             }
         },
     ]);
@@ -127,13 +135,61 @@ const detail = async (ctx, next) => {
     }
 };
 
+const detailByTitle = async (ctx, next) => {
+    const req = ctx.request.body;
+    let result = await Md_col.aggregate([
+        {
+            $lookup: {
+                from: "mdType",
+                localField: "title",
+                foreignField: "id",
+                as: "mdType"
+            }
+        },
+        {
+            $match: {
+                title: req.id
+            }
+        },
+        {
+            $lookup: {
+                from: "user",
+                localField: "user",
+                foreignField: "userName",
+                as: "userInfo"
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                user: '$user',
+                title: '$title',
+                id: '$id',
+                userName: {$arrayElemAt:["$userInfo.nickName",0]},
+                titleDes: {$arrayElemAt:["$mdType.name",0]},
+                mdCode: '$mdCode',
+                htmlCode: '$htmlCode'
+            }
+        },
+    ]);
+    ctx.status = 200;
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: result.length>0?result[0]:null
+    }
+};
+
 const addType = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
     await MdType_col.create({
         id: uuidv1(),
         name: req.name,
-        order: req.order
+        order: req.order,
+        pid: req.pid,
+        pidDes: req.pidDes,
+        type: req.type
     });
     ctx.body = {
         code: 1,
@@ -148,7 +204,10 @@ const updateType = async (ctx, next) => {
         id: req.id
     }, {
         name: req.name,
-        order: req.order
+        order: req.order,
+        pid: req.pid,
+        pidDes: req.pidDes,
+        type: req.type
     });
     const result = await MdType_col.findOne({
         id: req.id
@@ -174,19 +233,52 @@ const delType = async (ctx, next) => {
 
 const listType = async (ctx, next) => {
     ctx.status = 200;
-    let result = await MdType_col.find({}).sort({order: 1 });
+    const req = ctx.request.body;
+    let result = await MdType_col.find({type: req.type}).sort({order: 1 });
+    let tree = getDFSTree(result, '');
     ctx.body = {
         code: 1,
         msg: '查询成功',
-        data: result
+        data: tree,
+        data2: result
     };
 }
+
+const treeNode = function(id, name, order, pid, pidDes, _showChildren, children) {
+    this.id = id;
+    this.name = name;
+    this.order = order;
+    this.pid = pid;
+    this.pidDes = pidDes;
+    this._showChildren = _showChildren;
+    this.children = children;
+}
+
+const getDFSTree = function(data, pid) {
+    let treelist = [];
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].pid == pid) {
+            let tree = new treeNode(
+                data[i].id,
+                data[i].name,
+                data[i].order,
+                data[i].pid,
+                data[i].pidDes,
+                true,
+                getDFSTree(data, data[i].id)
+            );
+            treelist.push(tree)
+        }
+    }
+    return treelist;
+  }
 
 module.exports = {
     add,
     list,
     update,
     detail,
+    detailByTitle,
     addType,
     listType,
     updateType,

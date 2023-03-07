@@ -7,7 +7,7 @@
         <div class="qdgf">
             <div style="margin-bottom: 20px">
                 <Select v-model="title" style="width: 200px" placeholder="请选择目录" :disabled="id!=''">
-                    <Option v-for="item in typeList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                    <Option v-for="item in typeList" :value="item.id" :key="item.id">{{item.pid ? item.pidDes +' - ': ''}}{{ item.name }}</Option>
                 </Select>
             </div>
             <mavon-editor :toolbars="toolbars" ref="md" defaultOpen="edit" :editable="true" v-model="value" :subfield="false" codeStyle="monokai" @navigationToggle="onAddUrl" :ishljs="true" @change="change" @save="save" @imgAdd="imgAdd" @imgDel="imgDel"> </mavon-editor>
@@ -33,6 +33,7 @@ export default {
     },
     data() {
         return {
+            type: 'qd',
             typeList: [],
             id: '',
             value: '',
@@ -80,8 +81,8 @@ export default {
     },
     methods: {
         listZlkType() {
-            listZlkType().then((res) => {
-                this.typeList = res.data;
+            listZlkType({type: this.type}).then((res) => {
+                this.typeList = res.data2;
             });
         },
         change(value, render) {
@@ -115,6 +116,7 @@ export default {
                     user: JSON.parse(localStorage.getItem('userInfo')).userName,
                     mdCode: value,
                     htmlCode: render,
+                    type: this.type
                 }).then((res) => {
                     this.$Message.success('保存成功');
                 });
@@ -124,6 +126,7 @@ export default {
                     user: JSON.parse(localStorage.getItem('userInfo')).userName,
                     mdCode: value,
                     htmlCode: render,
+                    type: this.type
                 }).then((res) => {
                     if (res.code === 1) {
                         this.$Message.success('保存成功');

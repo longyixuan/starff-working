@@ -1,4 +1,5 @@
 import Main from '@/views/Main.vue';
+import Mainzlk from '@/views/Mainzlk.vue';
 
 // 不作为Main组件的子页面展示的页面单独写，如下
 export const loginRouter = {
@@ -53,6 +54,29 @@ export const page500 = {
     name: 'error-500',
     component: () => import('@/views/error-page/500.vue')
 };
+export const doc = {
+    path: '/doc/',
+    name: 'doc',
+    component: Mainzlk,
+    children: [
+        {
+            path: 'qd',
+            meta: {
+                title: '设计部资料库'
+            },
+            name: 'zlk-qd-index',
+            component: () => import('@/views/zlk/index-qd.vue')
+        },
+        {
+            path: 'sj',
+            meta: {
+                title: '设计部资料库'
+            },
+            name: 'zlk-qd-index',
+            component: () => import('@/views/zlk/index-sj.vue')
+        }
+    ]
+}
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = {
@@ -464,36 +488,52 @@ export const appRouter = {
             component: () => import('@/views/task/guidang.vue')
         },
         {
-            path: 'zlk/type',
+            path: 'zlk/sjml',
             meta: {
                 title: '资料库'
             },
-            name: 'zlk-type',
-            component: () => import('@/views/zlk/menu.vue')
+            name: 'zlk-sjml',
+            component: () => import('@/views/zlk/menu-sj.vue')
         },
         {
-            path: 'zlk/list',
+            path: 'zlk/qdml',
             meta: {
                 title: '资料库'
             },
-            name: 'zlk-list',
-            component: () => import('@/views/zlk/list.vue')
+            name: 'zlk-qdml',
+            component: () => import('@/views/zlk/menu-qd.vue')
         },
         {
-            path: 'zlk/add',
+            path: 'zlk/sjlist',
             meta: {
                 title: '资料库'
             },
-            name: 'zlk-add',
-            component: () => import('@/views/zlk/add.vue')
+            name: 'zlk-sjlist',
+            component: () => import('@/views/zlk/list-sj.vue')
         },
         {
-            path: 'zlk/index',
+            path: 'zlk/qdlist',
             meta: {
-                title: '设计部资料库'
+                title: '资料库'
             },
-            name: 'zlk-index',
-            component: () => import('@/views/zlk/index.vue')
+            name: 'zlk-qdlist',
+            component: () => import('@/views/zlk/list-qd.vue')
+        },
+        {
+            path: 'zlk/qdadd',
+            meta: {
+                title: '资料库'
+            },
+            name: 'zlk-qd-add',
+            component: () => import('@/views/zlk/add-qd.vue')
+        },
+        {
+            path: 'zlk/sjadd',
+            meta: {
+                title: '资料库'
+            },
+            name: 'zlk-sj-add',
+            component: () => import('@/views/zlk/add-sj.vue')
         },
         // {
         //     path: 'image/add',
@@ -521,5 +561,6 @@ export const routers = [
     registResult,
     appRouter,
     page500,
-    page403
+    page403,
+    doc
 ];

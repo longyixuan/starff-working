@@ -116,6 +116,7 @@
     background: url(../../assets/md-bg.png) center center no-repeat;
 }
 .qdgf-view {
+    color: #515a6e;
     .v-note-wrapper {
         border: none;
         .v-show-content {
@@ -123,11 +124,39 @@
         }
     }
     .markdown-body {
+        h2,h3,h4 {
+            font-weight: 400;
+            color: #515a6e;
+        }
         h2 {
             border-bottom: none;
             &:first-child {
                 margin-top: 0;
             }
         }
+        h2 {
+            font-size: 20px;
+            margin: 12px 0;
+        }
+        h3 {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+    }
+    h1.h1-title {
+        font-size: 26px;
+        font-weight: 400;
+        margin: 12px 0;
+    }
+}
+.zlk-empty {
+    .img {
+        display: block;
+        margin: 0 auto 20px;
+    }
+    .text {
+        font-size: 24px;
+        text-align: center;
+        color: #999;
     }
 }

@@ -5,6 +5,12 @@
 <template>
     <div>
         <Card title="任务进度管理 - 查看任务">
+            <Alert type="warning" v-if="checkList.length!=0 || checkList1.length!=0">昨日未添加任务进度的人员
+                <template slot="desc">
+                    <div v-if="checkList.length!=0">设计一部：{{checkList.join('、')}}</div>
+                    <div v-if="checkList1.length!=0">设计二部：{{checkList1.join('、')}}</div>
+                </template>
+            </Alert>
             <div class="task-search">
                 <Select class="marin-b10" placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
@@ -267,7 +273,8 @@ import {
     daylogTask,
     hisTask,
     getTaskTagList,
-    initDepartment
+    initDepartment,
+    checkTask
 } from '@/api/index';
 import {
         getWeekStartDate,
@@ -319,7 +326,11 @@ export default {
                 {
                     title: '经办人',
                     key: 'jbrName',
-                    width: 80
+                    width: 100,
+                    sortable: true,
+                    sortMethod: function(a,b,type) {
+                        console.log(a,b,type)
+                    }
                 },
                 {
                     title: '开始时间',
@@ -381,10 +392,10 @@ export default {
                 }
             ],
             listC: [],
-            isEditer: true
+            isEditer: true,
+            checkList: [],
+            checkList1: []
         };
-    },
-    components: {
     },
     methods: {
         getDepartment() {
@@ -734,6 +745,12 @@ export default {
             if (name === 'tab2') {
                 this.scrollToFn();
             }
+        },
+        checkTask() {
+            checkTask({ updateTime: moment().add(-1, 'days').format('YYYY-MM-DD') }).then(res => {
+                this.checkList = res.data;
+                this.checkList1 = res.data1;
+            });
         }
     },
     mounted() {
@@ -741,6 +758,7 @@ export default {
         this.getDepartment();
         this.getUserList();
         this.searchFn();
+        this.checkTask();
     },
     created() {
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;

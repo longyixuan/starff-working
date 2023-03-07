@@ -644,6 +644,10 @@ export const hisTask = (params) => {
     return postRequest(`/task/history`,params)
 }
 
+export const checkTask = (params) => {
+    return postRequest(`/task/check`,params)
+}
+
 //-----------------------任务管理--------------------------------//
 
 //-----------------------资料库--------------------------------//
@@ -677,6 +681,10 @@ export const mdList = (params) => {
 
 export const mdDetail = (params) => {
     return postRequest(`/md/detail`,params)
+}
+
+export const mdShow = (params) => {
+    return postRequest(`/md/show`,params)
 }
 //-----------------------资料库--------------------------------//
 

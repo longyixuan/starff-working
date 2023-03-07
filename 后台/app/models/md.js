@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2023-02-09 14:37:59
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-13 13:55:43
+ * @Last Modified time: 2023-03-02 18:12:48
  */
 
 const mongoose = require('mongoose');
@@ -16,6 +16,10 @@ const mdSchema = new Schema({
     title: {
         type: String,
         required: true
+    },
+    type: {
+        type: String,
+        required: ''
     },
     user: {
         type: String,

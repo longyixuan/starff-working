@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-23 17:13:59
+ * @Last Modified time: 2023-03-03 08:56:23
  */
 
 const Timeline_col = require('./../models/timeline');
@@ -110,7 +110,6 @@ const getList = async (ctx, next) => {
         }
         
     }
-    console.log(seachConfig)
     let result = await Timeline_col.aggregate([{
         $match: seachConfig
     }]);

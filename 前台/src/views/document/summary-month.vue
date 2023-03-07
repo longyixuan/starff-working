@@ -104,20 +104,9 @@
         listDocumentday,
         seachDocumentmonth,
         delteDocumentday,
-        commitDocument,
-        addDocumentday,
-        toDocumentweek,
-        commitDocumentMonth
+        commitDocumentMonth,
+        initDepartment
     } from "@/api/index";
-    import {
-        getAll,
-        getWeekStartDate,
-        getWeekEndDate,
-        getMonthStartDate,
-        getMonthEndDate,
-        getLastMonthStartDate,
-        getLastMonthEndDate
-    } from "@/libs/timeHelp";
     import moment from "moment";
     export default {
         data() {
@@ -135,6 +124,8 @@
                 peopleList: [],
                 people: [],
                 commitUser: [],
+                departmentId: '',
+                departmentList: [],
                 columns: [
                     {
                         type: 'index',
@@ -199,6 +190,13 @@
             }
         },
         methods: {
+            getDepartment() {
+                initDepartment().then(res => {
+                    if (res.code === 1) {
+                        this.departmentList = res.data;
+                    }
+                });
+            },
             handelChange(date) {
                 this.startTime = date[0];
                 this.endTime = date[1];
@@ -367,6 +365,7 @@
             }
         },
         mounted() {
+            this.getDepartment();
             this.initList();
             this.getUserList();
             this.type = JSON.parse(localStorage.getItem('userInfo')).type;

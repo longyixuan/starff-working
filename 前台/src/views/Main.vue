@@ -5,7 +5,7 @@
 <template>
     <div class="layout">
         <Layout>
-            <Header v-if="$route.name != 'zlk-index'">
+            <Header v-if="$route.name != 'zlk-qd-index' && $route.name != 'zlk-sj-index'">
                 <Menu mode="horizontal" theme="dark" active-name="1">
                     <div class="layout-logo">设计部工作管理系统</div>
                     <div class="layout-right" >
@@ -20,7 +20,8 @@
                 <Menu mode="horizontal" theme="dark" active-name="1">
                     <div class="layout-logo">设计部资料库</div>
                     <div class="layout-right layout-right-md">
-                        <a :href="'/zlk/index?id='+md.id" :key="md.id" v-for="md in mdList">{{md.titleDes}}</a>
+                        <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">设计组件库</a>
+                        <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">前端组件库</a>
                         <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">大屏监控平台组件库</a>
                     </div>
                 </Menu>
@@ -33,7 +34,7 @@
                 </Alert>
             </Layout> -->
             <Layout>
-                <div v-show="$route.name != 'survey-detail' && $route.name != 'zlk-index'">
+                <div v-show="$route.name != 'survey-detail' && $route.name != 'zlk-sj-index' && $route.name != 'zlk-qd-index'">
                     <Sider hide-trigger :style="{ background: '#fff' }" width="220" ref="side" collapsible :collapsed-width="1" v-model="isCollapsed">
                         <Menu active-name="0" theme="light" width="auto">
                             <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
@@ -91,16 +92,21 @@
                             </Submenu>
                             <MenuItem name="14" to="/task/add" v-else><Icon type="ios-paper-plane" />任务进度管理</MenuItem>
                             <Submenu name="15">
-                                <template slot="title"><Icon type="md-book" />资料库</template>
-                                <MenuItem name="15-1" to="/zlk/type">资料库目录</MenuItem>
-                                <MenuItem name="15-2" to="/zlk/list">资料管理</MenuItem>
+                                <template slot="title"><Icon type="md-book" />设计资料库</template>
+                                <MenuItem name="15-1" to="/zlk/sjml">目录管理</MenuItem>
+                                <MenuItem name="15-2" to="/zlk/sjlist">资料管理</MenuItem>
+                            </Submenu>
+                            <Submenu name="16">
+                                <template slot="title"><Icon type="md-book" />前端资料库</template>
+                                <MenuItem name="16-1" to="/zlk/qdml">目录管理</MenuItem>
+                                <MenuItem name="16-2" to="/zlk/qdlist">资料管理</MenuItem>
                             </Submenu>
                             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
                         </Menu>
                     </Sider>
                 </div>
                 <Layout :style="{ padding: '24px', position: 'relative' }">
-                    <span class="zk-sq" @click="collapsedSider" v-show="$route.name != 'survey-detail' && $route.name != 'zlk-index'">{{!isCollapsed ? '收起' : '展开'}}</span>
+                    <span class="zk-sq" @click="collapsedSider" v-show="$route.name != 'survey-detail' && $route.name != 'zlk-sj-index' && $route.name != 'zlk-qd-index'">{{!isCollapsed ? '收起' : '展开'}}</span>
                     <Content :style="{ minHeight: '280px' }">
                         <router-view></router-view>
                     </Content>
@@ -120,7 +126,7 @@
 </template>
 
 <script>
-import { editPassword, replayList, replayUpdate, mdList } from '@/api/index';
+import { editPassword} from '@/api/index';
 export default {
     data() {
         return {
@@ -129,8 +135,7 @@ export default {
             type: '',
             value: '',
             modal: false,
-            isCollapsed: false,
-            mdList: []
+            isCollapsed: false
         };
     },
     computed: {
@@ -178,9 +183,6 @@ export default {
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
         // this.$store.dispatch('getMsgList');
         this.$store.dispatch('getRole');
-        mdList().then((res) => {
-            this.mdList = res.data;
-        });
     }
 };
 </script>

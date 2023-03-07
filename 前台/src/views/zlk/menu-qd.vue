@@ -3,18 +3,22 @@
 </style>
 
 <template>
-    <Card title="资料库目录">
+    <Card title="目录管理">
         <div style="margin-bottom: 10px; text-align: right">
-            <Button type="primary" @click="addTag">添加</Button>
+            <Button type="primary" @click="addTag">添加一级目录</Button>
         </div>
-        <Table border :data="data" :columns="columns">
+        <Table row-key="id" border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" @click="updateTag(row, index)">编辑</Button>
-                <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
+                <Button type="error" size="small" @click="deleteTag(row.id, index)" style="margin-right: 5px">删除</Button>
+                <Button v-if="!row.pid" type="primary" size="small" @click="addTagC(row, index)">添加子目录</Button>
             </template>
         </Table>
         <Modal title="编辑" v-model="modal" @on-ok="add">
-            <Form :label-width="60">
+            <Form :label-width="90">
+                <FormItem label="上级目录" v-if="pid">
+                    {{pidDes}}
+                </FormItem>
                 <FormItem label="名称">
                     <Input placeholder="输入名称" v-model="tag"></Input>
                 </FormItem>
@@ -36,21 +40,19 @@ export default {
             tag: '',
             id: '',
             order: 0,
+            pid: '',
+            pidDes: '',
+            type: 'qd',
             columns: [
-                {
-                    type: 'index',
-                    width: 60,
-                    align: 'center',
-                },
                 {
                     title: '名称',
                     key: 'name',
+                    tree: true
                 },
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 140,
-                    align: 'center',
+                    width: 230
                 },
             ],
         };
@@ -61,7 +63,10 @@ export default {
                 editZlkType({
                     id: this.id,
                     name: this.tag,
-                    order: this.order
+                    order: this.order,
+                    pid: this.pid,
+                    pidDes: this.pidDes,
+                    type: this.type
                 }).then((res) => {
                     this.$Message.success('修改成功');
                     this.init();
@@ -70,7 +75,10 @@ export default {
                 addZlkType({
                     id: this.id,
                     name: this.tag,
-                    order: this.order
+                    order: this.order,
+                    pid: this.pid,
+                    pidDes: this.pidDes,
+                    type: this.type
                 }).then((res) => {
                     if (res.code === 1) {
                         this.$Message.success('添加成功');
@@ -84,11 +92,23 @@ export default {
         updateTag(row) {
             this.id = row.id;
             this.tag = row.name;
+            this.pid = row.pid;
+            this.pidDes = row.pidDes;
             this.order = row.order;
             this.modal = true;
         },
         addTag() {
             this.id = '';
+            this.tag = '';
+            this.pid = '';
+            this.pidDes = '';
+            this.order = 0;
+            this.modal = true;
+        },
+        addTagC(row,index) {
+            this.id = '';
+            this.pid = row.id;
+            this.pidDes = row.name;
             this.tag = '';
             this.order = 0;
             this.modal = true;
@@ -112,7 +132,7 @@ export default {
             });
         },
         init() {
-            listZlkType().then((res) => {
+            listZlkType({type: this.type}).then((res) => {
                 this.data = res.data;
             });
         },

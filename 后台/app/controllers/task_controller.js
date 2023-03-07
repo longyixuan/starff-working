@@ -2,14 +2,14 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-28 10:54:18
+ * @Last Modified time: 2023-03-07 17:30:03
  */
 
 const Task_col = require('./../models/task');
 const TaskLog_col = require('./../models/taskLog');
 const TaskLog_zt = require('./../models/taskZt');
+const User_col = require("./../models/user");
 const uuidv1 = require('uuid/v1');
-const moment = require('moment');
 const add = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
@@ -416,7 +416,7 @@ const getLog = async (ctx, next) => {
 const getDayLog = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-   let result = await TaskLog_col.findOne({
+    let result = await TaskLog_col.findOne({
         id: req.id,
         updateTime: new Date(req.updateTime)
     });
@@ -439,6 +439,67 @@ const hisLog = async (ctx, next) => {
         code: 1,
         msg: '操作成功'
     };
+}
+const checkLog = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let result = await TaskLog_col.find({
+        updateTime: new Date(req.updateTime)
+    }).distinct("jbrId").exec();
+    let userList = await User_col.aggregate([
+        {
+            $match: {
+                defaultRole: {
+                    $ne: ''
+                }
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    departmentTitle: '$departmentTitle',
+                },
+                content: {
+                    $push: {
+                        userName: '$userName',
+                        nickName: '$nickName',
+                        departmentId: '$departmentId',
+                        departmentTitle: '$departmentTitle'
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                departmentTitle: '$_id.departmentTitle',
+                list: '$content'
+            }
+        },
+    ]);
+    let temp = []; //设计一部未写总结人员
+    let temp1 = []; //设计二部未写总结人员
+    if (result.length>5) { //有人写总结
+        for (let i = 0; i < userList.length; i++) {
+            let element = userList[i];
+            for (let j = 0; j < element.list.length; j++) {
+                let item = element.list[j];
+                if (!result.includes(item.userName)) { //未写总结
+                    if (element.departmentTitle=="设计一部") {
+                        temp.push(item.nickName)
+                    } else {
+                        temp1.push(item.nickName)
+                    }
+                }
+            }
+        }
+    }
+    ctx.body = {
+        code: 1,
+        data: temp,
+        data1: temp1,
+        msg: '查询成功'
+    }
 }
 
 const ztAdd = async (ctx, next) => {
@@ -505,6 +566,7 @@ module.exports = {
     getLog,
     getDayLog,
     hisLog,
+    checkLog,
     ztList,
     ztAdd,
     ztEdit,

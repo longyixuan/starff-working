@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2023-02-09 14:37:59
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-13 13:55:43
+ * @Last Modified time: 2023-03-01 17:15:44
  */
 
 const mongoose = require('mongoose');
@@ -13,6 +13,14 @@ const mdTypeSchema = new Schema({
         type: String,
         required: true
     },
+    pid: {
+        type: String,
+        default: ''
+    },
+    pidDes: {
+        type: String,
+        default: ''
+    },
     name: {
         type: String,
         required: true
@@ -20,6 +28,10 @@ const mdTypeSchema = new Schema({
     order: {
         type: Number,
         default: 0
+    },
+    type: {
+        type: String,
+        default: ''
     }
 }, { collection: 'mdType', versionKey: false});
 
