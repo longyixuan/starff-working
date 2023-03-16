@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-03-07 17:30:03
+ * @Last Modified time: 2023-03-08 09:07:04
  */
 
 const Task_col = require('./../models/task');
@@ -479,7 +479,7 @@ const checkLog = async (ctx, next) => {
     ]);
     let temp = []; //设计一部未写总结人员
     let temp1 = []; //设计二部未写总结人员
-    if (result.length>5) { //有人写总结
+    if (result.length>0) { //有人写总结
         for (let i = 0; i < userList.length; i++) {
             let element = userList[i];
             for (let j = 0; j < element.list.length; j++) {

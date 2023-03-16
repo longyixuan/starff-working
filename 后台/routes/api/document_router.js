@@ -2,12 +2,13 @@
  * @Author: yinxl 
  * @Date: 2019-04-08 11:00:57 
  * @Last Modified by: yinxl
- * @Last Modified time: 2021-04-09 16:17:31
+ * @Last Modified time: 2023-03-13 14:38:46
  */
 
 const Router = require('koa-router');
 const router = new Router();
 const document_controller = require('./../../app/controllers/document_controller');
+const month_controller = require('./../../app/controllers/month_controller');
 
 router.post('/document/add', document_controller.addDocument);
 router.get('/document/list', document_controller.seachDocument);
@@ -59,5 +60,15 @@ router.post('/document/month/merge', document_controller.mergeDocumentmonth);
 
 //退回总结
 router.post('/document/callback', document_controller.callbackDocument);
+
+//月总结md
+router.post('/document/mdmonth/list', month_controller.list);
+router.post('/document/mdmonth/add', month_controller.add);
+router.post('/document/mdmonth/edit', month_controller.edit);
+router.post('/document/mdmonth/del', month_controller.del);
+router.post('/document/mdmonth/details', month_controller.details);
+router.post('/document/mdmonth/commit', month_controller.commit);
+router.post('/document/mdmonth/callback', month_controller.callback);
+router.post('/document/mdmonth/search', month_controller.search);
 
 module.exports = router;

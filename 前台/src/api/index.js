@@ -287,6 +287,37 @@ export const seachDocumentmonth = (params) => {
     return postRequest(`/document/month/seach`,params)
 }
 
+//--------------------月总结md---------------------//
+
+export const mdMonthList = (params) => {
+    return postRequest(`/document/mdmonth/list`, params)
+}
+export const mdMonthEdit = (params) => {
+    return postRequest(`/document/mdmonth/edit`,params)
+}
+export const mdMonthAdd = (params) => {
+    return postRequest(`/document/mdmonth/add`,params)
+}
+export const mdMonthDetails = (params) => {
+    return postRequest(`/document/mdmonth/details`, params)
+}
+export const mdMonthCommit = (params) => {
+    return postRequest(`/document/mdmonth/commit`,params)
+}
+export const mdMonthDel = (params) => {
+    return postRequest(`/document/mdmonth/del`,params)
+}
+export const mdMonthCallback = (params) => {
+    return postRequest(`/document/mdmonth/callback`,params)
+}
+
+export const mdMonthSearch = (params) => {
+    return postRequest(`/document/mdmonth/search`,params)
+}
+
+
+
+
 //--------------------回复---------------------//
 export const replayAdd = (params) => {
     return postRequest(`/replay/add`,params)

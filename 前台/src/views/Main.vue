@@ -5,7 +5,7 @@
 <template>
     <div class="layout">
         <Layout>
-            <Header v-if="$route.name != 'zlk-qd-index' && $route.name != 'zlk-sj-index'">
+            <Header>
                 <Menu mode="horizontal" theme="dark" active-name="1">
                     <div class="layout-logo">设计部工作管理系统</div>
                     <div class="layout-right" >
@@ -13,16 +13,6 @@
                         <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
                         <span @click="modal = true">修改密码</span>
                         <span @click="logout">退出</span>
-                    </div>
-                </Menu>
-            </Header>
-            <Header class="zlk-header" v-else>
-                <Menu mode="horizontal" theme="dark" active-name="1">
-                    <div class="layout-logo">设计部资料库</div>
-                    <div class="layout-right layout-right-md">
-                        <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">设计组件库</a>
-                        <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">前端组件库</a>
-                        <a href="http://172.16.2.131:8085/#/guide/install" target="_blank">大屏监控平台组件库</a>
                     </div>
                 </Menu>
             </Header>
@@ -34,7 +24,7 @@
                 </Alert>
             </Layout> -->
             <Layout>
-                <div v-show="$route.name != 'survey-detail' && $route.name != 'zlk-sj-index' && $route.name != 'zlk-qd-index'">
+                <div v-show="$route.name != 'survey-detail'">
                     <Sider hide-trigger :style="{ background: '#fff' }" width="220" ref="side" collapsible :collapsed-width="1" v-model="isCollapsed">
                         <Menu active-name="0" theme="light" width="auto">
                             <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
@@ -53,7 +43,8 @@
                                 <template slot="title"> <Icon type="md-document" />工作总结 </template>
                                 <!-- <MenuItem name="3-1" to="/summary-day">日总结</MenuItem> -->
                                 <!-- <MenuItem name="3-2" to="/summary-week">周总结</MenuItem> -->
-                                <MenuItem name="3-3" to="/summary-month">月总结</MenuItem>
+                                <!-- <MenuItem name="3-3" to="/summary-month">月总结</MenuItem> -->
+                                <MenuItem name="3-3" to="/summary/list">月总结</MenuItem>
                             </Submenu>
                             <Submenu name="12" v-if="type === 1">
                                 <template slot="title"> <Icon type="md-pie" />jira完成情况 </template>
@@ -106,7 +97,7 @@
                     </Sider>
                 </div>
                 <Layout :style="{ padding: '24px', position: 'relative' }">
-                    <span class="zk-sq" @click="collapsedSider" v-show="$route.name != 'survey-detail' && $route.name != 'zlk-sj-index' && $route.name != 'zlk-qd-index'">{{!isCollapsed ? '收起' : '展开'}}</span>
+                    <span class="zk-sq" @click="collapsedSider" v-show="$route.name != 'survey-detail'">{{!isCollapsed ? '收起' : '展开'}}</span>
                     <Content :style="{ minHeight: '280px' }">
                         <router-view></router-view>
                     </Content>

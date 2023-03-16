@@ -535,6 +535,30 @@ export const appRouter = {
             name: 'zlk-sj-add',
             component: () => import('@/views/zlk/add-sj.vue')
         },
+        {
+            path: 'summary/add',
+            meta: {
+                title: '月总结'
+            },
+            name: 'summary-add',
+            component: () => import('@/views/month/add.vue')
+        },
+        {
+            path: 'summary/list',
+            meta: {
+                title: '月总结'
+            },
+            name: 'summary-list',
+            component: () => import('@/views/month/list.vue')
+        },
+        {
+            path: 'summary/show',
+            meta: {
+                title: '月总结'
+            },
+            name: 'summary-show',
+            component: () => import('@/views/month/show.vue')
+        },
         // {
         //     path: 'image/add',
         //     meta: {

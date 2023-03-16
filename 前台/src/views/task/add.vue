@@ -5,12 +5,6 @@
 <template>
     <div>
         <Card title="任务进度管理 - 查看任务">
-            <Alert type="warning" v-if="checkList.length!=0 || checkList1.length!=0">昨日未添加任务进度的人员
-                <template slot="desc">
-                    <div v-if="checkList.length!=0">设计一部：{{checkList.join('、')}}</div>
-                    <div v-if="checkList1.length!=0">设计二部：{{checkList1.join('、')}}</div>
-                </template>
-            </Alert>
             <div class="task-search">
                 <Select class="marin-b10" placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
@@ -309,7 +303,8 @@ export default {
                 {
                     title: '所属系统',
                     key: 'xtmc',
-                    width: 200
+                    width: 200,
+                    sortable: true
                 },
                 {
                     title: 'jira',
@@ -327,10 +322,7 @@ export default {
                     title: '经办人',
                     key: 'jbrName',
                     width: 100,
-                    sortable: true,
-                    sortMethod: function(a,b,type) {
-                        console.log(a,b,type)
-                    }
+                    sortable: true
                 },
                 {
                     title: '开始时间',
@@ -471,6 +463,8 @@ export default {
                     this.userList = _.filter(res.data, (o) => {
                         return o.type === 0;
                     });
+                    this.searchFn();
+                    this.checkTask();
                 }
             });
         },
@@ -657,6 +651,7 @@ export default {
                 jssj: this.search.jssj ? moment(this.search.jssj).format('YYYY-MM-DD') : '',
                 type: 'rz'
             }).then((res) => {
+            console.log(this.search.sjbm)
                 this.list = res.data;
                 this.dataList = res.list;
                 this.$Message.success('查询成功');
@@ -750,6 +745,23 @@ export default {
             checkTask({ updateTime: moment().add(-1, 'days').format('YYYY-MM-DD') }).then(res => {
                 this.checkList = res.data;
                 this.checkList1 = res.data1;
+                var des = '';
+                if (this.checkList.length!=0) {
+                    des +='设计一部：' + this.checkList.join('、');
+                }
+                if (this.checkList1.length!=0) {
+                    if (this.checkList.length!=0) {
+                        des += '<br>';
+                    }
+                    des +='设计二部：' + this.checkList1.join('、');
+                }
+                if (this.type===1 && des!='') {
+                    this.$Notice.warning({
+                        title: '昨日未添加任务进度人员',
+                        duration: 0,
+                        desc: des
+                    });
+                }
             });
         }
     },
@@ -757,8 +769,6 @@ export default {
         this.getSystemList();
         this.getDepartment();
         this.getUserList();
-        this.searchFn();
-        this.checkTask();
     },
     created() {
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
@@ -770,6 +780,8 @@ export default {
         if ( this.type!== 1) {
             this.search.sjbm = JSON.parse(localStorage.getItem('userInfo')).departmentId;
             this.search.jbrId.push(JSON.parse(localStorage.getItem('userInfo')).userName);
+        } else {
+            this.search.sjbm = JSON.parse(localStorage.getItem('userInfo')).departmentId;
         }
     }
 };
