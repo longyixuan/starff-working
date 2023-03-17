@@ -19,9 +19,9 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                        <Button type="primary" :disabled="row.status" size="small" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
-                        <Button type="error" :disabled="row.status" size="small" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
-                        <Button type="warning" :disabled="row.status" size="small" style="margin-right: 5px" @click="commit(index,row.documentId)">上报</Button>
+                        <Button type="primary" :disabled="row.status!='WTJ'" size="small" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
+                        <Button type="error" :disabled="row.status!='WTJ'" size="small" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
+                        <Button type="warning" :disabled="row.status!='WTJ'" size="small" style="margin-right: 5px" @click="commit(index,row.documentId)">上报</Button>
                     </template>
                 </Table>
             </TabPane>
@@ -83,7 +83,7 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                        <Button type="warning" :disabled="!row.status" size="small" style="margin-right: 5px" @click="callbackCommit(index,row.documentId)">退回</Button>
+                        <Button type="warning" :disabled="row.status != 'YTJ'" size="small" style="margin-right: 5px" @click="callbackCommit(index,row.documentId)">退回</Button>
                     </template>
                 </Table>
             </TabPane>

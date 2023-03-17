@@ -159,7 +159,7 @@ const commit = async (ctx) => {
     const result = await Month_col.findOneAndUpdate({
         documentId: req.documentId
     }, {
-        status: true
+        status: 'YTJ'
     });
     ctx.body = {
         code: 1,
@@ -186,7 +186,7 @@ const callback = async (ctx) => {
     const result = await Month_col.findOneAndUpdate({
         documentId: req.documentId
     }, {
-        status: false
+        status: 'YTH'
     });
     ctx.body = {
         code: 1,
