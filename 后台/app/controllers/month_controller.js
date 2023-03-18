@@ -107,6 +107,9 @@ const search = async (ctx) => {
                 userId: {
                     '$in': req.people
                 },
+                status: {
+                    $ne: 'WTJ'
+                },
                 year: req.year,
                 month: req.month
             }

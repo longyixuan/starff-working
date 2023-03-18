@@ -33,77 +33,53 @@
     background: #fff;
     .v-note-wrapper {
         z-index: unset;
+        border: 0;
     }
     .v-show-content {
         background: #fff !important;
     }
-    .markdown-body pre {
-        padding: 16px 20px;
+    .markdown-body {
+        color: #696969;
+        h1,h2,h3,h4,h5 {
+            font-weight: 400;
+        }
+        pre {
+            padding: 16px 20px;
+            position: relative;
+            .hljs-copy {
+                display: none;
+                position: absolute;
+                color: #fff;
+                top: 0;
+                right: 5px;
+                line-height: 20px;
+                cursor: pointer;
+                right: 4px;
+                top: 4px;
+                font-size: 12px;
+                color: #ffffff;
+                background-color: #9999AA;
+                padding: 2px 8px;
+                margin: 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+            &:hover {
+                .hljs-copy {
+                    display: inline;
+                }
+            }
+        }
     }
     .hljs {
         padding: 15px 12px;
         border-radius: 3px;
     }
-    pre {
-        position: relative;
-        .hljs-copy {
-            display: none;
-            position: absolute;
-            color: #fff;
-            top: 0;
-            right: 5px;
-            line-height: 20px;
-            cursor: pointer;
-            right: 4px;
-            top: 4px;
-            font-size: 12px;
-            color: #ffffff;
-            background-color: #9999AA;
-            padding: 2px 8px;
-            margin: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        &:hover {
-            .hljs-copy {
-                display: inline;
-            }
-        }
-    }
 }
-
-.qdgf-view {
-    color: #515a6e;
+.yzj .ivu-card-body{
+    padding: 0;
     .v-note-wrapper {
-        border: none;
-        .v-show-content {
-            padding: 0 !important;
-        }
-    }
-    .markdown-body {
-        h2,h3,h4 {
-            font-weight: 400;
-            color: #515a6e;
-        }
-        h2 {
-            border-bottom: none;
-            &:first-child {
-                margin-top: 0;
-            }
-        }
-        h2 {
-            font-size: 20px;
-            margin: 12px 0;
-        }
-        h3 {
-            font-size: 16px;
-            margin: 8px 0;
-        }
-    }
-    h1.h1-title {
-        font-size: 26px;
-        font-weight: 400;
-        margin: 12px 0;
+        width: 100%;
     }
 }

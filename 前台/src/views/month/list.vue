@@ -3,7 +3,7 @@
 </style>
 <template>
     <Card title="月总结">
-        <Tabs value="my" :animated="false">
+        <Tabs v-model="tabActive" :animated="false">
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">
                     <DatePicker :editable="false" v-model="time" format="yyyy年" type="year" placeholder="工作总结时间"></DatePicker>
@@ -13,19 +13,20 @@
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row.documentName }}</strong>
+                        <Tag color="red" v-if="row.status=='YTH'">已退回</Tag>
                     </template>
                     <template slot-scope="{ row }" slot="time">
                         <strong>{{row.year}}-{{row.month}}</strong>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
                         <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                        <Button type="primary" :disabled="row.status!='WTJ'" size="small" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
-                        <Button type="error" :disabled="row.status!='WTJ'" size="small" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
-                        <Button type="warning" :disabled="row.status!='WTJ'" size="small" style="margin-right: 5px" @click="commit(index,row.documentId)">上报</Button>
+                        <Button type="primary" :disabled="row.status=='YTJ'" size="small" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
+                        <Button type="error" :disabled="row.status=='YTJ'" size="small" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
+                        <Button type="warning" :disabled="row.status=='YTJ'" size="small" style="margin-right: 5px" @click="commit(index,row.documentId)">上报</Button>
                     </template>
                 </Table>
             </TabPane>
-            <TabPane label="部门总结" name="part">
+            <TabPane label="部门总结" name="part" v-if="type!=0">
                 <Row :gutter="20" style="margin-bottom: 10px;">
                     <Col span="16">
                         <Date-picker
@@ -77,6 +78,7 @@
                 <Table border :columns="columnPart" :data="listPart" style="margin-bottom:20px">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row.documentName }}</strong>
+                        <Tag color="red" v-if="row.status=='YTH'">已退回</Tag>
                     </template>
                     <template slot-scope="{ row }" slot="time">
                         <strong>{{row.year}}-{{row.month}}</strong>
@@ -104,6 +106,7 @@
     export default {
         data() {
             return {
+                tabActive: 'my',
                 checkList: '',
                 checkList1: '',
                 list: [],
@@ -192,7 +195,7 @@
                 this.confirm(title,() => {
                     mdMonthCommit({'documentId': documentId}).then(res => {
                         if (res.code==1) {
-                            this.$set(this.list[indx],'status', true);
+                            this.$set(this.list[indx],'status', 'YTJ');
                             this.$Message.success('上报成功');
                         }
                     })
@@ -203,7 +206,7 @@
                 this.confirm(title,() => {
                     mdMonthCallback({'documentId': documentId}).then(res => {
                         if (res.code == 1) {
-                            this.$set(this.listPart[indx],'status', false);
+                            this.$set(this.listPart[indx],'status', 'YTH');
                             this.$Message.success('退回成功');
                         }
                     })
@@ -295,6 +298,9 @@
             this.initList();
             this.getUserList();
             this.type = JSON.parse(localStorage.getItem('userInfo')).type;
+            if (this.type!=0) {
+                this.tabActive = 'part';
+            }
             this.peopleAll();
         }
     }

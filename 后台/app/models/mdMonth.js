@@ -45,10 +45,6 @@ const mdMonthSchema = new Schema({
         required: true
     },
     status: {
-        type: Boolean,
-        default: false
-    },
-    status: {
         type: String,
         default: 'WTJ'
     }

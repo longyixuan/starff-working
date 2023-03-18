@@ -4,7 +4,7 @@
 </style>
 <template>
     <div>
-        <Card class="marginB-20" title="月总结">
+        <Card class="marginB-20 yzj" title="月总结">
             <h1 class="summary-view-h1" slot="title">
                 {{title}}
                 <div class="summary-view-time"><Icon type="md-calendar" size="26"/></div>
@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-import { mdMonthEdit, mdMonthAdd, mdMonthDetails } from '@/api/index';
+import { mdMonthDetails } from '@/api/index';
 import moment from "moment";
 export default {
     data() {
