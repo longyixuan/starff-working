@@ -37,6 +37,10 @@ const mdSchema = new Schema({
         type: String,
         required: false
     }
-}, { collection: 'md', versionKey: false});
+}, {
+    collection: 'md',
+    versionKey: false,
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at'}
+});
 
 module.exports = mongoose.model('md', mdSchema);

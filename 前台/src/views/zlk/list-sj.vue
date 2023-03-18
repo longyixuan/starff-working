@@ -10,6 +10,9 @@
             <template slot-scope="{ row }" slot="titleDes">
                 {{row.titlePid ? row.titlePidDes + '-' : ''}}{{row.titleDes}}
             </template>
+            <template slot-scope="{ row }" slot="updated_at">
+                {{timeFormat(row.updated_at)}}
+            </template>
             <template slot-scope="{ row }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" target="_blank" :to="'/doc/sj?id='+row.title">预览</Button>
                 <Button type="primary" size="small" :to="'/zlk/sjadd?id='+row.id">编辑</Button>
@@ -18,6 +21,7 @@
     </Card>
 </template>
 <script>
+import moment from 'moment';
 import { mdList } from '@/api/index';
 export default {
     name: 'taskZt',
@@ -40,6 +44,12 @@ export default {
                     width: 120
                 },
                 {
+                    title: '更新时间',
+                    key: 'updated_at',
+                    width: 170,
+                    slot: 'updated_at',
+                },
+                {
                     title: '操作',
                     slot: 'action',
                     width: 140,
@@ -54,6 +64,9 @@ export default {
                 this.data = res.data;
             });
         },
+        timeFormat(utcTime) {
+            return moment(utcTime).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
+        }
     },
     mounted() {
         this.init();

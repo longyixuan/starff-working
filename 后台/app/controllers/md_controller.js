@@ -78,7 +78,9 @@ const list = async (ctx, next) => {
                 userName: {$arrayElemAt:["$userInfo.nickName",0]},
                 titleDes: {$arrayElemAt:["$mdType.name",0]},
                 titlePid: {$arrayElemAt:["$mdType.pid",0]},
-                titlePidDes: {$arrayElemAt:["$mdType.pidDes",0]}
+                titlePidDes: {$arrayElemAt:["$mdType.pidDes",0]},
+                created_at: '$created_at',
+                updated_at: '$updated_at'
             }
         },
     ]);
@@ -168,7 +170,8 @@ const detailByTitle = async (ctx, next) => {
                 userName: {$arrayElemAt:["$userInfo.nickName",0]},
                 titleDes: {$arrayElemAt:["$mdType.name",0]},
                 mdCode: '$mdCode',
-                htmlCode: '$htmlCode'
+                htmlCode: '$htmlCode',
+                updatedAt: '$updated_at'
             }
         },
     ]);
