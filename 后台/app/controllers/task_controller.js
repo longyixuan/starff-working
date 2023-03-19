@@ -557,6 +557,62 @@ const ztList = async (ctx, next) => {
     };
 }
 
+const tongji = async (ctx, next) => {
+    const req = ctx.request.body;
+    let result = await TaskLog_col.aggregate([
+        // {
+        //     $match: {
+        //         'updateTime': {
+        //             $gte: new Date(req.startDate),
+        //             $lte: new Date(req.endDate)
+        //         }
+        //     }
+        // },
+        {
+            $group: {
+                _id: {
+                    updateTime: '$updateTime',
+                },
+                content: {
+                    $push: {
+                        "updateTime": '$updateTime',
+                        "id": "$id",
+                        "rwmc": "$rwmc",
+                        "xtId": "$xtId",
+                        "rwlx": "$rwlx",
+                        "rwzt": "$rwzt",
+                        "jbrId": "$jbrId",
+                        "jira": "$jira",
+                        "kssj": "$kssj",
+                        "jssj": "$jssj",
+                        "bz": "$bz",
+                        "wcsj": "$wcsj"
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                date: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$_id.updateTime"
+                    }
+                },
+                count: {
+                    $size: '$content'
+                }
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        msg: '查询成功',
+        data: result
+    };
+}
+
 module.exports = {
     add,
     getList,
@@ -570,5 +626,6 @@ module.exports = {
     ztList,
     ztAdd,
     ztEdit,
-    ztDel
+    ztDel,
+    tongji
 }

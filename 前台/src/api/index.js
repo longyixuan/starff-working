@@ -679,6 +679,10 @@ export const checkTask = (params) => {
     return postRequest(`/task/check`,params)
 }
 
+export const tongji = (params) => {
+    return postRequest(`/task/tongji`,params)
+}
+
 //-----------------------任务管理--------------------------------//
 
 //-----------------------资料库--------------------------------//

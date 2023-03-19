@@ -18,6 +18,7 @@ router.post('/task/log', task_controller.getLog);
 router.post('/task/daylog', task_controller.getDayLog);
 router.post('/task/history', task_controller.hisLog);
 router.post('/task/check', task_controller.checkLog);
+router.post('/task/tongji', task_controller.tongji);
 
 router.post('/task/zt/list', task_controller.ztList);
 router.post('/task/zt/add', task_controller.ztAdd);

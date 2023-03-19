@@ -24,6 +24,7 @@
     "simplemde": "^1.11.2",
     "view-design": "4.4.0",
     "vue": "^2.5.17",
+    "vue-calendar-heatmap": "^0.8.4",
     "vue-clipboard2": "^0.3.1",
     "vue-router": "^3.0.1",
     "vue-simplemde": "^1.0.3",

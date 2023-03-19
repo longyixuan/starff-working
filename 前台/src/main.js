@@ -26,6 +26,7 @@ Vue.config.productionTip = false
 Vue.use(ViewUI);
 Vue.use(VueWechatTitle);
 Vue.use(mavonEditor);
+
 // 挂载全局使用的方法
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.postRequest = postRequest;
