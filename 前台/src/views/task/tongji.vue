@@ -12,7 +12,7 @@
                 tooltip-unit="条任务"
                 :locale="locale"
                 @day-click="dayClick"
-                :max="20"/>
+                :max="10"/>
         </Card>
     </div>
 </template>
@@ -48,7 +48,10 @@ export default {
         }
     },
     mounted() {
-        tongji().then(res => {
+        tongji({
+            startDate: this.startDate.format("YYYY-MM-DD"),
+            endDate: this.endDate.format("YYYY-MM-DD")
+        }).then(res => {
             this.values = res.data;
         });
     }

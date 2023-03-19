@@ -560,14 +560,14 @@ const ztList = async (ctx, next) => {
 const tongji = async (ctx, next) => {
     const req = ctx.request.body;
     let result = await TaskLog_col.aggregate([
-        // {
-        //     $match: {
-        //         'updateTime': {
-        //             $gte: new Date(req.startDate),
-        //             $lte: new Date(req.endDate)
-        //         }
-        //     }
-        // },
+        {
+            $match: {
+                'updateTime': {
+                    $gte: new Date(req.startDate),
+                    $lte: new Date(req.endDate)
+                }
+            }
+        },
         {
             $group: {
                 _id: {
