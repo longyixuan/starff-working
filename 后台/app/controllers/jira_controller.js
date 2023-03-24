@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-07-12 10:05:56
+ * @Last Modified time: 2023-03-23 16:16:51
  */
 
 const uuidv1 = require('uuid/v1');
@@ -184,15 +184,56 @@ const getDetailP = async (ctx, next) => {
 const getDetailM = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    const userListSj = req.userListSj;
-    const userListQd = req.userListQd;
-    let seachConfig = {
-        year: req.year
-    };
-    if (req.month) { //按月
-        seachConfig.month = req.month;
-    } else { //全年
-    }
+    const userList = await User_col.aggregate([
+        {
+            $match: {
+                departmentId: req.departmentId ? req.departmentId : { $ne: req.departmentId },
+                defaultRole: {
+                    $ne: ''
+                }
+            }
+        },
+        {
+            $sort: {
+                order: 1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    defaultRole: '$defaultRole',
+                },
+                userNameList: {
+                    $push: '$userName'
+                },
+                nickNameList: {
+                    $push: '$nickName'
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                defaultRole: '$_id.defaultRole',
+                userNameList: '$userNameList',
+                nickNameList: '$nickNameList'
+            }
+        }
+    ])
+    let userListSj = [];
+    let userListQd = [];
+    let userListSjName = [];
+    let userListQdName = [];
+    userList.forEach(item => {
+        if (item.defaultRole == 'qd') {
+            userListQd = item.userNameList;
+            userListQdName = item.nickNameList;
+        }
+        if (item.defaultRole == 'sj') {
+            userListSj = item.userNameList;
+            userListSjName = item.nickNameList;
+        }
+    })
     const sj = await jira_col.aggregate([
         {
             $lookup: {
@@ -203,25 +244,31 @@ const getDetailM = async (ctx, next) => {
             }
         },
         {
+            $project: {
+                userName: '$userName',
+                nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                year: '$year',
+                month: '$month',
+                total: '$total',
+                bug: '$bug',
+                total1: '$total1',
+                bug1: '$bug1'
+            }
+        },
+        {
             $match: {
-                ...seachConfig,
-                ...{
-                    userName: {
-                        $in: userListSj
-                    },
-                }}
+                year: req.year,
+                month: req.month ? req.month : { $ne: req.month },
+                userName: {
+                    $in: userListSj
+                }
+            }
         },
         {
             $group: {
                 _id: {
                     userName: '$userName',
-                    user_info: '$user_info'
-                },
-                content: {
-                    $push: {
-                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
-                        userName: '$userName'
-                    }
+                    nickName: '$nickName'
                 },
                 total: {
                     $sum: '$total'
@@ -240,8 +287,8 @@ const getDetailM = async (ctx, next) => {
         {
             $project: {
                 _id: 0,
-                userName: {$arrayElemAt:["$content.userName",0]},
-                nickName: {$arrayElemAt:["$content.nickName",0]},
+                userName: "$_id.userName",
+                nickName: "$_id.nickName",
                 total: {'$subtract':['$total','$bug']},
                 bug: '$bug',
                 total1: {'$subtract':['$total1','$bug1']},
@@ -265,25 +312,31 @@ const getDetailM = async (ctx, next) => {
             }
         },
         {
+            $project: {
+                userName: '$userName',
+                nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                year: '$year',
+                month: '$month',
+                total: '$total',
+                bug: '$bug',
+                total1: '$total1',
+                bug1: '$bug1'
+            }
+        },
+        {
             $match: {
-                ...seachConfig,
-                ...{
-                    userName: {
-                        $in: userListQd
-                    }
-                }}
+                year: req.year,
+                month: req.month ? req.month : { $ne: req.month },
+                userName: {
+                    $in: userListQd
+                }
+            }
         },
         {
             $group: {
                 _id: {
                     userName: '$userName',
-                    user_info: '$user_info'
-                },
-                content: {
-                    $push: {
-                        nickName: {$arrayElemAt:["$user_info.nickName",0]},
-                        userName: '$userName'
-                    }
+                    nickName: '$nickName'
                 },
                 total: {
                     $sum: '$total'
@@ -302,8 +355,8 @@ const getDetailM = async (ctx, next) => {
         {
             $project: {
                 _id: 0,
-                userName: {$arrayElemAt:["$content.userName",0]},
-                nickName: {$arrayElemAt:["$content.nickName",0]},
+                userName: "$_id.userName",
+                nickName: "$_id.nickName",
                 total: {'$subtract':['$total','$bug']},
                 bug: '$bug',
                 total1: {'$subtract':['$total1','$bug1']},
@@ -322,7 +375,9 @@ const getDetailM = async (ctx, next) => {
         msg: '查询成功',
         data: {
             sj: sj,
-            qd: qd
+            qd: qd,
+            sjList: userListSjName,
+            qdList: userListQdName
         }
     };
 }
@@ -330,13 +385,32 @@ const getDetailM = async (ctx, next) => {
 const getDetailY = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    let seachConfig = {
-        year: req.year
-    };
     const result = await jira_col.aggregate([
         {
+            $lookup: {
+                from: "user",
+                localField: "userName",
+                foreignField: "userName",
+                as: "user_info"
+            }
+        },
+        {
+            $project: {
+                userName: '$userName',
+                nickName: {$arrayElemAt:["$user_info.nickName",0]},
+                departmentId: {$arrayElemAt:["$user_info.departmentId",0]},
+                year: '$year',
+                month: '$month',
+                total: '$total',
+                bug: '$bug',
+                total1: '$total1',
+                bug1: '$bug1'
+            }
+        },
+        {
             $match: {
-                ...seachConfig
+                year: req.year,
+                departmentId: req.departmentId ? req.departmentId : { $ne: req.departmentId },
             }
         },
         {

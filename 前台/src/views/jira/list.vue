@@ -45,16 +45,12 @@
                     <Input placeholder="bug数(未完成)" type="text" number v-model="data[index].bug1" v-if="editStatus"/>
                     <span v-else>{{row.bug1}}</span>
                 </template>
-                <!-- <template slot-scope="{ row, index }" slot="action">
-                    <Button size="small" type="primary" @click="edit(row,index)">修改</Button>
-                    <Button size="small" type="error" @click="del(row.jiraId,index)" style="margin-left: 5px;">删除</Button>
-                </template> -->
             </Table>
         </Card>
         <Modal title="录入" v-model="modal" width="1000">
             <Row :gutter="20">
-                <Col span="12"><Input type="textarea" v-model="textarea" :rows="20"></Input></Col>
-                <Col span="12"><Input type="textarea" v-model="textarea1" :rows="20"></Input></Col>
+                <Col span="12"><Input type="textarea" v-model="textarea" :rows="20" placeholder="已完成"></Input></Col>
+                <Col span="12"><Input type="textarea" v-model="textarea1" :rows="20" placeholder="未完成"></Input></Col>
             </Row>
             <div slot="footer">
                 <Button type="text" @click="modal=false">取消</Button>
@@ -67,7 +63,6 @@
     import {
         getAllUserData,
         addJira,
-        editJira,
         getJiraList,
         delJira
     } from "@/api/index";

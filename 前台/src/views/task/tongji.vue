@@ -7,12 +7,12 @@
         <Card title="任务进度管理 - 统计">
             <calendar-heatmap
                 :values="values"
-                :end-date="Date()"
+                :end-date="endDate"
                 no-data-text="无数据"
                 tooltip-unit="条任务"
                 :locale="locale"
                 @day-click="dayClick"
-                :max="10"/>
+                :max="30"/>
         </Card>
     </div>
 </template>
@@ -28,8 +28,7 @@ export default {
     data() {
         return {
             values: [],
-            endDate: moment().endOf('year'),
-            startDate: moment().startOf('year'),
+            endDate: moment(),
             locale: {
                 months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
                 days: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
@@ -49,8 +48,8 @@ export default {
     },
     mounted() {
         tongji({
-            startDate: this.startDate.format("YYYY-MM-DD"),
-            endDate: this.endDate.format("YYYY-MM-DD")
+            startDate: moment().startOf('year').format("YYYY-MM-DD"),
+            endDate: moment().endOf('year').format("YYYY-MM-DD")
         }).then(res => {
             this.values = res.data;
         });

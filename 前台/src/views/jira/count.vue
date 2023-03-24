@@ -17,10 +17,14 @@
             <Tabs type="card" value="name1" :animated="false" @on-click="tabClick">
                 <TabPane label="按月查看" name="name1">
                     <div style="margin-bottom: 20px;" class="clearfix">
-                        <Select @on-change="searchM" filterable v-model="searchData.month" style="width: 160px;margin-right:10px;" placeholder="请选择月份">
+                        <Select filterable v-model="searchData.month" style="width: 160px;margin-right:10px;" placeholder="月份">
                             <Option value="全年">全年</Option>
                             <Option :value="item" :key="item" v-for="item in monthList">{{parseInt(item)}}月</Option>
                         </Select>
+                        <Select clearable v-model="searchData.departmentId" style="width: 160px;margin-right:10px;" placeholder="部门">
+                            <Option :value="item.id" :key="item.id" v-for="item in partList">{{item.title}}</Option>
+                        </Select>
+                        <Button type="primary" @click="searchM">查询</Button>
                     </div>
                     <Divider style="font-weight: 700">已完成（jira总数：{{totalNumM+totalNumM1+bugNumM+bugNumM1}}，任务数：{{totalNumM+totalNumM1}}，bug数：{{bugNumM+bugNumM1}}）</Divider>
                         <Row>
@@ -46,6 +50,10 @@
                         </Row>
                 </TabPane>
                 <TabPane label="按年查看" name="name3">
+                    <Select clearable v-model="searchData.departmentId" style="width: 160px;margin-right:10px;" placeholder="部门">
+                        <Option :value="item.id" :key="item.id" v-for="item in partList">{{item.title}}</Option>
+                    </Select>
+                    <Button type="primary" @click="searchY">查询</Button>
                     <Divider style="font-weight: 700">已完成（jira总数：{{totalNumY+bugNumY}}，任务数：{{totalNumY}}，bug数：{{bugNumY}}）</Divider>
                     <div class="map" id="map-finshed-y"></div>
                     <Divider style="font-weight: 700">未完成（jira总数：{{total1NumY+bug1NumY}}，任务数：{{total1NumY}}，bug数：{{bug1NumY}}）</Divider>
@@ -71,6 +79,7 @@
     import {
         getAllUserData,
         getJiraDetail,
+        initDepartment
     } from "@/api/index";
     import echarts from "echarts";
     import {
@@ -86,11 +95,8 @@
                 modal: false,
                 jiraId: '',
                 userList: [],
+                partList: [],  //部门列表
                 monthList: ['01', '02', '03', '04', '05','06', '07', '08', '09', '10', '11', '12'],
-                userListSj: ['hecx', 'yanq', 'gaos', 'changxq', 'sunl', 'cuiyh'], //设计
-                userListSjName: ['崔永辉', '孙玲', '畅雪琦', '高爽', '颜情', '何晨曦'], //设计
-                userListQd: ['wangtl', 'wangzhen', 'guoxq', 'weij', 'mayx', 'jiaxd', 'hanwm', 'yinxl', 'wangly', 'liugw'], // 前端
-                userListQdName: ['卫杰', '马艳雄', '尹晓龙', '王利英', '贾晓东', '韩文明', '郭晓琼', '王振', '王天乐', '刘国威'],
                 userName: '',
                 date: new Date(),
                 total: 0,
@@ -101,6 +107,7 @@
                 searchData: {
                     userName: '',
                     month: '全年',
+                    departmentId: '', // 选中部门
                     isFinshed: true
                 },
                 bugNumP: 0,
@@ -185,7 +192,7 @@
                     yAxis: [
                         {
                             type: 'value',
-                            name: 'jira数',
+                            name: '任务数',
                             min: 0,
                             axisLabel: {
                                 formatter: '{value} 个'
@@ -202,7 +209,7 @@
                     ],
                     series: [
                         {
-                            name: 'jira数',
+                            name: '任务数',
                             type: 'bar',
                             barWidth : 30,//柱图宽度
                             tooltip: {
@@ -284,6 +291,7 @@
                 let searchData = {
                     month: this.searchData.month==='全年'?'':this.searchData.month,
                     year: this.year,
+                    departmentId: this.searchData.departmentId,
                     userListSj: this.userListSj, //设计
                     userListQd: this.userListQd
                 };
@@ -306,7 +314,7 @@
                         let mapFinshed1 = echarts.init(document.getElementById("map-finshed-m1"));
                         let mapUnFinshed1 = echarts.init(document.getElementById("map-unfinsed-m1"));
                         let result = {bug: [], total: [], bug1: [], total1: []};
-                        this.option.xAxis[0].data = this.userListSjName;
+                        this.option.xAxis[0].data = res.data.sjList;
                         if (res.data.sj.length>0) {
                             this.option.xAxis[0].data = [];
                             for(let i = 0; i<res.data.sj.length;i++) {
@@ -334,7 +342,7 @@
                         mapUnFinshed.setOption(this.option);
                         this.option.xAxis[0].data = [];
                         let result1 = {bug: [], total: [], bug1: [], total1: []};
-                        this.option.xAxis[0].data = this.userListQdName;
+                        this.option.xAxis[0].data = res.data.QdList;
                         if (res.data.qd.length>0) {
                             this.option.xAxis[0].data = [];
                             for(let i = 0; i<res.data.qd.length;i++) {
@@ -367,6 +375,7 @@
             searchY() {
                 var searchData = {
                     year: this.year,
+                    departmentId: this.searchData.departmentId
                 };
                 getJiraDetail('year', searchData).then(res => {
                     if (res.code === 1) {
@@ -411,15 +420,22 @@
                         });
                     }
                 });
+            },
+            initDepartment() { //获取部门
+                initDepartment().then(res => {
+                    this.partList = res.data;
+                });
             }
         },
         mounted() {
+            this.searchData.departmentId = JSON.parse(localStorage.getItem('userInfo')).departmentId;
             if (this.getStore('year')) {
                 this.year = getStore('year');
             } else {
                 this.year = moment().format('YYYY');
                 setStore('year', moment().format('YYYY'));
             }
+            this.initDepartment();
             this.getUserList();
             this.searchM();
         }
