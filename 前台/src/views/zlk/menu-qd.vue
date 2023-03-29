@@ -122,7 +122,7 @@ export default {
                         id: id,
                     }).then((res) => {
                         if (res.code === 1) {
-                            this.data.splice(index, 1);
+                            this.init();
                             this.$Message.success('删除成功');
                         } else {
                             this.$Message.error(res.msg);

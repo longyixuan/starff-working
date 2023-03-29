@@ -23,7 +23,7 @@
                 <div class="qdgf qdgf-view">
                     <Layout style="background: #fff;" v-if="title">
                         <Content style="padding-right: 20px">
-                             <h1 class="h1-title">{{titleDes}}</h1>
+                             <h1 class="h1-title">{{titleDes}}<span style="color: #999; font-size: 14px;">（{{updateTime}}）</span></h1>
                             <mavon-editor :toolbarsFlag="false" :ishljs="true" :boxShadow="false" codeStyle="monokai" :toolbars="toolbars" ref="md" defaultOpen="preview" :editable="false" v-model="value" :subfield="false"></mavon-editor>
                         </Content>
                         <Sider width="288" :style="{background: '#fff'}" v-show="tocs.length>0">
@@ -83,6 +83,7 @@ export default {
             title: '',
             titleDes: '',
             renderHtml: '',
+            updateTime: '',
             menuList: [],
             mdListData: [],
             toolbars: {
@@ -217,6 +218,7 @@ export default {
                     this.titleDes = res2.data.titleDes;
                     this.value = res2.data.mdCode;
                     this.renderHtml = res2.data.htmlCode;
+                    this.updateTime = res2.data.updateTime;
                     this.$nextTick(() => {
                         this.createMl();
                     });

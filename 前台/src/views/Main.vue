@@ -51,7 +51,7 @@
                                 <MenuItem name="12-1" to="/jira-list">录入</MenuItem>
                                 <MenuItem name="12-2" to="/jira-count">查看</MenuItem>
                             </Submenu>
-                            <Submenu name="9" v-if="type === 1 || ['lugp', 'cuiyh', 'sunl', 'changxq', 'gaos', 'yanq'].indexOf(username) !== -1">
+                            <Submenu name="9" v-if="type === 1 || defaultRole == 'sj'">
                                 <template slot="title"> <Icon type="md-flag" />视觉作品数量记录 </template>
                                 <MenuItem name="9-1" to="/design/tag" v-if="type === 1">选项设置</MenuItem>
                                 <MenuItem name="9-2" to="/design">录入</MenuItem>
@@ -123,6 +123,7 @@ export default {
         return {
             username: '',
             userId: '',
+            defaultRole: '',
             type: '',
             value: '',
             modal: false,
@@ -172,6 +173,7 @@ export default {
     mounted() {
         this.username = JSON.parse(localStorage.getItem('userInfo')).userName;
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
+        this.defaultRole = JSON.parse(localStorage.getItem('userInfo')).defaultRole;
         // this.$store.dispatch('getMsgList');
         this.$store.dispatch('getRole');
     }

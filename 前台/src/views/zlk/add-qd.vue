@@ -17,7 +17,7 @@
 </template>
 <script>
 import { listZlkType, imageAdd, mdAdd, mdUpdata, mdDetail } from '@/api/index';
-
+import moment from 'moment';
 export default {
     computed: {
         prop() {
@@ -116,7 +116,8 @@ export default {
                     user: JSON.parse(localStorage.getItem('userInfo')).userName,
                     mdCode: value,
                     htmlCode: render,
-                    type: this.type
+                    type: this.type,
+                    updateTime: moment().format('YYYY-MM-DD HH:mm:ss')
                 }).then((res) => {
                     this.$Message.success('保存成功');
                 });
@@ -126,7 +127,8 @@ export default {
                     user: JSON.parse(localStorage.getItem('userInfo')).userName,
                     mdCode: value,
                     htmlCode: render,
-                    type: this.type
+                    type: this.type,
+                    updateTime: moment().format('YYYY-MM-DD HH:mm:ss')
                 }).then((res) => {
                     if (res.code === 1) {
                         this.$Message.success('保存成功');

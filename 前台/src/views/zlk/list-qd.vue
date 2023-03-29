@@ -11,7 +11,7 @@
                 {{row.titlePid ? row.titlePidDes + '-' : ''}}{{row.titleDes}}
             </template>
             <template slot-scope="{ row }" slot="updated_at">
-                {{timeFormat(row.updated_at)}}
+                {{row.updateTime}}
             </template>
             <template slot-scope="{ row }" slot="action">
                 <Button type="primary" size="small" style="margin-right: 5px" target="_blank" :to="'/doc/qd?id='+row.title">预览</Button>
@@ -63,9 +63,6 @@ export default {
             mdList({type: 'qd'}).then((res) => {
                 this.data = res.data;
             });
-        },
-        timeFormat(utcTime) {
-            return moment(utcTime).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
         }
     },
     mounted() {

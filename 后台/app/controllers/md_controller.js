@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-07-21 13:43:59
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-03-03 08:55:59
+ * @Last Modified time: 2023-03-27 17:05:41
  */
 
 const Md_col = require('./../models/md');
@@ -75,6 +75,7 @@ const list = async (ctx, next) => {
                 user: '$user',
                 title: '$title',
                 id: '$id',
+                updateTime: '$updateTime',
                 userName: {$arrayElemAt:["$userInfo.nickName",0]},
                 titleDes: {$arrayElemAt:["$mdType.name",0]},
                 titlePid: {$arrayElemAt:["$mdType.pid",0]},
@@ -125,7 +126,8 @@ const detail = async (ctx, next) => {
                 userName: {$arrayElemAt:["$userInfo.nickName",0]},
                 titleDes: {$arrayElemAt:["$mdType.name",0]},
                 mdCode: '$mdCode',
-                htmlCode: '$htmlCode'
+                htmlCode: '$htmlCode',
+                updateTime: '$updateTime'
             }
         },
     ]);
@@ -171,6 +173,7 @@ const detailByTitle = async (ctx, next) => {
                 titleDes: {$arrayElemAt:["$mdType.name",0]},
                 mdCode: '$mdCode',
                 htmlCode: '$htmlCode',
+                updateTime: '$updateTime',
                 updatedAt: '$updated_at'
             }
         },
