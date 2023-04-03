@@ -487,14 +487,14 @@ export const appRouter = {
             name: 'task-guidang',
             component: () => import('@/views/task/guidang.vue')
         },
-        // {
-        //     path: 'task/tongji',
-        //     meta: {
-        //         title: '任务管理'
-        //     },
-        //     name: 'task-tongji',
-        //     component: () => import('@/views/task/tongji.vue')
-        // },
+        {
+            path: 'task/tongji',
+            meta: {
+                title: '任务管理'
+            },
+            name: 'task-tongji',
+            component: () => import('@/views/task/tongji.vue')
+        },
         {
             path: 'zlk/sjml',
             meta: {

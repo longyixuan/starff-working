@@ -81,7 +81,7 @@ export default {
             if (this.value == '') {
                 this.$Message.error('内容不可为空');
             }
-            if (this.id) {
+            if (this.documentId) {
                 mdMonthEdit({
                     documentId: this.documentId,
                     documentName: this.title,

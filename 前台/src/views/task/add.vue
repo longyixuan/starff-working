@@ -463,8 +463,12 @@ export default {
                     this.userList = _.filter(res.data, (o) => {
                         return o.type === 0;
                     });
-                    this.searchFn();
-                    this.checkTask();
+                    if (this.type === 1) {
+                        this.searchFnRz();
+                        this.checkTask();
+                    } else {
+                        this.searchFn();
+                    }
                 }
             });
         },
@@ -777,11 +781,12 @@ export default {
         }
         this.getTaskTagList();
         this.weekDate = getAllWeekRange(new Date().getFullYear());
-        if ( this.type!== 1) {
+        if ( this.type!== 1) {  // 普通用户查询
             this.search.sjbm = JSON.parse(localStorage.getItem('userInfo')).departmentId;
             this.search.jbrId.push(JSON.parse(localStorage.getItem('userInfo')).userName);
-        } else {
+        } else { // 管理员查询
             this.search.sjbm = JSON.parse(localStorage.getItem('userInfo')).departmentId;
+            this.quickTime('week');
         }
     }
 };
