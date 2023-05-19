@@ -496,6 +496,30 @@ export const appRouter = {
             component: () => import('@/views/task/tongji.vue')
         },
         {
+            path: 'tasklist/config',
+            meta: {
+                title: '任务清单管理'
+            },
+            name: 'tasklist-config',
+            component: () => import('@/views/tasklist/config.vue')
+        },
+        {
+            path: 'tasklist/list',
+            meta: {
+                title: '任务清单管理'
+            },
+            name: 'tasklist-list',
+            component: () => import('@/views/tasklist/list.vue')
+        },
+        {
+            path: 'tasklist/add',
+            meta: {
+                title: '任务清单管理'
+            },
+            name: 'tasklist-add',
+            component: () => import('@/views/tasklist/add.vue')
+        },
+        {
             path: 'zlk/sjml',
             meta: {
                 title: '资料库'

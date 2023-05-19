@@ -685,6 +685,30 @@ export const tongji = (params) => {
 
 //-----------------------任务管理--------------------------------//
 
+
+//-----------------------任务清单管理--------------------------------//
+
+export const addTaskConfig = (params) => {
+    return postRequest(`/tasklist/config/add`,params)
+}
+
+export const editTaskConfig = (params) => {
+    return postRequest(`/tasklist/config/edit`,params)
+}
+
+export const getTaskConfigList = (params) => {
+    return postRequest(`/tasklist/config/list`,params)
+}
+
+export const delTaskConfig = (params) => {
+    return postRequest(`/tasklist/config/del`,params)
+}
+
+export const addTasklist = (params) => {
+    return postRequest(`/tasklist/add`,params)
+}
+
+//-----------------------任务清单管理--------------------------------//
 //-----------------------资料库--------------------------------//
 export const addZlkType = (params) => {
     return postRequest(`/mdtype/add`,params)
