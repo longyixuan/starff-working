@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:39:35 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-05-19 16:40:45
+ * @Last Modified time: 2023-05-24 18:46:38
  */
 
 const Router = require('koa-router');
@@ -36,6 +36,8 @@ router.post('/tasklist/list', tasklist_controller.List);
 router.post('/tasklist/add', tasklist_controller.Add);
 router.post('/tasklist/edit', tasklist_controller.Edit);
 router.post('/tasklist/del', tasklist_controller.Del);
+router.post('/tasklist/detail', tasklist_controller.Detail);
+
 
 
 module.exports = router;

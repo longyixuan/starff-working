@@ -75,11 +75,7 @@
                                 <!-- <MenuItem name="11-3" to="/vote/mysurvey">我的投票</MenuItem> -->
                             </Submenu>
                             <MenuItem name="11" to="/vote/mysurvey" v-else><Icon type="md-happy" />投票查看</MenuItem>
-                            <Submenu name="17">
-                                <template slot="title"><Icon type="md-clipboard" />任务清单管理</template>
-                                <MenuItem name="17-1" to="/tasklist/config">状态管理</MenuItem>
-                                <MenuItem name="17-2" to="/tasklist/list">任务清单管理</MenuItem>
-                            </Submenu>
+                             <MenuItem name="17" to="/tasklist/list"><Icon type="md-clipboard" />任务清单管理</MenuItem>
                             <Submenu name="14" v-if="type === 1">
                                 <template slot="title"><Icon type="ios-paper-plane" />任务进度管理</template>
                                 <MenuItem name="14-1" to="/task/zt">状态管理</MenuItem>

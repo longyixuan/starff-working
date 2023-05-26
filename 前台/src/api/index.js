@@ -708,6 +708,22 @@ export const addTasklist = (params) => {
     return postRequest(`/tasklist/add`,params)
 }
 
+export const editTasklist = (params) => {
+    return postRequest(`/tasklist/edit`,params)
+}
+
+export const getTaskDetail = (params) => {
+    return postRequest(`/tasklist/detail`,params)
+}
+
+export const getTaskList = (params) => {
+    return postRequest(`/tasklist/list`,params)
+}
+
+export const removeTask = (params) => {
+    return postRequest(`/tasklist/del`,params)
+}
+
 //-----------------------任务清单管理--------------------------------//
 //-----------------------资料库--------------------------------//
 export const addZlkType = (params) => {

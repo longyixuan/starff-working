@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2022-11-11 09:38:17
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-05-19 18:23:17
+ * @Last Modified time: 2023-05-24 18:39:21
  */
 
 const mongoose = require('mongoose');
@@ -18,27 +18,11 @@ const taskListSchema = new Schema(
             type: String,
             required: true
         },
-        content: [
-            {
-                lmmc: { // 栏目名称
-                    type: String,
-                    required: true
-                },
-                ymsm: { // 页面说明
-                    type: String
-                },
-                zt: { // 状态
-                    type: String
-                },
-                sjsm: { // 设计说明
-                    type: String
-                },
-                kfsm: {  // 开发说明
-                    type: String
-                },
-                khd: []  // 终端
-            }
-        ],
+        list: {
+            type: Array,
+            required: true,
+            default: []
+        }
     },
     {
         collection: 'taskList',

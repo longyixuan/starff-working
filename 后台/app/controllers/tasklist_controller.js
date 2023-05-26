@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-05-19 18:04:49
+ * @Last Modified time: 2023-05-26 17:00:32
  */
 
 const Tasklist_Congig = require('./../models/tasklistConfig');
@@ -54,14 +54,14 @@ const ztDel = async (ctx, next) => {
     };
 }
 const ztEnum = new Map([
-    ['DSJ', '待设计'],
-    ['SJZ', '设计中'],
-    ['DKF', '待开发'],
-    ['KFZ', '开发中'],
-    ['DCS', '待测试'],
-    ['CSZ', '测试中'],
-    ['DFB', '待发布'],
-    ['YFB', '已发布']
+    ['dsj', '待设计'],
+    ['sjz', '设计中'],
+    ['dkf', '待开发'],
+    ['kfz', '开发中'],
+    ['dcs', '待测试'],
+    ['csz', '测试中'],
+    ['dfb', '待发布'],
+    ['yfb', '已发布']
 ]);
 
 const ztList = async (ctx, next) => {
@@ -84,7 +84,7 @@ const Add = async (ctx, next) => {
     await Tasklist.create({
         id: uuidv1(),
         name: req.name,
-        content: req.content
+        list: JSON.parse(req.list)
     });
     ctx.body = {
         code: 1,
@@ -99,7 +99,7 @@ const Edit = async (ctx, next) => {
         id: req.id
     }, {
         name: req.name,
-        order: req.order
+        list: JSON.parse(req.list)
     });
     const result = await Tasklist.findOne({
         id: req.id
@@ -125,12 +125,31 @@ const Del = async (ctx, next) => {
 
 const List = async (ctx, next) => {
     ctx.status = 200;
-    let result = await Tasklist.find({}).sort({order: 1 });
+    let result = await Tasklist.find({});
     ctx.body = {
         code: 1,
         msg: '查询成功',
         data: result
     };
+}
+
+const Detail = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let result = await Tasklist.findOne({id: req.id});
+    if (result) {
+        ctx.body = {
+            code: 1,
+            msg: '',
+            data: result
+        };
+    } else {
+        ctx.body = {
+            code: 0,
+            msg: '该任务清单不存在',
+            data: result
+        };
+    }
 }
 
 
@@ -142,5 +161,6 @@ module.exports = {
     List,
     Add,
     Edit,
-    Del
+    Del,
+    Detail
 }

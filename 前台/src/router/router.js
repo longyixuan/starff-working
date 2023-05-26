@@ -487,14 +487,14 @@ export const appRouter = {
             name: 'task-guidang',
             component: () => import('@/views/task/guidang.vue')
         },
-        {
-            path: 'task/tongji',
-            meta: {
-                title: '任务管理'
-            },
-            name: 'task-tongji',
-            component: () => import('@/views/task/tongji.vue')
-        },
+        // {
+        //     path: 'task/tongji',
+        //     meta: {
+        //         title: '任务管理'
+        //     },
+        //     name: 'task-tongji',
+        //     component: () => import('@/views/task/tongji.vue')
+        // },
         {
             path: 'tasklist/config',
             meta: {
@@ -518,6 +518,14 @@ export const appRouter = {
             },
             name: 'tasklist-add',
             component: () => import('@/views/tasklist/add.vue')
+        },
+        {
+            path: 'tasklist/show',
+            meta: {
+                title: '任务清单管理'
+            },
+            name: 'tasklist-show',
+            component: () => import('@/views/tasklist/show.vue')
         },
         {
             path: 'zlk/sjml',
