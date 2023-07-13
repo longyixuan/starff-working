@@ -9,6 +9,10 @@
                 <Input v-model.trim="name" placeholder="请输入任务清单名称" clearable></Input>
             </FormItem>
             <FormItem label="任务">
+                <div style="margin-bottom: 10px">
+                    <Button type="primary" @click="addLM">增加栏目</Button>
+                    <span style="color: #999; margin-left: 10px">序号相同的自动合并单元格，最多可合并2行。</span>
+                </div>
                 <Table :columns="columns" :data="list" border :disabled-hover="true" :span-method="spanMethod">
                     <template slot-scope="{ row }" slot="dsj">
                         <template v-if="row.zt == 'dsj'">
@@ -71,8 +75,7 @@
                 </Table>
             </FormItem>
             <FormItem>
-                <Button type="primary" @click="addLM">增加栏目</Button>
-                <Button type="primary" @click="add" style="margin-left: 10px;">提交任务清单</Button>
+                <Button type="primary" @click="add" style="margin-left: 10px;">保存</Button>
                 <Button type="default" to="/tasklist/list" style="margin-left: 10px;">返回</Button>
             </FormItem>
         </Form>

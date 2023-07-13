@@ -6,18 +6,30 @@
 }
 
 .layout-logo {
-    height: 64px;
-    line-height: 64px;
+    height: 55px;
+    line-height: 55px;
     float: left;
-    color: #fff;
-    font-size: 24px;
+    color: #00A862;
+    font-size: 22px;
+    font-weight: 700;
+    background: url(../assets/logo.png) center center no-repeat;
+    width: 250px;
+    font-size: 0;
+}
+
+.ivu-menu-horizontal {
+    height: 55px;
+    line-height: 55px;
+    padding: 0 28px;
 }
 .layout-right {
-    height: 64px;
-    line-height: 64px;
+    height: 55px;
+    line-height: 55px;
     float: right;
-    color: #fff;
+    color: #141d19;
     font-size: 14px;
+    display: flex;
+    align-items: center;
     span {
         margin-left: 20px;
         cursor: pointer;
@@ -41,7 +53,6 @@
 }
 
 .ivu-layout-header {
-    padding: 0 24px !important;
     &.zlk-header {
         background: #0076FD;
         .ivu-menu-dark {
@@ -74,4 +85,15 @@
             opacity: 0.9;
         }
     }
+}
+
+.ivu-table-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+.ivu-table th, .ivu-table td {
+    height: 46px;
+}
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+    background: #F2FAF6;
 }

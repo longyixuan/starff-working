@@ -39,7 +39,7 @@
     "@vue/cli-plugin-babel": "^3.0.0",
     "@vue/cli-service": "^3.0.0",
     "html-webpack-plugin": "^5.3.2",
-    "less": "^3.0.4",
+    "less": "^2.7.3",
     "less-loader": "^4.1.0"
   }
 }

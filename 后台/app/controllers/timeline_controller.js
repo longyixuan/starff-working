@@ -2,11 +2,12 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-03-03 08:56:23
+ * @Last Modified time: 2023-07-13 08:54:57
  */
 
 const Timeline_col = require('./../models/timeline');
 const Tag_col = require('./../models/tag');
+const System_col = require('./../models/system');
 const User_col = require("./../models/user");
 const uuidv1 = require('uuid/v1');
 const add = async (ctx, next) => {
@@ -55,25 +56,20 @@ const getList = async (ctx, next) => {
     let seachConfig = {
         islock: false
     };
-    // let groupConfig = {
-    //     _id: {
-    //         timeStamp: '$timeStamp',
-    //         time: '$time'
-    //     },
-    //     details: {
-    //         $push: {
-    //             model: '$model',
-    //             description: '$description',
-    //             userName: '$userName',
-    //             tag: '$tag',
-    //             systemId: '$systemId',
-    //             systemName: '$systemName',
-    //             timelineId: '$timelineId',
-    //             timeStamp: '$timeStamp',
-    //             time: '$time'
-    //         }
-    //     }
-    // };
+    if (req.pt) {
+        let list = [];
+        const system = await System_col.find({
+            parentId: req.pt
+        }).sort({
+            'sortOrder': 1
+        });
+        system.forEach(item => {
+            list.push(item.id);
+        })
+        if (list.length>0) {
+            req.system = list;
+        }
+    }
     if (req.system) {
         seachConfig.systemId = {
             '$in': req.system
@@ -108,16 +104,10 @@ const getList = async (ctx, next) => {
                 "$in": temp
             }
         }
-        
     }
     let result = await Timeline_col.aggregate([{
         $match: seachConfig
     }]);
-    // let result2 = await Timeline_col.aggregate([{
-    //     $match: seachConfig
-    // },{
-    //     $group: groupConfig
-    // }]);
     ctx.body = {
         code: 1,
         msg: '查询成功',

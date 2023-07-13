@@ -6,9 +6,10 @@
     <div class="layout">
         <Layout>
             <Header>
-                <Menu mode="horizontal" theme="dark" active-name="1">
+                <Menu mode="horizontal" theme="light" active-name="1">
                     <div class="layout-logo">设计部工作管理系统</div>
                     <div class="layout-right" >
+                        <Icon type="md-person" size="18" color="#00A862" style="margin-right: 5px;"/>
                         {{ username }}
                         <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
                         <span @click="modal = true">修改密码</span>
@@ -25,7 +26,7 @@
             </Layout> -->
             <Layout>
                 <div v-show="$route.name != 'survey-detail'">
-                    <Sider hide-trigger :style="{ background: '#fff' }" width="220" ref="side" collapsible :collapsed-width="1" v-model="isCollapsed">
+                    <Sider hide-trigger :style="{ background: '#fff' }" width="250" ref="side" collapsible :collapsed-width="1" v-model="isCollapsed">
                         <Menu active-name="0" theme="light" width="auto">
                             <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
                             <Submenu name="1" v-if="type === 1">
