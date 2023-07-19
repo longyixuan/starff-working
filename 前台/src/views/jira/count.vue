@@ -9,7 +9,7 @@
 
 <template>
     <div class="jira">
-        <Card style="min-height: 400px">
+        <Card dis-hover style="min-height: 400px">
             <template slot="title">
                 <DatePicker @on-change="yearChange" :value="year" style="width: 80px;margin-right:10px;" type="year"></DatePicker>
                 jira完成情况

@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <Card title="系统同步申请单">
+    <Card dis-hover title="系统同步申请单">
         <Form :label-width="100">
             <FormItem label="系统：">
                 <Select filterable clearable style="width: 300px" v-model="system" @on-change="model=[]" :disabled="applyStatus">

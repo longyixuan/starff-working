@@ -3,7 +3,7 @@
 </style>
 
 <template>
-    <Card :title="'任务清单管理 - ' + name">
+    <Card dis-hover :title="'任务清单管理 - ' + name">
         <Table :columns="columns" :data="list" border :disabled-hover="true" :span-method="spanMethod" style="margin-bottom: 20px">
             <template slot-scope="{ row }" slot="dsj">
                 <template v-if="row.zt == 'dsj'">

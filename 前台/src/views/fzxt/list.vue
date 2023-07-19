@@ -3,7 +3,7 @@
 </style>
 <template>
     <div>
-        <Card title="系统列表及负责人">
+        <Card dis-hover title="系统列表及负责人">
             <div class="clearfix" style="margin-bottom: 20px;">
                 <Input clearable style="width: 200px" type="text" v-model="xtmc" placeholder="系统名称"></Input>
                 <Select placeholder="负责人" filterable clearable style="width: 200px;margin-left: 10px" v-model="xm">
@@ -27,7 +27,7 @@
                             <th width="100">设计部门</th>
                             <th width="160">前端人员</th>
                             <th width="160">设计人员</th>
-                            <th :width="type===1 ? 120 : 70">操作</th>
+                            <th :width="type===1 ? 100 : 60">操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,8 +54,8 @@
                                     <Tag v-for="item in col.sj">{{ getName(item) }}</Tag>
                                 </td>
                                 <td>
-                                    <Button type="primary" size="small" style="margin-right: 5px" @click="edit(rowIndex, index)">编辑</Button>
-                                    <Button v-if="type===1" type="error" size="small" @click="remove(col.id)">删除</Button>
+                                    <span class="action-btn" @click="edit(rowIndex, index)">编辑</span>
+                                    <span v-if="type===1" class="action-btn" @click="remove(col.id)">删除</span>
                                 </td>
                             </tr>
                         </template>

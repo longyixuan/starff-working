@@ -4,7 +4,7 @@
 </style>
 <template>
     <div>
-        <Card class="marginB-20" title="月总结">
+        <Card dis-hover class="marginB-20" title="月总结">
             <template slot="extra">
                 <Button type="primary" @click="$router.go(-1)" style="margin-left: 10px">返回</Button>
             </template>

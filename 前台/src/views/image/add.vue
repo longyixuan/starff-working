@@ -2,7 +2,7 @@
 @import "./image.less";
 </style>
 <template>
-  <Card title="图片管理">
+  <Card dis-hover title="图片管理">
     <Form :label-width="100">
       <FormItem label="系统：">
         <Select clearable filterable style="width: 400px;margin-right:10px;" v-model="uploadData.systemId" placeholder="请选择系统">

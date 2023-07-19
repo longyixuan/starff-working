@@ -3,7 +3,7 @@
 </style>
 
 <template>
-    <Card title="角色管理">
+    <Card dis-hover title="角色管理">
     </Card>
 </template>
 <script>

@@ -2,14 +2,14 @@
 @import './design.less';
 </style>
 <template>
-    <Card title="选项设置">
+    <Card dis-hover title="选项设置">
         <div style="margin-bottom: 10px; text-align: right">
             <Button type="primary" @click="addXx">添加选项</Button>
         </div>
         <Table border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="updateTag(row, index)">编辑</Button>
-                <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
+                <span class="action-btn" @click="updateTag(row, index)">编辑</span>
+                <span class="action-btn" @click="deleteTag(row.id, index)">删除</span>
             </template>
             <template slot-scope="{ row, index }" slot="children">
                 <Tag style="cursor: pointer;" v-for="item in row.child" :key="item.id" type="border" size="medium" closable @click.native="onEdit(row.id, item)" @on-close="onClose" :name="item.id">{{item.name}}{{item.hasDes?'【展示备注】':''}}</Tag>
@@ -99,8 +99,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 140,
-                    align: 'center',
+                    width: 80
                 }
             ],
         };

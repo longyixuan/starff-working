@@ -62,3 +62,38 @@
 [v-cloak]{
     display: none;
 }
+
+.yggs-menu {
+    display: block;
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+    background-image: url(../assets/menu.png);
+    background-repeat: no-repeat;
+    &.home {
+        background-position: -36px 0;
+    }
+    &.time {
+        background-position: -36px -36px;
+    }
+    &.sdgx {
+        background-position: -36px -76px;
+    }
+    &.xkzs {
+        background-position: -36px -108px;
+    }
+}
+.ivu-menu-item-active, .ivu-menu-item:hover {
+    .home {
+        background-position: 0 0;
+    }
+    .time {
+        background-position: 0 -36px;
+    }
+    .sdgx {
+        background-position: 0 -76px;
+    }
+    .xkzs {
+        background-position: 0 -108px;
+    }
+}

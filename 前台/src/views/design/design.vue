@@ -2,15 +2,15 @@
 @import "./design.less";
 </style>
 <template>
-    <Card title="录入">
+    <Card dis-hover title="录入">
         <div style="margin-bottom: 20px;" class="clearfix">
             <DatePicker @on-change="getList" v-model="year" :clearable="false" type="year" style="width: 160px"></DatePicker>
         </div>
         <Table class="num-table" border :data="data" :columns="columns" stripe>
             <template slot-scope="{ row }" slot="action">
                 <template v-if="!row.noEdit">
-                    <Button v-if="row.isEdit" type="warning" size="small" @click="save(row)">保存</Button>
-                    <Button v-else type="primary" size="small" @click="edit(row)">编辑</Button>
+                    <span v-if="row.isEdit" class="action-btn" @click="save(row)">保存</span>
+                    <span v-else class="action-btn" @click="edit(row)">编辑</span>
                 </template>
             </template>
         </Table>
@@ -201,7 +201,7 @@ export default {
                 this.columns.push({
                     title: '操作',
                     slot: 'action',
-                    width: 70,
+                    width: 60,
                     align: 'center',
                     fixed: 'right'
                 })

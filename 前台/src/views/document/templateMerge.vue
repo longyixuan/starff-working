@@ -2,7 +2,7 @@
     @import "./summary.less";
 </style>
 <template>
-    <Card title="工作总结">
+    <Card dis-hover title="工作总结">
         <div style="padding: 0 20px;">
             <div class="summary-view-label">
                 {{title}}

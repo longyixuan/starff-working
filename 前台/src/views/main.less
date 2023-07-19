@@ -5,27 +5,51 @@
     overflow: hidden;
 }
 
+.header {
+    border-bottom: 1px solid #E8EDEA;
+    padding: 0 28px;
+    height: 55px;
+    box-sizing: border-box;
+    display: flex;
+}
+
 .layout-logo {
     height: 55px;
     line-height: 55px;
-    float: left;
     color: #00A862;
-    font-size: 22px;
-    font-weight: 700;
-    background: url(../assets/logo.png) center center no-repeat;
+    background: url(../assets/logo.svg) center center no-repeat;
     width: 250px;
     font-size: 0;
 }
-
-.ivu-menu-horizontal {
+.zlk-logo {
     height: 55px;
     line-height: 55px;
-    padding: 0 28px;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.user-icon {
+    display: block;
+    height: 16px;
+    width: 16px;
+    margin-right: 8px;
+    background: url(../assets/user.png) center center no-repeat;
+}
+.menu-other {
+    flex: 1;
+    display: flex;
+    .menu-expand {
+        height: 55px;
+        width: 32px;
+        background: url(../assets/menu-expand.png) center center no-repeat;
+        cursor: pointer;
+        &.expand {
+            transform: rotate(180deg);
+        }
+    }
 }
 .layout-right {
-    height: 55px;
-    line-height: 55px;
-    float: right;
     color: #141d19;
     font-size: 14px;
     display: flex;
@@ -54,10 +78,7 @@
 
 .ivu-layout-header {
     &.zlk-header {
-        background: #0076FD;
-        .ivu-menu-dark {
-            background: #0076FD;
-        }
+        background: #00A862;
     }
 }
 
@@ -77,6 +98,9 @@
     left: 0;
 }
 .layout-right-md {
+    flex: 1;
+    align-items: flex-end;
+    justify-content: flex-end;
     a {
         color: #fff;
         margin-left: 20px;

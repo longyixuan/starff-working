@@ -2,7 +2,7 @@
     @import "./msg.less";
 </style>
 <template>
-    <Card title="消息中心">
+    <Card dis-hover title="消息中心">
         <Tabs type="card" value="name1">
             <TabPane label="未读" name="name1">
                 <Table border :columns="columns" :data="msgList">

@@ -1,4 +1,25 @@
 @import '~view-design/src/styles/index.less';
+.action-btn {
+    color: #00A862;
+    margin-right: 8px;
+    &:hover {
+        cursor: pointer;
+        color: #22B975;
+    }
+    &:last-child {
+        margin-right: 0;
+    }
+    &[disabled] {
+        pointer-events: none;
+        cursor: not-allowed;
+        color: #b7c4be;
+    }
+}
+.ivu-modal-confirm {
+    .ivu-icon-ios-help-circle::before {
+        content: '\F108'
+    }
+}
 
 // Prefix
 @css-prefix             : ivu-;
@@ -60,8 +81,8 @@
 @head-bg                      : #f9fafc;
 @table-thead-bg               : #F7F9F8;
 @table-td-stripe-bg           : #F7F9F8;
-@table-td-hover-bg            : #ebf7ff;
-@table-td-highlight-bg        : #ebf7ff;
+@table-td-hover-bg            : #F2FAF6;
+@table-td-highlight-bg        : #F2FAF6;
 @menu-dark-title              : #515a6e;
 @menu-dark-active-bg          : #363e4f;
 @menu-dark-subsidiary-color   : rgba(255,255,255,.7);
@@ -143,8 +164,8 @@
 @input-height-large          : 40px;
 @input-height-small          : 24px;
 
-@input-padding-horizontal    : 7px;
-@input-padding-vertical-base : 4px;
+@input-padding-horizontal    : 8px;
+@input-padding-vertical-base : 6px;
 @input-padding-vertical-small: 1px;
 @input-padding-vertical-large: 6px;
 

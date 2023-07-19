@@ -2,7 +2,7 @@
 @import './vote.less';
 </style>
 <template>
-    <Card title="设计部投票">
+    <Card dis-hover title="设计部投票">
         <template v-if="isSubmit">
             <div class="vote">
                 <div class="vote-img"></div>

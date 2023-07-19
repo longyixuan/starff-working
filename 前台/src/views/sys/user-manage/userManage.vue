@@ -5,7 +5,7 @@
     <div class="search">
         <Row>
             <Col>
-                <Card>
+                <Card dis-hover>
                     <Row class="operation">
                         <Button @click="delAll" icon="md-trash">批量删除</Button>
                         <circleLoading v-if="operationLoading" />
@@ -24,7 +24,15 @@
                         <Button @click="onChange" type="primary">查询</Button>
                     </Row>
                     <Row>
-                        <Table :loading="loading" border :columns="columns" :data="data" sortable="custom" @on-selection-change="showSelect" ref="table"></Table>
+                        <Table :loading="loading" border stripe :columns="columns" :data="data" sortable="custom" @on-selection-change="showSelect" ref="table">
+                            <template slot-scope="{ row }" slot="action">
+                                <span class="action-btn" @click="edit(row)">编辑</span>
+                                <span class="action-btn" @click="disable(row)" v-if="row.status == 0">禁用</span>
+                                <span class="action-btn" @click="enable(row)" v-else>启用</span>
+                                <span class="action-btn" @click="remove(row)">删除</span>
+                                <span class="action-btn" @click="resetPassword(row)" v-if="admin">重置密码</span>
+                            </template>
+                        </Table>
                     </Row>
                     <Row type="flex" justify="end" class="page">
                         <Page :current="searchForm.pageNumber" :total="total" :page-size="searchForm.pageSize" @on-change="changePage" @on-page-size-change="changePageSize" :page-size-opts="[10, 20, 50]" size="small" show-total show-elevator show-sizer></Page>
@@ -237,106 +245,9 @@ export default {
                 },
                 {
                     title: '操作',
-                    key: 'action',
-                    width: 260,
-                    align: 'center',
-                    fixed: 'right',
-                    render: (h, params) => {
-                        let enableOrDisable = '';
-                        if (params.row.status == 0) {
-                            enableOrDisable = h(
-                                'Button',
-                                {
-                                    props: {
-                                        size: 'small',
-                                    },
-                                    style: {
-                                        marginRight: '5px',
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.disable(params.row);
-                                        },
-                                    },
-                                },
-                                '禁用'
-                            );
-                        } else {
-                            enableOrDisable = h(
-                                'Button',
-                                {
-                                    props: {
-                                        type: 'success',
-                                        size: 'small',
-                                    },
-                                    style: {
-                                        marginRight: '5px',
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.enable(params.row);
-                                        },
-                                    },
-                                },
-                                '启用'
-                            );
-                        }
-                        return h('div', [
-                            h(
-                                'Button',
-                                {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small',
-                                    },
-                                    style: {
-                                        marginRight: '5px',
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.edit(params.row);
-                                        },
-                                    },
-                                },
-                                '编辑'
-                            ),
-                            enableOrDisable,
-                            h(
-                                'Button',
-                                {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small',
-                                    },
-                                    style: {
-                                        marginRight: '5px',
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.remove(params.row);
-                                        },
-                                    },
-                                },
-                                '删除'
-                            ),
-                            h(
-                                'Button',
-                                {
-                                    props: {
-                                        type: 'warning',
-                                        size: 'small',
-                                        disabled: !this.admin,
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.resetPassword(params.row);
-                                        },
-                                    },
-                                },
-                                '重置密码'
-                            ),
-                        ]);
-                    },
+                    slot: 'action',
+                    width: 200,
+                    fixed: 'right'
                 },
             ],
             data: [],
@@ -455,7 +366,7 @@ export default {
         enable(v) {
             this.$Modal.confirm({
                 title: '确认启用',
-                content: '您确认要启用用户 ' + v.userName + ' ?',
+                content: '你确认要启用用户 ' + v.userName + ' ?',
                 onOk: () => {
                     this.operationLoading = true;
                     enableUser(v.userId).then((res) => {
@@ -471,7 +382,7 @@ export default {
         disable(v) {
             this.$Modal.confirm({
                 title: '确认禁用',
-                content: '您确认要禁用用户 ' + v.userName + ' ?',
+                content: '你确认要禁用用户 ' + v.userName + ' ?',
                 onOk: () => {
                     this.operationLoading = true;
                     disableUser(v.userId).then((res) => {
@@ -487,7 +398,7 @@ export default {
         remove(v) {
             this.$Modal.confirm({
                 title: '确认删除',
-                content: '您确认要删除用户 ' + v.userName + ' ?',
+                content: '你确认要删除用户 ' + v.userName + ' ?',
                 onOk: () => {
                     this.operationLoading = true;
                     deleteUser(v.userId).then((res) => {
@@ -503,7 +414,7 @@ export default {
         resetPassword(v) {
             this.$Modal.confirm({
                 title: '确认重置密码',
-                content: '您确认要重置用户 ' + v.userName + ' 的密码吗?',
+                content: '你确认要重置用户 ' + v.userName + ' 的密码吗?',
                 onOk: () => {
                     resetPassword({ id: v.userId }).then((res) => {
                         if (res.code === 1) {
@@ -525,12 +436,12 @@ export default {
         },
         delAll() {
             if (this.selectCount <= 0) {
-                this.$Message.warning('您还未选择要删除的数据');
+                this.$Message.warning('你还未选择要删除的数据');
                 return;
             }
             this.$Modal.confirm({
                 title: '确认删除',
-                content: '您确认要删除所选的 ' + this.selectCount + ' 条数据?',
+                content: '你确认要删除所选的 ' + this.selectCount + ' 条数据?',
                 onOk: () => {
                     let ids = '';
                     this.selectList.forEach(function (e) {

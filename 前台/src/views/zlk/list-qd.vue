@@ -2,7 +2,7 @@
 @import './zlk.less';
 </style>
 <template>
-    <Card title="资料管理">
+    <Card dis-hover title="资料管理">
         <div style="margin-bottom: 10px; text-align: right">
             <Button type="primary" to="/zlk/qdadd">新建</Button>
         </div>
@@ -14,8 +14,8 @@
                 {{row.updateTime}}
             </template>
             <template slot-scope="{ row }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" target="_blank" :to="'/doc/qd?id='+row.title">预览</Button>
-                <Button type="primary" size="small" :to="'/zlk/qdadd?id='+row.id">编辑</Button>
+                <a class="action-btn" target="_blank" :href="'/doc/qd?id='+row.title">预览</a>
+                <a class="action-btn" :href="'/zlk/qdadd?id='+row.id">编辑</a>
             </template>
         </Table>
     </Card>
@@ -52,7 +52,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 140,
+                    width: 100,
                     align: 'center',
                 },
             ],

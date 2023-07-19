@@ -3,14 +3,14 @@
 </style>
 <template>
     <div>
-        <Card class="marginB-20" title="工作总结标题/时间">
+        <Card dis-hover class="marginB-20" title="工作总结标题/时间">
             <template slot="extra">
                 <Button type="primary" @click="$router.go(-1)" style="margin-left: 10px">返回</Button>
             </template>
             <Input v-model="title" class="summary-input marginB-20" placeholder="样例：xxxx年xx月月终工作总结（员工姓名）"/>
             <DatePicker v-model="time" format="yyyy年MM月" @on-change="onChange" type="month" placeholder="工作总结时间"></DatePicker>
         </Card>
-        <Card title="工作总结" class="marginB-20">
+        <Card dis-hover title="工作总结" class="marginB-20">
             <div class="summary-template" v-for="(summary,index) in submitList">
                 <Tag color="primary" size="large" class="summary-tag">{{index+1}}</Tag>
                 <Tag color="warning"  size="large" class="summary-tag-right" @click.native="del(index)">
@@ -30,7 +30,7 @@
                 </Row>
                 <Row :gutter="16">
                     <Col span="24" class="marginB-20" v-for="(modalItem,index2) in summary.content">
-                        <Card>
+                        <Card dis-hover>
                             <div class="marginB-20">
                                 <Select
                                     v-model="modalItem.contentTitle"
@@ -54,7 +54,7 @@
                 <Icon type="md-add" size="120" color="#999"/>
             </div>
         </Card>
-        <Card class="marginB-20" title="工作计划">
+        <Card dis-hover class="marginB-20" title="工作计划">
             <div class="summary-template" v-for="(summary,index) in gzjh">
                 <Tag color="primary" size="large" class="summary-tag">{{index+1}}</Tag>
                 <Tag color="warning"  size="large" class="summary-tag-right" @click.native="delGzjh(index)">

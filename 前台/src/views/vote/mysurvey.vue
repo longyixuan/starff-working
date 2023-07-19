@@ -2,10 +2,10 @@
 @import './vote.less';
 </style>
 <template>
-    <Card title="我的投票">
+    <Card dis-hover title="我的投票">
         <Table border :data="data" :columns="columns">
             <template slot-scope="{ row }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/mycount/' + row.surveyId">查看结果</Button>
+                <a class="action-btn" :href="'/vote/mycount/' + row.surveyId">查看结果</a>
             </template>
         </Table>
     </Card>
@@ -31,7 +31,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 100,
+                    width: 80,
                     align: 'center',
                 },
             ],

@@ -3,14 +3,14 @@
 </style>
 
 <template>
-    <Card title="任务管理 - 状态管理">
+    <Card dis-hover title="任务管理 - 状态管理">
         <div style="margin-bottom: 10px; text-align: right">
             <Button type="primary" @click="addTag">添加</Button>
         </div>
         <Table border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="updateTag(row, index)">编辑</Button>
-                <Button type="error" size="small" @click="deleteTag(row.id, index)">删除</Button>
+                <span class="action-btn" @click="updateTag(row, index)">编辑</span>
+                <span class="action-btn" @click="deleteTag(row.id, index)">删除</span>
             </template>
         </Table>
         <Modal title="编辑" v-model="modal" @on-ok="add">
@@ -49,7 +49,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 140,
+                    width: 100,
                     align: 'center',
                 },
             ],

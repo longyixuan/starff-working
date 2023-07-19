@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p :class="className" :style="{textAlign: 'center', color: color, fontSize: countSize, fontWeight: countWeight}"><span v-cloak :id="idName">{{ startVal }}</span><span>{{ unit }}</span></p>
+        <p :class="className" :style="{textAlign: 'center', color: '#fff', fontSize: countSize, fontWeight: countWeight, lineHeight: '72px'}"><span v-cloak :id="idName">{{ startVal }}</span><span>{{ unit }}</span></p>
         <slot name="intro"></slot>
     </div>
 </template>

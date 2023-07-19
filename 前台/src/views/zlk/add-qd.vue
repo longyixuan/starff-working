@@ -3,7 +3,7 @@
 
 </style>
 <template>
-    <Card title="资料库">
+    <Card dis-hover title="资料库">
         <div class="qdgf">
             <div style="margin-bottom: 20px">
                 <Select v-model="title" style="width: 200px" placeholder="请选择目录" :disabled="id!=''">

@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Card title="添加时间线">
+        <Card dis-hover title="添加时间线">
             <Form :label-width="100">
                 <FormItem label="时间：">
                     <DatePicker v-model="time" type="date" placeholder="选择时间" style="width: 300px"></DatePicker>

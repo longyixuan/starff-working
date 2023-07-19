@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Card title="任务进度管理 - 统计">
+        <Card dis-hover title="任务进度管理 - 统计">
             <calendar-heatmap
                 :values="values"
                 :end-date="endDate"

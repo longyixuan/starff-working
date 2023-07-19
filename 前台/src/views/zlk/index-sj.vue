@@ -46,7 +46,7 @@
                         </Sider>
                     </Layout>
                     <div class="zlk-empty" v-else>
-                        <img class="img" src="@/assets/error.png" alt="">
+                        <img class="img" src="@/assets/empty.svg" alt="">
                         <div class="text">正在建设中...</div>
                     </div>
                 </div>

@@ -2,7 +2,7 @@
 @import "./image.less";
 </style>
 <template>
-  <Card title="图片管理">
+  <Card dis-hover title="图片管理">
     <div style="margin-bottom: 20px;">
     <Select clearable filterable style="width: 200px;margin-right:10px;" v-model="uploadData.systemId" placeholder="请选择系统">
         <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
@@ -14,7 +14,7 @@
     <div>
         <Row :gutter="20">
             <Col style="margin-bottom: 20px;" span="8" :key="item.imageId" v-for="item in imageList">
-                <Card @click.native="showImage(item)">
+                <Card dis-hover @click.native="showImage(item)">
                     <img width="100%" :src="item | imageFilter" alt="">
                 </Card>
             </Col>

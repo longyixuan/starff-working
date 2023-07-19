@@ -2,7 +2,7 @@
 @import './vote.less';
 </style>
 <template>
-    <Card title="投票历史">
+    <Card dis-hover title="投票历史">
         <div style="margin-bottom: 10px; text-align: right">
             <Button type="primary" @click="modal = true">新增</Button>
         </div>
@@ -13,11 +13,11 @@
                 </Tooltip>
             </template>
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/count/' + row.id">查看结果</Button>
-                <Button type="primary" size="small" style="margin-right: 5px" :to="'/vote/detail/' + row.id" target="_blank">投票</Button>
-                <Button type="primary" size="small" style="margin-right: 5px" @click="setTime(row.id)">设置截至时间</Button>
-                <Button type="warning" size="small" style="margin-right: 5px" :disabled="row.num===0" @click="deleteTag(row.id, index, true)">重投</Button>
-                <Button type="error" size="small" :disabled="row.num!==0" @click="deleteTag(row.id, index, false)">删除</Button>
+                <a class="action-btn" :href="'/vote/count/' + row.id">查看结果</a>
+                <a class="action-btn" :href="'/vote/detail/' + row.id" target="_blank">投票</a>
+                <span class="action-btn" @click="setTime(row.id)">设置截至时间</span>
+                <span class="action-btn" :disabled="row.num===0" @click="deleteTag(row.id, index, true)">重投</span>
+                <span class="action-btn" :disabled="row.num!==0" @click="deleteTag(row.id, index, false)">删除</span>
             </template>
         </Table>
         <Modal title="生成投票" width="800" v-model="modal" @on-ok="add">
@@ -105,7 +105,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 360,
+                    width: 300,
                     align: 'center',
                 },
             ],

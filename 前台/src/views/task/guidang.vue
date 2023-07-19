@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Card title="任务进度管理 - 查看归档">
+        <Card dis-hover title="任务进度管理 - 查看归档">
             <div class="task-search" style="margin-bottom: 20px">
                 <Select placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
@@ -34,7 +34,7 @@
                             <div class="rwgl-table-col" style="width: 100px">经办人</div>
                             <div class="rwgl-table-col" style="width: 100px">开始时间</div>
                             <div class="rwgl-table-col" style="width: 100px">结束时间</div>
-                            <div class="rwgl-table-col" style="width: 90px">操作</div>
+                            <div class="rwgl-table-col" style="width: 80px">操作</div>
                         </div>
                     </div>
                     <div class="rwgl-table-body">
@@ -63,8 +63,8 @@
                                         <div class="rwgl-table-col" style="width: 100px">{{ jbrFn(item.jbrId) }}</div>
                                         <div class="rwgl-table-col" style="width: 100px;text-align: center;" >{{ moment(item.kssj) }}</div>
                                         <div class="rwgl-table-col" style="width: 100px;text-align: center;">{{ item.jssj ? moment(item.jssj) : '-' }}</div>
-                                        <div class="rwgl-table-col" style="width: 90px">
-                                            <Button type="warning" @click.stop="hisTask(item.id)" size="small">撤销归档</Button>
+                                        <div class="rwgl-table-col" style="width: 80px">
+                                            <span class="action-btn" @click.stop="hisTask(item.id)" size="small">撤销归档</span>
                                         </div>
                                     </div>
                                 </template>
@@ -83,7 +83,7 @@
                     <div style="white-space: pre-line;" v-html="row.bz"></div>
                 </template>
             </Table>
-            <div slot="footer" style="text-align: center;">
+            <div slot="footer">
                 <Button type="primary" @click="modalC = false;">关闭</Button>
             </div>
         </Modal>

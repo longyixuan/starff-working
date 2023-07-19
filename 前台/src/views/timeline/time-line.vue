@@ -4,30 +4,31 @@
 
 <template>
     <div>
-        <Card title="系统时间线">
+        <Card dis-hover title="系统时间线">
             <div style="margin-bottom: 20px" class="clearfix">
                 <DatePicker v-model="year" style="width: 120px; margin-right: 10px" type="year" placeholder="请选择年份"></DatePicker>
-                <Select clearable filterable style="width: 200px; margin-right: 10px" multiple v-model="system" placeholder="请选择系统">
+                <Select clearable filterable style="width: 160px; margin-right: 10px" v-model="pt" placeholder="请选择平台" @on-change="ptChange">
+                    <Option :value="item.id" :key="item.id" v-for="item in ptList">{{ item.title }}</Option>
+                </Select>
+                <Select clearable filterable style="width: 160px; margin-right: 10px" multiple v-model="system" placeholder="请选择系统">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
                 </Select>
-                <Select filterable clearable multiple style="width: 200px; margin-right: 10px" v-model="model" placeholder="请选择模块">
+                <Select filterable clearable multiple style="width: 160px; margin-right: 10px" v-model="model" placeholder="请选择模块">
                     <Option :value="item.modelId" :key="item.modelId" v-for="item in filterModal(system)">{{item.modelName}}</Option>
                 </Select>
-                <Select clearable style="width: 200px; margin-right: 10px" v-model="tag" placeholder="请选择标签">
+                <Select clearable style="width: 160px; margin-right: 10px" v-model="tag" placeholder="请选择标签">
                     <Option v-for="item in tags" :value="item.id" :key="item.id">{{ item.name }}</Option>
                 </Select>
-                <Select clearable v-if="type===1" v-model="departmentId" placeholder="请选择部门" style="width:200px;margin-right: 10px;">
+                <Select clearable v-if="type===1" v-model="departmentId" placeholder="请选择部门" style="width:160px;margin-right: 10px;">
                     <Option v-for="item in departmentList" :value="item.id" :key="item.id">{{ item.title }}</Option>
                 </Select>
-                <Input v-model="keyword" style="width: 200px; margin-right: 10px" clearable placeholder="请输入关键字" autocomplete="off" />
+                <Input v-model="keyword" style="width: 160px; margin-right: 10px" clearable placeholder="请输入关键字" autocomplete="off" />
                 <Button type="primary" style="margin-right: 10px" @click="seach">查询</Button>
                 <div style="float: right">
                     <Button type="primary" style="margin-right: 10px" @click="exportExcel">导出Excel</Button>
                     <Button type="primary" to="/time-line/add">新增时间线</Button>
                 </div>
             </div>
-            <!-- <Tabs v-model="tabName" type="card">
-            <TabPane label="表格显示" name="name1"> -->
             <div style="overflow-x: auto">
                 <Table border :columns="columns" :data="data" ref="table" style="min-width: 1400px">
                     <template slot-scope="{ row }" slot="model">
@@ -39,8 +40,8 @@
                         <Tag type="border" color="warning">{{ row.tag | tagFilter(tags) }}</Tag>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="updateTimeline(row.timelineId, index)">编辑</Button>
-                        <Button v-if="type===1" type="error" size="small" @click="deleteTimeline(row.timelineId, index)">删除</Button>
+                        <span class="action-btn" @click="updateTimeline(row.timelineId, index)">编辑</span>
+                        <span v-if="type===1" class="action-btn" @click="deleteTimeline(row.timelineId, index)">删除</span>
                     </template>
                 </Table>
             </div>
@@ -49,7 +50,7 @@
 </template>
 
 <script>
-import { getSystemList, getTimelineList, delTimeline, getTagList, listModel, initDepartment } from '@/api/index';
+import { getSystemList, getTimelineList, delTimeline, getTagList, listModel, initDepartment, initSystem, loadSystem } from '@/api/index';
 import moment from 'moment';
 export default {
     name: 'timeline',
@@ -72,6 +73,8 @@ export default {
             model: [],
             listModel: [],
             departmentList: [],
+            pt: '',
+            ptList: [],
             columns: [
                 {
                     title: '时间',
@@ -122,7 +125,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 80,
+                    width: 60,
                     align: 'center',
                 },
             ],
@@ -133,6 +136,9 @@ export default {
         getTagList().then((res) => {
             this.tags = res.data;
         });
+        initSystem().then(res => {
+            this.ptList = res.data;
+        })
     },
     filters: {
         tagFilter: function (value, data) {
@@ -147,6 +153,18 @@ export default {
         },
     },
     methods: {
+        ptChange(value) {
+            this.system = [];
+            if (value) {
+                loadSystem(value).then((res) => {
+                    this.sysList = res.data;
+                });
+            } else {
+                getSystemList().then((res) => {
+                    this.sysList = res.data;
+                });
+            }
+        },
         getParentList() {
             initDepartment().then(res => {
                 if (res.code === 1) {
@@ -185,6 +203,7 @@ export default {
             let params = {
                 year: moment(this.year).format('YYYY'),
                 tag: this.tag,
+                pt: this.pt,
                 system: this.system,
                 keyword: this.keyword,
                 userName: JSON.parse(localStorage.getItem('userInfo')).nickName,
@@ -271,7 +290,7 @@ export default {
         this.init();
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
         if (this.type === 1) {
-            this.columns[this.columns.length-1].width = 140;
+            this.columns[this.columns.length-1].width = 100;
         }
         listModel().then((res) => {
             this.modelList = res.data;

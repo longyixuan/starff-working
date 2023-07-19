@@ -5,8 +5,8 @@
             <div class="login-right">
                 <Row type="flex" justify="center" align="middle" @keydown.enter.native="submitRegist">
                     <Col style="width: 368px;">
-                    <Row class="header">
-                        设计部工作管理系统
+                    <Row>
+                        <div class="layout-logo" style="margin: 0 auto 20px;">设计部工作管理系统</div>
                     </Row>
 
                     <Alert type="error" show-icon v-if="error">{{ errorMsg }}</Alert>

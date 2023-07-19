@@ -11,7 +11,7 @@
           <infor-card
             id-name="user_created_count"
             :end-val="weekCount"
-            iconType="md-shuffle"
+            iconType="type-1"
             color="#2d8cf0"
             intro-text="上月累计工时"
           ></infor-card>
@@ -20,7 +20,7 @@
           <infor-card
             id-name="visit_count"
             :end-val="monthCount"
-            iconType="ios-eye"
+            iconType="type-2"
             color="#64d572"
             intro-text="本月累计工时"
           ></infor-card>
@@ -29,7 +29,7 @@
           <infor-card
             id-name="collection_count"
             :end-val="yearCount"
-            iconType="ios-time"
+            iconType="type-3"
             color="#ffd572"
             intro-text="本年累计工时"
           ></infor-card>
@@ -38,7 +38,7 @@
           <infor-card
             id-name="transfer_count"
             :end-val="systemCount"
-            iconType="md-desktop"
+            iconType="type-4"
             color="#f25e43"
             intro-text="系统总数"
           ></infor-card>
@@ -46,7 +46,7 @@
       </Row>
       <Row :style="{marginBottom: '15px'}">
         <Col span="24">
-          <Card>
+          <Card dis-hover>
             <p slot="title">查询条件</p>
             <Row :gutter="20">
               <Col span="16">
@@ -124,19 +124,19 @@
               </Col>
             </Row>
             <Button type="primary" @click="seach">查询</Button>
-            <ButtonGroup style="margin-left: 10px">
+            <!-- <ButtonGroup style="margin-left: 10px">
               <Button type="info" ghost v-if="isReset === 'admin'" @click="resetTime" >重置工时</Button>
               <Button type="success" ghost v-if="isReset === 'admin'" @click="exportTime(false)">生成备份</Button>
               <Button type="warning" ghost v-if="isReset === 'admin'" @click="inportTime">上传备份</Button>
               <Button type="error" ghost v-if="isReset === 'admin'" @click="installTime">恢复备份</Button>
               <Button type="error" ghost v-if="isReset === 'admin'" @click="checkTimeFn">查漏</Button>
-            </ButtonGroup>
+            </ButtonGroup> -->
           </Card>
         </Col>
       </Row>
       <Row>
         <Col span="24">
-          <Card>
+          <Card dis-hover>
             <p slot="title">查询结果</p>
             <Button type="primary" @click="exportData()" slot="extra">导出数据</Button>
             <div class="demo-tabs-style2">
@@ -158,7 +158,7 @@
                 <Tab-pane label="图表">
                   <Row :style="{marginBottom: '20px'}">
                     <Col span="24">
-                      <Card>
+                      <Card dis-hover>
                         <p slot="title" class="card-title">
                           <Icon type="md-map"></Icon>系统工时统计（共计{{total}}小时）
                         </p>
@@ -170,7 +170,7 @@
                   </Row>
                   <Row :style="{marginBottom: '10px'}">
                     <Col span="24">
-                      <Card>
+                      <Card dis-hover>
                         <p slot="title" class="card-title">
                           <Icon type="md-map"></Icon>系统工时占比分析（共计{{total}}小时）
                         </p>

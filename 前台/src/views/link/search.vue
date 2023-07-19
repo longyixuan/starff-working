@@ -1,6 +1,6 @@
 <template>
 
-  <Card title="异常链接排查">
+  <Card dis-hover title="异常链接排查">
       <Form inline>
         <FormItem>
           <Input v-model="host" placeholder="输入主域名" style="width: 200px"></Input>

@@ -2,7 +2,7 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card title="工作总结">
+    <Card dis-hover title="工作总结">
         <Form ref="formInline" inline>
             <FormItem>
                 <DatePicker :value="time" @on-change="change" format="yyyy-MM" type="month" placeholder="请选择年月" style="width: 160px"></DatePicker>

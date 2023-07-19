@@ -5,7 +5,7 @@
 }
 </style>
 <template>
-    <Card title="日总结">
+    <Card dis-hover title="日总结">
         <Tabs value="my" :animated="false">
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">

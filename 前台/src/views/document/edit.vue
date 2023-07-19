@@ -4,7 +4,7 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card title="工作总结">
+    <Card dis-hover title="工作总结">
         <Input v-model="title" placeholder="输入工作总结标题..." class="markdown-title"/>
         <vue-simplemde v-model="content" ref="markdownEditor" :configs="configs" @input="input" preview-class="markdown-body"/>
         <div class="markdown-footer">

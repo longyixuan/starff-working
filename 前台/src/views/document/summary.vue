@@ -2,7 +2,7 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card title="工作总结">
+    <Card dis-hover title="工作总结">
         <template slot="extra">
             <!-- <Button type="primary"  @click="add">MarkDown新增</Button> -->
             <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>

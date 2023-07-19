@@ -2,13 +2,13 @@
 @import './vote.less';
 </style>
 <template>
-    <Card :title="`${surveyName}(${date})投票结果`">
+    <Card dis-hover :title="`${surveyName}(${date})投票结果`">
         <div slot="extra">
             <Button type="primary" to="/vote/mysurvey">返回</Button>
         </div>
         <Row :gutter="20">
             <Col span="12">
-                <Card dis-hover icon="ios-ribbon">
+                <Card dis-hover dis-hover icon="ios-ribbon">
                     <p slot="title">
                         <Icon type="ios-ribbon" size="20" color="#ff9900"/>部门排名：<strong>{{ranking.length>0?ranking[0].ranking:''}}</strong>
                     </p>
@@ -23,7 +23,7 @@
                 </Card>
             </Col>
             <Col span="12">
-                <Card dis-hover icon="ios-ribbon">
+                <Card dis-hover dis-hover icon="ios-ribbon">
                     <p slot="title">
                         <Icon type="ios-ribbon" size="20" color="#ff9900"/>{{getGroupName}}排名：<strong>{{ranking2.length>0?ranking2[0].ranking:''}}</strong>
                     </p>

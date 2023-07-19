@@ -6,16 +6,19 @@
     <div class="layout">
         <Layout>
             <Header>
-                <Menu mode="horizontal" theme="light" active-name="1">
+                <div class="header">
                     <div class="layout-logo">设计部工作管理系统</div>
-                    <div class="layout-right" >
-                        <Icon type="md-person" size="18" color="#00A862" style="margin-right: 5px;"/>
+                    <div class="menu-other">
+                        <span class="menu-expand" :class="{'expand': isCollapsed}" @click="collapsedSider" v-show="$route.name != 'survey-detail'"></span>
+                    </div>
+                    <div class="layout-right">
+                        <span class="user-icon"></span>
                         {{ username }}
                         <!-- <span><a href='/msg' style="color: #fff">消息中心</a></span> -->
                         <span @click="modal = true">修改密码</span>
                         <span @click="logout">退出</span>
                     </div>
-                </Menu>
+                </div>
             </Header>
             <!-- <Layout v-if="msgList.length>0">
                 <Alert style="margin-bottom: 0;" type="warning">
@@ -99,7 +102,6 @@
                     </Sider>
                 </div>
                 <Layout :style="{ padding: '24px', position: 'relative' }">
-                    <span class="zk-sq" @click="collapsedSider" v-show="$route.name != 'survey-detail'">{{!isCollapsed ? '收起' : '展开'}}</span>
                     <Content :style="{ minHeight: '280px' }">
                         <router-view></router-view>
                     </Content>

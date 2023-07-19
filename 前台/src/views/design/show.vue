@@ -2,7 +2,7 @@
 @import "./design.less";
 </style>
 <template>
-    <Card title="查看">
+    <Card dis-hover title="查看">
         <div style="margin-bottom: 20px;" class="clearfix">
             <DatePicker v-model="year" :clearable="false" type="year" style="width: 160px;margin-right:10px;"></DatePicker>
             <Select v-model="userId" style="width: 160px;margin-right:10px;" placeholder="请选择姓名">

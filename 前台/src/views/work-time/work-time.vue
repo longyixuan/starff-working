@@ -2,7 +2,7 @@
   @import "./work-time.less";
 </style>
 <template>
-    <Card>
+    <Card dis-hover>
         <DatePicker :value="curYear" @on-change="changeYear" format="yyyy年" type="year" placeholder="年份" style="width: 140px;margin-bottom:15px;"></DatePicker>
         <Tabs type="card" :value="curMonth" @on-click="changeMonth">
             <template v-for="item in 12">
@@ -19,10 +19,10 @@
             </template>
             <template slot-scope="{ row, index }" slot="action">
                 <div v-if="editIndex === index">
-                    <Button @click="handleSave(row, index)" type="primary" ghost size="small">保存</Button>
+                    <span class="action-btn" @click="handleSave(row, index)">保存</span>
                 </div>
                 <div v-else>
-                    <Button @click="handleEdit(row, index)" type="primary" size="small">编辑</Button>
+                    <span class="action-btn" @click="handleEdit(row, index)">编辑</span>
                 </div>
             </template>
         </Table>
@@ -150,7 +150,7 @@ export default {
             }
             this.columns.push({
                 title: '操作',
-                width: 80,
+                width: 60,
                 align: 'center',
                 fixed: 'right',
                 slot: 'action'

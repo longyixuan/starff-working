@@ -2,7 +2,7 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card title="周总结">
+    <Card dis-hover title="周总结">
         <Tabs value="my" :animated="false">
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">

@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Card title="aws发布时间线" style="min-height: 400px">
+        <Card dis-hover title="aws发布时间线" style="min-height: 400px">
             <div style="margin-bottom: 20px" class="clearfix">
                 <DatePicker v-model="year" style="width: 120px; margin-right: 10px" type="year" placeholder="请选择年份"></DatePicker>
                 <Select clearable filterable style="width: 400px; margin-right: 10px" multiple v-model="system" placeholder="请选择系统">

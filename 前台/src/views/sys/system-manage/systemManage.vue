@@ -3,7 +3,7 @@
 </style>
 <template>
   <div class="search">
-    <Card>
+    <Card dis-hover>
       <Row class="operation">
         <Button @click="add" type="primary" icon="md-add">添加子系统</Button>
         <Button @click="addRoot" icon="md-add">添加一级系统</Button>
@@ -42,7 +42,7 @@
           <Spin size="large" fix v-if="loading"></Spin>
         </Col>
         <Col span="9">
-          <Form ref="form" :model="form" :label-width="85" :rules="formValidate">
+          <Form ref="form" :model="form" :label-width="100" :rules="formValidate">
             <FormItem label="上级系统" prop="parentTitle">
               <Poptip trigger="click" placement="right-start" title="选择上级系统" width="250">
                 <Input v-model="form.parentTitle" readonly style="width:400px"/>
@@ -354,12 +354,12 @@ export default {
     },
     delAll() {
       if (this.selectCount <= 0) {
-        this.$Message.warning("您还未勾选要删除的数据");
+        this.$Message.warning("你还未勾选要删除的数据");
         return;
       }
       this.$Modal.confirm({
         title: "确认删除",
-        content: "您确认要删除所选的 " + this.selectCount + " 条数据?",
+        content: "你确认要删除所选的 " + this.selectCount + " 条数据?",
         onOk: () => {
           let ids = "";
           this.selectList.forEach(function(e) {

@@ -5,7 +5,7 @@
 <template>
     <div class="error500">
         <div class="error500-body-con">
-            <Card>
+            <Card dis-hover>
                 <div class="error500-body-con-title">
                     5<span class="error500-0-span"><Icon type="social-freebsd-devil"></Icon></span><span class="error500-0-span"><Icon type="social-freebsd-devil"></Icon></span>
                 </div>

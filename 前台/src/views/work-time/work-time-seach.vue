@@ -2,7 +2,7 @@
 @import "./work-time.less";
 </style>
 <template>
-  <Card>
+  <Card dis-hover>
     <Row :gutter="20">
       <Col span="16">
         <Date-picker
@@ -98,7 +98,7 @@
         <Tab-pane label="图表">
           <Row :gutter="10" :style="{marginBottom: '10px'}">
             <Col span="16">
-              <Card>
+              <Card dis-hover>
                 <p slot="title" class="card-title">
                   <Icon type="md-map"></Icon>系统工时统计（共计{{total}}小时）
                 </p>
@@ -108,7 +108,7 @@
               </Card>
             </Col>
             <Col span="8">
-              <Card>
+              <Card dis-hover>
                 <p slot="title" class="card-title">
                   <Icon type="md-map"></Icon>系统工时占比分析（共计{{total}}小时）
                 </p>

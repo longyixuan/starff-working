@@ -3,7 +3,7 @@
 </style>
 
 <template>
-    <Card title="任务清单管理 - 编辑">
+    <Card dis-hover title="任务清单管理 - 编辑">
         <Form :label-width="80">
             <FormItem label="名称">
                 <Input v-model.trim="name" placeholder="请输入任务清单名称" clearable></Input>
@@ -69,8 +69,8 @@
                         </template>
                     </template>
                     <template slot-scope="{ row,index }" slot="action">
-                        <Button type="primary" size="small" @click="edit(index)">修改</Button>
-                        <Button type="error" size="small" @click="del(index)" style="margin-left: 5px;">删除</Button>
+                        <span class="action-btn" @click="edit(index)">修改</span>
+                        <span class="action-btn" @click="del(index)" style="margin-left: 5px;">删除</span>
                     </template>
                 </Table>
             </FormItem>
@@ -216,7 +216,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 130,
+                    width: 100,
                     align: 'center',
                 },
             ],

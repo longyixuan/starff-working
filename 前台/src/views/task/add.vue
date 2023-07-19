@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <Card title="任务进度管理 - 查看任务">
+        <Card dis-hover title="任务进度管理 - 查看任务">
             <div class="task-search">
                 <Select class="marin-b10" placeholder="所属系统" multiple v-model="search.xtId" filterable clearable style="width: 160px;margin-right:10px;">
                     <Option :value="item.id" :key="item.id" v-for="item in sysList">{{ item.title }}</Option>
@@ -59,10 +59,10 @@
                             <a :href="row.jira" target="_blank" v-if="row.jira">查看</a>
                         </template>
                         <template slot-scope="{ row }" slot="action">
-                            <Button type="primary" size="small" ghost style="margin-right: 5px;" @click="getLog(row.id, row.rwmc)">日志</Button>
-                            <Button type="primary" size="small" style="margin-right: 5px;" @click="showDetail(row)">编辑</Button>
-                            <Button type="warning" size="small" style="margin-right: 5px;" @click="hisTask(row.id)" v-if="type === 1">归档</Button>
-                            <Button type="error" size="small" style="margin-right: 5px;" @click="del(row.id)" v-if="type === 1">删除</Button>
+                            <span class="action-btn" @click="getLog(row.id, row.rwmc)">日志</span>
+                            <span class="action-btn" @click="showDetail(row)">编辑</span>
+                            <span class="action-btn" @click="hisTask(row.id)" v-if="type === 1">归档</span>
+                            <span class="action-btn" @click="del(row.id)" v-if="type === 1">删除</span>
                         </template>
                     </Table>
                 </Tab-Pane>
@@ -112,7 +112,7 @@
                                             <div class="rwgl-table-row">
                                                 <div class="rwgl-table-col flex-block" style="width: 300px;cursor: pointer;" @click="showDetail(item)">
                                                     <Tooltip max-width="240" placement="top" transfer :content="item.rwmc">
-                                                        <span class="task-text" style="color: #2d8cf0;">{{ item.rwmc }}</span>
+                                                        <span class="task-text" style="color: #00A862;">{{ item.rwmc }}</span>
                                                     </Tooltip>
                                                 </div>
                                                 <div class="rwgl-table-col" style="width: 50px;text-align: center;">
@@ -244,7 +244,7 @@
                     <div style="white-space: pre-line;" v-html="row.bz"></div>
                 </template>
             </Table>
-            <div slot="footer" style="text-align: center;">
+            <div slot="footer">
                 <Button type="primary" @click="modalC = false;">关闭</Button>
             </div>
         </Modal>
@@ -339,7 +339,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 135,
+                    width: 100,
                     align: 'center'
                 },
             ],
@@ -572,7 +572,7 @@ export default {
             return {
                 width: days * 30 + 'px',
                 left: num * 210 + num2 * 30 + 'px',
-                borderColor: isTimeout ? '#fa8888' : '#6698ff'
+                borderColor: isTimeout ? '#fa8888' : '#00A862'
             };
         },
         getNum({ duration,taskLog,duration2, duration3 }) {
@@ -777,7 +777,7 @@ export default {
     created() {
         this.type = JSON.parse(localStorage.getItem('userInfo')).type;
         if (this.type === 1) {
-            this.columnsList[this.columnsList.length-1].width = 240;
+            this.columnsList[this.columnsList.length-1].width = 180;
         }
         this.getTaskTagList();
         this.weekDate = getAllWeekRange(new Date().getFullYear());

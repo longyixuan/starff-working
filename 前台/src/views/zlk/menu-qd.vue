@@ -3,15 +3,15 @@
 </style>
 
 <template>
-    <Card title="目录管理">
+    <Card dis-hover title="目录管理">
         <div style="margin-bottom: 10px; text-align: right">
             <Button type="primary" @click="addTag">添加一级目录</Button>
         </div>
         <Table row-key="id" border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" @click="updateTag(row, index)">编辑</Button>
-                <Button type="error" size="small" @click="deleteTag(row.id, index)" style="margin-right: 5px">删除</Button>
-                <Button v-if="!row.pid" type="primary" size="small" @click="addTagC(row, index)">添加子目录</Button>
+                <span class="action-btn" @click="updateTag(row, index)">编辑</span>
+                <span class="action-btn" @click="deleteTag(row.id, index)" style="margin-right: 5px">删除</span>
+                <span v-if="!row.pid" class="action-btn" @click="addTagC(row, index)">添加子目录</span>
             </template>
         </Table>
         <Modal title="编辑" v-model="modal" @on-ok="add">
@@ -52,7 +52,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 230
+                    width: 160
                 },
             ],
         };

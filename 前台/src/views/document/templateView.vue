@@ -2,7 +2,7 @@
     @import "./summary.less";
 </style>
 <template>
-    <Card title="工作总结">
+    <Card dis-hover title="工作总结">
         <h1 class="summary-view-h1" slot="title">
             {{title}}
             <div class="summary-view-time"><Icon type="md-calendar" size="26"/></div>

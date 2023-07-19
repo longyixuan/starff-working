@@ -24,7 +24,7 @@
                 <infor-card
                 id-name="transfer_count"
                 :end-val="personalData.sysNum"
-                iconType="md-desktop"
+                iconType="type-1"
                 color="#2d8cf0"
                 intro-text="负责系统总数"
                 ></infor-card>
@@ -33,7 +33,7 @@
                 <infor-card
                 id-name="user_created_count"
                 :end-val="personalData.weekSysNum"
-                iconType="md-shuffle"
+                iconType="type-2"
                 color="#64d572"
                 intro-text="本周参与系统数"
                 ></infor-card>
@@ -42,7 +42,7 @@
                 <infor-card
                 id-name="visit_count"
                 :end-val="personalData.timeNum"
-                iconType="ios-eye"
+                iconType="type-3"
                 color="#ffd572"
                 intro-text="本周累计工时"
                 ></infor-card>
@@ -51,58 +51,17 @@
                 <infor-card
                 id-name="collection_count"
                 :end-val="personalData.docNum"
-                iconType="ios-time"
+                iconType="type-4"
                 color="#f25e43"
                 intro-text="本周上报总结数"
                 ></infor-card>
             </Col>
             </Row>
-            <Row :gutter="20">
-              <Col>
-                <Card title="本周工作计划" style="margin-bottom: 20px;">
-                    <table class="summary-table" v-if="personalData.plan.length>0">
-                        <thead>
-                            <tr>
-                                <th width="180">系统</th>
-                                <th>工作计划内容</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in personalData.plan">
-                                <td>
-                                    {{item.systemName}}
-                                </td>
-                                <td>
-                                    <div style=" white-space: pre-line;word-break: break-all;">{{item.gzjh}}</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div v-else style="color: #c30;font-weight: bold">
-                        未添加本周计划，请在上周工作总结中补充。
-                    </div>
-                </Card>
-              </Col>
-            </Row>
-            <Row :gutter="20">
-              <Col span="12">
-                  <Card title="工时录入情况">
+            <Row>
+              <Col span="24">
+                  <Card dis-hover title="工时录入情况">
                     <cal-panel></cal-panel>
                   </Card>
-              </Col>
-              <Col span="12">
-                <Row :gutter="20">
-                  <Card title="昨日工时分布" style="margin-bottom: 20px;">
-                    <div class="data-source-row" style="width:100%;height:289px;">
-                        <div style="width:100%;height:100%;" id="data_source_person1"></div>
-                    </div>
-                  </Card>
-                  <Card  title="本周工时分布">
-                    <div class="data-source-row" style="width:100%;height:289px;">
-                        <div style="width:100%;height:100%;" id="data_source_person2"></div>
-                    </div>
-                  </Card>
-                </Row>
               </Col>
           </Row>
     </div>
@@ -225,17 +184,7 @@ export default {
             this.personalData.timeNum = res.data.timeNum;
             this.personalData.weekSysNum = res.data.weekSysNum;
             this.personalData.plan = res.data.plan;
-            this.renderPerson2(res.data.timeMap);
-            this.renderPerson1(res.data.timeMap2);
         });
-        this.$nextTick(() => {
-            this.personalMap1 = echarts.init(
-                document.getElementById("data_source_person1")
-            );
-            this.personalMap2 = echarts.init(
-                document.getElementById("data_source_person2")
-            );
-        })
         }
     }
 };

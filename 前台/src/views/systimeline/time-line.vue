@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <Card title="系统同步记录" style="min-height: 400px">
+    <Card dis-hover title="系统同步记录" style="min-height: 400px">
         <Tabs v-model="tabName" type="card">
             <TabPane label="待批准" name="name1">
                 <div style="margin-bottom: 20px;text-align: right;" v-if="!(loginName == 'lvf'|| loginName=='admin')">

@@ -3,15 +3,15 @@
 </style>
 
 <template>
-    <Card title="任务清单管理">
+    <Card dis-hover title="任务清单管理">
         <div style="margin-bottom: 10px; text-align: right">
             <Button type="primary" to="/tasklist/add">新增</Button>
         </div>
         <Table border :data="data" :columns="columns">
             <template slot-scope="{ row, index }" slot="action">
-                <Button type="primary" size="small" style="margin-right: 5px" :to="'/tasklist/show?id='+ row.id">查看</Button>
-                <Button type="primary" size="small" style="margin-right: 5px" :to="'/tasklist/add?id='+ row.id">编辑</Button>
-                <Button type="error" size="small" @click="removeTask(row.id, index)">删除</Button>
+                <a class="action-btn" :href="'/tasklist/show?id='+ row.id">查看</a>
+                <a class="action-btn" :href="'/tasklist/add?id='+ row.id">编辑</a>
+                <span class="action-btn" @click="removeTask(row.id, index)">删除</span>
             </template>
         </Table>
     </Card>
@@ -40,7 +40,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 180,
+                    width: 130,
                     align: 'center'
                 },
             ],

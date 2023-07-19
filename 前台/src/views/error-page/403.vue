@@ -5,7 +5,7 @@
 <template>
     <div class="error403">
         <div class="error403-body-con">
-            <Card>
+            <Card dis-hover>
                 <div class="error403-body-con-title">4<span class="error403-0-span"><Icon type="android-lock"></Icon></span><span class="error403-key-span"><Icon size="220" type="ios-bolt"></Icon></span></div>
                 <p class="error403-body-con-message">You don't have permission</p>
                 <div class="error403-btn-con">

@@ -2,9 +2,9 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card title="各系统模块管理">
+    <Card dis-hover title="各系统模块管理">
         <div style="text-align:right;margin-bottom: 20px;" v-if="isReset == 'admin'">
-            <Button type="warning" @click="refresh" style="margin-right: 20px;">更新工作总结旧数据</Button>
+            <!-- <Button type="warning" @click="refresh" style="margin-right: 20px;">更新工作总结旧数据</Button> -->
             <Button type="primary" @click="mergeModal">合并模块</Button>
         </div>
         <Alert type="warning" show-icon>点击模块名称可修改模块名称</Alert>
@@ -13,7 +13,7 @@
                 <Tag style="cursor: pointer;" type="border" :key="item.modelId" closable :name="item.modelId+'|'+row.id" v-for="item in filterModal(row.id)" @click.native="editModal(row.id,item)" @on-close="deleteModal">{{item.modelName}}</Tag>
             </template>
             <template slot-scope="{ row }" slot="action">
-                <Button type="primary" size="small" @click="updateModal(row.id)">添加</Button>
+                <span class="action-btn" @click="updateModal(row.id)">添加</span>
             </template>
         </Table>
         <Modal v-model="modal" @on-ok="add" title="编辑模块">
@@ -67,7 +67,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 100,
+                    width: 60,
                     align: 'center'
                 }
             ]

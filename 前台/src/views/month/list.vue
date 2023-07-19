@@ -2,7 +2,7 @@
 @import "./index.less";
 </style>
 <template>
-    <Card title="月总结">
+    <Card dis-hover title="月总结">
         <Tabs v-model="tabActive" :animated="false">
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">
@@ -10,7 +10,7 @@
                     <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
                     <Button type="primary" to="/summary/add" style="margin-left: 10px">新增</Button>
                 </div>
-                <Table border :columns="columns" :data="list" style="margin-bottom:20px">
+                <Table border stripe :columns="columns" :data="list" style="margin-bottom:20px">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row.documentName }}</strong>
                         <Tag color="red" v-if="row.status=='YTH'">已退回</Tag>
@@ -19,10 +19,10 @@
                         <strong>{{row.year}}-{{row.month}}</strong>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                        <Button type="primary" :disabled="row.status=='YTJ'" size="small" style="margin-right: 5px" @click="edit(row.documentId)">修改</Button>
-                        <Button type="error" :disabled="row.status=='YTJ'" size="small" style="margin-right: 5px" @click="del(index,row.documentId)">删除</Button>
-                        <Button type="warning" :disabled="row.status=='YTJ'" size="small" style="margin-right: 5px" @click="commit(index,row.documentId)">上报</Button>
+                        <span class="action-btn" @click="show(row.documentId)">查看</span>
+                        <span class="action-btn" :disabled="row.status=='YTJ'" @click="edit(row.documentId)">修改</span>
+                        <span class="action-btn" :disabled="row.status=='YTJ'" @click="del(index,row.documentId)">删除</span>
+                        <span class="action-btn" :disabled="row.status=='YTJ'" @click="commit(index,row.documentId)">上报</span>
                     </template>
                 </Table>
             </TabPane>
@@ -75,7 +75,7 @@
                         <br>{{checkList1}}
                     </template>
                 </Alert>
-                <Table border :columns="columnPart" :data="listPart" style="margin-bottom:20px">
+                <Table border stripe :columns="columnPart" :data="listPart" style="margin-bottom:20px">
                     <template slot-scope="{ row }" slot="name">
                         <strong>{{ row.documentName }}</strong>
                         <Tag color="red" v-if="row.status=='YTH'">已退回</Tag>
@@ -84,8 +84,8 @@
                         <strong>{{row.year}}-{{row.month}}</strong>
                     </template>
                     <template slot-scope="{ row, index }" slot="action">
-                        <Button type="primary" size="small" style="margin-right: 5px" @click="show(row.documentId)">查看</Button>
-                        <Button type="warning" :disabled="row.status != 'YTJ'" size="small" style="margin-right: 5px" @click="callbackCommit(index,row.documentId)">退回</Button>
+                        <span class="action-btn" @click="show(row.documentId)">查看</span>
+                        <span class="action-btn" :disabled="row.status != 'YTJ'" @click="callbackCommit(index,row.documentId)">退回</span>
                     </template>
                 </Table>
             </TabPane>
@@ -137,8 +137,7 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 240,
-                        align: 'center'
+                        width: 160
                     }
                 ],
                 columnPart: [
@@ -160,8 +159,7 @@
                     {
                         title: '操作',
                         slot: 'action',
-                        width: 140,
-                        align: 'center'
+                        width: 100
                     }
                 ]
             }

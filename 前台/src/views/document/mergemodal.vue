@@ -2,7 +2,7 @@
 @import "./summary.less";
 </style>
 <template>
-    <Card title="各系统模块管理">
+    <Card dis-hover title="各系统模块管理">
         <Table border :columns="columns" :data="sysList">
             <template slot="input">
                 <Input v-model="title" placeholder="合并后模块名称"></Input>
@@ -13,7 +13,7 @@
                 </CheckboxGroup>
             </template>
             <template slot-scope="{ row }" slot="action">
-                <Button type="primary" size="small" @click="merge(row)">合并</Button>
+                <span class="action-btn" @click="merge(row)">合并</span>
             </template>
         </Table>
     </Card>
@@ -55,7 +55,7 @@ export default {
                 {
                     title: '操作',
                     slot: 'action',
-                    width: 100,
+                    width: 60,
                     align: 'center'
                 }
             ]
