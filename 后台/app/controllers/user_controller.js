@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2019-04-10 18:35:47
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-23 15:29:08
+ * @Last Modified time: 2023-09-04 13:44:50
  */
 
 const config = require("./../../config");
@@ -314,9 +314,17 @@ const userEnable = async (ctx, next) => {
 const delUser = async (ctx, next) => {
     ctx.status = 200;
     const userid = ctx.params.id;
-    await User_col.remove({
-        userId: userid,
-    });
+    // await User_col.remove({
+    //     userId: userid,
+    // });
+    await User_col.updateOne( // 逻辑删除
+        {
+            userId: userid,
+        },
+        {
+            delFlag: 1,
+        }
+    );
     ctx.body = {
         code: 1,
         msg: "删除成功",
