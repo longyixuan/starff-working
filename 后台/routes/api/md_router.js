@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-12 15:55:27 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-03-03 08:38:04
+ * @Last Modified time: 2023-12-21 18:02:27
  */
 const Router = require('koa-router');
 const router = new Router();
@@ -14,6 +14,8 @@ router.post('/md/update', md_controller.update);
 router.post('/md/list', md_controller.list);
 router.post('/md/detail', md_controller.detail);
 router.post('/md/show', md_controller.detailByTitle);
+router.post('/md/log', md_controller.getLog);
+router.get('/md/download', md_controller.downLoad);
 
 router.post('/mdtype/add', md_controller.addType);
 router.post('/mdtype/update', md_controller.updateType);

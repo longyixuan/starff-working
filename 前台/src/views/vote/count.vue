@@ -7,14 +7,14 @@
             <Button type="primary" to="/vote/survey">返回</Button>
         </div>
         <div style="margin-bottom: 40px;">
-            <Select clearable multiple placeholder="选择员工" v-model="people" style="margin-bottom: 10px;">
+            <Select clearable multiple placeholder="选择员工" v-model="people" style="margin-bottom: 16px;">
                 <Option v-for="item in peopleList" :value="item.nickName" :key="item.userId">{{ item.nickName }}</Option>
             </Select>
             <Button type="primary" ghost @click="quickChange([...qd,...sj], 'bm')" class="margin-bottom20">全部门</Button>
-            <Button type="primary" ghost @click="quickChange(qd, 'qd')" style="margin-left: 10px;">前端组</Button>
-            <Button type="primary" ghost @click="quickChange(sj, 'sj')" style="margin-left: 10px;">设计组</Button>
-            <Button type="primary" ghost @click="people=[]" style="margin-left: 10px;">清空选择</Button>
-            <Button type="primary" style="margin-left: 10px;" @click="count">查询</Button>
+            <Button type="primary" ghost @click="quickChange(qd, 'qd')" style="margin-left: 8px;">前端组</Button>
+            <Button type="primary" ghost @click="quickChange(sj, 'sj')" style="margin-left: 8px;">设计组</Button>
+            <Button type="primary" ghost @click="people=[]" style="margin-left: 8px;">清空选择</Button>
+            <Button type="primary" style="margin-left: 8px;" @click="count">查询</Button>
         </div>
         <div class="map" id="map" v-if="people.length>1"></div>
         <Row :gutter="20" v-if="people.length==1">
@@ -23,7 +23,7 @@
                     <p slot="title">
                         <Icon type="ios-ribbon" size="20" color="#ff9900"/>部门排名：<strong>{{ranking.length>0?ranking[0].ranking:''}}</strong>
                     </p>
-                    <Alert v-if="ranking.length>0" style="margin-bottom: 10px;">
+                    <Alert v-if="ranking.length>0" style="margin-bottom: 16px;">
                         <template v-for="item in ranking">
                             <span v-if="item.name !='总分'" style="margin-right: 20px;">
                                 {{item.name}}：<strong>{{item.ranking}}</strong>
@@ -38,7 +38,7 @@
                     <p slot="title">
                         <Icon type="ios-ribbon" size="20" color="#ff9900"/>{{getGroupName}}排名：<strong>{{ranking2.length>0?ranking2[0].ranking:''}}</strong>
                     </p>
-                    <Alert v-if="ranking2.length>0" style="margin-bottom: 10px;">
+                    <Alert v-if="ranking2.length>0" style="margin-bottom: 16px;">
                         <template v-for="item in ranking">
                             <span v-if="item.name !='总分'" style="margin-right: 20px;">
                                 {{item.name}}：<strong>{{getRanking(item.name)}}</strong>
@@ -290,7 +290,7 @@ export default {
                     axisPointer: {
                         type: 'cross',
                         crossStyle: {
-                            color: '#999',
+                            color: '#A0A8A5',
                         },
                     },
                 },

@@ -12,7 +12,7 @@
                     <p slot="title">
                         <Icon type="ios-ribbon" size="20" color="#ff9900"/>部门排名：<strong>{{ranking.length>0?ranking[0].ranking:''}}</strong>
                     </p>
-                    <Alert v-if="ranking.length>0" style="margin-bottom: 10px;">
+                    <Alert v-if="ranking.length>0" style="margin-bottom: 16px;">
                         <template v-for="item in ranking">
                             <span v-if="item.name !='总分'" style="margin-right: 20px;">
                                 {{item.name}}：<strong>{{item.ranking}}</strong>
@@ -27,7 +27,7 @@
                     <p slot="title">
                         <Icon type="ios-ribbon" size="20" color="#ff9900"/>{{getGroupName}}排名：<strong>{{ranking2.length>0?ranking2[0].ranking:''}}</strong>
                     </p>
-                    <Alert v-if="ranking2.length>0" style="margin-bottom: 10px;">
+                    <Alert v-if="ranking2.length>0" style="margin-bottom: 16px;">
                         <template v-for="item in ranking">
                             <span v-if="item.name !='总分'" style="margin-right: 20px;">
                                 {{item.name}}：<strong>{{getRanking(item.name)}}</strong>

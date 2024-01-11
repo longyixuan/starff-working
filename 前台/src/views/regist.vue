@@ -1,27 +1,28 @@
+<style lang="less">
+@import './login.less';
+</style>
 <template>
-    <div class="regist">
-        <div class="login-warp">
-            <div class="login-left"></div>
-            <div class="login-right">
-                <Row type="flex" justify="center" align="middle" @keydown.enter.native="submitRegist">
-                    <Col style="width: 368px;">
-                    <Row>
-                        <div class="layout-logo" style="margin: 0 auto 20px;">设计部工作管理系统</div>
-                    </Row>
-
-                    <Alert type="error" show-icon v-if="error">{{ errorMsg }}</Alert>
-
-                    <Row class="regist-form">
-                        <Form ref="registForm" :model="form" :rules="rules" class="form">
+    <div class="login-layout">
+        <div class="login">
+            <div class="login-logo">
+                <img src="../assets/logo-w.svg" alt="" class="logo-img" />
+                <h1 class="logo-text">设计部工作管理系统</h1>
+            </div>
+            <div class="login-content">
+                <div class="login-left"></div>
+                <div class="login-right">
+                    <div class="login-title">注册</div>
+                    <div class="login-form">
+                        <Alert type="error" show-icon v-if="error">{{ errorMsg }}</Alert>
+                        <Form ref="registForm" :model="form" :rules="rules" class="form" @keydown.enter.native="submitRegist">
                             <FormItem prop="userName">
-                                <Input v-model="form.userName" :maxlength="30" size="large" clearable
-                                    placeholder="请输入用户名" />
+                                <Input v-model="form.userName" prefix="ios-contact" size="large" clearable placeholder="请输入用户名" autocomplete="off" />
                             </FormItem>
                             <FormItem prop="password">
-                                <Poptip trigger="focus" placement="right" width="250">
-                                    <Input type="password" :maxlength="20" v-model="form.password"
+                                 <Poptip trigger="focus" placement="right" width="250" transfer>
+                                    <Input type="password" :maxlength="20" v-model="form.password" prefix="ios-lock"
                                         @on-change="strengthChange" size="large" clearable
-                                        placeholder="请输入密码，长度为6-20个字符" />
+                                        placeholder="请输入密码，长度为6-20个字符" autocomplete="off" style="width: 400px"/>
                                     <div v-bind:class="tipStyle" slot="content">
                                         <span class="words">强度 : {{ strength }}</span>
                                         <Slider v-model="strengthValue" :step="33" style="width:95%"></Slider>请至少输入 6
@@ -31,30 +32,29 @@
                                 </Poptip>
                             </FormItem>
                             <FormItem prop="confirmPass">
-                                <Input type="password" :maxlength="20" v-model="form.confirmPass" size="large" clearable
-                                    placeholder="请再次输入确认密码" />
+                                <Input type="password" v-model="form.confirmPass" prefix="ios-lock" size="large" clearable placeholder="请再次输入确认密码" autocomplete="off" />
                             </FormItem>
                         </Form>
-
-                        <Row type="flex" justify="space-between" class="code-row-bg">
-                            <Button class="regist-btn" type="primary" size="large" :loading="loading"
-                                @click="submitRegist">
-                                <span v-if="!loading">注册</span>
-                                <span v-else>注册中...</span>
-                            </Button>
-                            <router-link to="/login">
-                                <a class="to-login">使用已有账号登录</a>
-                            </router-link>
-                        </Row>
-                    </Row>
-                    </Col>
-                </Row>
+                        <Button class="login-btn" type="primary" size="large" :loading="loading"
+                            @click="submitRegist" long>
+                            <span v-if="!loading">注册</span>
+                            <span v-else>注册中...</span>
+                        </Button>
+                        <div class="login-other">
+                            <router-link to="/login">使用已有账号登录</router-link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="login-footer">
+                Copyright © 2003-{{year}} <a href="https://www.chsi.com.cn/" target="_blank" rel="noopener noreferrer">学信网</a> All Rights Reserved
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import moment from 'moment';
 import { regist } from "@/api/index";
 export default {
     data() {
@@ -75,6 +75,7 @@ export default {
             }
         };
         return {
+            year: moment().format('YYYY'),
             error: false,
             errorMsg: "",
             loading: false,
@@ -193,7 +194,3 @@ export default {
     }
 };
 </script>
-
-<style lang="less">
-@import "./regist.less";
-</style>

@@ -61,7 +61,7 @@
             </template>
         </Table>
         <Button type="primary" :to="'/tasklist/add?id='+ id">编辑</Button>
-        <Button type="default" to="/tasklist/list" style="margin-left: 10px;">返回</Button>
+        <Button type="default" to="/tasklist/list" style="margin-left: 8px;">返回</Button>
     </Card>
 </template>
 <script>

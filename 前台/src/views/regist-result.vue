@@ -1,16 +1,18 @@
+<style lang="less">
+@import './login.less';
+</style>
 <template>
-    <div class="regist">
-        <div class="login-warp">
-            <div class="login-left"></div>
-            <div class="login-right">
-                <Row type="flex" justify="center" align="middle" @keydown.enter="submitRegist">
-                    <Col :xs="{ span: 22 }" style="width: 368px;">
-                    <Row>
-                        <div class="layout-logo" style="margin: 0 auto 20px;">设计部工作管理系统</div>
-                    </Row>
-
+    <div class="login-layout">
+        <div class="login">
+            <div class="login-logo">
+                <img src="../assets/logo-w.svg" alt="" class="logo-img" />
+                <h1 class="logo-text">设计部工作管理系统</h1>
+            </div>
+            <div class="login-content">
+                <div class="login-left"></div>
+                <div class="login-right">
                     <Row class="success">
-                        <Icon type="md-checkmark-circle" color="#52c41a" size="64"></Icon>
+                        <Icon type="md-checkmark-circle" color="#00A862" size="64"></Icon>
                         <p class="success-words">恭喜你，你的账户：{{ userName }} 注册成功</p>
                         <Row class="buttons">
                             <router-link to="/login">
@@ -21,18 +23,21 @@
                             </router-link>
                         </Row>
                     </Row>
-                    </Col>
-                </Row>
+                </div>
+            </div>
+            <div class="login-footer">
+                Copyright © 2003-{{year}} <a href="https://www.chsi.com.cn/" target="_blank" rel="noopener noreferrer">学信网</a> All Rights Reserved
             </div>
         </div>
     </div>
 </template>
-
 <script>
+import moment from 'moment';
 export default {
     data() {
         return {
-            userName: ""
+            userName: "yinxl",
+            year: moment().format('YYYY')
         };
     },
     methods: {},

@@ -19,15 +19,14 @@
                 <Select clearable style="width: 160px; margin-right: 10px" v-model="tag" placeholder="请选择标签">
                     <Option v-for="item in tags" :value="item.id" :key="item.id">{{ item.name }}</Option>
                 </Select>
-                <Select clearable v-if="type===1" v-model="departmentId" placeholder="请选择部门" style="width:160px;margin-right: 10px;">
+                <Select clearable v-if="type===1" v-model="departmentId" placeholder="请选择部门" style="width:160px;margin-right: 8px;">
                     <Option v-for="item in departmentList" :value="item.id" :key="item.id">{{ item.title }}</Option>
                 </Select>
                 <Input v-model="keyword" style="width: 160px; margin-right: 10px" clearable placeholder="请输入关键字" autocomplete="off" />
-                <Button type="primary" style="margin-right: 10px" @click="seach">查询</Button>
-                <div style="float: right">
-                    <Button type="primary" style="margin-right: 10px" @click="exportExcel">导出Excel</Button>
-                    <Button type="primary" to="/time-line/add">新增时间线</Button>
-                </div>
+                <Button type="primary" @click="seach">查询</Button>
+                <span class="btn-line"></span>
+                <Button type="primary" to="/time-line/add" style="margin-right: 10px">新增时间线</Button>
+                <Button @click="exportExcel">导出Excel</Button>
             </div>
             <div style="overflow-x: auto">
                 <Table border :columns="columns" :data="data" ref="table" style="min-width: 1400px">

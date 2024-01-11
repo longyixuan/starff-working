@@ -10,8 +10,8 @@
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">
                     <DatePicker v-model="time" format="yyyy年MM月" type="month" placeholder="工作总结时间"></DatePicker>
-                    <Checkbox v-model="bhsy" style="margin-left: 10px;">含上月数据</Checkbox>
-                    <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
+                    <Checkbox v-model="bhsy" style="margin-left: 8px;">含上月数据</Checkbox>
+                    <Button type="primary" @click="initList" style="margin-left: 8px;">查询</Button>
                     <Button type="primary" @click="addTemplate" style="margin-left: 10px">新增</Button>
                 </div>
                 <Table border :columns="columns" :data="list" style="margin-bottom:20px" @on-selection-change="selectionChange">
@@ -34,10 +34,10 @@
                     </template>
                 </Table>
                 <Button type="primary" @click="merge">合并查看</Button>
-                <Button type="warning" @click="setWeek" style="margin-left: 10px;">合并生成周总结</Button>
+                <Button type="warning" @click="setWeek" style="margin-left: 8px;">合并生成周总结</Button>
             </TabPane>
             <TabPane label="部门总结" name="part" v-if="type==1">
-                <Row :gutter="20" style="margin-bottom: 10px;">
+                <Row :gutter="20" style="margin-bottom: 16px;">
                     <Col span="16">
                         <Date-picker
                         :value="showdate"
@@ -51,25 +51,25 @@
                     </Col>
                     <Col span="8">
                         <Button type="primary" @click="quickTime('yestday')" ghost class="margin-bottom20">昨天</Button>
-                        <Button type="primary" @click="quickTime('day')" ghost style="margin-left: 10px;" class="margin-bottom20">今天</Button>
-                        <Button type="primary" @click="quickTime('week')" ghost style="margin-left: 10px;" class="margin-bottom20">本周</Button>
+                        <Button type="primary" @click="quickTime('day')" ghost style="margin-left: 8px;" class="margin-bottom20">今天</Button>
+                        <Button type="primary" @click="quickTime('week')" ghost style="margin-left: 8px;" class="margin-bottom20">本周</Button>
                         <Button
                         type="primary"
                         @click="quickTime('month')"
                         ghost
                         class="margin-bottom20"
-                        style="margin-left: 10px;"
+                        style="margin-left: 8px;"
                         >本月</Button>
                         <Button
                         type="primary"
                         @click="quickTime('preMonth')"
                         ghost
                         class="margin-bottom20"
-                        style="margin-left: 10px;"
+                        style="margin-left: 8px;"
                         >上月</Button>
                     </Col>
                 </Row>
-                <Row :gutter="20" style="margin-bottom: 10px;">
+                <Row :gutter="20" style="margin-bottom: 16px;">
                     <Col span="16">
                         <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
                         <Option
@@ -86,7 +86,7 @@
                         ghost
                         @click="peopleAll"
                         class="margin-bottom20"
-                        style="margin-left: 10px;"
+                        style="margin-left: 8px;"
                         >选择全部</Button>
                     </Col>
                 </Row>
@@ -123,7 +123,7 @@
             <Input type="text" placeholder="请输出周总结名称" v-model="weekTitle"/>
             <template slot="footer">
                 <Button @click="modal=false">取消</Button>
-                <Button type="primary" @click="mergeWeek" style="margin-left: 10px;">确定</Button>
+                <Button type="primary" @click="mergeWeek" style="margin-left: 8px;">确定</Button>
             </template>
         </Modal>
     </Card>

@@ -58,7 +58,6 @@ export default {
                 userName: '',
                 nickName: '',
                 email: '',
-                status: '',
                 departmentTitle: '',
                 createdAt: '',
                 systems: [], //负责的系统
@@ -111,8 +110,13 @@ export default {
         },
         saveEdit() {
             this.saveLoading = true;
-            let params = this.userForm;
-            userInfoEdit(params).then((res) => {
+            userInfoEdit({
+                userId: this.userForm.userId,
+                userName: this.userForm.userName,
+                nickName: this.userForm.nickName,
+                email: this.userForm.email,
+                systems: this.userForm.systems
+            }).then((res) => {
                 this.saveLoading = false;
                 if (res.code === 1) {
                     this.$Message.success('保存成功');

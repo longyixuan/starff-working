@@ -3,7 +3,7 @@
 </style>
 <template>
     <Card dis-hover title="各系统模块管理">
-        <div style="text-align:right;margin-bottom: 20px;" v-if="isReset == 'admin'">
+        <div style="margin-bottom: 20px;" v-if="isReset == 'admin'">
             <!-- <Button type="warning" @click="refresh" style="margin-right: 20px;">更新工作总结旧数据</Button> -->
             <Button type="primary" @click="mergeModal">合并模块</Button>
         </div>

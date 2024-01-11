@@ -17,8 +17,8 @@
                             <a class="select-clear" @click="clearSelectAll">清空</a>
                         </Alert>
                     </Row>
-                    <Row style="margin-bottom: 10px;">
-                        <Select placeholder="请选择部门" clearable v-model="searchForm.departmentId" style="width:200px;margin-right: 10px;">
+                    <Row style="margin-bottom: 16px;">
+                        <Select placeholder="请选择部门" clearable v-model="searchForm.departmentId" style="width:200px;margin-right: 8px;">
                             <Option v-for="item in departmentList" :value="item.id" :key="item.id">{{ item.title }}</Option>
                         </Select>
                         <Button @click="onChange" type="primary">查询</Button>

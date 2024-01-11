@@ -5,14 +5,16 @@
 <template>
     <div>
         <Card dis-hover title="任务进度管理 - 统计">
-            <calendar-heatmap
+            <div style="">
+                <calendar-heatmap
                 :values="values"
                 :end-date="endDate"
                 no-data-text="无数据"
                 tooltip-unit="条任务"
                 :locale="locale"
                 @day-click="dayClick"
-                :max="30"/>
+                :max="32"/>
+            </div>
         </Card>
     </div>
 </template>

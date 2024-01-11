@@ -7,7 +7,7 @@
             <TabPane label="我的总结" name="my">
                 <div style="margin-bottom: 20px;">
                     <DatePicker :editable="false" v-model="time" format="yyyy年" type="year" placeholder="工作总结时间"></DatePicker>
-                    <Button type="primary" @click="initList" style="margin-left: 10px;">查询</Button>
+                    <Button type="primary" @click="initList" style="margin-left: 8px;">查询</Button>
                     <Button type="primary" to="/summary/add" style="margin-left: 10px">新增</Button>
                 </div>
                 <Table border stripe :columns="columns" :data="list" style="margin-bottom:20px">
@@ -27,7 +27,7 @@
                 </Table>
             </TabPane>
             <TabPane label="部门总结" name="part" v-if="type!=0">
-                <Row :gutter="20" style="margin-bottom: 10px;">
+                <Row :gutter="20" style="margin-bottom: 16px;">
                     <Col span="16">
                         <Date-picker
                         v-model="month"
@@ -39,11 +39,11 @@
                         ></Date-picker>
                     </Col>
                     <Col span="8">
-                        <Button type="primary" @click="quickTime('cur')" ghost style="margin-left: 10px;" class="margin-bottom20">本月</Button>
-                        <Button type="primary" @click="quickTime('pre')" ghost style="margin-left: 10px;" class="margin-bottom20">上月</Button>
+                        <Button type="primary" @click="quickTime('cur')" ghost style="margin-left: 8px;" class="margin-bottom20">本月</Button>
+                        <Button type="primary" @click="quickTime('pre')" ghost style="margin-left: 8px;" class="margin-bottom20">上月</Button>
                     </Col>
                 </Row>
-                <Row :gutter="20" style="margin-bottom: 10px;">
+                <Row :gutter="20" style="margin-bottom: 16px;">
                     <Col span="16">
                         <Select clearable multiple placeholder="选择员工" v-model="people" class="margin-bottom20">
                         <Option
@@ -54,15 +54,15 @@
                         </Select>
                     </Col>
                     <Col span="8">
-                        <Button type="primary" ghost @click="quickPeople(item.id)" :key="item.id" style="margin-left: 10px;" class="margin-bottom20" v-for="item in departmentList">{{item.title}}</Button>
+                        <Button type="primary" ghost @click="quickPeople(item.id)" :key="item.id" style="margin-left: 8px;" class="margin-bottom20" v-for="item in departmentList">{{item.title}}</Button>
                         <Button
                         type="primary"
                         ghost
                         @click="peopleAll"
                         class="margin-bottom20"
-                        style="margin-left: 10px;"
+                        style="margin-left: 8px;"
                         >选择全部</Button>
-                        <Button type="primary" ghost @click="people=[]" class="margin-bottom20" style="margin-left: 10px;">清空选择</Button>
+                        <Button type="primary" ghost @click="people=[]" class="margin-bottom20" style="margin-left: 8px;">清空选择</Button>
                     </Col>
                 </Row>
                 <Button type="primary" @click="seach" style="margin-bottom: 20px;">查询</Button>

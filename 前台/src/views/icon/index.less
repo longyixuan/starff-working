@@ -1,0 +1,127 @@
+@font-face {
+    font-family: "chsifont"; /* Project id 291325 */
+    src: url('../../assets/iconfont/iconfont.ttf') format('woff2'),
+         url('../../assets/iconfont/iconfont.woff') format('woff'),
+         url('../../assets/iconfont/iconfont.ttf') format('truetype');
+}
+.chsifont {
+    font-family: "chsifont" !important;
+    font-size: 20px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.list-item-view {
+    height: 52px;
+    width: 52px;
+    margin: 0 auto;
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon-error {
+    font-size: 14px;
+    color: #F93B3B;
+}
+
+.icon-search-warp {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    .icon-search-center {
+        flex: 1;
+        margin: 0 8px;
+    }
+    .icon-search-right {
+        display: flex;
+        align-items: center;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper {
+        background: #F2F4F3;
+        color: #141D19;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper:hover {
+        color: #00A862;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper-checked {
+        background: #00A862;
+        color: #fff;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper-checked:hover {
+        background: #00A862;
+        color: #fff;
+    }
+}
+
+
+.icon-list {
+    display: flex;
+    flex-wrap: wrap;
+    .icon-list-block {
+        width: 126px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        .list-item-text {
+            width: 126px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .list-item-code {
+            color: #64706B;
+        }
+        &:hover {
+            background: #F2FAF6;
+            .list-item-text {
+                display: none;
+            }
+            .list-item-action {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}
+.list-item-text {
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+    height: 24px;
+}
+.list-item-action {
+    display: none;
+    height: 24px;
+    .ivu-icon {
+        cursor: pointer;
+        color: #64706B;
+        &:hover {
+            color: #141D19;
+        }
+    }
+}
+
+.icon-list-empty {
+    padding-top: 20px;
+    .img {
+        display: block;
+        margin: 0 auto 20px;
+    }
+    .text {
+        font-size: 16px;
+        text-align: center;
+        color: #A0A8A5;
+    }
+}
+
+.slider {
+    display: flex;
+    align-items: center;
+}
+.slider-block {
+    flex: 1;
+    margin-left: 10px;
+}

@@ -3,7 +3,7 @@
 </style>
 <template>
     <Card dis-hover title="投票选项">
-        <div style="margin-bottom: 10px;text-align: right;">
+        <div style="margin-bottom: 20px;">
             <Button type="primary" @click="modal=true">添加</Button>
         </div>
         <Table border :data="data" :columns="columns">

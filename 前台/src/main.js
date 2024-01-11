@@ -10,6 +10,9 @@ import store from './store'
 
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+
+import VueClipboard from 'vue-clipboard2';
+
 import {
     getRequest,
     postRequest,
@@ -27,6 +30,9 @@ Vue.config.productionTip = false
 Vue.use(ViewUI);
 Vue.use(VueWechatTitle);
 Vue.use(mavonEditor);
+
+
+Vue.use(VueClipboard);
 
 // 挂载全局使用的方法
 Vue.prototype.getRequest = getRequest;
@@ -46,10 +52,10 @@ new Vue({
     store,
     render: h => h(App),
     mounted() {
-        // var link = document.createElement("link");
-        // link.type = "image/x-icon";
-        // link.rel = 'icon';
-        // link.href = '/favicon.ico'
-        // document.head.appendChild(link);
+        var link = document.createElement("link");
+        link.type = "image/x-icon";
+        link.rel = 'icon';
+        link.href = '/favicon.ico'
+        document.head.appendChild(link);
     }
 })

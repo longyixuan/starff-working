@@ -38,7 +38,7 @@
     flex: 1;
 }
 .cur {
-    color: #6698ff !important;
+    color: #00A862 !important;
     font-weight: 700 !important;
 }
 .rwzt-tag {
@@ -160,7 +160,7 @@
     position: absolute;
     background: #fff;
     height: 16px;
-    border: 1px solid #6698ff;
+    border: 1px solid #00A862;
     border-radius: 8px;
     cursor: pointer;
     box-shadow: 0px 1px 5px 1px rgba(102, 152, 255, 0.6);
@@ -185,7 +185,7 @@
 .task-progress {
     width: 30px;
     &.do {
-        background: #6698ff;
+        background: #00A862;
     }
     &.jh {
         border-right: 1px dotted #fa8888;
@@ -212,7 +212,7 @@
     /*滚动条里面小方块*/
     border-radius: 10px;
     box-shadow: inset 0 0 5px rgba(97, 184, 179, 0.1);
-    background: #6698ff;
+    background: #00A862;
 }
 ::-webkit-scrollbar-track {
     /*滚动条里面轨道*/
@@ -226,7 +226,7 @@
     cursor: pointer;
     &:hover {
         cursor: pointer;
-        color: #6698ff;
+        color: #00A862;
     }
 }
 .ivu-icon-md-arrow-dropdown,
@@ -280,21 +280,21 @@
     }
 }
 .month-view {
-    background: rgb(102, 152, 255);
+    background: #00A862;
 }
 
 .no-result {
     text-align: center;
     .no-result-img {
-        width: 72px;
-        height: 72px;
-        background-image: url(../../assets/noresult.png);
-        margin: 50px auto 10px;
+        width: 162px;
+        height: 162px;
+        background-image: url(../../assets/noresult.svg);
+        margin: 50px auto 14px;
     }
     .no-result-text {
-        color: #bfbfbf;
-        font-size: 16px;
-        font-weight: 700;
+        font-size: 14px;
+        color: #B7C4BE;
+        line-height: 20px;
     }
 }
 
@@ -316,7 +316,7 @@
         margin-right: 8px;
     }
     &.wks::before {
-        background: #999;
+        background: #A0A8A5;
     }
     &.jxz::before {
         background: #2d8cf0;
@@ -326,5 +326,30 @@
     }
 }
 .marin-b10 {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
+}
+
+.task-tabs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    .task-tabs-btn {
+        flex: 1;
+        text-align: right;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper {
+        background: #F2F4F3;
+        color: #141D19;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper:hover {
+        color: #00A862;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper-checked {
+        background: #00A862;
+        color: #fff;
+    }
+    .ivu-radio-group-button .ivu-radio-wrapper-checked:hover {
+        background: #00A862;
+        color: #fff;
+    }
 }

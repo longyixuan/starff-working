@@ -3,7 +3,7 @@
 </style>
 <template>
     <Card dis-hover title="标签">
-        <div style="margin-bottom: 10px;text-align: right;">
+        <div style="margin-bottom: 20px;">
             <Button type="primary" @click="modal=true">添加</Button>
         </div>
         <Table border :data="data" :columns="columns">
@@ -41,7 +41,7 @@ export default {
             {
                 title: '操作',
                 slot: 'action',
-                width: 80,
+                width: 100,
                 align: 'center'
             }
         ]

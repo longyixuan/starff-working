@@ -146,7 +146,7 @@
             <div class="summary-view-line"></div>
             <div style="text-align: center;">
                 <Button type="primary" ghost @click="modal=true">生成markdown文件</Button>
-                <Button type="primary" :disabled="disabled" @click="download(doctitle)" style="margin-left: 10px;">下载</Button>
+                <Button type="primary" :disabled="disabled" @click="download(doctitle)" style="margin-left: 8px;">下载</Button>
             </div>
         </div>
         <Modal v-model="modal" title="生成markdown文件">

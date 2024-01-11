@@ -1,0 +1,30 @@
+@font-face {
+	font-family: "chsifont";
+	src: url("chsifont.eot?af3774bcbf90f7115f8f0e9981f39e88?#iefix") format("embedded-opentype"),
+url("chsifont.woff2?af3774bcbf90f7115f8f0e9981f39e88") format("woff2"),
+url("chsifont.woff?af3774bcbf90f7115f8f0e9981f39e88") format("woff");
+}
+
+.chsi-icon {
+	line-height: 1;
+}
+
+.chsi-icon:before {
+	font-family: chsifont !important;
+	font-style: normal;
+	font-weight: normal !important;
+	vertical-align: top;
+}
+
+.chsi-icon-js:before {
+	content: "\f101";
+}
+.chsi-icon-js-block:before {
+	content: "\f102";
+}
+.chsi-icon-qy:before {
+	content: "\f103";
+}
+.chsi-icon-qy-block:before {
+	content: "\f104";
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>chsifont</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			margin: 0;
+			padding: 10px 20px;
+		}
+
+		.preview {
+			line-height: 2em;
+		}
+
+		.preview__icon {
+			display: inline-block;
+			width: 32px;
+			text-align: center;
+		}
+
+		.icon {
+			display: inline-block;
+			font-size: 16px;
+		}
+
+		@font-face {
+	font-family: "chsifont";
+	src: url("chsifont.eot?e20c7d61f422067e0a0a1a54ea8798ee?#iefix") format("embedded-opentype"),
+url("chsifont.woff2?e20c7d61f422067e0a0a1a54ea8798ee") format("woff2"),
+url("chsifont.woff?e20c7d61f422067e0a0a1a54ea8798ee") format("woff");
+}
+
+.chsi-icon {
+	line-height: 1;
+}
+
+.chsi-icon:before {
+	font-family: chsifont !important;
+	font-style: normal;
+	font-weight: normal !important;
+	vertical-align: top;
+}
+
+.chsi-icon-js:before {
+	content: "\f101";
+}
+.chsi-icon-js-block:before {
+	content: "\f102";
+}
+.chsi-icon-qy:before {
+	content: "\f103";
+}
+.chsi-icon-qy-block:before {
+	content: "\f104";
+}
+
+	</style>
+</head>
+<body>
+	<h1>chsifont</h1>
+	<div class="preview">
+		<span class="preview__icon">
+			<span class=" chsi-icon-js"></span>
+		</span>
+		<span>js</span>
+	</div>
+	<div class="preview">
+		<span class="preview__icon">
+			<span class=" chsi-icon-js-block"></span>
+		</span>
+		<span>js-block</span>
+	</div>
+	<div class="preview">
+		<span class="preview__icon">
+			<span class=" chsi-icon-qy"></span>
+		</span>
+		<span>qy</span>
+	</div>
+	<div class="preview">
+		<span class="preview__icon">
+			<span class=" chsi-icon-qy-block"></span>
+		</span>
+		<span>qy-block</span>
+	</div>
+</body>
+</html>

@@ -7,7 +7,7 @@
         <Layout>
             <Header>
                 <div class="header">
-                    <div class="layout-logo">设计部工作管理系统</div>
+                    <div class="layout-logo" :class="{'expand': isCollapsed}">设计部工作管理系统</div>
                     <div class="menu-other">
                         <span class="menu-expand" :class="{'expand': isCollapsed}" @click="collapsedSider" v-show="$route.name != 'survey-detail'"></span>
                     </div>
@@ -29,8 +29,8 @@
             </Layout> -->
             <Layout>
                 <div v-show="$route.name != 'survey-detail'">
-                    <Sider hide-trigger :style="{ background: '#fff' }" width="250" ref="side" collapsible :collapsed-width="1" v-model="isCollapsed">
-                        <Menu active-name="0" theme="light" width="auto">
+                    <Sider hide-trigger :style="{ background: '#fff' }" width="248" ref="side" collapsible :collapsed-width="1" v-model="isCollapsed">
+                        <Menu active-name="0" theme="light" width="auto" class="yggs-menu">
                             <MenuItem name="0" to="/home"><Icon type="md-home" />首页</MenuItem>
                             <Submenu name="1" v-if="type === 1">
                                 <template slot="title"> <Icon type="md-settings" />系统设置 </template>
@@ -67,11 +67,17 @@
                             <!-- <MenuItem name="8" to="/sys-time-line"><Icon type="ios-git-pull-request" />系统同步记录</MenuItem> -->
                             <MenuItem name="6" to="/time-line/tag" v-if="type === 1"><Icon type="md-bookmark" />标签管理</MenuItem>
                             <Submenu name="13" v-if="type === 1">
-                                <template slot="title"> <Icon type="md-planet" />系统列表及负责人 </template>
+                                <template slot="title"> <Icon type="md-planet" />系统列表及负责人</template>
                                 <MenuItem name="13-1" to="/fzxt/tag">所属平台设置</MenuItem>
                                 <MenuItem name="13-2" to="/fzxt/list">查看</MenuItem>
                             </Submenu>
                             <MenuItem name="13" to="/fzxt/list" v-else><Icon type="md-planet" />系统列表及负责人</MenuItem>
+                            <Submenu name="19" v-if="type === 1">
+                                <template slot="title"> <Icon type="md-desktop" />监控平台列表及负责人</template>
+                                <MenuItem name="19-1" to="/jkpt/tag">楼层设置</MenuItem>
+                                <MenuItem name="19-2" to="/jkpt/list">查看</MenuItem>
+                            </Submenu>
+                            <MenuItem name="19" to="/jkpt/list" v-else><Icon type="md-desktop" />监控平台列表及负责人</MenuItem>
                             <Submenu name="11" v-if="type === 1">
                                 <template slot="title"> <Icon type="md-happy" />投票管理 </template>
                                 <MenuItem name="11-1" to="/vote">选项设置</MenuItem>
@@ -97,6 +103,12 @@
                                 <MenuItem name="16-1" to="/zlk/qdml">目录管理</MenuItem>
                                 <MenuItem name="16-2" to="/zlk/qdlist">资料管理</MenuItem>
                             </Submenu>
+                            <MenuItem name="18" to="/icon/list"><Icon type="ios-paper-plane" />图标库</MenuItem>
+                            <!-- <Submenu name="18">
+                                <template slot="title"><Icon type="md-cube" />图标库管理</template>
+                                <MenuItem name="18-1" to="/icon/tag">分类</MenuItem>
+                                <MenuItem name="18-2" to="/icon/list">图标库</MenuItem>
+                            </Submenu> -->
                             <MenuItem name="7" to="/own-space"><Icon type="md-person" />个人信息</MenuItem>
                         </Menu>
                     </Sider>

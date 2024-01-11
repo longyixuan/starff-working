@@ -20,7 +20,7 @@
           :action="action"
           style="width: 400px;">
           <div style="padding: 20px 0;">
-              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+              <Icon type="ios-cloud-upload" size="52" style="color: #00A862"></Icon>
               <p>点击或拖拽文件上传</p>
           </div>
         </Upload>

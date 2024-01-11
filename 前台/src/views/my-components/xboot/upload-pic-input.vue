@@ -117,7 +117,7 @@ export default {
 <style lang="less">
 .upload {
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 8px;
 }
 </style>
 

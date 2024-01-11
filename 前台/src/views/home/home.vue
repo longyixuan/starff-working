@@ -67,14 +67,14 @@
                   @click="quickTime('month')"
                   ghost
                   class="margin-bottom20"
-                  style="margin-left: 10px;"
+                  style="margin-left: 8px;"
                 >本月</Button>
                 <Button
                   type="primary"
                   @click="quickTime('preMonth')"
                   ghost
                   class="margin-bottom20"
-                  style="margin-left: 10px;"
+                  style="margin-left: 8px;"
                 >上月</Button>
               </Col>
             </Row>
@@ -95,7 +95,7 @@
                   ghost
                   @click="peopleAll"
                   class="margin-bottom20"
-                  style="margin-left: 10px;"
+                  style="margin-left: 8px;"
                 >选择全部</Button>
               </Col>
             </Row>
@@ -112,14 +112,14 @@
                   ghost
                   @click="editallSystems"
                   class="margin-bottom20"
-                  style="margin-left: 10px;"
+                  style="margin-left: 8px;"
                 >选择全部</Button>
                 <Button
                   type="primary"
                   ghost
                   @click="editSystems"
                   class="margin-bottom20"
-                  style="margin-left: 10px;"
+                  style="margin-left: 8px;"
                 >快速选择</Button>
               </Col>
             </Row>
@@ -219,7 +219,7 @@
           type="drag"
           :action="action">
           <div style="padding: 40px 0">
-              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+              <Icon type="ios-cloud-upload" size="52" style="color: #00A862"></Icon>
               <p>Click or drag files here to upload</p>
           </div>
       </Upload>

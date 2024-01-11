@@ -4,7 +4,7 @@
 <template>
     <Layout>
         <Sider :style="{ background: '#fff' }" width="220" ref="side">
-            <Menu :active-name="activeName" theme="light" ref="sj-menu" width="auto" :open-names="openName" @on-select="onSelect">
+            <Menu class="yggs-menu" :active-name="activeName" theme="light" ref="sj-menu" width="auto" :open-names="openName" @on-select="onSelect">
                 <template v-for="item in menuList">
                     <template v-if="item.children.length===0">
                         <MenuItem :name="item.id" :key="item.id" replace :to="'/doc/sj?id='+item.id">{{item.name}}</MenuItem>
@@ -19,11 +19,11 @@
             </Menu>
         </Sider>
         <Layout :style="{ padding: '24px'}">
-            <Content :style="{ padding: '24px', minHeight: '280px', background: '#fff' }">
+            <Content :style="{ minHeight: '280px', background: '#fff' }">
                 <div class="qdgf qdgf-view">
-                    <Layout style="background: #fff;" v-if="title">
-                        <Content style="padding-right: 20px">
-                            <h1 class="h1-title">{{titleDes}} <span style="color: #999; font-size: 14px;">（{{updateTime}}）</span></h1>
+                    <h1 class="h1-title">{{titleDes}} <span style="color: #A0A8A5; font-size: 14px;font-weight: 400;">（{{updateTime}}）</span></h1>
+                    <Layout style="background: #fff;padding: 20px 12px 20px 64px;" v-if="title">
+                        <Content style="padding-right: 20px;">
                             <mavon-editor :toolbarsFlag="false" :ishljs="true" :boxShadow="false" codeStyle="monokai" :toolbars="toolbars" ref="md" defaultOpen="preview" :editable="false" v-model="value" :subfield="false"></mavon-editor>
                         </Content>
                         <Sider width="288" :style="{background: '#fff'}" v-show="tocs.length>0">
@@ -46,7 +46,7 @@
                         </Sider>
                     </Layout>
                     <div class="zlk-empty" v-else>
-                        <img class="img" src="@/assets/empty.svg" alt="">
+                        <img class="img" src="@/assets/noresult.svg" alt="">
                         <div class="text">正在建设中...</div>
                     </div>
                 </div>

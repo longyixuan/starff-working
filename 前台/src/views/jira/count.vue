@@ -2,7 +2,7 @@
 @import "./list.less";
 .jira .title {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     font-weight: 700;
 }
 </style>
@@ -33,7 +33,7 @@
                                 <div class="map" id="map-finshed-m"></div>
                             </Col>
                             <Col span="12">
-                                <div class="title">jira总数：{{totalNumM1+bugNumM1}}，任务数：{{totalNumM1}}，bug数：{{bugNumM1}}</div>
+                                <div class="title">jira总数：{{totalNumM1+bugNumM1}}，任务数：{{totalNumM1}}，bug数：{{bugNumM1}}，bug率：{{(bugNumM1*100/(totalNumM1+bugNumM1)).toFixed(2)}}%</div>
                                 <div class="map" id="map-finshed-m1"></div>
                             </Col>
                         </Row>
@@ -64,7 +64,7 @@
                         <Select filterable clearable v-model="searchData.userName" style="width: 160px;margin-right:10px;" placeholder="请选择姓名">
                             <Option :value="item.userName" :key="item.userName" v-for="item in userList">{{item.nickName}}</Option>
                         </Select>
-                        <Button type="primary" style="margin-right: 10px;" @click="searchP">查询</Button>
+                        <Button type="primary" style="margin-right: 8px;" @click="searchP">查询</Button>
                     </div>
                     <Divider style="font-weight: 700">已完成（jira总数：{{totalNumP+bugNumP}}，任务数：{{totalNumP}}，bug数：{{bugNumP}}）</Divider>
                     <div class="map" id="map-finshed"></div>
@@ -169,11 +169,11 @@
                         axisPointer: {
                         type: 'cross',
                         crossStyle: {
-                            color: '#999'
+                            color: '#A0A8A5'
                         }
                         }
                     },
-                    color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+                    color: ['#00A862','#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
                     legend: {
                         data: ['jira数', 'bug数']
                     },
@@ -342,7 +342,7 @@
                         mapUnFinshed.setOption(this.option);
                         this.option.xAxis[0].data = [];
                         let result1 = {bug: [], total: [], bug1: [], total1: []};
-                        this.option.xAxis[0].data = res.data.QdList;
+                        this.option.xAxis[0].data = res.data.qdList;
                         if (res.data.qd.length>0) {
                             this.option.xAxis[0].data = [];
                             for(let i = 0; i<res.data.qd.length;i++) {

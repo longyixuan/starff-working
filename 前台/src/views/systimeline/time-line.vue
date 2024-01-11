@@ -35,7 +35,7 @@
                         <Option :value="item.id" :key="item.id" v-for="item in sysList">{{item.title}}</Option>
                     </Select>
                     <Input v-model="jira" style="width: 400px;margin-right:10px;" clearable placeholder="请输入jira" autocomplete="off"/>
-                    <Button type="primary" style="margin-right: 10px;" @click="seach">查询</Button>
+                    <Button type="primary" style="margin-right: 8px;" @click="seach">查询</Button>
                 </div>
                 <Table style="margin-bottom: 20px;" border :columns="columns" :data="dataDbc" ref="table" v-if="dataDbc.length>0">
                     <template slot-scope="{ row }" slot="jira">

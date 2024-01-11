@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2022-11-11 13:40:42 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-03-08 09:07:04
+ * @Last Modified time: 2023-09-22 10:06:25
  */
 
 const Task_col = require('./../models/task');
@@ -381,23 +381,30 @@ const update = async (ctx, next) => {
 const remove = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
-    const result = await TaskLog_col.findOne({
+    await Task_col.deleteMany({
         id: req.id
     });
-    if (result) { // 有备注不可删除
-        ctx.body = {
-            code: 0,
-            msg: '已有工作记录，不可删除'
-        };
-    } else {
-        await Task_col.deleteMany({
-            id: req.id
-        });
-        ctx.body = {
-            code: 1,
-            msg: '删除成功'
-        };
-    }
+    ctx.body = {
+        code: 1,
+        msg: '删除成功'
+    };
+    // const result = await TaskLog_col.findOne({
+    //     id: req.id
+    // });
+    // if (result) {
+    //     ctx.body = {
+    //         code: 0,
+    //         msg: '已有工作记录，不可删除'
+    //     };
+    // } else {
+    //     await Task_col.deleteMany({
+    //         id: req.id
+    //     });
+    //     ctx.body = {
+    //         code: 1,
+    //         msg: '删除成功'
+    //     };
+    // }
 }
 
 const getLog = async (ctx, next) => {
@@ -451,7 +458,8 @@ const checkLog = async (ctx, next) => {
             $match: {
                 defaultRole: {
                     $ne: ''
-                }
+                },
+                delFlag: 0
             }
         },
         {

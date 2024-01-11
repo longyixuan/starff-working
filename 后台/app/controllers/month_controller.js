@@ -68,7 +68,8 @@ const search = async (ctx) => {
             $match: {
                 defaultRole: {
                     $ne: ''
-                }
+                },
+                delFlag: 0
             }
         },
         {

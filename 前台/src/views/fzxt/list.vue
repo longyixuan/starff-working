@@ -13,7 +13,8 @@
                     <Option :value="item" v-for="item in sjbmList">{{ item }}</Option>
                 </Select>
                 <Button type="primary" style="margin-left: 10px" @click="search">查询</Button>
-                <Button type="primary" @click="add" style="float: right">新增</Button>
+                <span class="btn-line"></span>
+                <Button type="primary" @click="add">新增</Button>
             </div>
             <div style="overflow-x: auto;">
                 <table class="xt-table" style="min-width: 1400px;">

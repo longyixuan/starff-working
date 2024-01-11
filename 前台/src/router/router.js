@@ -368,6 +368,22 @@ export const appRouter = {
             component: () => import('@/views/fzxt/list.vue')
         },
         {
+            path: 'jkpt/tag',
+            meta: {
+                title: '监控平台负责人列表'
+            },
+            name: 'tagjkpt',
+            component: () => import('@/views/jkpt/tag.vue')
+        },
+        {
+            path: 'jkpt/list',
+            meta: {
+                title: '监控平台负责人列表'
+            },
+            name: 'listjkpt',
+            component: () => import('@/views/jkpt/list.vue')
+        },
+        {
             path: 'work-time-count',
             meta: {
                 title: ''
@@ -487,14 +503,14 @@ export const appRouter = {
             name: 'task-guidang',
             component: () => import('@/views/task/guidang.vue')
         },
-        // {
-        //     path: 'task/tongji',
-        //     meta: {
-        //         title: '任务管理'
-        //     },
-        //     name: 'task-tongji',
-        //     component: () => import('@/views/task/tongji.vue')
-        // },
+        {
+            path: 'task/tongji',
+            meta: {
+                title: '任务管理'
+            },
+            name: 'task-tongji',
+            component: () => import('@/views/task/tongji.vue')
+        },
         {
             path: 'tasklist/config',
             meta: {
@@ -598,6 +614,22 @@ export const appRouter = {
             },
             name: 'summary-show',
             component: () => import('@/views/month/show.vue')
+        },
+        {
+            path: 'icon/list',
+            meta: {
+                title: '图标库'
+            },
+            name: 'icon-list',
+            component: () => import('@/views/icon/list.vue')
+        },
+        {
+            path: 'icon/tag',
+            meta: {
+                title: '图标库'
+            },
+            name: 'icon-tag',
+            component: () => import('@/views/icon/type.vue')
         },
         // {
         //     path: 'image/add',

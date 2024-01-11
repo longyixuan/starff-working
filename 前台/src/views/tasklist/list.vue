@@ -4,7 +4,7 @@
 
 <template>
     <Card dis-hover title="任务清单管理">
-        <div style="margin-bottom: 10px; text-align: right">
+        <div style="margin-bottom: 16px; text-align: right">
             <Button type="primary" to="/tasklist/add">新增</Button>
         </div>
         <Table border :data="data" :columns="columns">

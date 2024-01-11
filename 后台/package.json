@@ -2,7 +2,7 @@
   "name": "yggs-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "pm2": "pm2 start app.js",
@@ -13,6 +13,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "formidable": "^1.2.1",
+    "icomoon": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "jszip": "^3.2.2",
     "koa": "^2.11.0",
@@ -29,9 +30,12 @@
     "mongoose": "^5.7.13",
     "multer": "^1.4.2",
     "qs": "^6.9.1",
+    "svg2ttf": "^6.0.3",
+    "svgpath": "^2.6.0",
     "unzip": "^0.1.11",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "webfonts-generator": "^0.4.0"
   }
 }

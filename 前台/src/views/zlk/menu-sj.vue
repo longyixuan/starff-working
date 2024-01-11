@@ -4,7 +4,7 @@
 
 <template>
     <Card dis-hover title="目录管理">
-        <div style="margin-bottom: 10px; text-align: right">
+        <div style="margin-bottom: 20px;">
             <Button type="primary" @click="addTag">添加一级目录</Button>
         </div>
         <Table row-key="id" border :data="data" :columns="columns" update-show-children>

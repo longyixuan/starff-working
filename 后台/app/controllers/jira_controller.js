@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2021-01-04 15:19:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-03-23 16:16:51
+ * @Last Modified time: 2023-09-04 14:18:56
  */
 
 const uuidv1 = require('uuid/v1');
@@ -190,7 +190,8 @@ const getDetailM = async (ctx, next) => {
                 departmentId: req.departmentId ? req.departmentId : { $ne: req.departmentId },
                 defaultRole: {
                     $ne: ''
-                }
+                },
+                delFlag: 0
             }
         },
         {

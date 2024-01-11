@@ -3,7 +3,7 @@
 </style>
 <template>
     <Card dis-hover title="投票历史">
-        <div style="margin-bottom: 10px; text-align: right">
+        <div style="margin-bottom: 16px; text-align: right">
             <Button type="primary" @click="modal = true">新增</Button>
         </div>
         <Table border :data="data" :columns="columns">

@@ -1,6 +1,6 @@
 
 .layout {
-    background: #f5f7f9;
+    background: #F7F9F8;
     position: relative;
     overflow: hidden;
 }
@@ -17,9 +17,12 @@
     height: 55px;
     line-height: 55px;
     color: #00A862;
-    background: url(../assets/logo.svg) center center no-repeat;
+    background: url(../assets/logo.svg) left center no-repeat;
     width: 250px;
     font-size: 0;
+    &.expand {
+        width: 50px;
+    }
 }
 .zlk-logo {
     height: 55px;
@@ -42,10 +45,10 @@
     .menu-expand {
         height: 55px;
         width: 32px;
-        background: url(../assets/menu-expand.png) center center no-repeat;
+        background: url(../assets/menu-fold.svg) center center no-repeat;
         cursor: pointer;
         &.expand {
-            transform: rotate(180deg);
+            background: url(../assets/menu-unfold.svg) center center no-repeat;
         }
     }
 }
@@ -120,4 +123,31 @@
 }
 .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
     background: #F2FAF6;
+}
+
+.ivu-select-selection, .ivu-input,.ivu-checkbox-inner, .ivu-radio-inner {
+    border: 1px solid #D5DAD8;
+}
+.kj-btn {
+    background: #F2F4F3;
+    border: 1px solid #F2F4F3;
+}
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):after {
+    display: none;
+}
+.yggs-menu {
+    padding: 8px;
+}
+
+.btn-line {
+    width: 1px;
+    height: 32px;
+    background: #E8EDEA;
+    margin: 0 16px;
+    vertical-align: middle;
+    display: inline-block;
+    &.small {
+        height: 16px;
+        margin: 0 6px;
+    }
 }

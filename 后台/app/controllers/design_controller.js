@@ -2,11 +2,12 @@
  * @Author: yinxl 
  * @Date: 2022-09-02 12:40:32 
  * @Last Modified by: yinxl
- * @Last Modified time: 2022-09-15 19:48:48
+ * @Last Modified time: 2023-09-26 11:08:23
  */
 
 const Design_col = require('./../models/design');
 const DesignTag_col = require('./../models/designTag');
+const User_col = require("./../models/user");
 const uuidv1 = require('uuid/v1');
 
 const addTag = async (ctx, next) => {
@@ -202,6 +203,22 @@ const detail = async (ctx, next) => {
             }
         }
     ])
+    let params = {
+        year: parseInt(req.year)
+    }
+    if (req.departmentId) {
+        let temp = [];
+        let userList =  await User_col.find({
+            departmentId: req.departmentId,
+            defaultRole: 'sj'
+        },{userId: 1});
+        userList.forEach(element => {
+            temp.push(element.userId);
+        });
+        params.userId = {
+            $in: temp
+        }
+    }
     const result3 = await Design_col.aggregate([
         {
             $lookup: {
@@ -212,9 +229,7 @@ const detail = async (ctx, next) => {
             }
         },
         {
-            $match: {
-                year: parseInt(req.year)
-            }
+            $match: params
         },
         {
             $group: {
@@ -262,6 +277,22 @@ const detail = async (ctx, next) => {
 const all = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.request.body;
+    let params = {
+        year: parseInt(req.year)
+    }
+    if (req.departmentId) {
+        let temp = [];
+        let userList =  await User_col.find({
+            departmentId: req.departmentId,
+            defaultRole: 'sj'
+        },{userId: 1});
+        userList.forEach(element => {
+            temp.push(element.userId);
+        });
+        params.userId = {
+            $in: temp
+        }
+    }
     const result = await Design_col.aggregate([
         {
             $lookup: {
@@ -272,9 +303,7 @@ const all = async (ctx, next) => {
             }
         },
         {
-            $match: {
-                year: parseInt(req.year)
-            }
+            $match: params
         },
         {
             $group: {
@@ -318,9 +347,7 @@ const all = async (ctx, next) => {
             }
         },
         {
-            $match: {
-                year: parseInt(req.year)
-            }
+            $match: params
         },
         {
             $group: {
@@ -366,9 +393,7 @@ const all = async (ctx, next) => {
             }
         },
         {
-            $match: {
-                year: parseInt(req.year)
-            }
+            $match: params
         },
         {
             $group: {

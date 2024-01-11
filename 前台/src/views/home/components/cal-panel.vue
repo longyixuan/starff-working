@@ -226,36 +226,39 @@ tbody tr {
 }
 .month-table tbody td {
   vertical-align: inherit;
-  border-right: 1px solid #ebeef5;
-  border-bottom: 1px solid #ebeef5;
+  border-right: 12px solid #FFFFFF;
+  border-bottom: 12px solid #FFFFFF;
 }
 .month-table tbody tr:first-child td {
-  border-top: 1px solid #ebeef5;
+  border-top: 12px solid #FFFFFF;
 }
 .month-table tr td:first-child {
-  border-left: 1px solid #ebeef5;
+  border-left: 12px solid #FFFFFF;
 }
 .date {
   box-sizing: border-box;
   padding: 8px;
   height: 84px;
+  background: #F2FAF6;
+  border-radius: 3px;
 }
 .not-current-month {
-  color: #909399;
+  color: #B7C4BE;
 }
 .current-month {
-  color: #000000;
+  color: #141D19;
 }
 .working {
-  color: #000000;
+  color: #141D19;
   background-color: rgba(135,206,250,0.4);
 }
 .today {
-  color: #F44E50;
-  background-color:rgba(255,127,80,0.3);
+  font-weight: 700;
+  color: #00A862;
+  background-color:#D7F5EA;
 }
 .date-alive {
-  background-color: rgb(252, 212, 215);
+  background-color:#D7F5EA;;
 }
 .week-table tbody tr td {
   border: 1px solid #ebeef5;

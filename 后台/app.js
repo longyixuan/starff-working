@@ -2,7 +2,7 @@
  * @Author: yinxl 
  * @Date: 2019-04-02 17:05:36 
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-02-14 16:56:31
+ * @Last Modified time: 2024-01-09 11:20:13
  */
 
 
@@ -105,8 +105,10 @@ const jira_router = require('./routes/api/jira_router');
 const vote_router = require('./routes/api/vote_router');
 const design_router = require('./routes/api/design_router');
 const fzxt_router = require('./routes/api/fzxt_router');
+const jkpt_router = require('./routes/api/jkpt_router');
 const task_router = require('./routes/api/task_router');
 const md_router = require('./routes/api/md_router');
+const icon_router = require('./routes/api/icon_router');
 // const replay_router = require('./routes/api/replay_router');
 // const return_router = require('./routes/api/return_router');
 
@@ -125,8 +127,10 @@ app.use(jira_router.routes()).use(jira_router.allowedMethods());
 app.use(vote_router.routes()).use(vote_router.allowedMethods());
 app.use(design_router.routes()).use(design_router.allowedMethods());
 app.use(fzxt_router.routes()).use(fzxt_router.allowedMethods());
+app.use(jkpt_router.routes()).use(jkpt_router.allowedMethods());
 app.use(task_router.routes()).use(task_router.allowedMethods());
 app.use(md_router.routes()).use(md_router.allowedMethods());
+app.use(icon_router.routes()).use(icon_router.allowedMethods());
 // app.use(replay_router.routes()).use(replay_router.allowedMethods());
 // app.use(return_router.routes()).use(return_router.allowedMethods());
 

@@ -2,11 +2,13 @@
  * @Author: yinxl
  * @Date: 2022-07-21 13:43:59
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-03-27 17:05:41
+ * @Last Modified time: 2023-12-22 08:54:57
  */
 
 const Md_col = require('./../models/md');
+const MdLog_col = require('./../models/mdLog');
 const MdType_col = require('./../models/mdType');
+const stream = require('stream');
 const uuidv1 = require('uuid/v1');
 const add = async (ctx, next) => {
     ctx.status = 200;
@@ -35,6 +37,7 @@ const update = async (ctx, next) => {
     await Md_col.updateOne({
         id: req.id
     }, req);
+    await MdLog_col.create(req);
     const result = await Md_col.findOne({
         id: req.id
     });
@@ -81,7 +84,13 @@ const list = async (ctx, next) => {
                 titlePid: {$arrayElemAt:["$mdType.pid",0]},
                 titlePidDes: {$arrayElemAt:["$mdType.pidDes",0]},
                 created_at: '$created_at',
-                updated_at: '$updated_at'
+                updated_at: '$updated_at',
+                order: {$arrayElemAt:["$mdType.order",0]}
+            }
+        },
+        {
+            $sort: {
+                order: 1
             }
         },
     ]);
@@ -277,7 +286,102 @@ const getDFSTree = function(data, pid) {
         }
     }
     return treelist;
-  }
+}
+
+const getLog = async (ctx, next) => {
+    ctx.status = 200;
+    const req = ctx.request.body;
+    let result = await MdLog_col.aggregate([
+        {
+            $lookup: {
+                from: "user",
+                localField: "user",
+                foreignField: "userName",
+                as: "userInfo"
+            }
+        },
+        {
+            $match: {
+                id: req.id
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                user: '$user',
+                title: '$title',
+                id: '$id',
+                updateTime: '$updateTime',
+                bz: '$bz',
+                userName: {$arrayElemAt:["$userInfo.nickName",0]},
+                created_at: '$created_at',
+                updated_at: '$updated_at'
+            }
+        },
+        {
+            $sort: {
+                updated_at: -1
+            }
+        }
+    ]);
+    ctx.body = {
+        code: 1,
+        data: result,
+        msg: '查询成功'
+    };
+}
+
+const downLoad = async (ctx, next) => {
+    const req = ctx.request.query;
+    let result = await Md_col.aggregate([
+        {
+            $lookup: {
+                from: "mdType",
+                localField: "title",
+                foreignField: "id",
+                as: "mdType"
+            }
+        },
+        {
+            $lookup: {
+                from: "user",
+                localField: "user",
+                foreignField: "userName",
+                as: "userInfo"
+            }
+        },
+        {
+            $match: {
+                type: req.type
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                userName: {$arrayElemAt:["$userInfo.nickName",0]},
+                title: {$arrayElemAt:["$mdType.name",0]},
+                code: "$mdCode"
+            }
+        },
+        {
+            $sort: {
+                title: 1
+            }
+        },
+    ]);
+    let content = '';
+    result.forEach( item => {
+        content += '# ' + item.title + '\n' + item.code + '\n';
+    });
+    ctx.set('Content-Type', 'application/octet-stream');
+    ctx.attachment('设计规范汇总.md'); // 使用attachment方法设置Content-Disposition头部
+    const readable = new stream.Readable(); // 创建可读流
+    readable._read = () => {}; // 必须实现 _read 方法
+    readable.push(content); // 将文本内容压入可读流
+    readable.push(null); // 结束可读流
+    ctx.status = 200;
+    ctx.body = readable; // 将可读流作为响应体
+}
 
 module.exports = {
     add,
@@ -288,5 +392,7 @@ module.exports = {
     addType,
     listType,
     updateType,
-    delType
+    delType,
+    getLog,
+    downLoad
 }

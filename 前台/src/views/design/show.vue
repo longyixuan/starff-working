@@ -5,11 +5,13 @@
     <Card dis-hover title="查看">
         <div style="margin-bottom: 20px;" class="clearfix">
             <DatePicker v-model="year" :clearable="false" type="year" style="width: 160px;margin-right:10px;"></DatePicker>
-            <Select v-model="userId" style="width: 160px;margin-right:10px;" placeholder="请选择姓名">
-                <Option value="全部门" key="全部门">全部门</Option>
+            <Select clearable @on-clear="clearDepartment" v-model="departmentId" placeholder="请选择部门" @on-change="getUserList" style="width:160px;margin-right: 10px;">
+                <Option v-for="item in departmentList" :value="item.id" :key="item.id">{{ item.title }}</Option>
+            </Select>
+            <Select clearable v-model="userId" style="width: 160px;margin-right:10px;" placeholder="请选择姓名">
                 <Option :value="item.userId" :key="item.userId" v-for="item in userList">{{item.nickName}}</Option>
             </Select>
-            <Button type="primary" style="margin-right: 10px;" @click="getList">查询</Button>
+            <Button type="primary" style="margin-right: 8px;" @click="getList">查询</Button>
         </div>
         <Table class="num-table" border :data="data" :columns="columns" stripe></Table>
     </Card>
@@ -18,8 +20,9 @@
 import {
     listDesignTag,
     detailDesign,
-    getAllUserData,
-    allDesign
+    getUserByDepartmentId,
+    allDesign,
+    initDepartment
 } from '@/api/index';
 import moment from "moment";
 export default {
@@ -27,17 +30,29 @@ export default {
     data() {
         return {
             monthList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            sj: ['lugp', 'cuiyh', 'sunl', 'changxq', 'gaos', 'yanq', 'hecx'],
             tagList: [],
             data: [],
             userList: [],
-            userId: '全部门',
+            userId: '',
             year: new Date(),
             isEdit: false,
-            columns: []
+            columns: [],
+            departmentId: '',
+            departmentList: []
         }
     },
     methods: {
+        clearDepartment() {
+            this.userList = [];
+            this.userId= '';
+        },
+        initDepartment() {
+            initDepartment().then(res => {
+                if (res.code === 1) {
+                    this.departmentList = res.data;
+                }
+            });
+        },
         getList() {
             listDesignTag().then( res => {
                 this.tagList = res.data;
@@ -46,15 +61,16 @@ export default {
                 });
             });
         },
-        getUserList() {
-            let _this = this;
-            getAllUserData().then(res => {
-                if (res.code === 1) {
-                    this.userList = _.filter(res.data, function(o) {
-                        return _this.sj.indexOf(o.userName)!==-1;
-                    });
-                }
-            });
+        getUserList(departmentId) {
+            if (departmentId) {
+                getUserByDepartmentId(departmentId, {
+                    defaultRole: 'sj'
+                }).then(res => {
+                    if (res.code === 1) {
+                        this.userList = res.data;
+                    }
+                });
+            }
         },
         createColumns() {
             this.columns = [
@@ -157,10 +173,11 @@ export default {
             this.init();
         },
         init() {
-            if (this.userId!='全部门') {
+            if (this.userId) {
                 detailDesign({
                     year: moment(this.year).format('YYYY'),
                     userId: this.userId,
+                    departmentId: this.departmentId
                 }).then(res => {
                     this.$Message.success('查询成功');
                     if (res.code===1 && res.data.length>0) {
@@ -176,7 +193,8 @@ export default {
                 });
             } else {
                 allDesign({
-                    year: moment(this.year).format('YYYY')
+                    year: moment(this.year).format('YYYY'),
+                    departmentId: this.departmentId
                 }).then(res => {
                     this.$Message.success('查询成功');
                     if (res.code===1 && res.data.length>0) {
@@ -220,13 +238,15 @@ export default {
                 temp2['tagDes_'+ele.tagId] = '';
             });
             this.data.push(temp);
-            if (this.userId!='全部门') {
+            if (this.userId) {
                 this.data.push(temp2);
             }
         }
     },
     mounted() {
-        this.getUserList();
+        this.departmentId = JSON.parse(localStorage.getItem('userInfo')).departmentId;
+        this.initDepartment();
+        // this.getUserList();
         this.getList();
     }
 }

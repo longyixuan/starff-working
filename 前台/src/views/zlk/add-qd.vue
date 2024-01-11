@@ -3,16 +3,30 @@
 
 </style>
 <template>
-    <Card dis-hover title="资料库">
-        <div class="qdgf">
+    <Card dis-hover title="资料库" style="z-index: 0">
+        <div class="qdgf edit">
             <div style="margin-bottom: 20px">
                 <Select v-model="title" style="width: 200px" placeholder="请选择目录" :disabled="id!=''">
                     <Option v-for="item in typeList" :value="item.id" :key="item.id">{{item.pid ? item.pidDes +' - ': ''}}{{ item.name }}</Option>
                 </Select>
             </div>
             <mavon-editor :toolbars="toolbars" ref="md" defaultOpen="edit" :editable="true" v-model="value" :subfield="false" codeStyle="monokai" @navigationToggle="onAddUrl" :ishljs="true" @change="change" @save="save" @imgAdd="imgAdd" @imgDel="imgDel"> </mavon-editor>
-            <Button type="primary" style="margin-top: 20px" @click="save(value, renderHtml)">保存</Button>
+            <Affix :offset-bottom="0">
+                <div class="affix-zlk-btn">
+                    <Button type="primary" @click="save(value, renderHtml)">保存</Button>
+                </div>
+            </Affix>
         </div>
+        <Modal
+            v-model="modal"
+            title="备注"
+            width="1000">
+            <Input v-model="bz" type="textarea" :rows="6" placeholder="请输入更新备注" />
+            <div slot="footer" style="text-align: right;">
+                <Button type="text" @click="modal=false">取消</Button>
+                <Button type="primary" @click="ok" :disabled="bz==''" style="margin-left: 8px">确定</Button>
+            </div>
+        </Modal>
     </Card>
 </template>
 <script>
@@ -27,13 +41,15 @@ export default {
                 editable: false,
                 toolbarsFlag: false,
                 scrollStyle: true,
-                navigation: true,
+                navigation: true
             };
         },
     },
     data() {
         return {
             type: 'qd',
+            modal: false,
+            bz: '',
             typeList: [],
             id: '',
             value: '',
@@ -110,17 +126,7 @@ export default {
                 this.$Message.error('内容不可为空');
             }
             if (this.id) {
-                mdUpdata({
-                    id: this.id,
-                    title: this.title,
-                    user: JSON.parse(localStorage.getItem('userInfo')).userName,
-                    mdCode: value,
-                    htmlCode: render,
-                    type: this.type,
-                    updateTime: moment().format('YYYY-MM-DD HH:mm:ss')
-                }).then((res) => {
-                    this.$Message.success('保存成功');
-                });
+                this.modal = true;
             } else {
                 mdAdd({
                     title: this.title,
@@ -137,6 +143,21 @@ export default {
                     }
                 });
             }
+        },
+        ok() {
+            mdUpdata({
+                id: this.id,
+                title: this.title,
+                user: JSON.parse(localStorage.getItem('userInfo')).userName,
+                mdCode: this.value,
+                htmlCode: this.renderHtml,
+                type: this.type,
+                updateTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                bz: this.bz
+            }).then((res) => {
+                this.modal = false;
+                this.$Message.success('保存成功');
+            });
         },
         onAddUrl() {},
     },

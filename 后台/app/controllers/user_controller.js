@@ -2,7 +2,7 @@
  * @Author: yinxl
  * @Date: 2019-04-10 18:35:47
  * @Last Modified by: yinxl
- * @Last Modified time: 2023-09-04 13:44:50
+ * @Last Modified time: 2023-09-26 09:35:36
  */
 
 const config = require("./../../config");
@@ -157,18 +157,13 @@ const getUserInfo = async (ctx, next) => {
 // 更新个人信息
 const updateUserInfo = async (ctx, next) => {
     const req = qs.parse(ctx.request.body);
-    // 获取用户的 userId
-    if (!req.systems) {
-        req.systems = [];
-    } else {
-        req.systems = Object.keys(req.systems).map((key) => req.systems[key]);
-    }
     const result = await User_col.updateOne(
         {
             userId: req.userId,
         },
         req
     );
+    console.log(result)
     ctx.status = 200;
     if (result.nModified == 1) {
         ctx.body = {
@@ -225,6 +220,7 @@ const getAllUser = async (ctx, next) => {
         userName: {
             $ne: "admin",
         },
+        delFlag: 0
     }).sort({ order: 1 });
 
     ctx.status = 200;
@@ -237,7 +233,9 @@ const getAllUser = async (ctx, next) => {
 const getByCondition = async (ctx, next) => {
     ctx.status = 200;
     const req = ctx.query;
-    let seachConfig = {};
+    let seachConfig = {
+        delFlag: 0
+    };
     if (req.departmentId) {
         seachConfig.departmentId = req.departmentId;
     }
@@ -333,9 +331,15 @@ const delUser = async (ctx, next) => {
 const getByDepartment = async (ctx, next) => {
     ctx.status = 200;
     const departmentId = ctx.params.id;
-    const result = await User_col.find({
+    const req = ctx.query;
+    const params = {
         departmentId,
-    });
+        delFlag: 0
+    }
+    if (req.defaultRole) {
+        params.defaultRole = req.defaultRole
+    }
+    const result = await User_col.find(params);
     ctx.body = {
         code: 1,
         data: result,
@@ -458,6 +462,7 @@ const getRole = async (ctx, next) => {
                 defaultRole: {
                     $ne: ''
                 },
+                delFlag: 0
             }
         },
         {

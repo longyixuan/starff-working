@@ -761,8 +761,93 @@ export const mdDetail = (params) => {
 export const mdShow = (params) => {
     return postRequest(`/md/show`,params)
 }
+
+export const mdLog = (params) => {
+    return postRequest(`/md/log`,params)
+}
+
+export const mdDownload = (params) => {
+    return postRequest(`/md/download`,params)
+}
 //-----------------------资料库--------------------------------//
+
+
+//-----------------------图标库--------------------------------//
+
+export const uploadIcon = (params) => {
+    return uploadFileRequest(`/icon/upload`,params)
+}
+
+export const iconAdd = (params) => {
+    return postRequest(`/icon/add`,params)
+}
+
+export const iconEdit = (params) => {
+    return postRequest(`/icon/edit`,params)
+}
+
+export const iconSearch = (params) => {
+    return postRequest(`/icon/search`,params)
+}
+
+export const iconDel = (params) => {
+    return postRequest(`/icon/del`,params)
+}
+
+export const iconList = (params) => {
+    return postRequest(`/icon/list`,params)
+}
+
+
+export const addIconTag = (params) => {
+    return postRequest(`/icon/tag/add`,params)
+}
+
+export const editIconTag = (params) => {
+    return postRequest(`/icon/tag/edit`,params)
+}
+
+export const getIconTagList = (params) => {
+    return postRequest(`/icon/tag/list`,params)
+}
+
+export const delIconTag = (params) => {
+    return postRequest(`/icon/tag/del`,params)
+}
+
+//-----------------------图标库--------------------------------//
 
 export const getRole = (params) => {
     return getRequest(`/user/getRole`,params)
 }
+
+//-----------------------监控平台维护人--------------------------------//
+export const addTagJkpt = (params) => {
+    return postRequest(`/jkpt/tag/add`,params)
+}
+
+export const editTagJkpt = (params) => {
+    return postRequest(`/jkpt/tag/update`,params)
+}
+
+export const getTagListJkpt = (params) => {
+    return postRequest(`/jkpt/tag/list`,params)
+}
+
+export const delTagJkpt = (params) => {
+    return postRequest(`/jkpt/tag/delete`,params)
+}
+export const addJkpt = (params) => {
+    return postRequest(`/jkpt/add`,params)
+}
+export const editJkpt = (params) => {
+    return postRequest(`/jkpt/update`,params)
+}
+export const delJkpt = (params) => {
+    return postRequest(`/jkpt/del`,params)
+}
+export const listJkpt = (params) => {
+    return postRequest(`/jkpt/list`,params)
+}
+
+//-----------------------监控平台维护人--------------------------------//
